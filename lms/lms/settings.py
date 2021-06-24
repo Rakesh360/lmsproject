@@ -32,6 +32,7 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
+    'jet',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -41,7 +42,9 @@ INSTALLED_APPS = [
     'courses',
     'accounts',
     'rest_framework',
-    'rest_framework.authtoken'
+    'rest_framework.authtoken',
+    'froala_editor',
+    
 ]
 
 MIDDLEWARE = [

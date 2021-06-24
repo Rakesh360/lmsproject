@@ -23,6 +23,8 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 urlpatterns = [
     path('api/accounts/' , include('accounts.urls')),
+    path('api/courses/' , include('courses.urls')),
+    path('jet/', include('jet.urls', 'jet')),  # Django JET URLS
     path('admin/', admin.site.urls),
 ]
 if settings.DEBUG:

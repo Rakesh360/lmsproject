@@ -25,22 +25,23 @@ class AccountMixin:
             if data.get('email') is None or data.get('password') is None:
                 return Response( {'staus' :400 , 'message' : 'email and password both are requied' , 'errors' : []})
             
-            # student = Student.objects.filter(email = data.get('email'))
-            # if not student.exists():
-            #     return Response( {'staus' :400 , 'message' : 'account not found' , 'errors' : []})
+            student = Student.objects.filter(user__email = data.get('email'))
+            if not student.exists():
+                return Response( {'staus' :400 , 'message' : 'account not found' , 'errors' : []})
             
-            print(data.get('email'))
-            student = Student.objects.first()
-            print(student.check_password(data.get('password')))
+            if not student[0].is_phone_verified:
+                return Response( {'staus' :400 , 'message' : 'your phone is not verified' , 'errors' : []})
 
-            student_obj = authenticate(email = data.get('email') , password = data.get('password'))
 
-            # if not student_obj:
-            #     return Response( {'staus' :400 , 'message' : 'invalid password' , 'errors' : []})
 
-            token,_ = Token.objects.get_or_create(user=student_obj)
-            print(token)
-            return Response({'staus' :200 , 'message' : 'login successfull' , 'token' :'' })
+            user_obj = authenticate(username = data.get('email') , password = data.get('password'))
+
+            if not user_obj:
+                return Response( {'staus' :400 , 'message' : 'invalid password' , 'errors' : []})
+
+            token,_ = Token.objects.get_or_create(user=user_obj)
+
+            return Response({'staus' :200 , 'message' : 'login successfull' , 'token' :str(token) })
 
 
        except Exception as e:
@@ -60,11 +61,11 @@ class AccountMixin:
         try:
             data = request.data
             try:
-                user_obj = User.objects.get(uid = pk)
-                if user_obj.otp == data.get('otp'):
-                    user_obj.is_phone_verified = True
-                    user_obj.save()
-                    return Response( {'staus' :200 , 'message' : 'OTP matched' , 'errors' : []} )
+                student_obj = Student.objects.get(uid = pk)
+                if student_obj.otp == data.get('otp'):
+                    student_obj.is_phone_verified = True
+                    student_obj.save()
+                    return Response( {'staus' :200 , 'message' : 'OTP matched account activated' , 'errors' : []} )
                 else:
                     return Response( {'staus' :400 , 'message' : 'you have entered a wrong OTP' , 'errors' : []} )
 
