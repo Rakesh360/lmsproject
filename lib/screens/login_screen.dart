@@ -118,7 +118,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     onPressed: () {},
                     child: Text(
-                      'Sign In',
+                      'Sign up',
                       style: rubikBold.copyWith(color: Colors.white),
                     )),
               ),
