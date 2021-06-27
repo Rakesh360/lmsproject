@@ -12,9 +12,10 @@ class TextInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-        shape: StadiumBorder(),
+        shape: OutlineInputBorder(),
         elevation: 9,
         child: TextFormField(
+          
           validator: (value) {
             if (value!.isEmpty) {
               return "please enter $lable";

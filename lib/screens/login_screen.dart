@@ -15,7 +15,8 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController _emailInput = TextEditingController();
 
   TextEditingController _passwordInput = TextEditingController();
-  bool isChecked = true;
+  //bool isChecked = true;
+  bool _showPassword = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,21 +37,47 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               Text("Welcome",
                   style: rubikMedium.copyWith(
-                      color: AppColors.TextColor, fontSize: 30)), SizedBox(
+                      color: AppColors.TextColor, fontSize: 30)),
+              SizedBox(
                 height: 20,
               ),
               TextInput(
-                  iconData: Icons.mail,
-                  lable: 'E-Mail',
+                  iconData: Icons.phone,
+                  lable: 'Phone Number',
                   textEditingController: _emailInput),
               SizedBox(
                 height: 10,
               ),
-              TextInput(
-                  iconData: Icons.lock,
+              /*TextInput(
+                  iconData: Icons.lock, 
                   lable: 'Password',
-                  textEditingController: _passwordInput),
-                   SizedBox(
+                  textEditingController: _passwordInput
+                  ),*/
+              Card(
+                shape: OutlineInputBorder(),
+                elevation: 9,
+                child: TextField(
+                  obscureText: !this._showPassword,
+                  decoration: InputDecoration(
+                    labelText: 'Password',
+                    labelStyle:
+                        rubikRegular.copyWith(color: AppColors.TextColor),
+                    border: InputBorder.none,
+                    prefixIcon: Icon(Icons.lock, color: AppColors.BorderColor),
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        Icons.remove_red_eye,
+                        color: this._showPassword ? AppColors.BorderColor : Colors.grey,
+                      ),
+                      onPressed: () {
+                        setState(
+                            () => this._showPassword = !this._showPassword);
+                      },
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(
                 height: 20,
               ),
               Row(
@@ -85,29 +112,38 @@ class _LoginScreenState extends State<LoginScreen> {
                 height: 20,
               ),
               SizedBox(
-                width: 330,
+                width: 250,
                 height: 50,
                 child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       primary: AppColors.ButtonColor,
                       elevation: 10,
-                      shape: StadiumBorder(),
+                      shape: RoundedRectangleBorder(
+                        side: BorderSide(color: Colors.black, width: 2),
+                      ),
                     ),
                     onPressed: () {},
                     child: Text(
-                      'Sign In',
+                      'Login',
                       style: rubikBold.copyWith(color: Colors.white),
                     )),
               ),
               SizedBox(
-                height: 20,
+                height: 7,
               ),
-               Text('Click here for Register......',
-                    style: rubikBold.copyWith(color: AppColors.TextColor,fontSize: 16)),
-                     SizedBox(
-                height: 20,
+              TextButton(
+                //padding: EdgeInsets.only(left: 0.0),
+                child: Text('Click here to Register ....',
+                    style: rubikBold.copyWith(
+                        color: AppColors.TextColor, fontSize: 14)),
+                onPressed: () {
+                  Navigator.pushReplacementNamed(context, '/otpScreen()');
+                },
               ),
               SizedBox(
+                height: 20,
+              ),
+              /*SizedBox(
                 width: 330,
                 height: 50,
                 child: ElevatedButton(
@@ -121,7 +157,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       'Sign up',
                       style: rubikBold.copyWith(color: Colors.white),
                     )),
-              ),
+              ),*/
             ],
           ),
         ),
