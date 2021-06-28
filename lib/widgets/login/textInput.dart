@@ -6,6 +6,7 @@ class TextInput extends StatelessWidget {
   IconData iconData;
   String lable;
   TextEditingController textEditingController;
+  
   TextInput({required this.iconData, required this.lable, required this.textEditingController});
   //const TextInput({ Key? key }) : super(key: key);
 
