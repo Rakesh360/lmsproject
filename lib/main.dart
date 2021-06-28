@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lmsproject/screens/login_screen.dart';
-import 'package:lmsproject/screens/signup_screen.dart';
+import 'package:lmsproject/screens/otp.dart';
 
 void main() {
   runApp(Main());
@@ -13,7 +13,7 @@ class Main extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
         debugShowCheckedModeBanner: false,
-        // home: MultiBlocProvider(providers: [], child: null,),
-        home: SignUpScreen());
+        home: LoginScreen());
+        
   }
 }
