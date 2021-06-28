@@ -69,21 +69,22 @@ class _otpScreenState extends State<otpScreen> {
                   if (otp_value)
                     Column(
                       children: <Widget>[
-                        Card(
-                          shape: OutlineInputBorder(),
-                          elevation: 9,
-                          child: TextField(
+                        //Card(
+                          //shape: OutlineInputBorder(),
+                          //elevation: 9,
+                          //child: 
+                          TextField(
                             //focusNode: myFocusNode,
                             decoration: InputDecoration(
+                              border: OutlineInputBorder(),
                               labelText: 'Enter Your OTP',
                               labelStyle: rubikRegular.copyWith(
                                   color: AppColors.TextColor),
-                              border: InputBorder.none,
                               prefixIcon: Icon(Icons.textsms,
                                   color: AppColors.BorderColor),
                             ),
                           ),
-                        ),
+                        //),
                       ],
                     ),
                     SizedBox(
@@ -94,8 +95,7 @@ class _otpScreenState extends State<otpScreen> {
                       height: 50,
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            side: BorderSide(color: Colors.black, width: 2),
+                          shape: StadiumBorder(
                           ),
 
                           primary: AppColors.ButtonColor,

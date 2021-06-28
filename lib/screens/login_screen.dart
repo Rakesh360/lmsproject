@@ -53,16 +53,17 @@ class _LoginScreenState extends State<LoginScreen> {
                   lable: 'Password',
                   textEditingController: _passwordInput
                   ),*/
-              Card(
-                shape: OutlineInputBorder(),
-                elevation: 9,
-                child: TextField(
+              //Card(
+                //shape: OutlineInputBorder(),
+                //elevation: 9,
+                //child: 
+                TextField(
                   obscureText: !this._showPassword,
                   decoration: InputDecoration(
                     labelText: 'Password',
                     labelStyle:
                         rubikRegular.copyWith(color: AppColors.TextColor),
-                    border: InputBorder.none,
+                    border: OutlineInputBorder(),
                     prefixIcon: Icon(Icons.lock, color: AppColors.BorderColor),
                     suffixIcon: IconButton(
                       icon: Icon(
@@ -76,7 +77,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                 ),
-              ),
+              //),
               SizedBox(
                 height: 20,
               ),
@@ -112,14 +113,13 @@ class _LoginScreenState extends State<LoginScreen> {
                 height: 20,
               ),
               SizedBox(
-                width: 250,
+                width: 300,
                 height: 50,
                 child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       primary: AppColors.ButtonColor,
                       elevation: 10,
-                      shape: RoundedRectangleBorder(
-                        side: BorderSide(color: Colors.black, width: 2),
+                      shape: StadiumBorder(
                       ),
                     ),
                     onPressed: () {},

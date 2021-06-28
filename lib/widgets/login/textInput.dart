@@ -11,11 +11,13 @@ class TextInput extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
+    /*return Card(
         shape: OutlineInputBorder(),
         elevation: 9,
-        child: TextFormField(
-          
+
+*/
+        //child: TextFormField(
+          return TextFormField(
           validator: (value) {
             if (value!.isEmpty) {
               return "please enter $lable";
@@ -25,11 +27,14 @@ class TextInput extends StatelessWidget {
           // controller: textEditingController,
           onChanged: (value) {},
           decoration: InputDecoration(
-            border: InputBorder.none,
+            border: OutlineInputBorder(),
+            //border: InputBorder.none,
             prefixIcon: Icon(iconData, color: AppColors.BorderColor),
             labelText: lable,
             labelStyle: rubikRegular.copyWith(color: AppColors.TextColor),
           ),
-        ));
+        );
+        
+        //);
   }
 }
