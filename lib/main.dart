@@ -14,7 +14,7 @@ class Main extends StatelessWidget {
     return MaterialApp(
         debugShowCheckedModeBanner: false,
         // home: MultiBlocProvider(providers: [], child: null,),
-        //home: LoginScreen());
-        home: otpScreen());
+        home: LoginScreen());
+        //home: otpScreen());
   }
 }

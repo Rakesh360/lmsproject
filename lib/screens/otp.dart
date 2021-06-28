@@ -69,7 +69,28 @@ class _otpScreenState extends State<otpScreen> {
                   if (otp_value)
                     Column(
                       children: <Widget>[
-                        //Card(
+                        
+
+
+                        RichText(
+                            text: TextSpan(
+                              children: [
+                                /*WidgetSpan(
+                                  child: Icon(Icons.check_box_outline_blank),
+                                ),*/
+                                TextSpan(
+                                  text: 'OTP sent on your mobile.. ENTER HERE!',
+
+                                  style:
+                                      rubikRegular.copyWith(color: Colors.red),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                                //Card(
                           //shape: OutlineInputBorder(),
                           //elevation: 9,
                           //child: 
@@ -80,7 +101,7 @@ class _otpScreenState extends State<otpScreen> {
                               labelText: 'Enter Your OTP',
                               labelStyle: rubikRegular.copyWith(
                                   color: AppColors.TextColor),
-                              prefixIcon: Icon(Icons.textsms,
+                              prefixIcon: Icon(Icons.create,
                                   color: AppColors.BorderColor),
                             ),
                           ),
