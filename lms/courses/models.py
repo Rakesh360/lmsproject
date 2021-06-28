@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models.deletion import SET_NULL
 from base_rest.models import BaseModel
 from froala_editor.fields import FroalaField
 from django.utils.text import slugify 
@@ -12,6 +13,10 @@ class CourseDiscount(BaseModel):
 class CourseCategory(BaseModel):
     category_name = models.CharField(max_length=100)
     category_image = models.FileField(upload_to = 'category')
+
+    def __str__(self) -> str:
+        return self.category_name
+
 
 
 class Course(BaseModel):
@@ -36,7 +41,10 @@ class Course(BaseModel):
         super(Course, self).save(*args, **kwargs)
 
 
-
+    class Meta:
+        db_table = "course_subject"
+        verbose_name_plural = "Course Subject"
+        ordering = ['-created_at']
 
 
 class CourseChapters(BaseModel):
@@ -47,6 +55,11 @@ class CourseChapters(BaseModel):
 
     def __str__(self) -> str:
         return self.course.course_title
+    class Meta:
+        db_table = "course_chapters"
+        verbose_name_plural =  "Subject chapters"
+        ordering = ['-created_at']
+
 
 class Lessons(BaseModel):
     course_chapters = models.ForeignKey(CourseChapters , related_name='course_chapters' , on_delete=models.CASCADE)
@@ -55,5 +68,27 @@ class Lessons(BaseModel):
 
     can_watch = models.BooleanField(default=False)
     video_duration = models.CharField(max_length=30)
-   
 
+    def __str__(self) -> str:
+        return self.lesson_title
+   
+    class Meta:
+        db_table = "lesson_chapters"
+        verbose_name_plural =  "Lesson chapters"
+        ordering = ['-created_at']
+
+
+
+
+class CourseBundle(BaseModel):
+    course_bundle_category = models.ForeignKey(CourseCategory , on_delete=models.SET_NULL , null=True , blank=True)
+    course_bundle_name = models.CharField(max_length=100)
+    course_bundle_description = models.CharField(max_length=100)
+    course_bundle_image = models.ImageField(upload_to = 'courses')
+    courses = models.ManyToManyField(Course)
+    course_bundle_price = models.IntegerField()
+    course_bundle_discount = models.IntegerField(default = 0)
+    class Meta:
+        db_table = "course"
+        verbose_name_plural =  "Course Bundle"
+        ordering = ['-created_at']

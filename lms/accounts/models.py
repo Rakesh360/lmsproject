@@ -1,7 +1,7 @@
 from django.db import models
 from base_rest.models import *
 from django.contrib.auth.models import User
-
+from courses.models import *
 class NotificationManager(BaseModel):
     fcm_token = models.TextField()
 
@@ -36,4 +36,5 @@ class Student(models.Model):
     last_logout_time = models.DateTimeField(null=True, blank=True)
     
 
-
+    def __str__(self) -> str:
+        return f'{self.student_name} | {self.email} | {self.phone_number}' 
