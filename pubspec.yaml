@@ -30,6 +30,8 @@ dependencies:
   cupertino_icons: ^1.0.2
   flutter_bloc: ^7.0.1
   otp_count_down: ^1.0.6
+  equatable: ^2.0.3
+  http: ^0.12.2
 
 dev_dependencies:
   flutter_test:
