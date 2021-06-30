@@ -10,8 +10,18 @@ class CourseCategoryAdmin(admin.ModelAdmin):
     pass
 
 
+@admin.register(Lessons)
+class LessonsAdmin(admin.ModelAdmin):
+    pass
 
 
+@admin.register(SubjectChapters)
+class SubjectChaptersAdmin(admin.ModelAdmin):
+    pass
+
+@admin.register(Subject)
+class SubjectAdmin(admin.ModelAdmin):
+    pass
 
 
 

@@ -12,7 +12,7 @@ from rest_framework.authtoken.models import Token
 
 from .serializers import (  LoginSerializer,
                             PasswordSerializer,
-                            UserSerializer , ForgetPasswordSerializer)
+                            StudentSerializer,RegisterStudentSerializer , ForgetPasswordSerializer)
 from django.contrib.auth import get_user_model
 
 
@@ -25,7 +25,7 @@ class AccountMixin:
             if data.get('email') is None or data.get('password') is None:
                 return Response( {'staus' :400 , 'message' : 'email and password both are requied' , 'errors' : []})
             
-            student = Student.objects.filter(user__email = data.get('email'))
+            student = Student.objects.filter(email = data.get('email'))
             if not student.exists():
                 return Response( {'staus' :400 , 'message' : 'account not found' , 'errors' : []})
             
@@ -34,18 +34,26 @@ class AccountMixin:
 
 
 
-            user_obj = authenticate(username = data.get('email') , password = data.get('password'))
+            student_obj = authenticate(username = data.get('email') , password = data.get('password'))
 
-            if not user_obj:
+            if not student_obj:
                 return Response( {'staus' :400 , 'message' : 'invalid password' , 'errors' : []})
 
-            token,_ = Token.objects.get_or_create(user=user_obj)
-
-            return Response({'staus' :200 , 'message' : 'login successfull' , 'token' :str(token) })
+            token,_ = Token.objects.get_or_create(user=student_obj)
+            
+            student_serializer = StudentSerializer(student_obj)
+            return Response({
+                'staus' :200,
+                'message' : 'login successfull',
+                'token' :str(token), 
+                'student' : student_serializer.data })
 
 
        except Exception as e:
            print(e)
+    
+       return Response({'staus' :400 , 'message' : 'Something went wrong' })
+
     
     
     @action(detail=False, methods=['post'] , url_path="reset" ,url_name="reset")

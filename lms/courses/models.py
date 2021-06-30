@@ -1,7 +1,5 @@
 from django.db import models
 from base_rest.models import BaseModel
-from froala_editor.fields import FroalaField
-from django.utils.text import slugify 
 
 
 
@@ -21,14 +19,10 @@ class CourseCategory(BaseModel):
 class Subject(BaseModel):
     subject_category = models.ForeignKey(CourseCategory , on_delete=models.CASCADE , null=True , blank=True)
     subject_title = models.CharField(max_length=100)
-    subject_slug = models.SlugField(null=True , blank =True , unique=True)
     order = models.IntegerField()
+    
     def __str__(self) -> str:
-        return self.course_title
-
-    def save(self, *args, **kwargs):
-        self.slug = slugify(self.course_title)
-        super(Subject, self).save(*args, **kwargs)
+        return self.subject_title
 
 
     class Meta:
@@ -40,6 +34,9 @@ class Subject(BaseModel):
 class SubjectChapters(BaseModel):
     subject = models.ForeignKey(Subject , related_name='subject' , on_delete=models.CASCADE)
     chapter_title = models.CharField(max_length=100 , null=True , blank=True)
+
+    def __str__(self) -> str:
+        return self.chapter_title
 
     class Meta:
         db_table = "course_chapters"
@@ -72,7 +69,7 @@ class Course(BaseModel):
     course_bundle_name = models.CharField(max_length=100)
     course_bundle_description = models.TextField()
     course_bundle_image = models.ImageField(upload_to = 'courses')
-    courses = models.ManyToManyField(Subject)
+    subjects = models.ManyToManyField(Subject)
     course_bundle_price = models.IntegerField()
     course_bundle_discount = models.IntegerField(default = 0)
     is_active = models.BooleanField(default=True)

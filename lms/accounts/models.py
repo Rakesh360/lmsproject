@@ -22,6 +22,7 @@ class Student(User):
     pincode = models.CharField(max_length=100 , null=True , blank=True)
     accepted_terms = models.BooleanField(default=True)
     
+    course = models.CharField(max_length=100 , default='')
     otp = models.CharField(max_length=8 , null=True , blank=True)
     is_phone_verified = models.BooleanField(default=False)
     is_email_verified = models.BooleanField(default=False)

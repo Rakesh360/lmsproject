@@ -54,12 +54,9 @@ class RegisterStudentSerializer(serializers.Serializer):
         fields = [ 'student_name',  'phone_number',  'whatsapp_number',  'course',  'date_of_birth',  'gender',  'state',  'district',  'pincode', ]
         
     def create(self , validated_data):
-        user_obj = User(email= validated_data['email'] , username = validated_data['email'])
-        user_obj.set_password(validated_data['password'])
-        user_obj.save()
-
         student_obj = Student.objects.create(
-            user = user_obj,
+            email= validated_data['email'],
+            username = validated_data['email'],
             student_name = validated_data['student_name'],
             phone_number = validated_data['phone_number'],
             whatsapp_number = validated_data['whatsapp_number'],
@@ -71,6 +68,7 @@ class RegisterStudentSerializer(serializers.Serializer):
             district = validated_data['district'],
           
             pincode = validated_data['pincode'])
+        student_obj.set_password(validated_data['password'])
 
         student_obj.save()
         
@@ -84,23 +82,21 @@ class RegisterStudentSerializer(serializers.Serializer):
         print(email)
     
     
-class UserSerializer(serializers.ModelSerializer):
-    email = serializers.EmailField(
-        validators=[UniqueValidator(queryset=User.objects.all())]
-    )
-    
+class StudentSerializer(serializers.ModelSerializer):
+    country = serializers.SerializerMethodField()
 
     class Meta:
         model = User
-        fields = '__all__'
+        fields = ['email', 'country']
+
+    
+    def get_country(self, obj):
+        print(obj)
+        return "Nigeria"
+
+
         
     
-    def create(self , validated_data):
-        print(validated_data)
-        user = User.objects.create(email = validated_data['email'])
-        user.set_password(validated_data['password'])
-        user.save()
-        return user
     
         
 

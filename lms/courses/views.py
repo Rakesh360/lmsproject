@@ -15,5 +15,5 @@ class CoursesView(APIView):
         course_objs = Course.objects.all()
         print(course_objs)
         serializer = CourseSerializer(course_objs , many=True)
-        print(serializer)
-        return Response(serializer.data)
+     
+        return Response({'status' : 200 , 'data' :serializer.data})
