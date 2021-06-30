@@ -2,6 +2,7 @@ from django.db import models
 from base_rest.models import *
 from django.contrib.auth.models import User
 from courses.models import *
+
 class NotificationManager(BaseModel):
     fcm_token = models.TextField()
 
