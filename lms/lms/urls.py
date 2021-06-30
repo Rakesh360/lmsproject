@@ -25,7 +25,7 @@ urlpatterns = [
     path('api/accounts/' , include('accounts.urls')),
     path('api/courses/' , include('courses.urls')),
     path('jet/', include('jet.urls', 'jet')),  # Django JET URLS
-    path('admin/', admin.site.urls),
+    path('', admin.site.urls),
 ]
 if settings.DEBUG:
         urlpatterns += static(settings.MEDIA_URL,

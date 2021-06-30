@@ -26,7 +26,7 @@ class LessonsSerializers(serializers.ModelSerializer):
 class CourseChaptersSerializers(serializers.ModelSerializer):
     course_lessons = LessonsSerializers(source ="course_chapters" , many=True)
     class Meta:
-        model = CourseChapters
+        model = SubjectChapters
         exclude = ['created_at', 'updated_at']
 
 

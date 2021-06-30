@@ -9,26 +9,18 @@ class CourseDiscountAdmin(admin.ModelAdmin):
 class CourseCategoryAdmin(admin.ModelAdmin):
     pass
 
-class LessonsAdmin(admin.StackedInline):
-    model = Lessons
 
 
-@admin.register(CourseChapters)
-class CourseChaptersAdmin(admin.ModelAdmin):
-    model = CourseChapters
-    inlines = [LessonsAdmin]
+
+
+
 
 
 
 @admin.register(Course)
 class CourseAdmin(admin.ModelAdmin):
-    list_display = ['course_category' ,'course_title', 'course_price', 'course_level']
-    ordering = ('-created_at', )
-
-
-@admin.register(CourseBundle)
-class CourseBundleAdmin(admin.ModelAdmin):
-    list_display = ['course_bundle_name','course_bundle_price','course_bundle_discount']
-    # formfield_overrides = {
-    #     models.ManyToManyField: {'widget': CheckboxSelectMultiple},
-    # }
+    list_display = [
+        'course_bundle_category',
+        'is_active',
+        'course_bundle_name','course_bundle_price','course_bundle_discount']
+    
