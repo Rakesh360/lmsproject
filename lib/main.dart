@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lmsproject/screens/login_screen.dart';
-import 'package:lmsproject/screens/otp.dart';
+//import 'package:lmsproject/screens/otp.dart';
 
 void main() {
   runApp(Main());
@@ -12,8 +12,8 @@ class Main extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        home: LoginScreen());
-        
+      debugShowCheckedModeBanner: false,
+      home: LoginScreen(),
+    );
   }
 }
