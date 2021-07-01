@@ -1,0 +1,254 @@
+[{
+    "model": "courses.coursecategory",
+    "pk": "e21e4d67-eff2-4a1e-89d2-58243efd7199",
+    "fields": {
+        "created_at": "2021-07-01T08:29:02.778Z",
+        "updated_at": "2021-07-01T08:29:02.778Z",
+        "category_name": "BCA",
+        "category_image": "category/Screenshot_from_2021-06-09_11-47-10.png"
+    }
+}, {
+    "model": "courses.coursecategory",
+    "pk": "e5eb36ce-3f33-4715-93f0-9f7e0d140042",
+    "fields": {
+        "created_at": "2021-07-01T08:28:56.191Z",
+        "updated_at": "2021-07-01T08:28:56.191Z",
+        "category_name": "MCA",
+        "category_image": "category/Screenshot_from_2021-06-09_11-48-51.png"
+    }
+}, {
+    "model": "courses.subject",
+    "pk": "4c51ba4f-2a55-4841-a19e-1b3ead18190c",
+    "fields": {
+        "created_at": "2021-07-01T08:31:16.801Z",
+        "updated_at": "2021-07-01T08:31:16.801Z",
+        "subject_category": "e5eb36ce-3f33-4715-93f0-9f7e0d140042",
+        "subject_title": "Java",
+        "order": 2
+    }
+}, {
+    "model": "courses.subject",
+    "pk": "b73a6160-7693-4bbf-adf7-c52e7a2c7692",
+    "fields": {
+        "created_at": "2021-07-01T08:31:07.656Z",
+        "updated_at": "2021-07-01T08:31:07.656Z",
+        "subject_category": "e5eb36ce-3f33-4715-93f0-9f7e0d140042",
+        "subject_title": "Python",
+        "order": 1
+    }
+}, {
+    "model": "courses.subject",
+    "pk": "cf728018-1ec9-45dc-9c2e-1ca2af048e11",
+    "fields": {
+        "created_at": "2021-07-01T08:31:25.224Z",
+        "updated_at": "2021-07-01T08:31:25.225Z",
+        "subject_category": "e5eb36ce-3f33-4715-93f0-9f7e0d140042",
+        "subject_title": "Javascript",
+        "order": 3
+    }
+}, {
+    "model": "courses.subject",
+    "pk": "ee8c870d-6bc5-4209-bd16-5bd81b01ab41",
+    "fields": {
+        "created_at": "2021-07-01T08:54:12.295Z",
+        "updated_at": "2021-07-01T08:54:12.295Z",
+        "subject_category": null,
+        "subject_title": "Reasoning",
+        "order": 0
+    }
+}, {
+    "model": "courses.subjectchapters",
+    "pk": "070e3d13-549d-479c-8b5a-91e43451bc27",
+    "fields": {
+        "created_at": "2021-07-01T08:54:37.519Z",
+        "updated_at": "2021-07-01T08:54:37.519Z",
+        "subject": "ee8c870d-6bc5-4209-bd16-5bd81b01ab41",
+        "chapter_title": "Coding Decosding"
+    }
+}, {
+    "model": "courses.subjectchapters",
+    "pk": "319386dc-e050-4ec8-8c87-ad62749a6f33",
+    "fields": {
+        "created_at": "2021-07-01T08:31:56.393Z",
+        "updated_at": "2021-07-01T08:31:56.393Z",
+        "subject": "b73a6160-7693-4bbf-adf7-c52e7a2c7692",
+        "chapter_title": "Data types"
+    }
+}, {
+    "model": "courses.subjectchapters",
+    "pk": "91f7aeac-49c0-4e69-9178-c1506a359a28",
+    "fields": {
+        "created_at": "2021-07-01T08:31:47.784Z",
+        "updated_at": "2021-07-01T08:31:47.784Z",
+        "subject": "b73a6160-7693-4bbf-adf7-c52e7a2c7692",
+        "chapter_title": "Introduction to Python"
+    }
+}, {
+    "model": "courses.subjectchapters",
+    "pk": "9a144051-103f-4f18-8fad-6f85266eb7c7",
+    "fields": {
+        "created_at": "2021-07-01T08:32:13.715Z",
+        "updated_at": "2021-07-01T08:32:13.715Z",
+        "subject": "4c51ba4f-2a55-4841-a19e-1b3ead18190c",
+        "chapter_title": "Thread"
+    }
+}, {
+    "model": "courses.subjectchapters",
+    "pk": "9b3a3662-b7a9-4333-b93d-0e5fd49cde20",
+    "fields": {
+        "created_at": "2021-07-01T08:54:50.058Z",
+        "updated_at": "2021-07-01T08:54:50.058Z",
+        "subject": "ee8c870d-6bc5-4209-bd16-5bd81b01ab41",
+        "chapter_title": "Calendar"
+    }
+}, {
+    "model": "courses.subjectchapters",
+    "pk": "a970371d-ed90-4919-bbfe-08c1c238d240",
+    "fields": {
+        "created_at": "2021-07-01T08:32:07.370Z",
+        "updated_at": "2021-07-01T08:32:07.370Z",
+        "subject": "cf728018-1ec9-45dc-9c2e-1ca2af048e11",
+        "chapter_title": "Fetch API"
+    }
+}, {
+    "model": "courses.subjectchapters",
+    "pk": "b4b130de-7b5c-48e1-9cf0-04f5abc95dcf",
+    "fields": {
+        "created_at": "2021-07-01T08:54:27.787Z",
+        "updated_at": "2021-07-01T08:54:27.788Z",
+        "subject": "ee8c870d-6bc5-4209-bd16-5bd81b01ab41",
+        "chapter_title": "Blood relation"
+    }
+}, {
+    "model": "courses.lessons",
+    "pk": "249ed6a2-1945-4268-abe1-114691e9ec58",
+    "fields": {
+        "created_at": "2021-07-01T08:33:56.393Z",
+        "updated_at": "2021-07-01T08:33:56.393Z",
+        "subject_chapters": "9a144051-103f-4f18-8fad-6f85266eb7c7",
+        "lesson_title": "In this video we will learn thread",
+        "lesson_type": "Video",
+        "video_uploaded_on": "Vimeo",
+        "video_link": "https://www.youtube.com/watch?v=Mb-5gXDinqA",
+        "document": "",
+        "is_free": false
+    }
+}, {
+    "model": "courses.lessons",
+    "pk": "4936acab-1763-4bc8-9566-0a983efea334",
+    "fields": {
+        "created_at": "2021-07-01T08:55:59.624Z",
+        "updated_at": "2021-07-01T08:55:59.624Z",
+        "subject_chapters": "9b3a3662-b7a9-4333-b93d-0e5fd49cde20",
+        "lesson_title": "Calendar lesson part 2",
+        "lesson_type": "Video + Document",
+        "video_uploaded_on": "Youtube",
+        "video_link": "https://www.enterprisedb.com/postgres-tutorials/how-use-postgresql-django",
+        "document": "Screenshot_from_2021-06-09_11-48-51.png",
+        "is_free": false
+    }
+}, {
+    "model": "courses.lessons",
+    "pk": "5327b350-74ed-490b-bdec-29e2f74cbdb9",
+    "fields": {
+        "created_at": "2021-07-01T08:33:13.329Z",
+        "updated_at": "2021-07-01T08:33:13.329Z",
+        "subject_chapters": "91f7aeac-49c0-4e69-9178-c1506a359a28",
+        "lesson_title": "What is Python",
+        "lesson_type": "Video",
+        "video_uploaded_on": "Youtube",
+        "video_link": "https://www.youtube.com/watch?v=Mb-5gXDinqA",
+        "document": "",
+        "is_free": false
+    }
+}, {
+    "model": "courses.lessons",
+    "pk": "82d92aae-2616-4e71-8938-685ae3eb8b19",
+    "fields": {
+        "created_at": "2021-07-01T08:33:40.667Z",
+        "updated_at": "2021-07-01T08:33:40.668Z",
+        "subject_chapters": "91f7aeac-49c0-4e69-9178-c1506a359a28",
+        "lesson_title": "Python cheet sheet",
+        "lesson_type": "Video + Document",
+        "video_uploaded_on": "Youtube",
+        "video_link": "https://www.youtube.com/watch?v=Mb-5gXDinqA",
+        "document": "cap-lead-new.pdf",
+        "is_free": false
+    }
+}, {
+    "model": "courses.lessons",
+    "pk": "8556ca74-950f-4203-91af-a87df455db63",
+    "fields": {
+        "created_at": "2021-07-01T08:56:20.310Z",
+        "updated_at": "2021-07-01T08:56:20.310Z",
+        "subject_chapters": "b4b130de-7b5c-48e1-9cf0-04f5abc95dcf",
+        "lesson_title": "Blood relation part 1",
+        "lesson_type": "Video",
+        "video_uploaded_on": "Vimeo",
+        "video_link": "https://www.enterprisedb.com/postgres-tutorials/how-use-postgresql-django",
+        "document": "",
+        "is_free": false
+    }
+}, {
+    "model": "courses.lessons",
+    "pk": "e9a367d1-0c3d-4873-b6e9-97d2d3ed5506",
+    "fields": {
+        "created_at": "2021-07-01T08:55:36.788Z",
+        "updated_at": "2021-07-01T08:55:36.788Z",
+        "subject_chapters": "9b3a3662-b7a9-4333-b93d-0e5fd49cde20",
+        "lesson_title": "Introduction to calendar tips and tricks",
+        "lesson_type": "Video",
+        "video_uploaded_on": "Youtube",
+        "video_link": "https://www.enterprisedb.com/postgres-tutorials/how-use-postgresql-django",
+        "document": "",
+        "is_free": false
+    }
+}, {
+    "model": "courses.course",
+    "pk": "69034bae-8abf-45ee-8abe-f4e6e13b7dee",
+    "fields": {
+        "created_at": "2021-07-01T08:57:18.485Z",
+        "updated_at": "2021-07-01T08:57:18.486Z",
+        "course_bundle_category": null,
+        "course_bundle_name": "BA",
+        "course_bundle_description": "BA Course for students.",
+        "course_bundle_image": "courses/Screenshot_from_2021-06-09_11-47-10.png",
+        "course_bundle_price": 5100,
+        "course_bundle_discount": 10000,
+        "is_active": true,
+        "course_validity": "2021-12-16",
+        "subjects": ["ee8c870d-6bc5-4209-bd16-5bd81b01ab41"]
+    }
+}, {
+    "model": "courses.course",
+    "pk": "aab15455-30a4-4e04-b494-7ed85a709482",
+    "fields": {
+        "created_at": "2021-07-01T08:35:16.998Z",
+        "updated_at": "2021-07-01T08:35:16.998Z",
+        "course_bundle_category": "e5eb36ce-3f33-4715-93f0-9f7e0d140042",
+        "course_bundle_name": "MCA Topper",
+        "course_bundle_description": "MCA Topper",
+        "course_bundle_image": "courses/Screenshot_from_2021-06-09_11-48-01.png",
+        "course_bundle_price": 2999,
+        "course_bundle_discount": 0,
+        "is_active": true,
+        "course_validity": "2021-11-18",
+        "subjects": ["cf728018-1ec9-45dc-9c2e-1ca2af048e11", "4c51ba4f-2a55-4841-a19e-1b3ead18190c", "b73a6160-7693-4bbf-adf7-c52e7a2c7692"]
+    }
+}, {
+    "model": "courses.course",
+    "pk": "fc382462-a0f0-4ab5-848e-8812cf55368f",
+    "fields": {
+        "created_at": "2021-07-01T08:36:48.656Z",
+        "updated_at": "2021-07-01T08:36:48.656Z",
+        "course_bundle_category": "e21e4d67-eff2-4a1e-89d2-58243efd7199",
+        "course_bundle_name": "BCA TOPPER",
+        "course_bundle_description": "BCA TOPPER",
+        "course_bundle_image": "courses/Screenshot_from_2021-06-09_11-48-01_cnt7SP0.png",
+        "course_bundle_price": 1999,
+        "course_bundle_discount": 5999,
+        "is_active": true,
+        "course_validity": "2021-09-17",
+        "subjects": ["b73a6160-7693-4bbf-adf7-c52e7a2c7692"]
+    }
+}]

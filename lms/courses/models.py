@@ -19,7 +19,7 @@ class CourseCategory(BaseModel):
 class Subject(BaseModel):
     subject_category = models.ForeignKey(CourseCategory , on_delete=models.CASCADE , null=True , blank=True)
     subject_title = models.CharField(max_length=100)
-    order = models.IntegerField()
+    order = models.IntegerField(default=0)
     
     def __str__(self) -> str:
         return self.subject_title
