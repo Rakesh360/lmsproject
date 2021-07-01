@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'froala_editor',
     'orders',
+    'base_rest',
     
 ]
 
