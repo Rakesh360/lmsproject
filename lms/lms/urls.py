@@ -24,6 +24,8 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 urlpatterns = [
     path('api/accounts/' , include('accounts.urls')),
     path('api/courses/' , include('courses.urls')),
+    path('api/order/' , include('orders.urls')),
+
     path('jet/', include('jet.urls', 'jet')),  # Django JET URLS
     path('', admin.site.urls),
 ]

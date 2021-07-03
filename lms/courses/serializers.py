@@ -1,11 +1,5 @@
 
-from django.contrib.auth import models
-from django.db.models import fields
-from accounts.models import Student
 from rest_framework import serializers
-from django.contrib.auth.models import User
-from rest_framework.validators import UniqueValidator
-import uuid
 from base_rest.utils import *
 from .models import *
 
