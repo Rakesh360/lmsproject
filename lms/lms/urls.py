@@ -25,7 +25,6 @@ urlpatterns = [
     path('api/accounts/' , include('accounts.urls')),
     path('api/courses/' , include('courses.urls')),
     path('api/order/' , include('orders.urls')),
-
     path('jet/', include('jet.urls', 'jet')),  # Django JET URLS
     path('admin/', admin.site.urls),
 ]
