@@ -80,3 +80,4 @@ class Course(BaseModel):
         db_table = "course"
         verbose_name_plural =  "Course Bundle"
         ordering = ['-created_at']
+

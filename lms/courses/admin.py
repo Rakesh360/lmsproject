@@ -10,20 +10,35 @@ class CourseCategoryAdmin(admin.ModelAdmin):
     pass
 
 
-@admin.register(Lessons)
-class LessonsAdmin(admin.ModelAdmin):
-    pass
+
+class LessonsAdmin(admin.StackedInline):
+    model = Lessons
 
 
 @admin.register(SubjectChapters)
 class SubjectChaptersAdmin(admin.ModelAdmin):
-    pass
+    inlines = [ LessonsAdmin ]
+    list_display = ['chapter_title' , 'subject', 'total_lessons' , 'created_at' , 'updated_at']
+
+    def total_lessons(self , obj):
+        return Lessons.objects.filter(subject_chapters = obj).count()
+
+class SubjectChapterAdmin(admin.StackedInline):
+    model = SubjectChapters
 
 @admin.register(Subject)
 class SubjectAdmin(admin.ModelAdmin):
+    inlines = [ SubjectChapterAdmin ]
+    list_display = ['subject_title' ,'subject_category' , 'total_chapters' , 'created_at' , 'updated_at']
+
+    def total_chapters(self , obj):
+        return SubjectChapters.objects.filter(subject = obj).count()
+
+
+
+@admin.register(Lessons)
+class LessonAdmin(admin.ModelAdmin):
     pass
-
-
 
 
 
