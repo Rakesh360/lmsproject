@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:lmsproject/screens/device_location.dart';
+import 'package:lmsproject/screens/home_screen.dart';
 import 'package:lmsproject/screens/login_screen.dart';
 import 'package:lmsproject/screens/otp.dart';
+
 import 'package:lmsproject/screens/signup_screen.dart';
 
 void main() {
@@ -13,6 +14,6 @@ class Main extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(debugShowCheckedModeBanner: false, home: LoginScreen());
+    return MaterialApp(debugShowCheckedModeBanner: false, home: Profile());
   }
 }

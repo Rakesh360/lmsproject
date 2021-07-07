@@ -19,33 +19,6 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       yield* mapLoginWithContactState(event);
     }
   }
-
-  //  Stream<LoginState> LoginInitial(
-
-  //   LoginState state,
-  //  CircularProgressIndicator(),
-
-  //  )
-  //   if (event is LoginWithContactEvent) {
-  //     String? msg;
-  //     try {
-  //       if (event.phone!.contains('9780654320')) {
-  //         msg = event.password;
-  //         yield LoginSuccess(userName: msg);
-  //       } else {
-  //         yield LoginFailure(message: AppConstants.noUser
-
-  //         );
-  //       }
-  //     } catch (e) {
-  //       yield LoginFailure(message: AppConstants.inValidMessage + ' \$e ');
-  //     }
-  //   }
-  //   if(event is LoginFormSubmitted){
-  //      Profile();
-  //   }
-  // }
-
 }
 
 Stream<LoginState> mapLoginInitialState(LoginInitialEvent event) async* {
