@@ -22,6 +22,7 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 
 urlpatterns = [
+    path('' , include('dashboard.urls')),
     path('api/accounts/' , include('accounts.urls')),
     path('api/courses/' , include('courses.urls')),
     path('api/order/' , include('orders.urls')),

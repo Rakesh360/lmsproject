@@ -7,4 +7,11 @@ psql --host=lmsdatabase.c8hpn1snsqxi.ap-south-1.rds.amazonaws.com --port=5432 --
 ./manage.py dumpdata > db.json
 
 # FOR IMPORTING DATA 
-./manage.py loaddata 
+./manage.py loaddata FILE_NAME
+
+
+sudo systemctl daemon-reload
+sudo systemctl restart gunicorn
+sudo systemctl restart nginx
+
+

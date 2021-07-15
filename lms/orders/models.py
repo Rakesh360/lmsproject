@@ -14,3 +14,4 @@ class Order(BaseModel):
     razorpay_payment_signature = models.CharField(max_length=100 ,  null = True , blank=True)
     order_creation_date_time = models.DateTimeField(auto_now_add=True)
     order_updation_date_time = models.DateTimeField(auto_now = True)
+    

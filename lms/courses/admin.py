@@ -49,3 +49,5 @@ class CourseAdmin(admin.ModelAdmin):
         'is_active',
         'course_bundle_name','course_bundle_price','course_bundle_discount']
     
+
+admin.site.register(LiveStream)

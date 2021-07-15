@@ -1,5 +1,6 @@
 from django.db import models
 from base_rest.models import BaseModel
+from froala_editor.fields import FroalaField
 
 
 
@@ -67,7 +68,7 @@ class Lessons(BaseModel):
 class Course(BaseModel):
     course_bundle_category = models.ForeignKey(CourseCategory , on_delete=models.SET_NULL , null=True , blank=True)
     course_bundle_name = models.CharField(max_length=100)
-    course_bundle_description = models.TextField()
+    course_bundle_description = FroalaField()
     course_bundle_image = models.ImageField(upload_to = 'courses')
     subjects = models.ManyToManyField(Subject)
     course_bundle_price = models.IntegerField()
@@ -81,3 +82,8 @@ class Course(BaseModel):
         verbose_name_plural =  "Course Bundle"
         ordering = ['-created_at']
 
+
+
+class LiveStream(BaseModel):
+    live_stream_link = models.TextField()
+    

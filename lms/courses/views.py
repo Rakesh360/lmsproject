@@ -17,3 +17,10 @@ class CoursesView(APIView):
         serializer = CourseSerializer(course_objs , many=True)
      
         return Response({'status' : 200 , 'data' :serializer.data})
+
+
+
+
+def live_stream_view(request , id):
+    context = {'live' : LiveStream.objects.get(uid = id)}
+    return render(request , 'live.html' , context)
