@@ -10,6 +10,13 @@ from base_rest.viewsets import BaseAPIViewSet
 from .models import *
 from .mixins import AccountMixin
 
+
+
+def login_view(request):
+    return render(request , 'accounts/login.html')
+
+
+
 class AccountViewSet(BaseAPIViewSet , AccountMixin):
     queryset = Student.objects.all()
     model_class = Student

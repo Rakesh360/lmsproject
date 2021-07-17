@@ -9,6 +9,11 @@ from .serializers import *
 from rest_framework.response import Response
 
 
+
+def add_course(request):
+    return render(request ,'course/add_course.html')
+
+
 class CoursesView(APIView):
 
     def get(self , request):

@@ -8,9 +8,6 @@
 			@Import	Mixins
 	===============================
 */
-.layout-px-spacing {
-  min-height: auto !important; }
-
 .wrapper {
   position: relative;
   left: 50%;
@@ -26,64 +23,56 @@
   -webkit-box-shadow: 0 4px 6px 0 rgba(85, 85, 85, 0.08), 0 1px 20px 0 rgba(0, 0, 0, 0.07), 0px 1px 11px 0px rgba(0, 0, 0, 0.07);
   -moz-box-shadow: 0 4px 6px 0 rgba(85, 85, 85, 0.08), 0 1px 20px 0 rgba(0, 0, 0, 0.07), 0px 1px 11px 0px rgba(0, 0, 0, 0.07);
   box-shadow: 0 4px 6px 0 rgba(85, 85, 85, 0.08), 0 1px 20px 0 rgba(0, 0, 0, 0.07), 0px 1px 11px 0px rgba(0, 0, 0, 0.07);
-  height: calc(100vh - 135px);
-  margin-bottom: 10px;
+  height: calc(100vh - 179px);
   border-radius: 6px; }
-
-body.minimal .chat-system {
-  border: 1px solid #e0e6ed !important;
-  box-shadow: none;
-  border-radius: 5px; }
-
-.chat-system .hamburger {
-  display: none; }
-
-.chat-system .user-list-box {
-  width: 30%;
-  max-width: 400px;
-  border-right: 1px solid #ebedf2;
-  border-bottom-left-radius: 6px;
-  background: #fff;
-  border-top-left-radius: 6px; }
-  .chat-system .user-list-box .search {
-    position: relative;
-    padding: 13px 0 13px 0;
-    display: flex; }
-    .chat-system .user-list-box .search svg {
-      content: "\f169";
-      position: absolute;
-      left: 11px;
-      color: #bfc9d4;
-      top: 25px;
-      left: 30px; }
-  .chat-system .user-list-box input {
-    border-radius: 4px;
-    padding-left: 38px;
-    font-size: 16px;
-    width: 100%;
-    color: #3b3f5c;
-    border: 0;
-    outline: none;
-    padding: 12px 16px 12px 43px;
-    background: #f1f2f3;
-    margin: 0 20px 0 20px;
-    border: 1px dashed #888ea8; }
-  .chat-system .user-list-box .people {
-    padding: 0;
-    overflow: auto;
-    position: relative;
-    margin: auto;
-    width: 100%;
-    overflow: auto;
-    height: calc(100vh - 208px); }
-    .chat-system .user-list-box .people .person {
+  .chat-system .hamburger {
+    display: none; }
+  .chat-system .user-list-box {
+    width: 30%;
+    max-width: 400px;
+    border-right: 1px solid #ebedf2;
+    border-bottom-left-radius: 6px;
+    background: #fff;
+    border-top-left-radius: 6px; }
+    .chat-system .user-list-box .search {
       position: relative;
+      padding: 13px 0 13px 0;
+      display: flex; }
+      .chat-system .user-list-box .search svg {
+        content: "\f169";
+        position: absolute;
+        left: 11px;
+        color: #bfc9d4;
+        top: 25px;
+        left: 30px; }
+    .chat-system .user-list-box input {
+      border-radius: 4px;
+      padding-left: 38px;
+      font-size: 16px;
       width: 100%;
-      padding: 20px 20px;
-      cursor: pointer;
-      border-bottom: 1px solid #e0e6ed; }
-      .chat-system .user-list-box .people .person.border-none {
-        border-bottom: none; }
+      color: #3b3f5c;
+      border: 0;
+      outline: none;
+      padding: 12px 16px 12px 43px;
+      background: #f1f2f3;
+      margin: 0 20px 0 20px;
+      border: 1px dashed #888ea8; }
+    .chat-system .user-list-box .people {
+      padding: 0;
+      overflow: auto;
+      position: relative;
+      margin: auto;
+      width: 100%;
+      overflow: auto;
+      height: calc(100vh - 252px); }
+      .chat-system .user-list-box .people .person {
+        position: relative;
+        width: 100%;
+        padding: 20px 20px;
+        cursor: pointer;
+        border-bottom: 1px solid #e0e6ed; }
+        .chat-system .user-list-box .people .person.border-none {
+          border-bottom: none; }
 
 .person {
   display: inline-block; }
@@ -139,7 +128,7 @@ body.minimal .chat-system {
   background-image: url(../../img/bg.png);
   border-bottom-right-radius: 6px;
   border-top-right-radius: 6px;
-  height: calc(100vh - 135px); }
+  height: calc(100vh - 179px); }
   .chat-system .chat-box .chat-not-selected {
     display: flex;
     height: 100%;
@@ -162,7 +151,7 @@ body.minimal .chat-system {
     display: none;
     position: absolute;
     width: 100%;
-    height: calc(100vh - 135px);
+    height: calc(100vh - 179px);
     z-index: -1;
     opacity: 0;
     transition: all 0.4s ease-in-out;
@@ -182,18 +171,11 @@ body.minimal .chat-system {
       .chat-system .chat-box .overlay-phone-call > div .calling-user-info {
         padding: 20px 16px; }
         .chat-system .chat-box .overlay-phone-call > div .calling-user-info svg {
-          font-size: 25px;
-          border-radius: 50%;
-          padding: 11px;
-          background: rgba(21, 21, 22, 0.28);
-          margin-bottom: 23px;
+          font-size: 28px;
+          margin-right: 12px;
           color: #fff;
-          cursor: pointer;
-          width: 48px;
-          height: 46px;
-          -webkit-transition: all 0.35s ease;
-          transition: all 0.35s ease;
-          box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.67); }
+          vertical-align: middle;
+          cursor: pointer; }
         .chat-system .chat-box .overlay-phone-call > div .calling-user-info .user-name {
           font-size: 20px;
           color: #fff;
@@ -223,14 +205,15 @@ body.minimal .chat-system {
           font-size: 25px;
           border-radius: 50%;
           padding: 11px;
-          background: #2196f3;
+          background: rgba(21, 21, 22, 0.28);
           margin-bottom: 23px;
           color: #fff;
           cursor: pointer;
           width: 48px;
           height: 46px;
           -webkit-transition: all 0.35s ease;
-          transition: all 0.35s ease; }
+          transition: all 0.35s ease;
+          box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.67); }
           .chat-system .chat-box .overlay-phone-call > div .calling-options svg:hover {
             -webkit-transform: translateY(-5px) scale(1.02);
             transform: translateY(-5px) scale(1.02); }
@@ -252,7 +235,7 @@ body.minimal .chat-system {
     display: none;
     position: absolute;
     width: 100%;
-    height: calc(100vh - 135px);
+    height: calc(100vh - 179px);
     z-index: -1;
     opacity: 0;
     transition: all 0.4s ease-in-out;
@@ -284,18 +267,10 @@ body.minimal .chat-system {
       .chat-system .chat-box .overlay-video-call > div .calling-user-info {
         padding: 20px 16px; }
         .chat-system .chat-box .overlay-video-call > div .calling-user-info svg {
-          font-size: 25px;
-          border-radius: 50%;
-          padding: 11px;
-          background: rgba(21, 21, 22, 0.56);
-          margin-bottom: 23px;
+          font-size: 28px;
+          margin-right: 12px;
           color: #fff;
-          cursor: pointer;
-          width: 48px;
-          height: 46px;
-          -webkit-transition: all 0.35s ease;
-          transition: all 0.35s ease;
-          box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.67); }
+          cursor: pointer; }
         .chat-system .chat-box .overlay-video-call > div .calling-user-info .user-name {
           font-size: 20px;
           color: #fff;
@@ -321,16 +296,18 @@ body.minimal .chat-system {
       .chat-system .chat-box .overlay-video-call > div .calling-options {
         text-align: center; }
         .chat-system .chat-box .overlay-video-call > div .calling-options svg {
+          font-size: 25px;
           border-radius: 50%;
-          padding: 10px;
-          background: #2196f3;
+          padding: 11px;
+          background: rgba(21, 21, 22, 0.56);
           margin-bottom: 23px;
           color: #fff;
           cursor: pointer;
+          width: 48px;
+          height: 46px;
           -webkit-transition: all 0.35s ease;
           transition: all 0.35s ease;
-          width: 47px;
-          height: 48px; }
+          box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.67); }
           .chat-system .chat-box .overlay-video-call > div .calling-options svg:hover {
             -webkit-transform: translateY(-5px) scale(1.02);
             transform: translateY(-5px) scale(1.02); }
@@ -689,9 +666,7 @@ body.minimal .chat-system {
     background-color: transparent; } }
 
 @-moz-document url-prefix() {
-  .chat-system .chat-box .overlay-phone-call {
-    background-color: #030305; }
-  .chat-system .chat-box .overlay-video-call {
+  .chat-system .chat-box .overlay-phone-call, .chat-system .chat-box .overlay-video-call {
     background-color: #030305; } }
 
 @media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
