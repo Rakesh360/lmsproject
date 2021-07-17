@@ -1,0 +1,231 @@
+{% extends "base.html" %}
+{% block start %}
+
+<div id="content" class="main-content">
+            <div class="layout-px-spacing">                
+                    
+                <div class="account-settings-container layout-top-spacing">
+
+
+<div class="col-xl-12 col-lg-12 col-md-12 layout-spacing">
+                                    <form id="work-experience" class="section work-experience">
+                                        <div class="info">
+                                            <h5 class="">Add packages</h5>
+                                            <div class="row">
+                                                <div class="col-md-12 text-right mb-5">
+                                                    <button id="add-work-exp" class="btn btn-primary">Add</button>
+                                                </div>
+                                                <div class="col-md-11 mx-auto">
+
+                                                    <div class="work-section">
+                                                        <div class="row">
+                                                            <div class="col-md-12">
+                                                                <div class="form-group">
+                                                                    <label for="degree2">package title</label>
+                                                                    <input type="text" class="form-control mb-4" id="degree2" placeholder="Add your title here" >
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-12">
+                                                                <div class="row">
+                                                                    <div class="col-md-6">
+                                                                        <div class="form-group">
+                                                                            <label for="degree3">Add subjects</label>
+                                                                            <input type="text" class="form-control mb-4" id="degree3" placeholder="Add your subjects" value="">
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-6">
+                                                                        <div class="form-group">
+                                                                            <label for="degree4">Expiry date </label>
+                                                                            <input type="text" class="form-control mb-4" id="degree4" placeholder="Add your work here" value="">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                             <div class="col-md-12">
+                                                                <div class="row">
+                                                                    <div class="col-md-6">
+                                                                        <div class="form-group">
+                                                                            <label for="degree3">web image</label>
+                                                                            <input type="file" class="form-control mb-4" id="degree3" placeholder="Add your subjects" value="">
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-6">
+                                                                        <div class="form-group">
+                                                                            <label for="degree4">mobile image</label>
+                                                                            <input type="file" class="form-control mb-4" id="degree4" placeholder="Add your work here" value="">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-md-12">
+                                                                <div class="row">
+                                                                    <div class="col-md-6">
+                                                                        <div class="form-group">
+                                                                            <label>Start selling From</label>
+
+                                                                            <div class="row">
+
+                                                                                <div class="col-md-6">
+                                                                                    <select class="form-control mb-4" id="wes-from1">
+                                                                                        <option>Month</option>
+                                                                                        <option>Jan</option>
+                                                                                        <option>Feb</option>
+                                                                                        <option>Mar</option>
+                                                                                        <option>Apr</option>
+                                                                                        <option>May</option>
+                                                                                        <option>Jun</option>
+                                                                                        <option>Jul</option>
+                                                                                        <option>Aug</option>
+                                                                                        <option>Sep</option>
+                                                                                        <option>Oct</option>
+                                                                                        <option>Nov</option>
+                                                                                        <option>Dec</option>
+                                                                                    </select>
+                                                                                </div>
+
+                                                                                <div class="col-md-6">
+                                                                                    <select class="form-control mb-4" id="wes-from2">
+                                                                                        <option>Year</option>
+                                                                                        <option>2020</option>
+                                                                                        <option>2019</option>
+                                                                                        <option>2018</option>
+                                                                                        <option>2017</option>
+                                                                                        <option>2016</option>
+                                                                                        <option>2015</option>
+                                                                                        <option>2014</option>
+                                                                                        <option>2013</option>
+                                                                                        <option>2012</option>
+                                                                                        <option>2011</option>
+                                                                                        <option>2010</option>
+                                                                                        <option>2009</option>
+                                                                                        <option>2008</option>
+                                                                                        <option>2007</option>
+                                                                                        <option>2006</option>
+                                                                                        <option>2005</option>
+                                                                                        <option>2004</option>
+                                                                                        <option>2003</option>
+                                                                                        <option>2002</option>
+                                                                                        <option>2001</option>
+                                                                                        <option>2000</option>
+                                                                                        <option>1999</option>
+                                                                                        <option>1998</option>
+                                                                                        <option>1997</option>
+                                                                                        <option>1996</option>
+                                                                                        <option>1995</option>
+                                                                                        <option>1994</option>
+                                                                                        <option>1993</option>
+                                                                                        <option>1992</option>
+                                                                                        <option>1991</option>
+                                                                                        <option>1990</option>
+                                                                                    </select>
+                                                                                </div>
+
+                                                                            </div>
+
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-6">
+                                                                        <div class="form-group">
+                                                                            <label>End selling </label>
+
+                                                                            <div class="row">
+
+                                                                                <div class="col-md-6 mb-4">
+                                                                                    <select class="form-control" id="eiend-in1">
+                                                                                        <option>Month</option>
+                                                                                        <option>Jan</option>
+                                                                                        <option>Feb</option>
+                                                                                        <option>Mar</option>
+                                                                                        <option>Apr</option>
+                                                                                        <option>May</option>
+                                                                                        <option>Jun</option>
+                                                                                        <option>Jul</option>
+                                                                                        <option>Aug</option>
+                                                                                        <option>Sep</option>
+                                                                                        <option>Oct</option>
+                                                                                        <option>Nov</option>
+                                                                                        <option>Dec</option>
+                                                                                    </select>
+                                                                                </div>
+
+                                                                                <div class="col-md-6">
+                                                                                    <select class="form-control input-sm" id="eiend-in2">
+                                                                                        <option>Year</option>
+                                                                                        <option>2020</option>
+                                                                                        <option>2019</option>
+                                                                                        <option>2018</option>
+                                                                                        <option>2017</option>
+                                                                                        <option>2016</option>
+                                                                                        <option>2015</option>
+                                                                                        <option>2014</option>
+                                                                                        <option>2013</option>
+                                                                                        <option>2012</option>
+                                                                                        <option>2011</option>
+                                                                                        <option>2010</option>
+                                                                                        <option>2009</option>
+                                                                                        <option>2008</option>
+                                                                                        <option>2007</option>
+                                                                                        <option>2006</option>
+                                                                                        <option>2005</option>
+                                                                                        <option>2004</option>
+                                                                                        <option>2003</option>
+                                                                                        <option>2002</option>
+                                                                                        <option>2001</option>
+                                                                                        <option>2000</option>
+                                                                                        <option>1999</option>
+                                                                                        <option>1998</option>
+                                                                                        <option>1997</option>
+                                                                                        <option>1996</option>
+                                                                                        <option>1995</option>
+                                                                                        <option>1994</option>
+                                                                                        <option>1993</option>
+                                                                                        <option>1992</option>
+                                                                                        <option>1991</option>
+                                                                                        <option>1990</option>
+                                                                                    </select>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-md-12">
+                                                                <textarea class="form-control" placeholder="package description" rows="10"></textarea>
+                                                            </div>
+
+                                                            
+                                                        </div>
+                                                        
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row" style="magin-top:20px;">
+                                        <div class="col-md-12 text-right mb-5">
+                                                    
+                                                
+                                        
+                                                <button id="multiple-reset" class="btn btn-primary">Reset All</button>
+                            
+                                                <button id="multiple-messages" class="btn btn-dark">Save Changes</button>
+                                        </div>
+
+                                        </div>
+                                        
+                                    </form>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+
+                      
+
+
+        {% endblock %}
