@@ -3,12 +3,6 @@ from rest_framework import serializers
 from base_rest.utils import *
 from .models import *
 
-
-class CourseCategorySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = CourseCategory
-        fields = ['category_name' ,'category_image']
-
 class LessonsSerializers(serializers.ModelSerializer):
     class Meta:
         model = Lessons
@@ -36,20 +30,18 @@ class SubjectChaptersSerializer(serializers.ModelSerializer):
 
 
 class SubjectSerializer(serializers.ModelSerializer):
-    subject_category = CourseCategorySerializer()
     chapters = SubjectChaptersSerializer(source ="subject" , many=True)
     class Meta:
         model = Subject
-        fields = ['subject_category','subject_title' , 'chapters']
+        fields = ['subject_title' , 'chapters']
 
 
 
 
 class CourseSerializer(serializers.ModelSerializer):
-    course_bundle_category = CourseCategorySerializer()
     subjects = SubjectSerializer(many=True)
     class Meta:
-        model = Course
+        model = CoursePackage
     
         fields = [
         'uid',

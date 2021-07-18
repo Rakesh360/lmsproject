@@ -8,34 +8,26 @@ class CourseDiscount(BaseModel):
     discount = models.IntegerField(default=0)
     to_be_applied = models.BooleanField(default=False)
 
-class CourseCategory(BaseModel):
-    category_name = models.CharField(max_length=100)
-    category_image = models.FileField(upload_to = 'category')
-
-    def __str__(self) -> str:
-        return self.category_name
 
 
 
 class Subject(BaseModel):
-    subject_category = models.ForeignKey(CourseCategory , on_delete=models.CASCADE , null=True , blank=True)
     subject_title = models.CharField(max_length=100)
-    order = models.IntegerField(default=0)
-    
     def __str__(self) -> str:
         return self.subject_title
 
 
     class Meta:
-        db_table = "course_subject"
+        db_table = "subject"
         verbose_name_plural = "Course Subject"
         ordering = ['-created_at']
 
 
 class SubjectChapters(BaseModel):
-    subject = models.ForeignKey(Subject , related_name='subject' , on_delete=models.CASCADE)
+    subject = models.ForeignKey(Subject , null=True , blank=True , on_delete=models.CASCADE)
     chapter_title = models.CharField(max_length=100 , null=True , blank=True)
 
+    
     def __str__(self) -> str:
         return self.chapter_title
 
@@ -46,13 +38,14 @@ class SubjectChapters(BaseModel):
 
 
 class Lessons(BaseModel):
-    subject_chapters = models.ForeignKey(SubjectChapters , related_name='course_chapters' , on_delete=models.CASCADE)
     lesson_title = models.CharField(max_length=100 , null=True , blank=True)
     lesson_type = models.CharField(choices=(('Video' , 'Video'),('Document' ,'Document') , ('Video + Document' , 'Video + Document')) , max_length=100)
     video_uploaded_on = models.CharField(choices = (('Vimeo' , 'Vimeo') , ('Youtube' , 'Youtube')) , null=True , blank=True , max_length=100)
     video_link = models.URLField(null=True , blank=True)
     document = models.FileField(null=True , blank=True)
+    publish_date_time = models.DateTimeField()
     is_free = models.BooleanField(default=False)
+    is_published = models.BooleanField(default=True)
     
     def __str__(self) -> str:
         return self.lesson_title
@@ -65,21 +58,23 @@ class Lessons(BaseModel):
 
 
 
-class Course(BaseModel):
-    course_bundle_category = models.ForeignKey(CourseCategory , on_delete=models.SET_NULL , null=True , blank=True)
-    course_bundle_name = models.CharField(max_length=100)
-    course_bundle_description = FroalaField()
-    course_bundle_image = models.ImageField(upload_to = 'courses')
+class CoursePackage(BaseModel):
+    package_title = models.CharField(max_length=100)
+    package_description = FroalaField()
+    package_image = models.ImageField(upload_to = 'courses')
     subjects = models.ManyToManyField(Subject)
-    course_bundle_price = models.IntegerField()
-    course_bundle_discount = models.IntegerField(default = 0)
+    actual_price = models.IntegerField()
+    selling_price = models.IntegerField(default = 0)
+    sell_from = models.DateField()
+    sell_till = models.DateField()
     is_active = models.BooleanField(default=True)
-
     course_validity = models.DateField()
+    web_image = models.ImageField(upload_to = "course_package")
+    mobile_image = models.ImageField(upload_to = "course_package")
 
     class Meta:
-        db_table = "course"
-        verbose_name_plural =  "Course Bundle"
+        db_table = "course_package"
+        verbose_name_plural =  "Course Package"
         ordering = ['-created_at']
 
 
