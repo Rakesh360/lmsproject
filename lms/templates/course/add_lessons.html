@@ -1,0 +1,64 @@
+{%extends 'base.html'%}
+
+{%block start%}
+
+<div id="content" class="main-content">
+    <div class="layout-px-spacing">
+        <div class="row layout-top-spacing" id="cancel-row">
+            <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
+                <div class="widget-content widget-content-area br-6">
+                    <div id="zero-config_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4">
+                        <div style="margin-left:-50px !important">
+                            {% include "utils/alert.html" %}
+                        </div>
+ <form method="POST">
+     {% csrf_token %}
+                            <div class="form-row mb-4">
+                                <div class="form-group col-md-6">
+                                    <label for="inputEmail4">Lesson title</label>
+                                    <input type="text" class="form-control" required name="lesson_title" id="inputEmail4" placeholder="Enter lesson title">
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="inputPassword4">Subject Chapters</label>
+                                    <select required name="chapters" class="form-control basic tagging " multiple="multiple">
+                                        {% for subject_chapter in  subject_chapters %}
+                                        <option value="{{subject_chapter.uid}}">{{subject_chapter.chapter_title}}</option>
+                                     
+                                        {% endfor  %}
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="inputAddress">Video Platform</label>
+                                    <select required class="form-control" name="video_uploaded_on">
+                                        <option value="Vimeo">Vimeo</option>
+                                        <option value="Youtube">Youtube</option>
+    
+                                    </select>
+                                    </div>
+
+                                    <div class="form-group col-md-6">
+                             
+                                        <label for="inputEmail4">Lesson Link</label>
+                                        <input required type="text" class="form-control" name="video_link" id="inputEmail4" placeholder="Enter lesson title">
+                                    </div>
+                                    
+                            </div>
+                          
+                            
+
+                          <button type="submit" class="btn btn-primary mt-3">Add Chapters</button>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(".tagging").select2({
+    tags: true
+});
+</script>
+{% endblock %}

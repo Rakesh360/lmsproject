@@ -1,3 +1,5 @@
+from re import L
+import re
 from django.db.models import manager
 from django.shortcuts import redirect, render
 from rest_framework import serializers
@@ -9,7 +11,7 @@ from .serializers import *
 from rest_framework.response import Response
 from django.contrib import messages
 from django.http import HttpResponseRedirect
-
+from .forms import PackageForm
 
 
 def add_course(request):
@@ -42,6 +44,43 @@ def subject_chapters(request):
     
     context = {'subjects' : Subject.objects.all(), 'subject_chapters' : SubjectChapters.objects.all()}
     return render(request , 'course/subject_chapters.html' , context)
+
+
+def lessons(request):
+    context = {'lessons' : Lessons.objects.all()}
+    return render(request , 'course/lessons.html' , context)
+
+
+def add_package(request):
+    context = {'forms' : PackageForm}
+    return render(request , 'course/add_package.html' , context)
+
+
+def add_lessons(request):
+    context = {'subject_chapters' : SubjectChapters.objects.all()}
+    if request.method == 'POST':
+        chapters = request.POST.getlist('chapters')
+        lesson_title = request.POST.get('lesson_title')
+        video_uploaded_on = request.POST.get('video_uploaded_on')
+        video_link = request.POST.get('video_link')
+        for chapter in chapters:
+            Lessons.objects.get_or_create(
+                lesson_title =lesson_title,
+                video_uploaded_on =video_uploaded_on,
+                video_link    =video_link,
+                subject_chapters = SubjectChapters.objects.get(uid = chapter)
+            )
+
+        messages.success(request, 'Lesson create Successfully')
+                
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+
+
+
+
+    return render(request , 'course/add_lessons.html' , context)
+
 
 
 class CoursesView(APIView):

@@ -38,14 +38,10 @@ class SubjectChapters(BaseModel):
 
 
 class Lessons(BaseModel):
+    subject_chapters = models.ForeignKey(SubjectChapters, null=True , blank=True, on_delete=models.CASCADE)
     lesson_title = models.CharField(max_length=100 , null=True , blank=True)
-    lesson_type = models.CharField(choices=(('Video' , 'Video'),('Document' ,'Document') , ('Video + Document' , 'Video + Document')) , max_length=100)
     video_uploaded_on = models.CharField(choices = (('Vimeo' , 'Vimeo') , ('Youtube' , 'Youtube')) , null=True , blank=True , max_length=100)
     video_link = models.URLField(null=True , blank=True)
-    document = models.FileField(null=True , blank=True)
-    publish_date_time = models.DateTimeField()
-    is_free = models.BooleanField(default=False)
-    is_published = models.BooleanField(default=True)
     
     def __str__(self) -> str:
         return self.lesson_title
