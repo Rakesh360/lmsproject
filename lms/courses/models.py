@@ -65,6 +65,7 @@ class CoursePackage(BaseModel):
     sell_till = models.DateField()
     is_active = models.BooleanField(default=True)
     course_validity = models.DateField()
+    course_package_info = models.TextField(default='[]')
     web_image = models.ImageField(upload_to = "course_package")
     mobile_image = models.ImageField(upload_to = "course_package")
 
@@ -73,7 +74,19 @@ class CoursePackage(BaseModel):
         verbose_name_plural =  "Course Package"
         ordering = ['-created_at']
 
+# [
+# {
+#     'subject' : 'Subject name',
+#     'subject_chapters' : [
+#         {
+#             'chaper_name' : 'Chapter name',
+#             'lessons' : [
 
+#             ]
+#         }
+#     ]
+# }
+# ]
 
 class LiveStream(BaseModel):
     live_stream_link = models.TextField()

@@ -86,8 +86,7 @@ def add_lessons(request):
 class CoursesView(APIView):
 
     def get(self , request):
-        course_objs = Course.objects.all()
-        print(course_objs)
+        course_objs = CoursePackage.objects.all()
         serializer = CourseSerializer(course_objs , many=True)
      
         return Response({'status' : 200 , 'data' :serializer.data})

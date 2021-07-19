@@ -40,19 +40,16 @@ class SubjectSerializer(serializers.ModelSerializer):
 
 class CourseSerializer(serializers.ModelSerializer):
     subjects = SubjectSerializer(many=True)
+    course_package_info = serializers.SerializerMethodField()
     class Meta:
         model = CoursePackage
     
-        fields = [
-        'uid',
-        'course_bundle_category',
-        'course_bundle_price',
-        'course_bundle_discount',
-        'course_bundle_image',
-        'course_bundle_description',
-        'subjects',
-        ]
+        fields = '__all__'
         depth = 1
 
+    def get_course_package_info(self,obj):
+        print(obj)
+        import json
+        return json.loads(obj.course_package_info)
 
 

@@ -6,3 +6,4 @@ from django.forms import CheckboxSelectMultiple
 admin.site.register(Subject)
 admin.site.register(SubjectChapters)
 admin.site.register(Lessons)
+admin.site.register(CoursePackage)
