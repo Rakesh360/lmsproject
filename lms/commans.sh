@@ -14,4 +14,6 @@ sudo systemctl daemon-reload
 sudo systemctl restart gunicorn
 sudo systemctl restart nginx
 
+# IP - http://13.232.227.45/
+
 

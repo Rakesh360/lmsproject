@@ -56,18 +56,18 @@ class Lessons(BaseModel):
 
 class CoursePackage(BaseModel):
     package_title = models.CharField(max_length=100)
-    package_description = FroalaField()
-    package_image = models.ImageField(upload_to = 'courses')
-    subjects = models.ManyToManyField(Subject)
-    actual_price = models.IntegerField()
+    package_description = models.TextField(null=True , blank=True)
+    package_image = models.ImageField(upload_to = 'courses',null=True , blank=True)
+    subjects = models.ManyToManyField(Subject,null=True , blank=True)
+    actual_price = models.IntegerField(null=True , blank=True)
     selling_price = models.IntegerField(default = 0)
-    sell_from = models.DateField()
-    sell_till = models.DateField()
+    sell_from = models.DateField(null=True , blank=True)
+    sell_till = models.DateField(null=True , blank=True)
     is_active = models.BooleanField(default=True)
-    course_validity = models.DateField()
+    course_validity = models.DateField(null=True , blank=True)
     course_package_info = models.TextField(default='[]')
-    web_image = models.ImageField(upload_to = "course_package")
-    mobile_image = models.ImageField(upload_to = "course_package")
+    web_image = models.ImageField(upload_to = "course_package",null=True , blank=True)
+    mobile_image = models.ImageField(upload_to = "course_package",null=True , blank=True)
 
     class Meta:
         db_table = "course_package"

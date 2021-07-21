@@ -53,7 +53,21 @@ def lessons(request):
 
 def add_package(request):
     context = {'forms' : PackageForm}
+
+    if request.method == 'POST':
+        package_title = request.POST.get('package_title')
+        package_obj = CoursePackage.objects.create(
+            package_title= package_title
+        )
+        return redirect(f'/api/courses/add-subjects-package/{package_obj.uid}/')
+
     return render(request , 'course/add_package.html' , context)
+
+
+def add_subjects_courses(request,uid):
+    context = {}
+    return render(request , 'course/add_subjects_courses.html' , context)
+
 
 
 def add_lessons(request):
