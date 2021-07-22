@@ -2,7 +2,11 @@
 
 {%block start%}
 
+
+    
 <div id="content" class="main-content">
+    <div id="vue-app">
+      
     <div class="layout-px-spacing">
         <div class="row layout-top-spacing" id="cancel-row">
             <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
@@ -12,15 +16,48 @@
                             {% include "utils/alert.html" %}
                         </div>
  <form method="POST">
+     [[message]]
      {% csrf_token %}
                             <div class="form-row mb-4">
                                 <div class="form-group col-md-6">
                                     <label for="inputEmail4">Select Subject</label>
                                    
-                                    <se
+                                    <select class="form-control" @change="getChapters($event)">
+                                        <option >Choose</option>
+
+                                        {% for subject in subjects %}
+                                            <option value="{{subject.uid}}">{{subject.subject_title}}</option>
+                                        {% endfor %}
+
+                                    </select>
 
                                 </div>
             
+                                <div class="form-group col-md-6">
+                                    <label for="inputEmail4">Select Subject</label>
+                                   
+                                    <select class="form-control" @change="getLessons($event)" >
+
+                                        <option :value="chapter.uid" v-for="chapter in chapters">
+                                            [[chapter.chapter_title]]
+                                        </option>
+
+                                    </select>
+
+                                </div>
+
+                                
+                                
+                                <div class=" col-md-12">
+                                    <label for="inputPassword4">Subject Lessons</label>
+                                    <select required name="chapters" class="form-control basic tagging " multiple="multiple">
+                                       
+                                        <option v-for="lesson in lessons">[[lesson.lesson_title]]</option>
+                                     
+                                        
+                                    </select>
+                                </div>
+                           
                                 </div>
                               
                             
@@ -35,9 +72,66 @@
     </div>
 </div>
 
+</div>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+
+
+<script>
+                var app = new Vue({
+            delimiters: ["[[", "]]"],
+            el: '#vue-app',
+           
+            data() {
+                return{
+                message: 'Hello Vue!',
+                chapters : [],
+                lessons : []
+                }
+            },
+            methods : {
+                getChapters(event){
+                    console.log(event.target.value)
+                    var _this = this
+                    axios.get(`/api/courses/get-chapters/?uid=${event.target.value}`).then(response =>{
+                        console.log(response.data.data)
+                        _this.chapters = response.data.data
+                        return
+                    })
+                
+                },
+                getLessons(event){
+                    console.log(event)
+                    this.chapters.map(chapter=>{
+                        console.log(chapter)
+                        if(chapter.uid == event.target.value){
+                            console.log(chapter.lessons)
+                            this.lessons = chapter.lessons
+                        }
+                    })
+
+                }
+            },
+            
+            created(){
+                console.log('a')
+            }
+            })
+
+
+</script>
+
+
+
+
 <script>
     $(".tagging").select2({
     tags: true
 });
 </script>
+
+
+
 {% endblock %}

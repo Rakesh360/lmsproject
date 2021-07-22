@@ -65,7 +65,7 @@ def add_package(request):
 
 
 def add_subjects_courses(request,uid):
-    context = {}
+    context = {'subjects' : Subject.objects.all()}
     return render(request , 'course/add_subjects_courses.html' , context)
 
 
@@ -105,6 +105,20 @@ class CoursesView(APIView):
      
         return Response({'status' : 200 , 'data' :serializer.data})
 
+
+class ChaptersView(APIView):
+    
+    def get(self , request):
+        try:
+            subject_uid = Subject.objects.get(uid = request.GET.get('uid'))
+            chapters = SubjectChapters.objects.filter(subject=subject_uid)
+            
+            serializer = SubjectChaptersSerializer(chapters , many=True)
+            return Response({'status' : 200 , 'data' :serializer.data})
+
+        except Exception as e:
+            print(e)        
+        return Response({'status' : 400 , 'message' : 'Something went wrong'})
 
 
 

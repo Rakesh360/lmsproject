@@ -38,7 +38,7 @@ class SubjectChapters(BaseModel):
 
 
 class Lessons(BaseModel):
-    subject_chapters = models.ForeignKey(SubjectChapters, null=True , blank=True, on_delete=models.CASCADE)
+    subject_chapters = models.ForeignKey(SubjectChapters , related_name='subject_lessons', null=True , blank=True, on_delete=models.CASCADE)
     lesson_title = models.CharField(max_length=100 , null=True , blank=True)
     video_uploaded_on = models.CharField(choices = (('Vimeo' , 'Vimeo') , ('Youtube' , 'Youtube')) , null=True , blank=True , max_length=100)
     video_link = models.URLField(null=True , blank=True)
