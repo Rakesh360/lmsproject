@@ -65,7 +65,9 @@ def add_package(request):
 
 
 def add_subjects_courses(request,uid):
-    context = {'subjects' : Subject.objects.all()}
+    context = {'subjects' : Subject.objects.all() , 'chapters' : SubjectChapters.objects.all()[0:5],
+    'lessons' : Lessons.objects.all()[0:10]
+    }
     return render(request , 'course/add_subjects_courses.html' , context)
 
 

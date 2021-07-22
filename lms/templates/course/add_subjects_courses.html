@@ -1,155 +1,273 @@
 {%extends 'base.html'%}
+{% block start %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dragula/3.6.6/dragula.min.js"
+    integrity="sha512-MrA7WH8h42LMq8GWxQGmWjrtalBjrfIzCQ+i2EZA26cZ7OBiBd/Uct5S3NP9IBqKx5b+MMNH1PhzTsk6J9nPQQ=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
-{%block start%}
+<style type="text/css">
+    .bg-1 {
+        background: #ECECF8;
+    }
+</style>
+<div class="section-header">
+    <h1>Add Pakage</h1>
+    <div class="section-header-breadcrumb">
+        <div class="breadcrumb-item active">
+            <button class="btn btn-success" onclick="addChapters()">
+                Add Chapter
+            </button>
+        </div>
+    </div>
+
+</div>
+<div id="main_id">
+    <div class="card mt-5">
+        <div class="card-header bg-primary text-white">
+            <h4 class="text-white">ADD ITEMS</h4>
+            <div class="card-header-action">
+                <a data-collapse="#mycard-collapse" class="btn btn-icon btn-danger " style="border-radius: 4px;"
+                    href="#">
+                    Collapse <i class="fas fa-chevron-up"></i></a>
+            </div>
+        </div>
+        <div class="collapse show" id="mycard-collapse" style="">
+            <div class="card-body">
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label>Select Chapter</label>
+                        <div class="input-group ">
+                            <select id="chapter" class="form-control">
+                                <option>Choose</option>
+                                {% for chapter in chapters %}
+                                <option selected value="{{chapter.uid}}">{{chapter.chapter_title}}</option>
+                                {% endfor %}
+                            </select>
 
 
-    
-<div id="content" class="main-content" onload="init()">
-    <div id="vue-app">
-      
-    <div class="layout-px-spacing">
-        <div class="row layout-top-spacing" id="cancel-row">
-            <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
-                <div class="widget-content widget-content-area br-6">
-                    <div id="zero-config_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4">
-                        <div style="margin-left:-50px !important">
-                            {% include "utils/alert.html" %}
                         </div>
- <form method="POST">
-     [[message]]
-     {% csrf_token %}
-                            <div class="form-row mb-4">
-                                <div class="form-group col-md-6">
-                                    <label for="inputEmail4">Select Subject</label>
-                                   
-                                    <select class="form-control" @change="getChapters($event)">
-                                        <option >Choose</option>
+                    </div>
+                    <div class="form-group col-md-8">
 
-                                        {% for subject in subjects %}
-                                            <option value="{{subject.uid}}">{{subject.subject_title}}</option>
-                                        {% endfor %}
+                        <label>Select Subject</label>
+                        <div class="input-group ">
 
-                                    </select>
+                            <select id="subject" class="form-control">
 
-                                </div>
-            
-                                <div class="form-group col-md-6">
-                                    <label for="inputEmail4">Select Subject</label>
-                                   
-                                    <select class="form-control" @change="getLessons($event)" >
+                                <option selected="">Choose</option>
+                                {% for subject in subjects%}
+                                <option value="{{subject.uid}}" selected >{{subject.subject_title}}</option>
+                                {%  endfor %}
+                            </select>
+                            <div class="input-group-append">
+                                <button class="btn btn-primary" type="button"><i class="fas fa-search"></i></button>
+                            </div>
+                        </div>
+                    </div>
 
-                                        <option :value="chapter.uid" v-for="chapter in chapters">
-                                            [[chapter.chapter_title]]
-                                        </option>
 
-                                    </select>
+                </div>
+            </div>
+            <div class="row p-3 mt-3 ">
+                <div class="col-md-4">
+                    <div id="container1" class="container">
 
-                                </div>
-                                </div>
 
-                                
-                                <p>Lessons</p>
-                                <div class="row">
+                        {% for lesson in lessons %}
+                        <button class="btn btn-danger" type="button"
+                            data-lesson_uid="{{lesson.uid}}">{{lesson.lesson_title}}</button>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="card bg-1">
+                        <div class="card-header bg-primary p-2" style="min-height: 43px;">
+                            <h4 class="ml-2 text-white">Input Text</h4>
 
-                                    <div class="col-md-6" id="dragparent">
-                                    
-                                        <ul class="list-group ">
-                                            <li v-for="lesson in lessons" id="#" class="dragthing list-group-item">[[lesson.lesson_title]]</li>
-                                          
-                                        </ul>
-                                    </div>
+                        </div>
 
-                                    
-                                    <div class="col-md-6" id="dragparent1">
+                        <div class="card-body">
+                            <div id="container2" class="bg-white">
 
-                                        </div>
+                                <button class="btn btn-sucess">Drop</button>
 
-                                </div>
-
-                                
-                                
-                           
-                                </div>
-                              
-                            
-
-                             
-
-                          <button type="submit" class="btn btn-primary mt-3">Add Package</button>
-                        </form>
+                            </div>
+                        </div>
 
                     </div>
                 </div>
+                
             </div>
+            <button onclick="saveSubject()" class="btn btn-dark mt-3 mb-4 ml-4">
+                Save Subject
+            </button>
+
+            
+        </div>
+
+
+    </div>
+
+</div>
+
+
+
+<script>
+    let one = document.querySelector('#container1')
+    let two = document.querySelector('#container2')
+
+    var drake = dragula([one, two])
+
+    drake.on('drag', function (el, source) {
+        console.log(el, source)
+    })
+    drake.on('drop', function (el, target) {
+        console.log(el, target)
+        el.classList.add('item_added')
+        el.style.border = '5px dashed white';
+        // el.innerText = "Drag MEEEE :)"
+
+    })
+
+    function randomString(length) {
+        var result = '';
+        var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        var charactersLength = characters.length;
+        for (var i = 0; i < length; i++) {
+            result += characters.charAt(Math.floor(Math.random() *
+                charactersLength));
+        }
+        return result;
+    }
+
+    function addChapters() {
+        var id = randomString(5)
+        var html = `<div class="card mt-5">
+    <div class="card-header bg-primary text-white">
+        <h4 class="text-white">ADD ITEMS</h4>
+        <div class="card-header-action">
+            <a data-collapse="#mycard-collapse-${id}" class="btn btn-icon btn-danger " style="border-radius: 4px;" href="#">
+                Collapse <i class="fas fa-chevron-up"></i></a>
+        </div>
+    </div>
+    <div class="collapse show" id="mycard-collapse-${id}" style="">
+        <div class="card-body">
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label>Select Subject</label>
+                    <select id="subject" class="form-control">
+                        
+                        <option selected="">Choose</option>
+                        {% for subject in subjects%}
+                        <option value="{{subject.uid}}" selected>{{subject.subject_title}}</option>
+                        {%  endfor %}
+                    </select>
+                </div>
+                <div class="form-group col-md-8">
+                    <label>Select Chapter</label>
+                    <div class="input-group ">
+                        <select class="form-control">
+                            <option >Choose</option>
+                            {% for chapter in chapters %}
+                            <option id="chapter" value="{{lesson.uid}}">{{chapter.chapter_title}}</option>
+                            {% endfor %}
+                        </select>
+
+                        <div class="input-group-append">
+                            <button class="btn btn-primary" type="button"><i class="fas fa-search"></i></button>
+                        </div>
+                    </div>
+                </div>
+             
+            </div>
+        </div>     
+<div class="row p-3 mt-3 ">
+    <div class="col-md-4">
+        <div class="col-md-12 bg-1" id="dragparent">
+            <div id="container1" class="container">
+                {% for lesson in lessons %}
+                <button class="btn btn-danger" data-lesson_uid="{{lesson.uid}}">{{lesson.lesson_title}}</button>
+                {% endfor %}
+
+            </div>
+
+        </div>
+    </div>
+    <div class="col-md-8">
+        <div class="card bg-1">
+            <div class="card-header bg-primary p-2" style="min-height: 43px;">
+                <h4 class="ml-2 text-white">Input Text</h4>
+                
+            </div>
+            <div class="card-body">
+                <div id="container2" class="bg-white">
+
+                    <button class="btn btn-sucess">Drop</button>
+                    
+                </div>
+            </div>
+
         </div>
     </div>
 </div>
-
 </div>
+</div>`
 
+        document.getElementById('main_id').innerHTML += html
 
-
-<script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
-
-
-<script>
-                var app = new Vue({
-            delimiters: ["[[", "]]"],
-            el: '#vue-app',
-           
-            data() {
-                return{
-                message: 'Hello Vue!',
-                chapters : [],
-                lessons : []
-                }
-            },
-            methods : {
-                getChapters(event){
-                    console.log(event.target.value)
-                    var _this = this
-                    axios.get(`/api/courses/get-chapters/?uid=${event.target.value}`).then(response =>{
-                        console.log(response.data.data)
-                        _this.chapters = response.data.data
-                        return
-                    })
-                
-                },
-                getLessons(event){
-                    console.log(event)
-                    this.chapters.map(chapter=>{
-                        console.log(chapter)
-                        if(chapter.uid == event.target.value){
-                            console.log(chapter.lessons)
-                            this.lessons = chapter.lessons
-                        }
-                    })
-
-                }
-            },
-            
-            created(){
-                console.log('a')
-            }
-            })
-
-
-</script>
-
-
-<script>
-    function init(){
-        console.log('run')
-        dragula([document.querySelectorAll('#dragparent'),document.querySelectorAll('#dragparent1')])
     }
-</script>
 
-<script>
-    $(".tagging").select2({
-    tags: true
-});
-</script>
 
+    function saveSubject() {
+
+        var payload = {}
+
+        // {
+        //     'subject' : 'subject_uid',
+        //     'chapters' : [
+        //         {
+        //             'chapter' : 'chapter_uid',
+        //             'lessons' : [
+        //                 'lesson_uid',
+        //             ]
+        //         }
+        //     ]
+        // }
+
+        var lessons = document.querySelectorAll('.item_added')
+        var chapter = document.getElementById('chapter').value
+        var subject = document.getElementById('subject').value
+
+        var lesson_uids = []
+
+        for(var i = 0;i < lessons.length;i++){
+            lessons_uids.append(lessons[i].dataset.lesson_uid)
+        }
+
+        console.log(lessons)
+        console.log(chapter)
+        console.log(subject)
+
+
+    }
+
+
+    //     swal({
+    //   title: "Are you sure?",
+    //   text: "Once deleted, you will not be able to recover this imaginary file!",
+    //   icon: "warning",
+    //   buttons: true,
+    //   dangerMode: true,
+    // })
+    // .then((willDelete) => {
+    //   if (willDelete) {
+    //     swal("Poof! Your imaginary file has been deleted!", {
+    //       icon: "success",
+    //     });
+    //   } else {
+    //     swal("Your imaginary file is safe!");
+    //   }
+    // });
+</script>
 
 
 {% endblock %}

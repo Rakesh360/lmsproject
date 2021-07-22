@@ -14,6 +14,7 @@ def addpackages(request):
     return render(request , 'dashboard/addpackages.html')
 
 def allpackages(request):
+   
     return render(request , 'dashboard/allpackages.html')
 
 def allvideos(request):
