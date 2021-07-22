@@ -4,7 +4,7 @@
 
 
     
-<div id="content" class="main-content">
+<div id="content" class="main-content" onload="init()">
     <div id="vue-app">
       
     <div class="layout-px-spacing">
@@ -45,22 +45,35 @@
                                     </select>
 
                                 </div>
+                                </div>
+
+                                
+                                <p>Lessons</p>
+                                <div class="row">
+
+                                    <div class="col-md-6" id="dragparent">
+                                    
+                                        <ul class="list-group ">
+                                            <li v-for="lesson in lessons" id="#" class="dragthing list-group-item">[[lesson.lesson_title]]</li>
+                                          
+                                        </ul>
+                                    </div>
+
+                                    
+                                    <div class="col-md-6" id="dragparent1">
+
+                                        </div>
+
+                                </div>
 
                                 
                                 
-                                <div class=" col-md-12">
-                                    <label for="inputPassword4">Subject Lessons</label>
-                                    <select required name="chapters" class="form-control basic tagging " multiple="multiple">
-                                       
-                                        <option v-for="lesson in lessons">[[lesson.lesson_title]]</option>
-                                     
-                                        
-                                    </select>
-                                </div>
                            
                                 </div>
                               
                             
+
+                             
 
                           <button type="submit" class="btn btn-primary mt-3">Add Package</button>
                         </form>
@@ -124,7 +137,12 @@
 </script>
 
 
-
+<script>
+    function init(){
+        console.log('run')
+        dragula([document.querySelectorAll('#dragparent'),document.querySelectorAll('#dragparent1')])
+    }
+</script>
 
 <script>
     $(".tagging").select2({
