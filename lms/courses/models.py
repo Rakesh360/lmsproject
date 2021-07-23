@@ -1,3 +1,4 @@
+import courses
 from django.db import models
 from base_rest.models import BaseModel
 from froala_editor.fields import FroalaField
@@ -66,6 +67,9 @@ class CoursePackage(BaseModel):
     is_active = models.BooleanField(default=True)
     course_validity = models.DateField(null=True , blank=True)
     course_package_info = models.TextField(default='[]')
+    course_subjects = models.TextField(default='[]')
+    course_chapters = models.TextField(default='[]')
+    course_lessons = models.TextField(default='[]')
     web_image = models.ImageField(upload_to = "course_package",null=True , blank=True)
     mobile_image = models.ImageField(upload_to = "course_package",null=True , blank=True)
 
@@ -73,6 +77,23 @@ class CoursePackage(BaseModel):
         db_table = "course_package"
         verbose_name_plural =  "Course Package"
         ordering = ['-created_at']
+
+
+
+class CoursePackageSubjects(BaseModel):
+    course_package = models.ForeignKey(CoursePackage,related_name='pacakge_subjects', on_delete=models.CASCADE)
+    subject = models.ForeignKey(Subject  , on_delete=models.CASCADE)
+
+
+class CoursePackageChapters(BaseModel):
+    course_package_subject = models.ForeignKey(CoursePackageSubjects , related_name='pacakge_subject_chapters',on_delete=models.CASCADE)
+    subject_chapter = models.ForeignKey(SubjectChapters , on_delete=models.CASCADE)
+
+class CoursePackageLessons(BaseModel):
+    course_package_chapter = models.ForeignKey(CoursePackageChapters , related_name='pacakge_subject_chapters_lessons',on_delete=models.CASCADE)
+    lesson = models.ForeignKey(Lessons , on_delete=models.CASCADE)
+    sequence = models.IntegerField(default=1)
+
 
 # [
 # {

@@ -18,7 +18,6 @@
             </button>
         </div>
     </div>
-
 </div>
 <div id="main_id">
     <div class="card mt-5">
@@ -34,28 +33,14 @@
             <div class="card-body">
                 <div class="form-row">
                     <div class="form-group col-md-4">
-                        <label>Select Chapter</label>
-                        <div class="input-group ">
-                            <select id="chapter" class="form-control">
-                                <option>Choose</option>
-                                {% for chapter in chapters %}
-                                <option selected value="{{chapter.uid}}">{{chapter.chapter_title}}</option>
-                                {% endfor %}
-                            </select>
-
-
-                        </div>
-                    </div>
-                    <div class="form-group col-md-8">
-
                         <label>Select Subject</label>
                         <div class="input-group ">
 
-                            <select id="subject" class="form-control">
+                            <select id="subject" onchange="getChapters()" class="form-control">
 
-                                <option selected="">Choose</option>
+                                <option selected>Choose</option>
                                 {% for subject in subjects%}
-                                <option value="{{subject.uid}}" selected >{{subject.subject_title}}</option>
+                                <option value="{{subject.uid}}" >{{subject.subject_title}}</option>
                                 {%  endfor %}
                             </select>
                             <div class="input-group-append">
@@ -64,18 +49,30 @@
                         </div>
                     </div>
 
+                    <div class="form-group col-md-8">
+                        <label>Select Chapter</label>
+                        <div class="input-group ">
+                            <select id="chapter" onchange="getLessons()" class="form-control">
+                                <option>Choose</option>
+
+                            </select>
+
+
+                        </div>
+                    </div>
+
 
                 </div>
             </div>
             <div class="row p-3 mt-3 ">
                 <div class="col-md-4">
+                    <p class="ml-4">Your Lessons</p>
                     <div id="container1" class="container">
 
 
-                        {% for lesson in lessons %}
-                        <button class="btn btn-danger" type="button"
-                            data-lesson_uid="{{lesson.uid}}">{{lesson.lesson_title}}</button>
-                        {% endfor %}
+                        <button class="btn btn-danger" type="button">Add Your Chapter Here</button>
+
+
                     </div>
                 </div>
                 <div class="col-md-8">
@@ -95,13 +92,13 @@
 
                     </div>
                 </div>
-                
+
             </div>
             <button onclick="saveSubject()" class="btn btn-dark mt-3 mb-4 ml-4">
                 Save Subject
             </button>
 
-            
+
         </div>
 
 
@@ -114,7 +111,9 @@
 <script>
     let one = document.querySelector('#container1')
     let two = document.querySelector('#container2')
-
+    var course_package_uid = '{{course_package_uid}}'
+    var CSRF_TOKEN = '{{csrf_token}}'
+    console.log(CSRF_TOKEN)
     var drake = dragula([one, two])
 
     drake.on('drag', function (el, source) {
@@ -124,9 +123,45 @@
         console.log(el, target)
         el.classList.add('item_added')
         el.style.border = '5px dashed white';
-        // el.innerText = "Drag MEEEE :)"
+        
+       return
+        addLessonToChapter(
+            document.getElementById('subject').value,
+            document.getElementById('chapter').value,
+            el.dataset.lesson_uid
+        )
+
 
     })
+
+    function addLessonToChapter(subject_uid , chapter_uid , lesson_uid){
+        var payload = {
+            'subject_uid' : subject_uid,
+            'chapter_uid' : chapter_uid,
+            'lesson_uid' : lesson_uid,
+            'course_package_uid' : course_package_uid
+        }
+        console.log(payload)
+       
+
+       const headers = {
+           'X-CSRFToken': CSRF_TOKEN
+       }
+
+        axios.post('/api/courses/save-course-package/', payload , {
+            headers: headers
+        })
+            .then(function (response) {
+                console.log(response);
+            })
+            .catch(function (error) {
+                console.log(error);
+        });
+
+
+
+
+    }
 
     function randomString(length) {
         var result = '';
@@ -139,114 +174,96 @@
         return result;
     }
 
-    function addChapters() {
-        var id = randomString(5)
-        var html = `<div class="card mt-5">
-    <div class="card-header bg-primary text-white">
-        <h4 class="text-white">ADD ITEMS</h4>
-        <div class="card-header-action">
-            <a data-collapse="#mycard-collapse-${id}" class="btn btn-icon btn-danger " style="border-radius: 4px;" href="#">
-                Collapse <i class="fas fa-chevron-up"></i></a>
-        </div>
-    </div>
-    <div class="collapse show" id="mycard-collapse-${id}" style="">
-        <div class="card-body">
-            <div class="form-row">
-                <div class="form-group col-md-4">
-                    <label>Select Subject</label>
-                    <select id="subject" class="form-control">
-                        
-                        <option selected="">Choose</option>
-                        {% for subject in subjects%}
-                        <option value="{{subject.uid}}" selected>{{subject.subject_title}}</option>
-                        {%  endfor %}
-                    </select>
-                </div>
-                <div class="form-group col-md-8">
-                    <label>Select Chapter</label>
-                    <div class="input-group ">
-                        <select class="form-control">
-                            <option >Choose</option>
-                            {% for chapter in chapters %}
-                            <option id="chapter" value="{{lesson.uid}}">{{chapter.chapter_title}}</option>
-                            {% endfor %}
-                        </select>
+    function getChapters() {
+        var subject = document.getElementById('subject').value
+        axios.get(`/api/courses/get-chapters/?uid=${subject}`)
+            .then(response => {
+                console.log(response)
 
-                        <div class="input-group-append">
-                            <button class="btn btn-primary" type="button"><i class="fas fa-search"></i></button>
-                        </div>
-                    </div>
-                </div>
-             
-            </div>
-        </div>     
-<div class="row p-3 mt-3 ">
-    <div class="col-md-4">
-        <div class="col-md-12 bg-1" id="dragparent">
-            <div id="container1" class="container">
-                {% for lesson in lessons %}
-                <button class="btn btn-danger" data-lesson_uid="{{lesson.uid}}">{{lesson.lesson_title}}</button>
-                {% endfor %}
+                var chapters = response.data.data
+                $("#chapter").empty();
+                var opt = document.createElement('option');
 
-            </div>
+                opt.innerHTML = 'Choose';
+                document.getElementById('chapter').appendChild(opt);
+                for (var i = 0; i <= chapters.length; i++) {
+                    var opt = document.createElement('option');
+                    opt.value = chapters[i].uid;
+                    opt.innerHTML = chapters[i].chapter_title;
+                    document.getElementById('chapter').appendChild(opt);
+                }
+            })
+    }
 
-        </div>
-    </div>
-    <div class="col-md-8">
-        <div class="card bg-1">
-            <div class="card-header bg-primary p-2" style="min-height: 43px;">
-                <h4 class="ml-2 text-white">Input Text</h4>
+    function getLessons() {
+        var chapter = document.getElementById('chapter').value
+
+        axios.get(`/api/courses/get-lessons/?uid=${chapter}&course_package_uid=${course_package_uid}`)
+            .then(response => {
+                var element = document.getElementById('container1')
+                var lessons = response.data.data
+                var html = ''
+                for (var i = 0; i < lessons.length; i++) {
+                    html += `
+                            <button class="btn btn-danger" type="button"
+                                data-lesson_uid="${lessons[i].uid}">${lessons[i].lesson_title}</button>
+                        `
+                }
+
                 
-            </div>
-            <div class="card-body">
-                <div id="container2" class="bg-white">
+                element.innerHTML = html
 
-                    <button class="btn btn-sucess">Drop</button>
-                    
-                </div>
-            </div>
+            })
 
-        </div>
-    </div>
-</div>
-</div>
-</div>`
 
-        document.getElementById('main_id').innerHTML += html
 
     }
 
-
+   
     function saveSubject() {
+        console.log('Saved')
 
         var payload = {}
 
-        // {
-        //     'subject' : 'subject_uid',
-        //     'chapters' : [
-        //         {
-        //             'chapter' : 'chapter_uid',
-        //             'lessons' : [
-        //                 'lesson_uid',
-        //             ]
-        //         }
-        //     ]
-        // }
 
         var lessons = document.querySelectorAll('.item_added')
         var chapter = document.getElementById('chapter').value
         var subject = document.getElementById('subject').value
+        var course_pacakage_uid = '{{course_package_uid}}'
 
         var lesson_uids = []
 
-        for(var i = 0;i < lessons.length;i++){
-            lessons_uids.append(lessons[i].dataset.lesson_uid)
+        for (var i = 0; i < lessons.length; i++) {
+            lesson_uids.push(lessons[i].dataset.lesson_uid)
         }
+    
+        var payload = {
+            'course_package_uid' : course_package_uid,
+            'subject_uid': subject,
+            'chapter_uid' : chapter,
+            'lesson_uid': lesson_uids
+        }
+        const headers = {
+           'X-CSRFToken': CSRF_TOKEN
+       }
 
-        console.log(lessons)
-        console.log(chapter)
-        console.log(subject)
+        axios.post('/api/courses/save-course-package/', payload , {
+            headers: headers
+        })
+            .then(function (response) {
+               console.log(response)
+                if(response.data.status == 200){
+                    swal("Success", "You Subject with Chapter lesson saved", "success");
+                    $("#container2").empty();
+                    $("#container2").html('<button class="btn btn-sucess">Drop</button>')
 
+                    
+                }
+
+            })
+            .catch(function (error) {
+                console.log(error);
+        });
 
     }
 

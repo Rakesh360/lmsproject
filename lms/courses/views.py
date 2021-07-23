@@ -12,6 +12,7 @@ from rest_framework.response import Response
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 from .forms import PackageForm
+import json
 
 
 def add_course(request):
@@ -66,7 +67,8 @@ def add_package(request):
 
 def add_subjects_courses(request,uid):
     context = {'subjects' : Subject.objects.all() , 'chapters' : SubjectChapters.objects.all()[0:5],
-    'lessons' : Lessons.objects.all()[0:10]
+    'lessons' : Lessons.objects.all()[0:10],
+    'course_package_uid' :uid,
     }
     return render(request , 'course/add_subjects_courses.html' , context)
 
@@ -113,6 +115,8 @@ class ChaptersView(APIView):
     def get(self , request):
         try:
             subject_uid = Subject.objects.get(uid = request.GET.get('uid'))
+           
+
             chapters = SubjectChapters.objects.filter(subject=subject_uid)
             
             serializer = SubjectChaptersSerializer(chapters , many=True)
@@ -122,6 +126,86 @@ class ChaptersView(APIView):
             print(e)        
         return Response({'status' : 400 , 'message' : 'Something went wrong'})
 
+
+class LessonsView(APIView):
+    def get(self , request):
+        try:
+            chapter_uid = SubjectChapters.objects.get(uid = request.GET.get('uid'))
+            course_package = CoursePackage.objects.get(uid = request.GET.get('course_package_uid'))
+
+            lessons_saved = CoursePackageLessons.objects.filter(
+                course_package_chapter__course_package_subject__course_package = course_package
+            )
+
+            print(course_package.pacakge_subjects.all())
+
+            lesson_saved_uid = []
+            for lesson in lessons_saved:
+                lesson_saved_uid.append(lesson.lesson.uid)
+            
+            old_lessons = []
+            for lesson in lessons_saved:
+                old_lessons.append(lesson.lesson)
+
+            lessons = chapter_uid.subject_lessons.exclude(uid__in = lesson_saved_uid)
+            new_serializer = LessonSerializer(lessons , many = True)
+            old_serializer = LessonSerializer(lessons_saved , many=True)
+
+            return Response({'status' : 200 , 'new' :new_serializer.data , 'old' : old_serializer.data })
+
+        except Exception as e:
+            print(e)        
+        return Response({'status' : 400 , 'message' : 'Something went wrong'})
+
+from rest_framework.permissions import IsAuthenticated
+import sys, os
+class SaveCoursePackage(APIView):
+    permission_classes = [IsAuthenticated]
+    def post(self , request):
+        response = {'status' : 400 , 'message' : 'Something went wrong'}
+        try:
+            data = request.data
+            print(data)
+            course_package_obj = CoursePackage.objects.get(uid = '76916c72-0923-4489-a06d-796889d275c8')
+            _subject_uid = data.get('subject_uid')
+            _chapter_uid = data.get('chapter_uid')
+            _lesson_uid = data.get('lesson_uid')
+
+            print(_subject_uid)
+
+            package_subject , _ = CoursePackageSubjects.objects.get_or_create(
+                course_package=course_package_obj,
+                subject = Subject.objects.get(uid = _subject_uid)
+                )
+            
+            package_chapter , _  = CoursePackageChapters.objects.get_or_create(
+                course_package_subject=package_subject ,
+                subject_chapter = SubjectChapters.objects.get(uid= _chapter_uid)
+            )
+            
+            i = 1
+            print(type(_lesson_uid))
+            for _lesson in _lesson_uid:
+                package_lessons = CoursePackageLessons.objects.get_or_create(
+                    course_package_chapter = package_chapter,
+                    lesson = Lessons.objects.get(uid=_lesson),
+                    sequence = i
+                )
+
+            response['status'] = 200  
+            response['message'] = 'Subject Added'  
+
+            return Response(response)
+
+
+
+        except Exception as e:
+            print(e)
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+
+        return Response(response)
 
 
 def live_stream_view(request , id):
