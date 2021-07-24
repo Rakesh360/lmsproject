@@ -40,7 +40,7 @@
 
                                 <option selected>Choose</option>
                                 {% for subject in subjects%}
-                                <option value="{{subject.uid}}" >{{subject.subject_title}}</option>
+                                <option value="{{subject.uid}}">{{subject.subject_title}}</option>
                                 {%  endfor %}
                             </select>
                             <div class="input-group-append">
@@ -64,6 +64,20 @@
 
                 </div>
             </div>
+
+
+            <div class="row">
+                <div class="col-md-12">
+                    <select id="multiselect" multiple="multiple">
+                        <option value="http://ipv4.download.thinkbroadband.com/5MB.zip">Option 1</option>
+                        <option value="http://ipv4.download.thinkbroadband.com/10MB.zip">Option 2</option>
+                        <option value="http://ipv4.download.thinkbroadband.com/20MB.zip">Option 3</option>
+                        <option value="http://ipv4.download.thinkbroadband.com/50MB.zip">Option 4</option>
+                    </select>
+                    <input type="submit" onclick="getSelectedValues()" class="btn btn-primary" value="Download">
+                </div>
+            </div>
+
             <div class="row p-3 mt-3 ">
                 <div class="col-md-4">
                     <p class="ml-4">Your Lessons</p>
@@ -106,7 +120,8 @@
 
 </div>
 
-
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"
+    integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 
 <script>
     let one = document.querySelector('#container1')
@@ -123,8 +138,8 @@
         console.log(el, target)
         el.classList.add('item_added')
         el.style.border = '5px dashed white';
-        
-       return
+
+        return
         addLessonToChapter(
             document.getElementById('subject').value,
             document.getElementById('chapter').value,
@@ -134,29 +149,29 @@
 
     })
 
-    function addLessonToChapter(subject_uid , chapter_uid , lesson_uid){
+    function addLessonToChapter(subject_uid, chapter_uid, lesson_uid) {
         var payload = {
-            'subject_uid' : subject_uid,
-            'chapter_uid' : chapter_uid,
-            'lesson_uid' : lesson_uid,
-            'course_package_uid' : course_package_uid
+            'subject_uid': subject_uid,
+            'chapter_uid': chapter_uid,
+            'lesson_uid': lesson_uid,
+            'course_package_uid': course_package_uid
         }
         console.log(payload)
-       
 
-       const headers = {
-           'X-CSRFToken': CSRF_TOKEN
-       }
 
-        axios.post('/api/courses/save-course-package/', payload , {
-            headers: headers
-        })
+        const headers = {
+            'X-CSRFToken': CSRF_TOKEN
+        }
+
+        axios.post('/api/courses/save-course-package/', payload, {
+                headers: headers
+            })
             .then(function (response) {
                 console.log(response);
             })
             .catch(function (error) {
                 console.log(error);
-        });
+            });
 
 
 
@@ -201,90 +216,254 @@
         axios.get(`/api/courses/get-lessons/?uid=${chapter}&course_package_uid=${course_package_uid}`)
             .then(response => {
                 var element = document.getElementById('container1')
-                var lessons = response.data.data
+                var new_lessons = response.data.new
                 var html = ''
-                for (var i = 0; i < lessons.length; i++) {
+                for (var i = 0; i < new_lessons.length; i++) {
                     html += `
                             <button class="btn btn-danger" type="button"
-                                data-lesson_uid="${lessons[i].uid}">${lessons[i].lesson_title}</button>
+                                data-lesson_uid="${new_lessons[i].uid}">${new_lessons[i].lesson_title}</button>
+                        `
+                }
+                element.innerHTML = html
+
+                var _html = ''
+                var old_lessons = response.data.old
+                for (var i = 0; i < old_lessons.length; i++) {
+                    html += `
+                            <button class="btn btn-danger" type="button"
+                                data-lesson_uid="${old_lessons[i].uid}">${old_lessons[i].lesson_title}</button>
                         `
                 }
 
-                
-                element.innerHTML = html
-
-            })
-
-
-
-    }
-
-   
-    function saveSubject() {
-        console.log('Saved')
-
-        var payload = {}
-
-
-        var lessons = document.querySelectorAll('.item_added')
-        var chapter = document.getElementById('chapter').value
-        var subject = document.getElementById('subject').value
-        var course_pacakage_uid = '{{course_package_uid}}'
-
-        var lesson_uids = []
-
-        for (var i = 0; i < lessons.length; i++) {
-            lesson_uids.push(lessons[i].dataset.lesson_uid)
-        }
-    
-        var payload = {
-            'course_package_uid' : course_package_uid,
-            'subject_uid': subject,
-            'chapter_uid' : chapter,
-            'lesson_uid': lesson_uids
-        }
-        const headers = {
-           'X-CSRFToken': CSRF_TOKEN
-       }
-
-        axios.post('/api/courses/save-course-package/', payload , {
-            headers: headers
-        })
-            .then(function (response) {
-               console.log(response)
-                if(response.data.status == 200){
-                    swal("Success", "You Subject with Chapter lesson saved", "success");
-                    $("#container2").empty();
-                    $("#container2").html('<button class="btn btn-sucess">Drop</button>')
-
-                    
+                if (old_lessons.length) {
+                    document.getElementById('container2').innerHTML = html
+                } else {
+                    document.getElementById('container2').innerHTML = `
+                            <button class="btn btn-dark" type="button"
+                                >Add Lessons</button>
+                        `
                 }
 
+
+
+
+
             })
-            .catch(function (error) {
-                console.log(error);
-        });
+
+
 
     }
 
 
-    //     swal({
-    //   title: "Are you sure?",
-    //   text: "Once deleted, you will not be able to recover this imaginary file!",
-    //   icon: "warning",
-    //   buttons: true,
-    //   dangerMode: true,
-    // })
-    // .then((willDelete) => {
-    //   if (willDelete) {
-    //     swal("Poof! Your imaginary file has been deleted!", {
-    //       icon: "success",
-    //     });
-    //   } else {
-    //     swal("Your imaginary file is safe!");
-    //   }
-    // });
+    function saveSubject() {
+
+        swal({
+                title: "Are you sure?",
+                text: "You want to save?",
+                icon: "success",
+                buttons: true,
+                dangerMode: true,
+            })
+            .then((willDelete) => {
+                if (willDelete) {
+
+
+                    var payload = {}
+
+
+                    var lessons = document.querySelectorAll('.item_added')
+                    var chapter = document.getElementById('chapter').value
+                    var subject = document.getElementById('subject').value
+                    var course_pacakage_uid = '{{course_package_uid}}'
+
+                    var lesson_uids = []
+
+                    for (var i = 0; i < lessons.length; i++) {
+                        lesson_uids.push(lessons[i].dataset.lesson_uid)
+                    }
+
+                    var payload = {
+                        'course_package_uid': course_package_uid,
+                        'subject_uid': subject,
+                        'chapter_uid': chapter,
+                        'lesson_uid': lesson_uids
+                    }
+                    const headers = {
+                        'X-CSRFToken': CSRF_TOKEN
+                    }
+
+                    axios.post('/api/courses/save-course-package/', payload, {
+                            headers: headers
+                        })
+                        .then(function (response) {
+                            console.log(response)
+                            if (response.data.status == 200) {
+                                swal("Success", "You Subject with Chapter lesson saved", "success");
+                                $("#container2").empty();
+                                $("#container2").html('<button class="btn btn-sucess">Drop</button>')
+
+
+                            }
+
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        });
+
+                } else {
+                    swal("Your imaginary file is safe!");
+                }
+            });
+
+
+        console.log('Saved')
+
+    }
+
+    $(document).ready(function () {
+        $('#multiselect').multiselect({
+            buttonWidth: '160px',
+            includeSelectAllOption: true,
+            nonSelectedText: 'Select an Option'
+        });
+    });
+
+
+    function getSelectedValues() {
+        var selectedVal = $("#multiselect").val();
+        for (var i = 0; i < selectedVal.length; i++) {
+            function innerFunc(i) {
+                setTimeout(function () {
+                    location.href = selectedVal[i];
+                }, i * 2000);
+            }
+            innerFunc(i);
+        }
+    }
+
+    
+   
 </script>
 
+
+<style>
+    body {
+        text-align: center;
+        background-color: #222;
+        color: #fff;
+        margin-top: 50px;
+    }
+
+    body .dropdown-menu {
+        border-radius: 0;
+    }
+
+    body .multiselect-native-select {
+        position: relative;
+    }
+
+    body .multiselect-native-select select {
+        border: 0 !important;
+        clip: rect(0 0 0 0) !important;
+        height: 1px !important;
+        margin: -1px -1px -1px -3px !important;
+        overflow: hidden !important;
+        padding: 0 !important;
+        position: absolute !important;
+        width: 1px !important;
+        left: 50%;
+        top: 30px;
+    }
+
+    body .multiselect-container {
+        position: absolute;
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    body .multiselect-container .input-group {
+        margin: 5px;
+    }
+
+    body .multiselect-container li {
+        padding: 0;
+    }
+
+    body .multiselect-container li .multiselect-all label {
+        font-weight: 700;
+    }
+
+    body .multiselect-container li a {
+        padding: 0;
+    }
+
+    body .multiselect-container li a label {
+        margin: 0;
+        height: 100%;
+        cursor: pointer;
+        font-weight: 400;
+        padding: 3px 20px 3px 40px;
+    }
+
+    body .multiselect-container li a label input[type=checkbox] {
+        margin-bottom: 5px;
+    }
+
+    body .multiselect-container li a label.radio {
+        margin: 0;
+    }
+
+    body .multiselect-container li a label.checkbox {
+        margin: 0;
+    }
+
+    body .multiselect-container li.multiselect-group label {
+        margin: 0;
+        padding: 3px 20px 3px 20px;
+        height: 100%;
+        font-weight: 700;
+    }
+
+    body .multiselect-container li.multiselect-group-clickable label {
+        cursor: pointer;
+    }
+
+    body .btn-group .btn-group .multiselect.btn {
+        border-top-left-radius: 4px;
+        border-bottom-left-radius: 4px;
+    }
+
+    body .form-inline .multiselect-container label.checkbox {
+        padding: 3px 20px 3px 40px;
+    }
+
+    body .form-inline .multiselect-container label.radio {
+        padding: 3px 20px 3px 40px;
+    }
+
+    body .form-inline .multiselect-container li a label.checkbox input[type=checkbox] {
+        margin-left: -20px;
+        margin-right: 0;
+    }
+
+    body .form-inline .multiselect-container li a label.radio input[type=radio] {
+        margin-left: -20px;
+        margin-right: 0;
+    }
+
+    body .btn {
+        border-radius: 0;
+        padding: 10px 0;
+    }
+
+    body .btn-primary {
+        background-color: #ff0000;
+        border: none;
+        border-radius: 0;
+        padding: 11px 15px;
+        text-transform: uppercase;
+    }
+</style>
 
 {% endblock %}

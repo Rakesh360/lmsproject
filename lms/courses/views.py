@@ -145,12 +145,17 @@ class LessonsView(APIView):
             
             old_lessons = []
             for lesson in lessons_saved:
+                print(lesson.lesson)
                 old_lessons.append(lesson.lesson)
+            
+
 
             lessons = chapter_uid.subject_lessons.exclude(uid__in = lesson_saved_uid)
             new_serializer = LessonSerializer(lessons , many = True)
-            old_serializer = LessonSerializer(lessons_saved , many=True)
+            old_serializer = LessonSerializer(old_lessons , many=True)
 
+            print(new_serializer.data)
+            print(old_serializer.data)
             return Response({'status' : 200 , 'new' :new_serializer.data , 'old' : old_serializer.data })
 
         except Exception as e:
@@ -166,13 +171,13 @@ class SaveCoursePackage(APIView):
         try:
             data = request.data
             print(data)
-            course_package_obj = CoursePackage.objects.get(uid = '76916c72-0923-4489-a06d-796889d275c8')
+            course_package_obj = CoursePackage.objects.get(uid = '8974c82a-a57d-4091-96b1-65db8104d546')
             _subject_uid = data.get('subject_uid')
             _chapter_uid = data.get('chapter_uid')
             _lesson_uid = data.get('lesson_uid')
 
             print(_subject_uid)
-
+            print(_lesson_uid)
             package_subject , _ = CoursePackageSubjects.objects.get_or_create(
                 course_package=course_package_obj,
                 subject = Subject.objects.get(uid = _subject_uid)
@@ -186,6 +191,7 @@ class SaveCoursePackage(APIView):
             i = 1
             print(type(_lesson_uid))
             for _lesson in _lesson_uid:
+                print(type(_lesson))
                 package_lessons = CoursePackageLessons.objects.get_or_create(
                     course_package_chapter = package_chapter,
                     lesson = Lessons.objects.get(uid=_lesson),
