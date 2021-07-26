@@ -65,6 +65,10 @@ def add_package(request):
     return render(request , 'course/add_package.html' , context)
 
 
+def course_packages(request):
+    context = {'course_packages' : CoursePackage.objects.all()}
+    return render(request , 'pacakage.html')
+
 def add_subjects_courses(request,uid):
     context = {
     'subjects' : Subject.objects.all(),
@@ -73,46 +77,57 @@ def add_subjects_courses(request,uid):
     'subject_uid' :request.GET.get('uid') ,
     }
     if request.GET.get('uid'):
-        print('_____________')
-        chapter_obj = SubjectChapters.objects.get(uid = request.GET.get('uid'))
         course_package_obj = CoursePackage.objects.get(uid = uid)
-            
-        course_package_chapter_obj = CoursePackageChapters.objects.filter(
-            course_package_subject__course_package = course_package_obj,
-            subject_chapter = chapter_obj
-        ).first()
-
+        chapter_obj = SubjectChapters.objects.get(uid = request.GET.get('uid'))
 
         lessons = chapter_obj.subject_lessons.all()
-        new_serializer = LessonSerializer(lessons , many = True)
+        
+        course_package_subject_obj, _ = CoursePackageSubjects.objects.get_or_create(
+            course_package =course_package_obj,
+            subject = chapter_obj.subject
+        )
+
+        course_package_subject_chapter_obj,_ = CoursePackageChapters.objects.get_or_create(
+         course_package_subject = course_package_subject_obj,
+            subject_chapter    = chapter_obj
+        )
+        
+
         payload = []
+        old_lessons = []
+        for lesson in course_package_subject_chapter_obj.pacakge_subject_chapters_lessons.all():
+            old_lessons.append(lesson.lesson.uid)
 
+        print(old_lessons)
 
-        if course_package_chapter_obj:
-            for data in new_serializer.data:
-                if CoursePackageLessons.objects.filter(
-                    course_package_chapter = course_package_chapter_obj,
-                    lesson = Lessons.objects.get(uid = data['uid'])
-                    ).exists():
-                    payload.append({
-                    'uid' : data['uid'],
-                    'is_added' : True,
-                    'lesson_title' : data['lesson_title']
-                        })
-                
-            else:
+        for lesson in lessons:
+            print(lesson.uid)
+
+            if lesson.uid in old_lessons:
                 payload.append({
-                    'uid' : data['uid'],
-                    'is_added' : False,
-                    'lesson_title' : data['lesson_title']
+                    'uid' : lesson.uid,
+                    'is_free' : lesson.is_free,
+                    'lesson_title' : lesson.lesson_title,
+                    'is_added' : True,
+                    'created_at' : lesson.created_at,
                 })
 
-            context['lessons'] = payload 
-            print(payload)
+            else:
+                payload.append({
+                    'uid' : lesson.uid,
+                    'is_free' : lesson.is_free,
+                    'lesson_title' : lesson.lesson_title,
+                    'is_added' : False,
+                    'created_at' : lesson.created_at,
+
+                })
+            
+        context['lessons'] = payload
+        context['selected_subject'] = chapter_obj.subject.uid
 
 
 
-
+    #print(context)
     return render(request , 'course/add_subjects_courses.html' , context)
 
 
@@ -235,8 +250,7 @@ class SaveCoursePackage(APIView):
             _chapter_uid = data.get('chapter_uid')
             _lesson_uid = data.get('lesson_uid')
 
-            print(_subject_uid)
-            print(_lesson_uid)
+            
             package_subject , _ = CoursePackageSubjects.objects.get_or_create(
                 course_package=course_package_obj,
                 subject = Subject.objects.get(uid = _subject_uid)
@@ -248,9 +262,7 @@ class SaveCoursePackage(APIView):
             )
             
             i = 1
-            print(type(_lesson_uid))
             for _lesson in _lesson_uid:
-                print(type(_lesson))
                 package_lessons = CoursePackageLessons.objects.get_or_create(
                     course_package_chapter = package_chapter,
                     lesson = Lessons.objects.get(uid=_lesson),

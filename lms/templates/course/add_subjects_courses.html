@@ -1,14 +1,5 @@
 {%extends 'base.html'%}
 {% block start %}
-<script src="https://cdnjs.cloudflare.com/ajax/libs/dragula/3.6.6/dragula.min.js"
-    integrity="sha512-MrA7WH8h42LMq8GWxQGmWjrtalBjrfIzCQ+i2EZA26cZ7OBiBd/Uct5S3NP9IBqKx5b+MMNH1PhzTsk6J9nPQQ=="
-    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<!-- multiple select function -->
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bbbootstrap/libraries@main/choices.min.css">
-<script src="https://cdn.jsdelivr.net/gh/bbbootstrap/libraries@main/choices.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
 
 <style type="text/css">
@@ -45,7 +36,7 @@
                             <select id="subject" onchange="getChapters()" class="form-control">
                                 <option selected>Choose</option>
                                 {% for subject in subjects%}
-                                <option value="{{subject.uid}}" {% if subject.uid == subject_uid %} selected
+                                <option value="{{subject.uid}}" {% if subject.uid == selected_subject %} selected
                                     {% endif %}>{{subject.subject_title}}</option>
                                 {%  endfor %}
                             </select>
@@ -65,22 +56,36 @@
                     </div>
 
                     <div class="col-md-12">
-                        <div class="form-group">
-                            <label for="degree2">select multiple</label>
-                            <select class="form-control " id="choices-multiple-remove-button"
-                                placeholder="Select upto Lessons" multiple>
-                                {% for lesson in lessons %}
-                                <option class="{{lesson.uid}}" {% if lesson.is_added %} selected {% endif %}>
-                                    {{lesson.lesson_title}}</option>
-                                {% endfor %}
-                            </select>
 
+                        <table class="table table-striped" id="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">S.no</th>
 
-                        </div>
+                                    <th scope="col">Lesson title</th>
+                                    <th scope="col">Is Free</th>
+                                    <th scope="col">Created At</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for  lesson in lessons %}
+                                <tr>
+                                    <th scope="row">
+                                        <input type="checkbox" {% if lesson.is_added  %} checked {% endif %} class="lesson_list" data-lesson_id="{{lesson.uid}}">
+                                    </th>
+
+                                    <td>{{forloop.counter}}</td>
+                                    <td>{{lesson.lesson_title}}</td>
+                                    <td>{{lesson.is_free}}</td>
+
+                                    <td>{{lesson.created_at}}</td>
+                                </tr>
+                                {%  endfor  %}
+                               
+                            </tbody>
+                        </table>
                     </div>
-
-
-
 
 
                 </div>
@@ -102,9 +107,13 @@
 
 </div>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"
-    integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 
+<script type="text/javascript" language="javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/select/1.3.1/js/dataTables.select.min.js"></script>
+
+
+<!-- 
 <script>
     $(document).ready(function () {
         var multipleCancelButton = new Choices('#choices-multiple-remove-button', {
@@ -113,8 +122,32 @@
         });
 
     });
-</script>
+</script> -->
 <script>
+
+    {% if selected_subject %}
+            getChapters()
+    {% endif %}
+
+
+
+   
+  
+$(document).ready(function() {
+    $('#table').DataTable( {
+        columnDefs: [ {
+            orderable: false,
+            className: 'select-checkbox',
+            targets:   0
+        } ],
+        select: {
+            style:    'os',
+            selector: 'td:first-child'
+        },
+        order: [[ 1, 'asc' ]]
+    } );
+} );
+
     let one = document.querySelector('#container1')
     let two = document.querySelector('#container2')
     var course_package_uid = '{{course_package_uid}}'
@@ -151,6 +184,10 @@
 
     }
 
+    function getUid(){
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get('uid');
+    }
 
 
     function getChapters() {
@@ -169,6 +206,11 @@
                     var opt = document.createElement('option');
                     opt.value = chapters[i].uid;
                     opt.innerHTML = chapters[i].chapter_title;
+                    
+                    if(chapters[i].uid == getUid()){
+                    opt.setAttribute('selected', true);
+                    }
+
                     document.getElementById('chapter').appendChild(opt);
                 }
             })
@@ -179,33 +221,17 @@
 
         window.location.href = `?uid=${chapter}`
         return;
-        // axios.get(`/api/courses/get-lessons/?uid=${chapter}&course_package_uid=${course_package_uid}`)
-        //     .then(response => {
-        //         var element = document.getElementById('choices-multiple-remove-button')
-        //         var data = response.data.data
-
-        //         for(var i=0;i<data.length ;i++){
-
-        //             var opt = document.createElement('option');
-        //             opt.value = "A";
-        //             opt.innerHTML = "A";
-        //             console.log(opt)
-        //             document.getElementById('choices-multiple-remove-button').appendChild(opt);
-
-
-        //         }
-
-        //     console.log(response.data.data)
-
-
-        // })
-
+    
 
 
     }
 
 
     function saveSubject() {
+
+       
+
+
 
         swal({
                 title: "Are you sure?",
@@ -219,17 +245,18 @@
 
                     var payload = {}
 
-                    var lessons = [];
-                    $('#choices-multiple-remove-button :selected').each(function () {
-                        lessons[$(this).val()] = $(this).text();
-                    });
-                   
-    
+                    var lesson_elements =  document.querySelectorAll('.lesson_list')
+                    var lessons = []
+                    for(var i = 0;i<lesson_elements.length;i++){
+                        lessons.push(lesson_elements[i].dataset.lesson_id)
+                    }
+
+
                     var chapter = document.getElementById('chapter').value
                     var subject = document.getElementById('subject').value
                     var course_pacakage_uid = '{{course_package_uid}}'
 
-                  
+
                     var payload = {
                         'course_package_uid': course_package_uid,
                         'subject_uid': subject,
@@ -240,12 +267,15 @@
                         'X-CSRFToken': CSRF_TOKEN
                     }
 
+                    console.log(payload)
+
                     axios.post('/api/courses/save-course-package/', payload, {
                             headers: headers
                         })
                         .then(function (response) {
                             console.log(response)
-                           
+                            
+                            window.location.reload()
 
                         })
                         .catch(function (error) {
@@ -287,13 +317,3 @@
 
 {% endblock %}
 
-
-quiz application django,
-making quiz app in django,
-quiz app using django github,
-quiz application in django,
-quiz app django github,
-quiz app with django,
-test django application,
-quiz app using django,
-online quiz app using django,

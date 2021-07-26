@@ -43,6 +43,7 @@ class Lessons(BaseModel):
     lesson_title = models.CharField(max_length=100 , null=True , blank=True)
     video_uploaded_on = models.CharField(choices = (('Vimeo' , 'Vimeo') , ('Youtube' , 'Youtube')) , null=True , blank=True , max_length=100)
     video_link = models.URLField(null=True , blank=True)
+    is_free = models.BooleanField(default = False)
     
     def __str__(self) -> str:
         return self.lesson_title
@@ -84,15 +85,23 @@ class CoursePackageSubjects(BaseModel):
     course_package = models.ForeignKey(CoursePackage,related_name='pacakge_subjects', on_delete=models.CASCADE)
     subject = models.ForeignKey(Subject  , on_delete=models.CASCADE)
 
+    def __str__(self) -> str:
+        return self.subject.subject_title
 
 class CoursePackageChapters(BaseModel):
     course_package_subject = models.ForeignKey(CoursePackageSubjects , related_name='pacakge_subject_chapters',on_delete=models.CASCADE)
     subject_chapter = models.ForeignKey(SubjectChapters , on_delete=models.CASCADE)
+    
+    def __str__(self) -> str:
+        return self.subject_chapter.chapter_title
 
 class CoursePackageLessons(BaseModel):
     course_package_chapter = models.ForeignKey(CoursePackageChapters , related_name='pacakge_subject_chapters_lessons',on_delete=models.CASCADE)
     lesson = models.ForeignKey(Lessons , on_delete=models.CASCADE)
     sequence = models.IntegerField(default=1)
+
+    def __str__(self) -> str:
+        return self.lesson.lesson_title
 
 
 # [
