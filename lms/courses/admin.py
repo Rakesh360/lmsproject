@@ -7,7 +7,17 @@ from django.contrib.admin import AdminSite
 
 
 admin.site.register(Subject)
-admin.site.register(SubjectChapters)
+
+
+class LessonsAdmin(admin.StackedInline):
+    model = Lessons
+@admin.register(SubjectChapters)
+class SubjectChaperAdmin(admin.ModelAdmin):
+    inlines = [LessonsAdmin]
+
+
+
+
 admin.site.register(Lessons)
 admin.site.register(CoursePackage)
 admin.site.register(CoursePackageLessons)

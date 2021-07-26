@@ -66,10 +66,53 @@ def add_package(request):
 
 
 def add_subjects_courses(request,uid):
-    context = {'subjects' : Subject.objects.all() , 'chapters' : SubjectChapters.objects.all()[0:5],
-    'lessons' : Lessons.objects.all()[0:10],
+    context = {
+    'subjects' : Subject.objects.all(),
+    'chapters' : SubjectChapters.objects.all()[0:5],
     'course_package_uid' :uid,
+    'subject_uid' :request.GET.get('uid') ,
     }
+    if request.GET.get('uid'):
+        print('_____________')
+        chapter_obj = SubjectChapters.objects.get(uid = request.GET.get('uid'))
+        course_package_obj = CoursePackage.objects.get(uid = uid)
+            
+        course_package_chapter_obj = CoursePackageChapters.objects.filter(
+            course_package_subject__course_package = course_package_obj,
+            subject_chapter = chapter_obj
+        ).first()
+
+
+        lessons = chapter_obj.subject_lessons.all()
+        new_serializer = LessonSerializer(lessons , many = True)
+        payload = []
+
+
+        if course_package_chapter_obj:
+            for data in new_serializer.data:
+                if CoursePackageLessons.objects.filter(
+                    course_package_chapter = course_package_chapter_obj,
+                    lesson = Lessons.objects.get(uid = data['uid'])
+                    ).exists():
+                    payload.append({
+                    'uid' : data['uid'],
+                    'is_added' : True,
+                    'lesson_title' : data['lesson_title']
+                        })
+                
+            else:
+                payload.append({
+                    'uid' : data['uid'],
+                    'is_added' : False,
+                    'lesson_title' : data['lesson_title']
+                })
+
+            context['lessons'] = payload 
+            print(payload)
+
+
+
+
     return render(request , 'course/add_subjects_courses.html' , context)
 
 
@@ -130,33 +173,49 @@ class ChaptersView(APIView):
 class LessonsView(APIView):
     def get(self , request):
         try:
-            chapter_uid = SubjectChapters.objects.get(uid = request.GET.get('uid'))
-            course_package = CoursePackage.objects.get(uid = request.GET.get('course_package_uid'))
-
-            lessons_saved = CoursePackageLessons.objects.filter(
-                course_package_chapter__course_package_subject__course_package = course_package
-            )
-
-            print(course_package.pacakge_subjects.all())
-
-            lesson_saved_uid = []
-            for lesson in lessons_saved:
-                lesson_saved_uid.append(lesson.lesson.uid)
+            chapter_obj = SubjectChapters.objects.get(uid = request.GET.get('uid'))
+            course_package_obj = CoursePackage.objects.get(uid = request.GET.get('course_package_uid'))
             
-            old_lessons = []
-            for lesson in lessons_saved:
-                print(lesson.lesson)
-                old_lessons.append(lesson.lesson)
+            course_package_chapter_obj = CoursePackageChapters.objects.filter(
+                course_package_subject__course_package = course_package_obj,
+                subject_chapter = chapter_obj
+            ).first()
+
+    
+
+
+
+            lessons = chapter_obj.subject_lessons.all()
             
-
-
-            lessons = chapter_uid.subject_lessons.exclude(uid__in = lesson_saved_uid)
             new_serializer = LessonSerializer(lessons , many = True)
-            old_serializer = LessonSerializer(old_lessons , many=True)
+            
+            payload = []
+            if course_package_chapter_obj:
+                for data in new_serializer.data:
+                    if CoursePackageLessons.objects.filter(
+                        course_package_chapter = course_package_chapter_obj,
+                        lesson = Lessons.objects.get(uid = data['uid'])
+                        ).exists():
+                        payload.append({
+                        'uid' : data['uid'],
+                        'is_added' : True,
+                        'lesson_title' : data['lesson_title']
+                            })
+                       
+                    else:
+                        payload.append({
+                            'uid' : data['uid'],
+                            'is_added' : False,
+                            'lesson_title' : data['lesson_title']
+                        })
 
-            print(new_serializer.data)
-            print(old_serializer.data)
-            return Response({'status' : 200 , 'new' :new_serializer.data , 'old' : old_serializer.data })
+            
+            print(payload)
+
+
+
+           
+            return Response({'status' : 200 , 'data' :payload})
 
         except Exception as e:
             print(e)        

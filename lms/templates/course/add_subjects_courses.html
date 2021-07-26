@@ -3,6 +3,13 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dragula/3.6.6/dragula.min.js"
     integrity="sha512-MrA7WH8h42LMq8GWxQGmWjrtalBjrfIzCQ+i2EZA26cZ7OBiBd/Uct5S3NP9IBqKx5b+MMNH1PhzTsk6J9nPQQ=="
     crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<!-- multiple select function -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bbbootstrap/libraries@main/choices.min.css">
+<script src="https://cdn.jsdelivr.net/gh/bbbootstrap/libraries@main/choices.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
 
 <style type="text/css">
     .bg-1 {
@@ -35,12 +42,11 @@
                     <div class="form-group col-md-4">
                         <label>Select Subject</label>
                         <div class="input-group ">
-
                             <select id="subject" onchange="getChapters()" class="form-control">
-
                                 <option selected>Choose</option>
                                 {% for subject in subjects%}
-                                <option value="{{subject.uid}}">{{subject.subject_title}}</option>
+                                <option value="{{subject.uid}}" {% if subject.uid == subject_uid %} selected
+                                    {% endif %}>{{subject.subject_title}}</option>
                                 {%  endfor %}
                             </select>
                             <div class="input-group-append">
@@ -54,7 +60,19 @@
                         <div class="input-group ">
                             <select id="chapter" onchange="getLessons()" class="form-control">
                                 <option>Choose</option>
+                            </select>
+                        </div>
+                    </div>
 
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="degree2">select multiple</label>
+                            <select class="form-control " id="choices-multiple-remove-button"
+                                placeholder="Select upto Lessons" multiple>
+                                {% for lesson in lessons %}
+                                <option class="{{lesson.uid}}" {% if lesson.is_added %} selected {% endif %}>
+                                    {{lesson.lesson_title}}</option>
+                                {% endfor %}
                             </select>
 
 
@@ -62,52 +80,16 @@
                     </div>
 
 
+
+
+
                 </div>
             </div>
 
 
-            <div class="row">
-                <div class="col-md-12">
-                    <select id="multiselect" multiple="multiple">
-                        <option value="http://ipv4.download.thinkbroadband.com/5MB.zip">Option 1</option>
-                        <option value="http://ipv4.download.thinkbroadband.com/10MB.zip">Option 2</option>
-                        <option value="http://ipv4.download.thinkbroadband.com/20MB.zip">Option 3</option>
-                        <option value="http://ipv4.download.thinkbroadband.com/50MB.zip">Option 4</option>
-                    </select>
-                    <input type="submit" onclick="getSelectedValues()" class="btn btn-primary" value="Download">
-                </div>
-            </div>
-
-            <div class="row p-3 mt-3 ">
-                <div class="col-md-4">
-                    <p class="ml-4">Your Lessons</p>
-                    <div id="container1" class="container">
 
 
-                        <button class="btn btn-danger" type="button">Add Your Chapter Here</button>
 
-
-                    </div>
-                </div>
-                <div class="col-md-8">
-                    <div class="card bg-1">
-                        <div class="card-header bg-primary p-2" style="min-height: 43px;">
-                            <h4 class="ml-2 text-white">Input Text</h4>
-
-                        </div>
-
-                        <div class="card-body">
-                            <div id="container2" class="bg-white">
-
-                                <button class="btn btn-sucess">Drop</button>
-
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-
-            </div>
             <button onclick="saveSubject()" class="btn btn-dark mt-3 mb-4 ml-4">
                 Save Subject
             </button>
@@ -124,30 +106,21 @@
     integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 
 <script>
+    $(document).ready(function () {
+        var multipleCancelButton = new Choices('#choices-multiple-remove-button', {
+            removeItemButton: true,
+            searchResultLimit: 5,
+        });
+
+    });
+</script>
+<script>
     let one = document.querySelector('#container1')
     let two = document.querySelector('#container2')
     var course_package_uid = '{{course_package_uid}}'
     var CSRF_TOKEN = '{{csrf_token}}'
     console.log(CSRF_TOKEN)
-    var drake = dragula([one, two])
 
-    drake.on('drag', function (el, source) {
-        console.log(el, source)
-    })
-    drake.on('drop', function (el, target) {
-        console.log(el, target)
-        el.classList.add('item_added')
-        el.style.border = '5px dashed white';
-
-        return
-        addLessonToChapter(
-            document.getElementById('subject').value,
-            document.getElementById('chapter').value,
-            el.dataset.lesson_uid
-        )
-
-
-    })
 
     function addLessonToChapter(subject_uid, chapter_uid, lesson_uid) {
         var payload = {
@@ -178,16 +151,7 @@
 
     }
 
-    function randomString(length) {
-        var result = '';
-        var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        var charactersLength = characters.length;
-        for (var i = 0; i < length; i++) {
-            result += characters.charAt(Math.floor(Math.random() *
-                charactersLength));
-        }
-        return result;
-    }
+
 
     function getChapters() {
         var subject = document.getElementById('subject').value
@@ -213,42 +177,28 @@
     function getLessons() {
         var chapter = document.getElementById('chapter').value
 
-        axios.get(`/api/courses/get-lessons/?uid=${chapter}&course_package_uid=${course_package_uid}`)
-            .then(response => {
-                var element = document.getElementById('container1')
-                var new_lessons = response.data.new
-                var html = ''
-                for (var i = 0; i < new_lessons.length; i++) {
-                    html += `
-                            <button class="btn btn-danger" type="button"
-                                data-lesson_uid="${new_lessons[i].uid}">${new_lessons[i].lesson_title}</button>
-                        `
-                }
-                element.innerHTML = html
+        window.location.href = `?uid=${chapter}`
+        return;
+        // axios.get(`/api/courses/get-lessons/?uid=${chapter}&course_package_uid=${course_package_uid}`)
+        //     .then(response => {
+        //         var element = document.getElementById('choices-multiple-remove-button')
+        //         var data = response.data.data
 
-                var _html = ''
-                var old_lessons = response.data.old
-                for (var i = 0; i < old_lessons.length; i++) {
-                    html += `
-                            <button class="btn btn-danger" type="button"
-                                data-lesson_uid="${old_lessons[i].uid}">${old_lessons[i].lesson_title}</button>
-                        `
-                }
+        //         for(var i=0;i<data.length ;i++){
 
-                if (old_lessons.length) {
-                    document.getElementById('container2').innerHTML = html
-                } else {
-                    document.getElementById('container2').innerHTML = `
-                            <button class="btn btn-dark" type="button"
-                                >Add Lessons</button>
-                        `
-                }
+        //             var opt = document.createElement('option');
+        //             opt.value = "A";
+        //             opt.innerHTML = "A";
+        //             console.log(opt)
+        //             document.getElementById('choices-multiple-remove-button').appendChild(opt);
 
 
+        //         }
+
+        //     console.log(response.data.data)
 
 
-
-            })
+        // })
 
 
 
@@ -267,26 +217,24 @@
             .then((willDelete) => {
                 if (willDelete) {
 
-
                     var payload = {}
 
-
-                    var lessons = document.querySelectorAll('.item_added')
+                    var lessons = [];
+                    $('#choices-multiple-remove-button :selected').each(function () {
+                        lessons[$(this).val()] = $(this).text();
+                    });
+                   
+    
                     var chapter = document.getElementById('chapter').value
                     var subject = document.getElementById('subject').value
                     var course_pacakage_uid = '{{course_package_uid}}'
 
-                    var lesson_uids = []
-
-                    for (var i = 0; i < lessons.length; i++) {
-                        lesson_uids.push(lessons[i].dataset.lesson_uid)
-                    }
-
+                  
                     var payload = {
                         'course_package_uid': course_package_uid,
                         'subject_uid': subject,
                         'chapter_uid': chapter,
-                        'lesson_uid': lesson_uids
+                        'lesson_uid': lessons
                     }
                     const headers = {
                         'X-CSRFToken': CSRF_TOKEN
@@ -297,13 +245,7 @@
                         })
                         .then(function (response) {
                             console.log(response)
-                            if (response.data.status == 200) {
-                                swal("Success", "You Subject with Chapter lesson saved", "success");
-                                $("#container2").empty();
-                                $("#container2").html('<button class="btn btn-sucess">Drop</button>')
-
-
-                            }
+                           
 
                         })
                         .catch(function (error) {
@@ -340,130 +282,18 @@
             innerFunc(i);
         }
     }
-
-    
-   
 </script>
 
 
-<style>
-    body {
-        text-align: center;
-        background-color: #222;
-        color: #fff;
-        margin-top: 50px;
-    }
-
-    body .dropdown-menu {
-        border-radius: 0;
-    }
-
-    body .multiselect-native-select {
-        position: relative;
-    }
-
-    body .multiselect-native-select select {
-        border: 0 !important;
-        clip: rect(0 0 0 0) !important;
-        height: 1px !important;
-        margin: -1px -1px -1px -3px !important;
-        overflow: hidden !important;
-        padding: 0 !important;
-        position: absolute !important;
-        width: 1px !important;
-        left: 50%;
-        top: 30px;
-    }
-
-    body .multiselect-container {
-        position: absolute;
-        list-style-type: none;
-        margin: 0;
-        padding: 0;
-    }
-
-    body .multiselect-container .input-group {
-        margin: 5px;
-    }
-
-    body .multiselect-container li {
-        padding: 0;
-    }
-
-    body .multiselect-container li .multiselect-all label {
-        font-weight: 700;
-    }
-
-    body .multiselect-container li a {
-        padding: 0;
-    }
-
-    body .multiselect-container li a label {
-        margin: 0;
-        height: 100%;
-        cursor: pointer;
-        font-weight: 400;
-        padding: 3px 20px 3px 40px;
-    }
-
-    body .multiselect-container li a label input[type=checkbox] {
-        margin-bottom: 5px;
-    }
-
-    body .multiselect-container li a label.radio {
-        margin: 0;
-    }
-
-    body .multiselect-container li a label.checkbox {
-        margin: 0;
-    }
-
-    body .multiselect-container li.multiselect-group label {
-        margin: 0;
-        padding: 3px 20px 3px 20px;
-        height: 100%;
-        font-weight: 700;
-    }
-
-    body .multiselect-container li.multiselect-group-clickable label {
-        cursor: pointer;
-    }
-
-    body .btn-group .btn-group .multiselect.btn {
-        border-top-left-radius: 4px;
-        border-bottom-left-radius: 4px;
-    }
-
-    body .form-inline .multiselect-container label.checkbox {
-        padding: 3px 20px 3px 40px;
-    }
-
-    body .form-inline .multiselect-container label.radio {
-        padding: 3px 20px 3px 40px;
-    }
-
-    body .form-inline .multiselect-container li a label.checkbox input[type=checkbox] {
-        margin-left: -20px;
-        margin-right: 0;
-    }
-
-    body .form-inline .multiselect-container li a label.radio input[type=radio] {
-        margin-left: -20px;
-        margin-right: 0;
-    }
-
-    body .btn {
-        border-radius: 0;
-        padding: 10px 0;
-    }
-
-    body .btn-primary {
-        background-color: #ff0000;
-        border: none;
-        border-radius: 0;
-        padding: 11px 15px;
-        text-transform: uppercase;
-    }
-</style>
-
 {% endblock %}
+
+
+quiz application django,
+making quiz app in django,
+quiz app using django github,
+quiz application in django,
+quiz app django github,
+quiz app with django,
+test django application,
+quiz app using django,
+online quiz app using django,
