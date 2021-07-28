@@ -57,8 +57,23 @@ def add_package(request):
 
     if request.method == 'POST':
         package_title = request.POST.get('package_title')
+        package_description = request.POST.get('package_description')
+        actual_price  = request.POST.get('actual_price') 
+        selling_price  = request.POST.get('selling_price')
+        sell_from  = request.POST.get('sell_from')
+        sell_till  = request.POST.get('sell_till')
+        web_image = request.FILES['web_image']
+        mobile_image = request.FILES['mobile_image']
+
         package_obj = CoursePackage.objects.create(
-            package_title= package_title
+            package_title= package_title,
+            package_description = package_description,
+            actual_price = actual_price,
+            selling_price = selling_price,
+            sell_from = sell_from,
+            sell_till = sell_till,
+            web_image = web_image,
+            mobile_image = mobile_image,
         )
         return redirect(f'/api/courses/add-subjects-package/{package_obj.uid}/')
 
@@ -67,7 +82,7 @@ def add_package(request):
 
 def course_packages(request):
     context = {'course_packages' : CoursePackage.objects.all()}
-    return render(request , 'pacakage.html')
+    return render(request , 'course/package.html' , context)
 
 def add_subjects_courses(request,uid):
     context = {
@@ -98,8 +113,6 @@ def add_subjects_courses(request,uid):
         for lesson in course_package_subject_chapter_obj.pacakge_subject_chapters_lessons.all():
             old_lessons.append(lesson.lesson.uid)
 
-        print(old_lessons)
-
         for lesson in lessons:
             print(lesson.uid)
 
@@ -108,6 +121,8 @@ def add_subjects_courses(request,uid):
                     'uid' : lesson.uid,
                     'is_free' : lesson.is_free,
                     'lesson_title' : lesson.lesson_title,
+                    'video_link' : lesson.video_link,
+                    'video_uploaded_on' : lesson.video_uploaded_on,
                     'is_added' : True,
                     'created_at' : lesson.created_at,
                 })
@@ -119,6 +134,8 @@ def add_subjects_courses(request,uid):
                     'lesson_title' : lesson.lesson_title,
                     'is_added' : False,
                     'created_at' : lesson.created_at,
+                    'video_link' : lesson.video_link,
+                    'video_uploaded_on' : lesson.video_uploaded_on,
 
                 })
             
@@ -131,21 +148,28 @@ def add_subjects_courses(request,uid):
     return render(request , 'course/add_subjects_courses.html' , context)
 
 
+def course_tree(request,course_package_uid):
+    context = {'course_package' : CoursePackage.objects.get(uid = course_package_uid)}
+    return render(request , 'course/course_tree.html',context)
+
 
 def add_lessons(request):
     context = {'subject_chapters' : SubjectChapters.objects.all()}
     if request.method == 'POST':
-        chapters = request.POST.getlist('chapters')
+        chapters = request.POST.get('chapters')
         lesson_title = request.POST.get('lesson_title')
         video_uploaded_on = request.POST.get('video_uploaded_on')
         video_link = request.POST.get('video_link')
-        for chapter in chapters:
-            Lessons.objects.get_or_create(
-                lesson_title =lesson_title,
-                video_uploaded_on =video_uploaded_on,
-                video_link    =video_link,
-                subject_chapters = SubjectChapters.objects.get(uid = chapter)
-            )
+        is_free = request.POST.get('is_free')
+
+        
+        Lessons.objects.get_or_create(
+            lesson_title =lesson_title,
+            video_uploaded_on =video_uploaded_on,
+            video_link    =video_link,
+            is_free = is_free,
+            subject_chapters = SubjectChapters.objects.get(uid = chapters)
+        )
 
         messages.success(request, 'Lesson create Successfully')
                 
@@ -245,10 +269,12 @@ class SaveCoursePackage(APIView):
         try:
             data = request.data
             print(data)
-            course_package_obj = CoursePackage.objects.get(uid = '8974c82a-a57d-4091-96b1-65db8104d546')
+            course_package_obj = CoursePackage.objects.get(uid = data.get('course_package_uid'))
             _subject_uid = data.get('subject_uid')
             _chapter_uid = data.get('chapter_uid')
-            _lesson_uid = data.get('lesson_uid')
+            _selected_lesson_uid = data.get('selected_lesson_uid')
+            _unselected_lesson_uid = data.get('unselected_lesson_uid')
+            
 
             
             package_subject , _ = CoursePackageSubjects.objects.get_or_create(
@@ -262,12 +288,25 @@ class SaveCoursePackage(APIView):
             )
             
             i = 1
-            for _lesson in _lesson_uid:
-                package_lessons = CoursePackageLessons.objects.get_or_create(
+            for _lesson in _selected_lesson_uid:
+                print('created')
+                package_lessons ,_= CoursePackageLessons.objects.get_or_create(
                     course_package_chapter = package_chapter,
                     lesson = Lessons.objects.get(uid=_lesson),
                     sequence = i
                 )
+                print(package_lessons)
+                i += 1
+
+            for _lesson in _unselected_lesson_uid:
+                try:
+                    package_lessons = CoursePackageLessons.objects.get(
+                        course_package_chapter = package_chapter,
+                        lesson = Lessons.objects.get(uid=_lesson)
+                    ).delete()
+                except Exception as e:
+                    print(e)
+
 
             response['status'] = 200  
             response['message'] = 'Subject Added'  

@@ -19,12 +19,12 @@
 </div>
 <div id="main_id">
     <div class="card mt-5">
+        {% include "utils/alert.html" %}
         <div class="card-header bg-primary text-white">
-            <h4 class="text-white">ADD ITEMS</h4>
+            <h4 class="text-white">ADD ITEMS</h4> 
             <div class="card-header-action">
-                <a data-collapse="#mycard-collapse" class="btn btn-icon btn-danger " style="border-radius: 4px;"
-                    href="#">
-                    Collapse <i class="fas fa-chevron-up"></i></a>
+                <a href="{% url 'course_tree'  course_package_uid %}">
+                View Tree </a>
             </div>
         </div>
         <div class="collapse show" id="mycard-collapse" style="">
@@ -33,7 +33,7 @@
                     <div class="form-group col-md-4">
                         <label>Select Subject</label>
                         <div class="input-group ">
-                            <select id="subject" onchange="getChapters()" class="form-control">
+                            <select id="subject" onchange="getChapters(0)" class="form-control">
                                 <option selected>Choose</option>
                                 {% for subject in subjects%}
                                 <option value="{{subject.uid}}" {% if subject.uid == selected_subject %} selected
@@ -62,9 +62,10 @@
                                 <tr>
                                     <th scope="col">#</th>
                                     <th scope="col">S.no</th>
-
                                     <th scope="col">Lesson title</th>
                                     <th scope="col">Is Free</th>
+                                    <th scope="col">Video Link</th>
+                                    <th scope="col">Video uploaded On</th>
                                     <th scope="col">Created At</th>
                                 </tr>
                             </thead>
@@ -78,6 +79,17 @@
                                     <td>{{forloop.counter}}</td>
                                     <td>{{lesson.lesson_title}}</td>
                                     <td>{{lesson.is_free}}</td>
+                                    <td>
+                                        <a href=" {{lesson.video_link}}" target="_blank">
+                                            <i class="fas fa-external-link-alt"></i>
+                                            
+                                        </a>
+                                    </td>
+                                    <td>{{lesson.video_uploaded_on}}</td>
+
+
+                                    
+
 
                                     <td>{{lesson.created_at}}</td>
                                 </tr>
@@ -108,21 +120,9 @@
 </div>
 
 
-<script type="text/javascript" language="javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
 <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/select/1.3.1/js/dataTables.select.min.js"></script>
 
-
-<!-- 
-<script>
-    $(document).ready(function () {
-        var multipleCancelButton = new Choices('#choices-multiple-remove-button', {
-            removeItemButton: true,
-            searchResultLimit: 5,
-        });
-
-    });
-</script> -->
 <script>
 
     {% if selected_subject %}
@@ -131,28 +131,19 @@
 
 
 
+    $(document).ready(function () {
+        $("#table").dataTable();
+    });
    
   
-$(document).ready(function() {
-    $('#table').DataTable( {
-        columnDefs: [ {
-            orderable: false,
-            className: 'select-checkbox',
-            targets:   0
-        } ],
-        select: {
-            style:    'os',
-            selector: 'td:first-child'
-        },
-        order: [[ 1, 'asc' ]]
-    } );
-} );
+// $(document).ready(function() {
+//     $('#table').DataTable();
+// } );
 
     let one = document.querySelector('#container1')
     let two = document.querySelector('#container2')
     var course_package_uid = '{{course_package_uid}}'
     var CSRF_TOKEN = '{{csrf_token}}'
-    console.log(CSRF_TOKEN)
 
 
     function addLessonToChapter(subject_uid, chapter_uid, lesson_uid) {
@@ -162,9 +153,7 @@ $(document).ready(function() {
             'lesson_uid': lesson_uid,
             'course_package_uid': course_package_uid
         }
-        console.log(payload)
-
-
+       
         const headers = {
             'X-CSRFToken': CSRF_TOKEN
         }
@@ -190,7 +179,10 @@ $(document).ready(function() {
     }
 
 
-    function getChapters() {
+    function getChapters(v = 1) {
+        if(v == 0){
+            clearTable()
+        }
         var subject = document.getElementById('subject').value
         axios.get(`/api/courses/get-chapters/?uid=${subject}`)
             .then(response => {
@@ -202,8 +194,9 @@ $(document).ready(function() {
 
                 opt.innerHTML = 'Choose';
                 document.getElementById('chapter').appendChild(opt);
-                for (var i = 0; i <= chapters.length; i++) {
+                for (var i = 0; i < chapters.length; i++) {
                     var opt = document.createElement('option');
+                    console.log(chapters[i].uid)
                     opt.value = chapters[i].uid;
                     opt.innerHTML = chapters[i].chapter_title;
                     
@@ -218,21 +211,16 @@ $(document).ready(function() {
 
     function getLessons() {
         var chapter = document.getElementById('chapter').value
-
         window.location.href = `?uid=${chapter}`
         return;
-    
+    }
 
-
+    function clearTable(){
+        document.getElementById('table').innerHTML =''
     }
 
 
     function saveSubject() {
-
-       
-
-
-
         swal({
                 title: "Are you sure?",
                 text: "You want to save?",
@@ -246,9 +234,14 @@ $(document).ready(function() {
                     var payload = {}
 
                     var lesson_elements =  document.querySelectorAll('.lesson_list')
-                    var lessons = []
+                    var selected_lessons = []
+                    var unselected_lessons = []
                     for(var i = 0;i<lesson_elements.length;i++){
-                        lessons.push(lesson_elements[i].dataset.lesson_id)
+                        if(lesson_elements[i].checked){
+                            selected_lessons.push(lesson_elements[i].dataset.lesson_id)
+                        }else{
+                            unselected_lessons.push(lesson_elements[i].dataset.lesson_id)
+                        }
                     }
 
 
@@ -256,12 +249,12 @@ $(document).ready(function() {
                     var subject = document.getElementById('subject').value
                     var course_pacakage_uid = '{{course_package_uid}}'
 
-
                     var payload = {
                         'course_package_uid': course_package_uid,
                         'subject_uid': subject,
                         'chapter_uid': chapter,
-                        'lesson_uid': lessons
+                        'selected_lesson_uid': selected_lessons,
+                        'unselected_lesson_uid' : unselected_lessons,
                     }
                     const headers = {
                         'X-CSRFToken': CSRF_TOKEN
@@ -288,17 +281,11 @@ $(document).ready(function() {
             });
 
 
-        console.log('Saved')
+       
 
     }
 
-    $(document).ready(function () {
-        $('#multiselect').multiselect({
-            buttonWidth: '160px',
-            includeSelectAllOption: true,
-            nonSelectedText: 'Select an Option'
-        });
-    });
+ 
 
 
     function getSelectedValues() {

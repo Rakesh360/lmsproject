@@ -1,5 +1,8 @@
 {%extends 'base.html'%}
 {% block start %}
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
+
 
 <style type="text/css">
     .bg-1 {
@@ -21,40 +24,72 @@
   </div> -->
     <div class="card-body">
         {% include "utils/alert.html" %}
-        <form method="POST">
+        <form method="POST" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="form-row mb-4">
-                <div class="form-group col-md-6">
+                <div class="form-group col-md-12">
                     <label for="inputEmail4">Package title</label>
-                    <input type="text" name="package_title" class="form-control" required
+                    <input type="text" required name="package_title" class="form-control" required
                        id="inputEmail4" placeholder="Enter Package title">
                 </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="degree4">Expiry date </label>
-                        <input type="text" class="form-control mb-4" id="degree4" placeholder="Add your work here" value="">
+                
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Actual Price</label>
+                                <input type="number" required name="actual_price" class="form-control mb-4" id="degree3" placeholder="Actual Price" value="">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="degree4">Selling Price</label>
+                                <input type="number" required name="selling_price" class="form-control mb-4" id="degree4" placeholder="Selling Price" value="">
+                            </div>
+                        </div>
                     </div>
                 </div>
-            
+
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Sell From</label>
+                                <input type="date" required name="sell_from" class="form-control mb-4" id="degree3" placeholder="Add your subjects" value="">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="degree4">Sell Till</label>
+                                <input type="date" required name="sell_till" class="form-control mb-4" id="degree4" placeholder="Add your work here" value="">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
             <div class="col-md-12">
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
                             <label>Web image</label>
-                            <input type="file" class="form-control mb-4" id="degree3" placeholder="Add your subjects" value="">
+                            <input type="file" name="web_image" required class="form-control mb-4" id="degree3" placeholder="Add your subjects" value="">
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="degree4">Mobile image</label>
-                            <input type="file" class="form-control mb-4" id="degree4" placeholder="Add your work here" value="">
+                            <input type="file" name="mobile_image" required class="form-control mb-4" id="degree4" placeholder="Add your work here" value="">
                         </div>
                     </div>
                 </div>
             </div>
 
+
+
+
             <div class="col-md-12">
-                <textarea class="form-control" placeholder="Package description" cols="100" rows="50"></textarea>
+                <lable>Add description</lable>
+                <textarea  required class="form-control" name="package_description" placeholder="Package description" id="summernote" cols="100" rows="50"></textarea>
             </div>
 
 
@@ -68,35 +103,17 @@
             <button type="submit" class="btn btn-primary mt-3">Add Package</button>
         </form>
 
-        <div style= "width:150px; margin:20px auto;">
-            <!-- Build your select: -->
-            <select id="example-getting-started" multiple="multiple">
-              <div class="container">
-                <div class="row">
-                  <div class="col-md-6">
-                 <option value="cheese">Cheese</option>
-                <option value="tomatoes">Tomatoes</option>
-                <option value="mozarella">Mozzarella</option>
-              </div>
-              
-               <div class="col-md-6">
-                 <option value="mushrooms">Mushrooms</option>
-                <option value="pepperoni">Pepperoni</option>
-                <option value="onions">Onions</option>
-              </div>
-                  
-                </div>
-              </div>
-              
-               
-                
-            </select>
-          
-          </div>
+    
       </div>
     
 </div>
     
+
+<script>
+    $(document).ready(function() {
+  $('#summernote').summernote();
+});
+</script>
      
 
 

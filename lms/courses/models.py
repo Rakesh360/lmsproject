@@ -59,18 +59,12 @@ class Lessons(BaseModel):
 class CoursePackage(BaseModel):
     package_title = models.CharField(max_length=100)
     package_description = models.TextField(null=True , blank=True)
-    package_image = models.ImageField(upload_to = 'courses',null=True , blank=True)
-    subjects = models.ManyToManyField(Subject,null=True , blank=True)
     actual_price = models.IntegerField(null=True , blank=True)
     selling_price = models.IntegerField(default = 0)
-    sell_from = models.DateField(null=True , blank=True)
-    sell_till = models.DateField(null=True , blank=True)
+    sell_from = models.CharField(null=True , blank=True, max_length=100)
+    sell_till = models.CharField(null=True , blank=True ,  max_length=100)
     is_active = models.BooleanField(default=True)
     course_validity = models.DateField(null=True , blank=True)
-    course_package_info = models.TextField(default='[]')
-    course_subjects = models.TextField(default='[]')
-    course_chapters = models.TextField(default='[]')
-    course_lessons = models.TextField(default='[]')
     web_image = models.ImageField(upload_to = "course_package",null=True , blank=True)
     mobile_image = models.ImageField(upload_to = "course_package",null=True , blank=True)
 
@@ -102,7 +96,7 @@ class CoursePackageLessons(BaseModel):
 
     def __str__(self) -> str:
         return self.lesson.lesson_title
-
+    
 
 # [
 # {

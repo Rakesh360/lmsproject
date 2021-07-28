@@ -27,14 +27,28 @@
            <span>Subjects</span></a>
        
       </li>
+      <li class="nav-item dropdown">
+        <a href="{% url 'subject_chapters' %}" class="nav-link"><i class="fas fa-columns"></i>
+           <span>Chapters</span></a>
+       
+      </li>
+      
+      <li class="nav-item dropdown">
+        <a href="{% url 'lessons' %}" class="nav-link"><i class="fas fa-columns"></i>
+           <span>Lessons</span></a>
+       
+      </li>
+      <li class="nav-item dropdown">
+        <a href="{% url 'add_lessons' %}" class="nav-link"><i class="fas fa-columns"></i>
+           <span> Add Lessons</span></a>
+       
+      </li>
       
       <li class="nav-item dropdown">
         <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-columns"></i>
            <span>Course Packages</span></a>
         <ul class="dropdown-menu">
-          <li><a class="nav-link" href="{% url 'course_packages' %}">Course Packages</a></li>
-          <li><a class="nav-link" href="layout-transparent.html">Transparent Sidebar</a></li>
-          <li><a class="nav-link" href="layout-top-navigation.html">Top Navigation</a></li>
+          <li><a class="nav-link" href="{% url 'course_packages' %}">Course Packages</a></li> 
         </ul>
       </li>
 

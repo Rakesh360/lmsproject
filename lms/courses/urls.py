@@ -16,5 +16,7 @@ urlpatterns = [
    path('add-subjects-package/<uid>/' , views.add_subjects_courses,name="add_subjects_courses"),
    path('get-chapters/' , views.ChaptersView.as_view()),
    path('get-lessons/' , views.LessonsView.as_view()),
-   path('save-course-package/' , views.SaveCoursePackage.as_view())
+   path('save-course-package/' , views.SaveCoursePackage.as_view()),
+   path('course-tree/<course_package_uid>/' , views.course_tree , name="course_tree"),
+
 ]

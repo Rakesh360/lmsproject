@@ -1,27 +1,27 @@
 {%extends 'base.html'%}
 
 {%block start%}
-<div id="content" class="main-content">
-    <div class="layout-px-spacing">
 
-
-      
-        
-
-        <div class="row layout-top-spacing" id="cancel-row">
-        
-            <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
-                
-                <div class="widget-content widget-content-area br-6">
-                    <div id="zero-config_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4">
-                        
-                        <div class="dt--top-section">
-                            <div class="text-right container mt-3 mb-3">
-                                <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">Add Subject</button>
-                                
-                            </div>
-                        </div>
-                        
+<style type="text/css">
+    .bg-1 {
+        background: #ECECF8;
+    }
+</style>
+<!-- JavaScript Bundle with Popper -->
+<div class="section-header">
+    <h1>Add Subjects </h1>
+    <div class="section-header-breadcrumb">
+        <div class="breadcrumb-item active">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                Add Chapter
+              </button>
+         
+        </div>
+    </div>
+</div>
+<div id="main_id">
+    <div class="card mt-5">
+     
                         <div style="margin-left:-50px !important">
 
                             {% include "utils/alert.html" %}

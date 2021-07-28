@@ -1,28 +1,26 @@
 {%extends 'base.html'%}
+{% block start %}
 
-{%block start%}
-<div id="content" class="main-content">
-    <div class="layout-px-spacing">
+<style type="text/css">
+    .bg-1 {
+        background: #ECECF8;
+    }
+</style>
+<div class="section-header">
+    <h1>Add Pakage</h1>
+    <div class="section-header-breadcrumb">
+        <div class="breadcrumb-item active"><a href="#">Dashboard</a></div>
+        <div class="breadcrumb-item">Add Pakage</div>
+    </div>
+</div>
 
-        <div class="row layout-top-spacing" id="cancel-row">
-        
-            <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
-                
-                <div class="widget-content widget-content-area br-6">
-                    <div id="zero-config_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4">
-                        
-                        <div class="dt--top-section">
-                            <div class="text-right container mt-3 mb-3">
-                                <a class="btn btn-danger" href="{% url 'add_lessons' %}" >Add Lesson</a>
-                                
-                            </div>
-                        </div>
-                        
-                        <div style="margin-left:-50px !important">
 
-                            {% include "utils/alert.html" %}
-                        </div>
-
+<div class="card">
+    <!-- <div class="card-header">
+    <h4>Horizontal Form</h4>
+  </div> -->
+    <div class="card-body">
+        {% include "utils/alert.html" %}
                         <div class="table-responsive">
                             <table id="zero-config" class="table table-striped dataTable" style="width: 100%;"
                                 role="grid" aria-describedby="zero-config_info">
@@ -34,6 +32,9 @@
                                         <th class="sorting" tabindex="0" aria-controls="zero-config" rowspan="1"
                                             colspan="1" aria-label="Position: activate to sort column ascending"
                                             style="width: 156px;">Lesson Title</th>
+                                            <th class="sorting" tabindex="0" aria-controls="zero-config" rowspan="1"
+                                            colspan="1" aria-label="Position: activate to sort column ascending"
+                                            style="width: 156px;">Lesson Chapter</th>
                                             <th class="sorting" tabindex="0" aria-controls="zero-config" rowspan="1"
                                             colspan="1" aria-label="Position: activate to sort column ascending"
                                             style="width: 156px;">Video Uploaded On</th>
@@ -57,6 +58,8 @@
                                     <tr role="row">
                                         <td class="sorting_1">{{forloop.counter}}</td>
                                         <td>{{lesson.lesson_title}}</td>
+                                        <td>{{lesson.subject_chapters}}</td>
+
                                         <td class="text-center">{{lesson.video_uploaded_on}}</td>
                                         <td class="text-center">
                                             <a href=" {{lesson.subject.video_link}}" target="_blank">
