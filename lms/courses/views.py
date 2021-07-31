@@ -201,8 +201,8 @@ class CoursesView(APIView):
             course_package_dict['selling_price'] = course_obj.selling_price
             course_package_dict['sell_from'] = course_obj.selling_price
             course_package_dict['sell_till'] = course_obj.selling_price
-            course_package_dict['web_image'] = str('/media/'+course_obj.web_image)
-            course_package_dict['mobile_image'] = str('/media/'+course_obj.mobile_image)
+            course_package_dict['web_image'] = '/media/' + str(course_obj.web_image)
+            course_package_dict['mobile_image'] ='/media/' + str(course_obj.mobile_image)
 
             subjects = [] 
             for subject in course_obj.pacakge_subjects.all():
