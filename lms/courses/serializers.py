@@ -30,26 +30,47 @@ class SubjectChaptersSerializer(serializers.ModelSerializer):
 
 
 class SubjectSerializer(serializers.ModelSerializer):
-    chapters = SubjectChaptersSerializer(source ="subject" , many=True)
+    #chapters = SubjectChaptersSerializer(source ="subject_chapters" , many=True)
     class Meta:
         model = Subject
-        fields = ['subject_title' , 'chapters']
+        exclude = ['created_at' , 'updated_at']
 
 
+class CoursePackageLessonsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CoursePackageLessons
+        exclude = ['created_at' , 'updated_at']
+       
 
+class CoursePackageChaptersSerializer(serializers.ModelSerializer):
+    lessons = CoursePackageLessonsSerializer(source ='pacakge_subject_chapters_lessons' , many =True)
+    
+    class Meta:
+        model = CoursePackageChapters
+        exclude = ['created_at' , 'updated_at']
+       
+class CoursePackageSubjectsSerializer(serializers.ModelSerializer):
+    subject = SubjectSerializer()
+    chapters = CoursePackageChaptersSerializer(source ='pacakge_subject_chapters' , many =True)
+    class Meta:
+        model = CoursePackageSubjects
+        exclude = ['created_at' , 'updated_at']
+       
 
 class CourseSerializer(serializers.ModelSerializer):
-    subjects = SubjectSerializer(many=True)
-    course_package_info = serializers.SerializerMethodField()
+    #course_package_info = serializers.SerializerMethodField()
+    subjects = CoursePackageSubjectsSerializer(source ="pacakge_subjects" , many=True)
+
     class Meta:
         model = CoursePackage
     
-        fields = '__all__'
+        exclude = ['created_at' , 'updated_at']
+
         depth = 1
 
-    def get_course_package_info(self,obj):
-        print(obj)
-        import json
-        return json.loads(obj.course_package_info)
+    # def get_course_package_info(self,obj):
+    #     print(obj)
+    #     import json
+    #     return json.loads(obj.course_package_info)
 
 

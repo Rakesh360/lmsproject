@@ -25,7 +25,7 @@ class Subject(BaseModel):
 
 
 class SubjectChapters(BaseModel):
-    subject = models.ForeignKey(Subject , null=True , blank=True , on_delete=models.CASCADE)
+    subject = models.ForeignKey(Subject ,related_name="subject_chapters", null=True , blank=True , on_delete=models.CASCADE)
     chapter_title = models.CharField(max_length=100 , null=True , blank=True)
 
     
