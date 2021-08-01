@@ -7,11 +7,8 @@
     }
 </style>
 <div class="section-header">
-    <h1>Add Pakage</h1>
-    <div class="section-header-breadcrumb">
-        <div class="breadcrumb-item active"><a href="#">Dashboard</a></div>
-        <div class="breadcrumb-item">Add Pakage</div>
-    </div>
+    <h1>Add Lesson</h1>
+   
 </div>
 
 
@@ -21,7 +18,7 @@
   </div> -->
     <div class="card-body">
         {% include "utils/alert.html" %}
- <form method="POST">
+ <form method="POST" enctype="multipart/form-data">
      {% csrf_token %}
                             <div class="form-row mb-4">
                                 <div class="form-group col-md-6">
@@ -37,32 +34,53 @@
                                     </select>
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <label for="inputAddress">Video Platform</label>
-                                    <select required class="form-control" name="video_uploaded_on">
-                                        <option value="Vimeo">Vimeo</option>
-                                        <option value="Youtube">Youtube</option>
-    
+                             
+                                    <label for="inputEmail4">Is free</label>
+                                    <select class="form-control" name="is_free">
+                                        <option value="0">No</option>
+                                        <option value="1">Yes</option>
+
                                     </select>
-                                    </div>
+                                </div>
 
-                                    <div class="form-group col-md-6">
+                                <div class="form-group col-md-6">
                              
-                                        <label for="inputEmail4">Lesson Link</label>
-                                        <input required type="text" class="form-control" name="video_link" id="inputEmail4" placeholder="Enter lesson title">
-                                    </div>
-                                    
-                                    <div class="form-group col-md-6">
-                             
-                                        <label for="inputEmail4">Is free</label>
-                                        <select class="form-control" name="is_free">
-                                            <option value="0">No</option>
-                                            <option value="1">Yes</option>
+                                    <label for="inputEmail4">Lesson Type</label>
+                                    <select class="form-control" id="element" name="lesson_type" onchange="changeLessonType()">
+                                        <option value="Video">Video</option>
+                                        <option value="Document">Document</option>
 
-                                        </select>
-                                    </div>
-                                    
+                                    </select>
+                                </div>
+
+                               
                             </div>
-                          
+                            <div class="form-row mb-4" id="video_upload" >
+
+                            <div class="form-group col-md-6" >
+                                <label for="inputAddress">Video Platform</label>
+                                <select required class="form-control" name="video_uploaded_on">
+                                    <option value="Vimeo">Vimeo</option>
+                                    <option value="Youtube">Youtube</option>
+
+                                </select>
+                                </div>
+                                <div class="form-group col-md-6">
+                         
+                                    <label for="inputEmail4">Lesson Link</label>
+                                    <input  type="text" required id="lesson_link" class="form-control" name="video_link" id="inputEmail4" placeholder="Enter lesson title">
+                                </div>  
+                                </div>
+
+                            <div class="form-row mb-4" id="document_upload" style="display: none;">
+
+                            <div class="form-group col-md-6"  >
+                                <label>Upload Document</label>
+                                <input class="form-control" id="document" type="file" name="document">
+                                </div>
+
+                          </div>
+
                             
 
                           <button type="submit" class="btn btn-primary mt-3">Add Chapters</button>
@@ -75,6 +93,26 @@
     </div>
 </div>
 
+<script>
+    function changeLessonType(){
+        var element = document.getElementById('element')
+        console.log(element.value)
+        if(element.value == 'Video'){
+            document.getElementById('video_upload').style.display = ''
+            document.getElementById('document_upload').style.display = 'none'
+            document.getElementById('document').required = false
+            document.getElementById('lesson_link').required = true
+
+        }else{
+            document.getElementById('document_upload').style.display = ''
+            document.getElementById('video_upload').style.display = 'none'
+            document.getElementById('document').required = true
+            document.getElementById('lesson_link').required = false
+
+
+        }
+    }
+</script>
 
 
 {% endblock %}

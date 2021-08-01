@@ -3,9 +3,7 @@ import re
 from django.db.models import manager
 from django.shortcuts import redirect, render
 from rest_framework import serializers
-
 from rest_framework.views import APIView
-
 from .models import *
 from .serializers import *
 from rest_framework.response import Response
@@ -75,10 +73,39 @@ def add_package(request):
             web_image = web_image,
             mobile_image = mobile_image,
         )
-        return redirect(f'/api/courses/add-subjects-package/{package_obj.uid}/')
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
     return render(request , 'course/add_package.html' , context)
 
+
+def course_package_edit(request , uid):
+    try:
+        if request.method == 'POST':
+            package_title = request.POST.get('package_title')
+            package_description = request.POST.get('package_description')
+            actual_price  = request.POST.get('actual_price') 
+            selling_price  = request.POST.get('selling_price')
+            sell_from  = request.POST.get('sell_from')
+            sell_till  = request.POST.get('sell_till')
+            package_obj = CoursePackage.objects.get(uid = uid)
+            package_obj.package_title= package_title
+            package_obj.package_description = package_description
+            package_obj.actual_price = actual_price
+            package_obj.selling_price = selling_price
+            package_obj.sell_from = sell_from
+            package_obj.sell_till = sell_till
+            package_obj.save()
+            messages.success(request, 'Course Package Updated')
+
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+        context = {'course_package' : CoursePackage.objects.get(uid = uid)}
+        
+
+        return render(request , 'course/course-package/course_package_edit.html' , context)
+    except Exception as e:
+        print(e)
+    return redirect('/error/')
 
 def course_packages(request):
     context = {'course_packages' : CoursePackage.objects.all()}
@@ -103,43 +130,18 @@ def add_subjects_courses(request,uid):
         )
 
         course_package_subject_chapter_obj,_ = CoursePackageChapters.objects.get_or_create(
-         course_package_subject = course_package_subject_obj,
+        course_package_subject = course_package_subject_obj,
             subject_chapter    = chapter_obj
         )
         
-
         payload = []
         old_lessons = []
         for lesson in course_package_subject_chapter_obj.pacakge_subject_chapters_lessons.all():
             old_lessons.append(lesson.lesson.uid)
 
-        for lesson in lessons:
-            print(lesson.uid)
-
-            if lesson.uid in old_lessons:
-                payload.append({
-                    'uid' : lesson.uid,
-                    'is_free' : lesson.is_free,
-                    'lesson_title' : lesson.lesson_title,
-                    'video_link' : lesson.video_link,
-                    'video_uploaded_on' : lesson.video_uploaded_on,
-                    'is_added' : True,
-                    'created_at' : lesson.created_at,
-                })
-
-            else:
-                payload.append({
-                    'uid' : lesson.uid,
-                    'is_free' : lesson.is_free,
-                    'lesson_title' : lesson.lesson_title,
-                    'is_added' : False,
-                    'created_at' : lesson.created_at,
-                    'video_link' : lesson.video_link,
-                    'video_uploaded_on' : lesson.video_uploaded_on,
-
-                })
-            
-        context['lessons'] = payload
+    
+        context['old_lessons'] = old_lessons
+        context['lessons'] = lessons
         context['selected_subject'] = chapter_obj.subject.uid
 
 
@@ -161,20 +163,61 @@ def add_lessons(request):
         video_uploaded_on = request.POST.get('video_uploaded_on')
         video_link = request.POST.get('video_link')
         is_free = request.POST.get('is_free')
-
+        lesson_type = request.POST.get('lesson_type')
         
-        Lessons.objects.get_or_create(
+        lesson_obj ,_ = Lessons.objects.get_or_create(
             lesson_title =lesson_title,
-            video_uploaded_on =video_uploaded_on,
-            video_link    =video_link,
             is_free = is_free,
             subject_chapters = SubjectChapters.objects.get(uid = chapters)
         )
+
+
+        if lesson_type == 'Video':
+            obj = Video.objects.create(
+               video_uploaded_on =video_uploaded_on,
+               video_link    =video_link,
+            )
+            lesson_obj.video = obj
+        else:
+            obj = Document.objects.create(
+                document_file =  request.FILES['document']
+            )
+            lesson_obj.document = obj
+
+        lesson_obj.save()
 
         messages.success(request, 'Lesson create Successfully')
                 
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
+    return render(request , 'course/add_lessons.html' , context)
+
+def update_lesson(request , uid):
+    try:
+        lesson_obj = Lessons.objects.get(uid = uid)
+        if request.method == 'POST':
+            chapters = request.POST.get('chapters')
+            lesson_title = request.POST.get('lesson_title')
+            video_uploaded_on = request.POST.get('video_uploaded_on')
+            video_link = request.POST.get('video_link')
+            is_free = request.POST.get('is_free')
+            
+
+            lesson_obj.lesson_title =lesson_title,
+            lesson_obj.video_uploaded_on =video_uploaded_on,
+            lesson_obj.video_link    =video_link,
+            lesson_obj.is_free = is_free,
+            lesson_obj.subject_chapters = SubjectChapters.objects.get(uid = chapters)
+            lesson_obj.save()
+
+            messages.success(request, 'Lesson update Successfully')
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+    except Exception as e:
+        print(e)
+    
+    context = {'lesson' : lesson_obj , 'subject_chapters' : SubjectChapters.objects.all()}
+    return render(request , 'course/update_lesson.html',context )
 
 
 
@@ -187,8 +230,7 @@ class CoursesView(APIView):
 
     def get(self , request):
         course_objs = CoursePackage.objects.all()
-        serializer = CourseSerializer(course_objs , many=True)
-
+       
         payload = []
 
         for course_obj in course_objs:
@@ -217,9 +259,21 @@ class CoursesView(APIView):
                         lesson_dict = {}
                         lesson_dict['sequence'] = lesson.sequence
                         lesson_dict['lesson_title'] = lesson.lesson.lesson_title
-                        lesson_dict['video_link'] = lesson.lesson.video_link
+                        lesson_dict['lesson_type'] = lesson.lesson.lesson_type
                         lesson_dict['is_free'] = lesson.lesson.is_free
                         lesson_dict['created_at'] = lesson.created_at
+                        lesson_dict['video_link'] = ''
+                        lesson_dict['video_uploaded_on'] = ''
+                        lesson_dict['document_file'] = ''
+                        try:
+                            if lesson.lesson.lesson_type == 'Video':
+                                lesson_dict['video_link'] = lesson.lesson.video.video_link
+                                lesson_dict['video_uploaded_on'] = lesson.lesson.video.video_uploaded_on
+                            else:
+                                lesson_dict['document_file'] = lesson.lesson.document_file
+                        except Exception as e:
+                            print(e)
+
                         lessons.append(lesson_dict)
                     chapter_dict['lessons'] = lessons
                         
@@ -371,3 +425,50 @@ class SaveCoursePackage(APIView):
 def live_stream_view(request , id):
     context = {'live' : LiveStream.objects.get(uid = id)}
     return render(request , 'live.html' , context)
+
+
+
+
+
+################ DELETE REQUEST ###########
+
+
+def delete_subject(request):
+    try:
+        Subject.objects.get(uid = request.GET.get('uid')).delete()
+    except Exception as e:
+        print(e)
+    messages.success(request, 'Subject Deleted')
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+def delete_chapter(request):
+    try:
+        SubjectChapters.objects.get(uid = request.GET.get('uid')).delete()
+    except Exception as e:
+        print(e)
+    messages.success(request, 'Chapter Deleted')
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+
+def delete_lesson(request ):
+    try:
+        Lessons.objects.get(uid = request.GET.get('uid')).delete()
+    
+    except Exception as e:
+        print(e)
+    messages.success(request, 'Lesson Deleted')
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+ 
+
+
+def delete_course_package(request ):
+    try:
+        CoursePackage.objects.get(uid = request.GET.get('uid')).delete()
+    
+    except Exception as e:
+        print(e)
+    messages.success(request, 'Course Package Deleted')
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+ 
+
+    

@@ -41,13 +41,13 @@
                             aria-label="Office: activate to sort column ascending" >Actual price
                         </th>
                         <th class="sorting" tabindex="0" aria-controls="zero-config" rowspan="1" colspan="1"
-                            aria-label="Office: activate to sort column ascending" >Package Start
+                            aria-label="Office: activate to sort column ascending" > Start
                             date</th>
                         <th class="sorting" tabindex="0" aria-controls="zero-config" rowspan="1" colspan="1"
-                            aria-label="Office: activate to sort column ascending" >Package ENd date
+                            aria-label="Office: activate to sort column ascending" > End date
                         </th>
                         <th class="sorting" tabindex="0" aria-controls="zero-config" rowspan="1" colspan="1"
-                            aria-label="Age: activate to sort column ascending" >Updated At</th>
+                            aria-label="Age: activate to sort column ascending" >Created At</th>
                         <th class="sorting" tabindex="0" aria-controls="zero-config" rowspan="1" colspan="1"
                             aria-label="Age: activate to sort column ascending" >Action </th>
                             <th class="sorting" tabindex="0" aria-controls="zero-config" rowspan="1" colspan="1"
@@ -66,7 +66,15 @@
                         <td>{{course_package.sell_from}}</td>
                         <td>{{course_package.sell_till}}</td>
                         <td>{{course_package.created_at}}</td>
-                        <td>{{course_package.updated_at}}</td>
+
+                        <td>
+                             <a href="{% url 'course_package_edit' course_package.uid %}" class="btn btn-success btn-sm" >
+                                                <i class="fas fa-pencil-alt"></i>
+                             </a>
+                                            <button class="btn btn-danger btn-sm">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>  
+                        </td>
                         <td>
                             <a href="{% url 'add_subjects_courses' course_package.uid %}" class="btn btn-danger">View</a>
                         </td>

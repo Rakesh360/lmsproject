@@ -1,0 +1,109 @@
+{%extends 'base.html'%}
+{% block start %}
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
+
+
+<style type="text/css">
+    .bg-1 {
+        background: #ECECF8;
+    }
+</style>
+<div class="section-header">
+    <h1>Update Package</h1>
+    <div class="section-header-breadcrumb">
+        <a href="{% url 'add_subjects_courses' course_package.uid %}" class="btn btn-danger text-white">
+            Update Lessons
+        </a>
+    </div>
+
+
+</div>
+
+
+<div class="card">
+    <!-- <div class="card-header">
+    <h4>Horizontal Form</h4>
+  </div> -->
+  <div class="card-body">
+        {% include "utils/alert.html" %}
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-row mb-4">
+                <div class="form-group col-md-12">
+                    <label for="inputEmail4">Package title</label>
+                    <input type="text" value="{{course_package.package_title}}" required name="package_title" class="form-control" required
+                       id="inputEmail4" placeholder="Enter Package title">
+                </div>
+                
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Actual Price</label>
+                                <input type="number" value="{{course_package.actual_price}}" required name="actual_price" class="form-control mb-4" id="degree3" placeholder="Actual Price" value="">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="degree4">Selling Price</label>
+                                <input type="number" value="{{course_package.selling_price}}"  required name="selling_price" class="form-control mb-4" id="degree4" placeholder="Selling Price" value="">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Sell From</label>
+                                <input type="date" value="{{course_package.sell_from}}"  required name="sell_from" class="form-control mb-4" id="degree3" placeholder="Add your subjects" value="">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="degree4">Sell Till</label>
+                                <input type="date"  value="{{course_package.sell_till}}"  required name="sell_till" class="form-control mb-4" id="degree4" placeholder="Add your work here" value="">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+           
+
+
+
+
+            <div class="col-md-12">
+                <lable>Add description</lable>
+                <textarea  required class="form-control" name="package_description" placeholder="Package description" id="summernote" cols="100" rows="50">{{course_package.package_description}}</textarea>
+            </div>
+
+
+        </div>
+
+            
+        <button type="submit" class="btn btn-primary mt-3">Update Package</button>
+        
+        
+        </form>
+
+    
+      </div>
+    
+</div>
+    
+
+<script>
+    $(document).ready(function() {
+  $('#summernote').summernote();
+});
+</script>
+     
+
+
+    {% endblock %}
+
+
+        

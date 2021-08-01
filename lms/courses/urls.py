@@ -4,7 +4,7 @@ from . import views
 
 
 urlpatterns = [
-   path('', views.CoursesView.as_view()), 
+
    path('live/<id>/' , views.live_stream_view),
    path('add-course/' , views.add_course, name="add_course"),
    path('subjects/' , views.subjects, name="subjects"),
@@ -14,9 +14,14 @@ urlpatterns = [
    path('course-packages/' , views.course_packages, name="course_packages"),
    path('add-package/' , views.add_package , name="add_package"),
    path('add-subjects-package/<uid>/' , views.add_subjects_courses,name="add_subjects_courses"),
-   path('get-chapters/' , views.ChaptersView.as_view()),
-   path('get-lessons/' , views.LessonsView.as_view()),
+
    path('save-course-package/' , views.SaveCoursePackage.as_view()),
    path('course-tree/<course_package_uid>/' , views.course_tree , name="course_tree"),
+   path('update-lesson/<uid>/' , views.update_lesson ,name="update_lesson"),
+   path('course-package-edit/<uid>/' , views.course_package_edit , name="course_package_edit" ),
+   path('delete_subject/', views.delete_subject , name="delete_subject"),
+   path('delete_chapter/', views.delete_chapter , name="delete_chapter"),
+   path('delete_lesson/', views.delete_lesson , name="delete_lesson"),
+   path('delete_course_package/', views.delete_course_package , name="delete_course_package"),
 
 ]

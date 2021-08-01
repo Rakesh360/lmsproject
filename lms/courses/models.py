@@ -38,13 +38,30 @@ class SubjectChapters(BaseModel):
         ordering = ['-created_at']
 
 
-class Lessons(BaseModel):
-    subject_chapters = models.ForeignKey(SubjectChapters , related_name='subject_lessons', null=True , blank=True, on_delete=models.CASCADE)
-    lesson_title = models.CharField(max_length=100 , null=True , blank=True)
+class Quiz(BaseModel):
+    pass
+
+class Video(BaseModel):
     video_uploaded_on = models.CharField(choices = (('Vimeo' , 'Vimeo') , ('Youtube' , 'Youtube')) , null=True , blank=True , max_length=100)
     video_link = models.URLField(null=True , blank=True)
     is_free = models.BooleanField(default = False)
     
+class Document(BaseModel):
+    document_file = models.FileField(upload_to='documents')
+
+
+
+class Lessons(BaseModel):
+    LESSON_TYPE = (('Video' , 'Video') , ('Document' , 'Document') , ('Quiz' , 'Quiz'))
+    subject_chapters = models.ForeignKey(SubjectChapters , related_name='subject_lessons', null=True , blank=True, on_delete=models.CASCADE)
+    lesson_title = models.CharField(max_length=100 , null=True , blank=True)
+    lesson_type = models.CharField(max_length=100 , choices=LESSON_TYPE, default='Video') 
+    is_free = models.BooleanField(default=False)
+    
+    document = models.ForeignKey(Document , on_delete=models.SET_NULL , null=True , blank=True)
+    video = models.ForeignKey(Video , on_delete=models.SET_NULL , null=True , blank=True)
+
+
     def __str__(self) -> str:
         return self.lesson_title
    

@@ -34,22 +34,20 @@
                                             style="width: 156px;">Lesson Title</th>
                                             <th class="sorting" tabindex="0" aria-controls="zero-config" rowspan="1"
                                             colspan="1" aria-label="Position: activate to sort column ascending"
-                                            style="width: 156px;">Lesson Chapter</th>
+                                            style="width: 100px;">Lesson Chapter</th>
                                             <th class="sorting" tabindex="0" aria-controls="zero-config" rowspan="1"
                                             colspan="1" aria-label="Position: activate to sort column ascending"
-                                            style="width: 156px;">Video Uploaded On</th>
+                                            style="width: 100px;">Lesson Type</th>
                                         <th class="sorting" tabindex="0" aria-controls="zero-config" rowspan="1"
                                             colspan="1" aria-label="Office: activate to sort column ascending"
                                             style="width: 71px;">Video link</th>
                                         <th class="sorting" tabindex="0" aria-controls="zero-config" rowspan="1"
                                             colspan="1" aria-label="Age: activate to sort column ascending"
                                             style="width: 30px;">Created  At</th>
-                                        <th class="sorting" tabindex="0" aria-controls="zero-config" rowspan="1"
-                                            colspan="1" aria-label="Age: activate to sort column ascending"
-                                            style="width: 30px;">Updated At</th>
+                                       
                                             <th class="sorting" tabindex="0" aria-controls="zero-config" rowspan="1"
                                             colspan="1" aria-label="Age: activate to sort column ascending"
-                                            style="width: 30px;">Action </th>
+                                            style="width: 50px;">Action </th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -60,20 +58,26 @@
                                         <td>{{lesson.lesson_title}}</td>
                                         <td>{{lesson.subject_chapters}}</td>
 
-                                        <td class="text-center">{{lesson.video_uploaded_on}}</td>
-                                        <td class="text-center">
-                                            <a href=" {{lesson.subject.video_link}}" target="_blank">
-                                                <i class="fas fa-external-link-alt"></i>
-                                                
-                                            </a>
+                                        <td class="text-center">{{lesson.lesson_type}}</td>
+                                        <td>
+                                            {% if lesson.lesson_type  %}
+                                            <a href="{{lesson.video.video_link}}" class="btn btn-info btn-sm" target="_blank">View</a>
+                                            {% else %}
+                                            <a href="{{lesson.document.document_file}}" class="btn btn-info btn-sm" target="_blank">View</a>
                                            
+                                            {% endif %}
                                         </td>
 
                                         
                                         <td>{{lesson.created_at}}</td>
-                                        <td>{{lesson.updated_at}}</td>
                                        
                                         <td>
+                                            <a class="btn btn-success btn-sm" href="{% url 'update_lesson' lesson.uid%}">
+                                                <i class="fas fa-pencil-alt"></i>
+                                            </a>
+                                            <button class="btn btn-danger btn-sm" onclick="deleteLesson('{{lesson.uid}}')">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>  
                                             </td>
                                     </tr>
                                 {% endfor %}
@@ -140,5 +144,35 @@
     </div>
   </div>
 
+  <script>
+      
+ 
+      $(document).ready(function() {
+    $('.table').DataTable( {
+        "scrollY":        "500px",
+        "scrollCollapse": true,
+        "paging":         false
+    } );
+} );
+
+    function deleteLesson(uid){
+        swal({
+                title: "Are you sure?",
+                text: "You want to delete?",
+                icon: "success",
+                buttons: true,
+                dangerMode: true,
+            })
+            .then((willDelete) => {
+                if (willDelete) {
+            window.location.href = `{% url 'delete_lesson' %}?uid=${uid}`
+
+                } else {
+                    swal("No deleted");
+                }
+            });
+      }
+   
+  </script>
 
 {%endblock%}
