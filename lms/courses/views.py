@@ -11,8 +11,10 @@ from django.contrib import messages
 from django.http import HttpResponseRedirect
 from .forms import PackageForm
 import json
+from django.contrib.admin.views.decorators import staff_member_required
 
 
+@staff_member_required(login_url='/accounts/login/')
 def add_course(request):
     return render(request ,'course/add_course.html')
 
@@ -28,7 +30,7 @@ def subjects(request):
     context = {'subjects' : Subject.objects.all()}
     return render(request , 'course/subjects.html' , context)
 
-
+@staff_member_required(login_url='/accounts/login/')
 def subject_chapters(request):
     if request.method == 'POST':
         subject = request.POST.get('subject')
@@ -44,12 +46,12 @@ def subject_chapters(request):
     context = {'subjects' : Subject.objects.all(), 'subject_chapters' : SubjectChapters.objects.all()}
     return render(request , 'course/subject_chapters.html' , context)
 
-
+@staff_member_required(login_url='/accounts/login/')
 def lessons(request):
     context = {'lessons' : Lessons.objects.all()}
     return render(request , 'course/lessons.html' , context)
 
-
+@staff_member_required(login_url='/accounts/login/')
 def add_package(request):
     context = {'forms' : PackageForm}
 
@@ -77,7 +79,7 @@ def add_package(request):
 
     return render(request , 'course/add_package.html' , context)
 
-
+@staff_member_required(login_url='/accounts/login/')
 def course_package_edit(request , uid):
     try:
         if request.method == 'POST':
@@ -106,11 +108,11 @@ def course_package_edit(request , uid):
     except Exception as e:
         print(e)
     return redirect('/error/')
-
+@staff_member_required(login_url='/accounts/login/')
 def course_packages(request):
     context = {'course_packages' : CoursePackage.objects.all()}
     return render(request , 'course/package.html' , context)
-
+@staff_member_required(login_url='/accounts/login/')
 def add_subjects_courses(request,uid):
     context = {
     'subjects' : Subject.objects.all(),
@@ -149,12 +151,12 @@ def add_subjects_courses(request,uid):
     #print(context)
     return render(request , 'course/add_subjects_courses.html' , context)
 
-
+@staff_member_required(login_url='/accounts/login/')
 def course_tree(request,course_package_uid):
     context = {'course_package' : CoursePackage.objects.get(uid = course_package_uid)}
     return render(request , 'course/course_tree.html',context)
 
-
+@staff_member_required(login_url='/accounts/login/')
 def add_lessons(request):
     context = {'subject_chapters' : SubjectChapters.objects.all()}
     if request.method == 'POST':
@@ -191,7 +193,7 @@ def add_lessons(request):
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
     return render(request , 'course/add_lessons.html' , context)
-
+@staff_member_required(login_url='/accounts/login/')
 def update_lesson(request , uid):
     try:
         lesson_obj = Lessons.objects.get(uid = uid)
@@ -432,7 +434,7 @@ def live_stream_view(request , id):
 
 ################ DELETE REQUEST ###########
 
-
+@staff_member_required(login_url='/accounts/login/')
 def delete_subject(request):
     try:
         Subject.objects.get(uid = request.GET.get('uid')).delete()
@@ -440,7 +442,7 @@ def delete_subject(request):
         print(e)
     messages.success(request, 'Subject Deleted')
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
-
+@staff_member_required(login_url='/accounts/login/')
 def delete_chapter(request):
     try:
         SubjectChapters.objects.get(uid = request.GET.get('uid')).delete()
@@ -449,7 +451,7 @@ def delete_chapter(request):
     messages.success(request, 'Chapter Deleted')
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
-
+@staff_member_required(login_url='/accounts/login/')
 def delete_lesson(request ):
     try:
         Lessons.objects.get(uid = request.GET.get('uid')).delete()
@@ -460,7 +462,7 @@ def delete_lesson(request ):
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
  
 
-
+@staff_member_required(login_url='/accounts/login/')
 def delete_course_package(request ):
     try:
         CoursePackage.objects.get(uid = request.GET.get('uid')).delete()
