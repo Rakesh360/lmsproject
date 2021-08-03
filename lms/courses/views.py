@@ -224,10 +224,6 @@ def update_lesson(request , uid):
 
 
 
-    return render(request , 'course/add_lessons.html' , context)
-
-
-
 class CoursesView(APIView):
 
     def get(self , request):
@@ -271,8 +267,14 @@ class CoursesView(APIView):
                             if lesson.lesson.lesson_type == 'Video':
                                 lesson_dict['video_link'] = lesson.lesson.video.video_link
                                 lesson_dict['video_uploaded_on'] = lesson.lesson.video.video_uploaded_on
-                            else:
-                                lesson_dict['document_file'] = lesson.lesson.document_file
+                            elif lesson.lesson.lesson_type == 'Document':
+                                lesson_dict['document_file'] = '/media/' +str(lesson.lesson.document.document_file)
+                            elif lesson.lesson.lesson_type == 'Video + Document':
+                                lesson_dict['document_file'] = '/media/' +str(lesson.lesson.document.document_file)
+                                lesson_dict['video_link'] = lesson.lesson.video.video_link
+                                lesson_dict['video_uploaded_on'] = lesson.lesson.video.video_uploaded_on
+                      
+
                         except Exception as e:
                             print(e)
 

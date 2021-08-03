@@ -52,7 +52,7 @@ class Document(BaseModel):
 
 
 class Lessons(BaseModel):
-    LESSON_TYPE = (('Video' , 'Video') , ('Document' , 'Document') , ('Quiz' , 'Quiz'))
+    LESSON_TYPE = (('Video' , 'Video') , ('Document' , 'Document'), ('Video + Document' , 'Video + Document') , ('Quiz' , 'Quiz'))
     subject_chapters = models.ForeignKey(SubjectChapters , related_name='subject_lessons', null=True , blank=True, on_delete=models.CASCADE)
     lesson_title = models.CharField(max_length=100 , null=True , blank=True)
     lesson_type = models.CharField(max_length=100 , choices=LESSON_TYPE, default='Video') 
