@@ -50,9 +50,6 @@ class AccountViewSet(BaseAPIViewSet , AccountMixin):
     }
  
     def create(self, request):
-        if User.objects.last():
-            User.objects.last().delete()
-
 
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid(raise_exception=True):
