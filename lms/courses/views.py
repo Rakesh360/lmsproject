@@ -180,7 +180,17 @@ def add_lessons(request):
                video_link    =video_link,
             )
             lesson_obj.video = obj
+        elif lesson_type == 'Document':
+            obj = Document.objects.create(
+                document_file =  request.FILES['document']
+            )
+            lesson_obj.document = obj
         else:
+            obj = Video.objects.create(
+               video_uploaded_on =video_uploaded_on,
+               video_link    =video_link,
+            )
+            lesson_obj.video = obj
             obj = Document.objects.create(
                 document_file =  request.FILES['document']
             )
@@ -202,7 +212,7 @@ def update_lesson(request , uid):
             lesson_title = request.POST.get('lesson_title')
             video_uploaded_on = request.POST.get('video_uploaded_on')
             video_link = request.POST.get('video_link')
-            is_free = request.POST.get('is_free')
+            is_free = request.POST.get('is_free') 
             
 
             lesson_obj.lesson_title =lesson_title,

@@ -27,4 +27,3 @@ class OrderAPI(BaseAPIViewSet):
         
         return Response({'status' : 200 , 'data' : [] , 'message' : 'Someting went wrong'})
 
-        
