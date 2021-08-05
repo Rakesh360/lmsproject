@@ -15,7 +15,6 @@ urlpatterns = [
    path('add-package/' , views.add_package , name="add_package"),
    path('add-subjects-package/<uid>/' , views.add_subjects_courses,name="add_subjects_courses"),
 
-   path('save-course-package/' , views.SaveCoursePackage.as_view()),
    path('course-tree/<course_package_uid>/' , views.course_tree , name="course_tree"),
    path('update-lesson/<uid>/' , views.update_lesson ,name="update_lesson"),
    path('course-package-edit/<uid>/' , views.course_package_edit , name="course_package_edit" ),
