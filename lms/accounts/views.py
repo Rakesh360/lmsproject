@@ -59,7 +59,19 @@ class AccountViewSet(BaseAPIViewSet , AccountMixin):
             except Exception as e:
                 print(e)
                 return Response({'status' : 400 , 'data' : {} , 'message' : 'invalid uid'})
-                
+
+        if request.GET.get('phone_number'):
+            try:
+                queryset = Student.objects.get(phone_number = request.GET.get('phone_number'))
+                serializer = RegisterStudentSerializer(queryset)
+                return Response({'status' : 200 , 'data' : serializer.data})
+            except Exception as e:
+                print(e)
+                return Response({'status' : 400 , 'data' : {} , 'message' : 'invalid phone_number'})
+
+
+
+
         serializer = RegisterStudentSerializer(self.queryset , many=True)
         return Response({'status' : 200 , 'data' : serializer.data})
  
