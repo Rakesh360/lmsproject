@@ -5,7 +5,7 @@ from courses.models import *
 from base_rest.models import BaseModel
 
 class Order(BaseModel):
-    student = models.ForeignKey(Student , on_delete=models.CASCADE)
+    student = models.ForeignKey(Student , related_name='orders' , on_delete=models.CASCADE)
     course = models.ForeignKey(CoursePackage , on_delete=models.CASCADE)
     amount = models.IntegerField(default=0)
     is_paid = models.BooleanField(default=False)
@@ -14,4 +14,5 @@ class Order(BaseModel):
     order_id = models.CharField(max_length=1000,  null = True , blank=True)
     order_creation_date_time = models.DateTimeField(auto_now_add=True)
     order_updation_date_time = models.DateTimeField(auto_now = True)
-    
+    class Meta:
+        unique_together = ('student', 'course',)

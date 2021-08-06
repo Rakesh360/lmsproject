@@ -13,7 +13,7 @@ from .mixins import AccountMixin
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.contrib.auth import authenticate, login
-
+from courses.helpers import *
 
 def login_view(request):
     try:
@@ -54,8 +54,15 @@ class AccountViewSet(BaseAPIViewSet , AccountMixin):
         if request.GET.get('uid'):
             try:
                 queryset = Student.objects.get(uid = request.GET.get('uid'))
+                data = {}
                 serializer = RegisterStudentSerializer(queryset)
-                return Response({'status' : 200 , 'data' : serializer.data})
+                data['student_info'] = serializer.data
+                courses = []
+                for order in queryset.orders.filter(is_paid = True):
+                    courses.append(course_to_json([order.course]))
+                data['courses'] = courses
+
+                return Response({'status' : 200 , 'data' : data})
             except Exception as e:
                 print(e)
                 return Response({'status' : 400 , 'data' : {} , 'message' : 'invalid uid'})
@@ -64,7 +71,15 @@ class AccountViewSet(BaseAPIViewSet , AccountMixin):
             try:
                 queryset = Student.objects.get(phone_number = request.GET.get('phone_number'))
                 serializer = RegisterStudentSerializer(queryset)
-                return Response({'status' : 200 , 'data' : serializer.data})
+                data = {}
+                serializer = RegisterStudentSerializer(queryset)
+                data['student_info'] = serializer.data
+                courses = []
+                for order in queryset.orders.filter(is_paid = True):
+                    courses.append(course_to_json([order.course]))
+                data['courses'] = courses
+
+                return Response({'status' : 200 , 'data' : data})
             except Exception as e:
                 print(e)
                 return Response({'status' : 400 , 'data' : {} , 'message' : 'invalid phone_number'})

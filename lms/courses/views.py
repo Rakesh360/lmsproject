@@ -232,13 +232,24 @@ def update_lesson(request , uid):
     return render(request , 'course/update_lesson.html',context )
 
 
-
-
 class CoursesView(APIView):
 
     def get(self , request):
-        course_objs = CoursePackage.objects.all()
-       
+        limit = 'no_limit'
+        if request.GET.get('limit'):
+            limit = request.GET.get('limit')
+
+        if limit == 'no_limit':
+            course_objs = CoursePackage.objects.all()
+        else:
+            try:
+                limit = int(limit)
+            except Exception as e:
+                print(e)
+                return Response({'status' : 400 , 'data' :{} , 'message' : 'not a valid integer'})
+
+            course_objs = CoursePackage.objects.all()[0:limit]
+
         payload = []
 
         for course_obj in course_objs:

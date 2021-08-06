@@ -44,9 +44,10 @@ class OrderCourse(APIView):
                 return Response({'status' : 400 , 'message' : 'course_uid is invalid' })
 
 
+
             response = api.payment_request_create(
             amount=course.selling_price,
-            purpose='Buying course',
+            purpose=f'{course.package_title}',
             buyer_name=student.student_name,
             send_email=True,
             email=student.email,
