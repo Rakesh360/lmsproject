@@ -9,9 +9,9 @@ class Order(BaseModel):
     course = models.ForeignKey(CoursePackage , on_delete=models.CASCADE)
     amount = models.IntegerField(default=0)
     is_paid = models.BooleanField(default=False)
-    razorpay_payement_id = models.CharField(max_length=1000 , null = True , blank=True)
-    razorpay_order_id = models.CharField(max_length=1000,  null = True , blank=True)
-    razorpay_payment_signature = models.CharField(max_length=100 ,  null = True , blank=True)
+    response = models.TextField(default="{}")
+    payement_id = models.CharField(max_length=1000 , null = True , blank=True)
+    order_id = models.CharField(max_length=1000,  null = True , blank=True)
     order_creation_date_time = models.DateTimeField(auto_now_add=True)
     order_updation_date_time = models.DateTimeField(auto_now = True)
     
