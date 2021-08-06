@@ -65,11 +65,11 @@ class OrderCourse(APIView):
                 response = json.dumps(response)
                 )
             print(response)
-
+            return Response(response)
         except Exception as e:
             print(e)
         
-        return Response(response)
+        return Response({'status': 400 , 'message' : 'something went wrong'})
 
 
 class OrderSuccess(APIView):
