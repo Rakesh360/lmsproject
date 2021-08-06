@@ -1,4 +1,5 @@
 import uuid
+from django.db.models import manager, query
 from django.shortcuts import redirect, render
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -48,6 +49,19 @@ class AccountViewSet(BaseAPIViewSet , AccountMixin):
         'reset': ForgetPasswordSerializer,
         'login': LoginSerializer,
     }
+
+    def list(self , request):
+        if request.GET.get('uid'):
+            try:
+                queryset = Student.objects.get(uid = request.GET.get('uid'))
+                serializer = RegisterStudentSerializer(queryset)
+                return Response({'status' : 200 , 'data' : serializer.data})
+            except Exception as e:
+                print(e)
+                return Response({'status' : 400 , 'data' : {} , 'message' : 'invalid uid'})
+                
+        serializer = RegisterStudentSerializer(self.queryset , many=True)
+        return Response({'status' : 200 , 'data' : serializer.data})
  
     def create(self, request):
 
