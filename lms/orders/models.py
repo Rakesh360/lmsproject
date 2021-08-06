@@ -14,5 +14,5 @@ class Order(BaseModel):
     order_id = models.CharField(max_length=1000,  null = True , blank=True)
     order_creation_date_time = models.DateTimeField(auto_now_add=True)
     order_updation_date_time = models.DateTimeField(auto_now = True)
-    class Meta:
-        unique_together = ('student', 'course',)
+    # class Meta:
+    #     unique_together = ('student', 'course',)

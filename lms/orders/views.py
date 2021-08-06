@@ -43,6 +43,9 @@ class OrderCourse(APIView):
                 print(e)
                 return Response({'status' : 400 , 'message' : 'course_uid is invalid' })
 
+            
+            if Order.objects.filter(student = student , course = course , is_paid = True).exists():
+                return Response({'status' : 400 , 'message' : 'you have already purchased this course' })
 
 
             response = api.payment_request_create(
@@ -87,6 +90,8 @@ class OrderSuccess(APIView):
 
         except Exception as e:
             print(e)
+        
+        return Response({'status' : 400 , 'message' : 'Something went wrong may be payment already done'} )
     def post(request):
         print(request.data)
 
