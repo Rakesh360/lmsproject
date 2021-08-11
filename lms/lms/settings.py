@@ -92,17 +92,15 @@ TEMPLATES = [
 #  }
 
 DATABASES = {
-   'default': {
-       'ENGINE': 'django.db.backends.postgresql',
-       'NAME': 'postgres',
-       'USER': 'lmsproject',
-       'PASSWORD': 'LmsBhu0987',
-       'HOST': 'lmsdatabase.c8hpn1snsqxi.ap-south-1.rds.amazonaws.com',
-       'PORT': '5432',
-   }
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'postgres',
+        'USER': 'lmsproject',
+        'PASSWORD': 'LmsBhu0987',
+        'HOST': 'lmsdatabase.c8hpn1snsqxi.ap-south-1.rds.amazonaws.com',
+        'PORT': '5432',
+    }
 }
-
-
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators

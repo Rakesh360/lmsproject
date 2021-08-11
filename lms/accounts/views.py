@@ -87,7 +87,7 @@ class AccountViewSet(BaseAPIViewSet , AccountMixin):
 
 
 
-        serializer = RegisterStudentSerializer(self.queryset , many=True)
+        serializer = RegisterStudentSerializer(Student.objects.all() , many=True)
         return Response({'status' : 200 , 'data' : serializer.data})
  
     def create(self, request):
