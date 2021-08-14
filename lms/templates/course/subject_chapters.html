@@ -64,9 +64,9 @@
                                         <td>{{subject_chapter.updated_at}}</td>
                                        
                                         <td>
-                                            <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#modal-{{forloop.counter}}">
+                                            <a href="{% url 'edit_subject_chapter' subject_chapter.uid %}" class="btn btn-success btn-sm" >
                                                 <i class="fas fa-pencil-alt"></i>
-                                            </button>
+                                            </a>
                                             <button class="btn btn-danger btn-sm" onclick="deleteChapter('{{subject_chapter.uid}}')">
                                                 <i class="fas fa-trash-alt"></i>
                                             </button>    
@@ -78,13 +78,7 @@
 
                             </table>
                         </div>
-                        <div class="dt--bottom-section d-sm-flex justify-content-sm-between text-center">
-                            <div class="dt--pages-count  mb-sm-0 mb-3">
-                                <div class="dataTables_info" id="zero-config_info" role="status" aria-live="polite">
-                                    Showing page 1 of 4</div>
-                            </div>
-
-                        </div>
+                       
                     </div>
                 </div>
             </div>

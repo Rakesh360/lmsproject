@@ -30,6 +30,22 @@ def subjects(request):
     context = {'subjects' : Subject.objects.all()}
     return render(request , 'course/subjects.html' , context)
 
+def edit_subject(request ,uid):
+    try:
+        subject_obj = Subject.objects.get(uid = uid)
+        if request.method == 'POST':
+            subject_obj.subject_title = request.POST.get('subject')
+            subject_obj.save()
+            messages.success(request, 'Subject updated')
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+        context = {'subject' : Subject.objects.get(uid = uid)}
+        return render(request , 'course/edit_subject.html' , context)
+    except Exception as e:
+        print(e)
+
+
+
+
 @staff_member_required(login_url='/accounts/login/')
 def subject_chapters(request):
     if request.method == 'POST':
@@ -45,6 +61,29 @@ def subject_chapters(request):
     
     context = {'subjects' : Subject.objects.all(), 'subject_chapters' : SubjectChapters.objects.all()}
     return render(request , 'course/subject_chapters.html' , context)
+
+def edit_subject_chapter(request , uid):
+    try:
+        subject_chapter_obj = SubjectChapters.objects.get(uid = uid)
+        if request.method == 'POST':
+            subject = request.POST.get('subject')
+            chapter_title = request.POST.get('chapter_title')
+            subject_obj = Subject.objects.get(uid = subject)
+            subject_chapter_obj.subject = subject_obj
+            subject_chapter_obj.chapter_title = chapter_title
+            subject_chapter_obj.save()
+          
+            messages.success(request, 'Subject Chapter updated')
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+        
+        context = {'subjects' : Subject.objects.all(), 'subject_chapter' :  SubjectChapters.objects.get(uid = uid)}
+        return render(request , 'course/edit_subject_chapters.html' , context)
+
+    except Exception as e:
+        print(e)
+
+
+
 
 @staff_member_required(login_url='/accounts/login/')
 def lessons(request):
@@ -112,6 +151,8 @@ def course_package_edit(request , uid):
 def course_packages(request):
     context = {'course_packages' : CoursePackage.objects.all()}
     return render(request , 'course/package.html' , context)
+
+
 @staff_member_required(login_url='/accounts/login/')
 def add_subjects_courses(request,uid):
     context = {
@@ -120,8 +161,8 @@ def add_subjects_courses(request,uid):
     'course_package_uid' :uid,
     'subject_uid' :request.GET.get('uid') ,
     }
+    course_package_obj = CoursePackage.objects.get(uid = uid)
     if request.GET.get('uid'):
-        course_package_obj = CoursePackage.objects.get(uid = uid)
         chapter_obj = SubjectChapters.objects.get(uid = request.GET.get('uid'))
 
         lessons = chapter_obj.subject_lessons.all()
@@ -135,17 +176,29 @@ def add_subjects_courses(request,uid):
         course_package_subject = course_package_subject_obj,
             subject_chapter    = chapter_obj
         )
-        
+
+
+
         payload = []
         old_lessons = []
         for lesson in course_package_subject_chapter_obj.pacakge_subject_chapters_lessons.all():
             old_lessons.append(lesson.lesson.uid)
 
-    
+
+        course_package_add_chapters = []
+        for chapter in course_package_subject_obj.pacakge_subject_chapters.all():
+            course_package_add_chapters.append(chapter.subject_chapter.uid)
+
         context['old_lessons'] = old_lessons
         context['lessons'] = lessons
         context['selected_subject'] = chapter_obj.subject.uid
+        context['course_package_add_chapters'] = course_package_add_chapters
 
+    course_package_add_subjects = []
+    for subject in course_package_obj.pacakge_subjects.all():
+        course_package_add_subjects.append(subject.subject.uid)
+
+    context['course_package_add_subjects'] = course_package_add_subjects
 
 
     #print(context)
@@ -212,14 +265,35 @@ def update_lesson(request , uid):
             lesson_title = request.POST.get('lesson_title')
             video_uploaded_on = request.POST.get('video_uploaded_on')
             video_link = request.POST.get('video_link')
-            is_free = request.POST.get('is_free') 
-            
-
-            lesson_obj.lesson_title =lesson_title,
-            lesson_obj.video_uploaded_on =video_uploaded_on,
-            lesson_obj.video_link    =video_link,
-            lesson_obj.is_free = is_free,
+            is_free = request.POST.get('is_free')
+            lesson_type = request.POST.get('lesson_type')
+    
+            lesson_obj.lesson_title =lesson_title
+            lesson_obj.is_free = is_free
             lesson_obj.subject_chapters = SubjectChapters.objects.get(uid = chapters)
+            lesson_obj.lesson_type = lesson_type
+            if lesson_type == 'Video':
+                obj = Video.objects.create(
+                video_uploaded_on =video_uploaded_on,
+                video_link    =video_link,
+                )
+                lesson_obj.video = obj
+            elif lesson_type == 'Document':
+                obj = Document.objects.create(
+                    document_file =  request.FILES['document']
+                )
+                lesson_obj.document = obj
+            else:
+                obj = Video.objects.create(
+                video_uploaded_on =video_uploaded_on,
+                video_link    =video_link,
+                )
+                lesson_obj.video = obj
+                obj = Document.objects.create(
+                    document_file =  request.FILES['document']
+                )
+                lesson_obj.document = obj
+
             lesson_obj.save()
 
             messages.success(request, 'Lesson update Successfully')
@@ -320,11 +394,11 @@ class ChaptersView(APIView):
     def get(self , request):
         try:
             subject_uid = Subject.objects.get(uid = request.GET.get('uid'))
-           
-
             chapters = SubjectChapters.objects.filter(subject=subject_uid)
-            
             serializer = SubjectChaptersSerializer(chapters , many=True)
+
+
+
             return Response({'status' : 200 , 'data' :serializer.data})
 
         except Exception as e:

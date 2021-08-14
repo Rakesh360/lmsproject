@@ -59,40 +59,13 @@
                                         <td>{{subject.updated_at}}</td>
                                        
                                         <td>
-                                        <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#modal-{{forloop.counter}}" data-backdrop="false">
+                                        <a href="{% url 'edit_subject' subject.uid %}" class="btn btn-success btn-sm" >
                                             <i class="fas fa-pencil-alt"></i>
-                                        </button>
-                                        
-<div class="modal fade" id="modal-{{forloop.counter}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Update Subject</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-            <form method="post">
-                {% csrf_token %}
-                <div class="form-group">
-                    <label for="exampleFormControlInput1">Subject </label>
-                    <input type="text" name="subject" value="{{subject.subject_title}}" class="form-control" id="exampleFormControlInput1">
-                </div>                 
-                <button class="btn btn-success">Add Subject</button>
-            </form>
+                                        </a>
 
 
-          
 
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-
-                                        <button onclick="deleteSubject('{{subject.uid}}')" class="btn btn-danger btn-sm">
+                                        <button  {% if subject.check_in_package %} disabled  {% else %}  onclick="deleteSubject('{{subject.uid}}')" {% endif %}  class="btn btn-danger btn-sm">
                                             <i class="fas fa-trash-alt"></i>
                                         </button>
 

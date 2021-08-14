@@ -17,6 +17,9 @@ class Subject(BaseModel):
     def __str__(self) -> str:
         return self.subject_title
 
+    def check_in_package(self):
+        return CoursePackageSubjects.objects.filter(subject = self).exists()
+
 
     class Meta:
         db_table = "subject"

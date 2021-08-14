@@ -1,0 +1,95 @@
+{%extends 'base.html'%}
+
+{%block start%}
+
+<style type="text/css">
+    .bg-1 {
+        background: #ECECF8;
+    }
+</style>
+<!-- JavaScript Bundle with Popper -->
+<div class="section-header">
+    <h1>Update Subject </h1>
+    <div class="section-header-breadcrumb">
+        <div class="breadcrumb-item active">
+         
+
+        </div>
+    </div>
+</div>
+<div id="main_id">
+    <div class="card mt-5 ">
+
+        {% include "utils/alert.html" %}
+        <form method="post" class="container pt-5 pb-5">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="exampleFormControlInput1">Subject </label>
+                <input type="text" name="subject" value="{{subject.subject_title}}" class="form-control" id="exampleFormControlInput1">
+            </div>
+
+
+
+            <button class="btn btn-success">Update Subject</button>
+        </form>
+
+
+    </div>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Add Subject</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+
+
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .modal-backdrop {
+        background-color: transparent;
+    }
+</style>
+
+<script>
+    function deleteSubject(uid) {
+        swal({
+                title: "Are you sure?",
+                text: "You want to delete?",
+                icon: "success",
+                buttons: true,
+                dangerMode: true,
+            })
+            .then((willDelete) => {
+                if (willDelete) {
+                    window.location.href = `{% url 'delete_subject' %}?uid=${uid}`
+
+                } else {
+                    swal("No deleted");
+                }
+            });
+    }
+</script>
+
+
+{%endblock%}

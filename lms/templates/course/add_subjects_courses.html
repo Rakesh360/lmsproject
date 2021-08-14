@@ -26,14 +26,17 @@
         <div class="collapse show" id="mycard-collapse" style="">
             <div class="card-body">
                 <div class="form-row">
+                   
                     <div class="form-group col-md-4">
                         <label>Select Subject</label>
                         <div class="input-group ">
                             <select id="subject" onchange="getChapters(0)" class="form-control">
                                 <option selected>Choose</option>
                                 {% for subject in subjects%}
-                                <option value="{{subject.uid}}" {% if subject.uid == selected_subject %} selected
-                                    {% endif %}>{{subject.subject_title}}</option>
+                                <option value="{{subject.uid}}"
+                               
+                                {% if subject.uid == selected_subject %} selected
+                                    {% endif %}>{{subject.subject_title}} {% if subject.uid in course_package_add_subjects %} ✅ {% endif %}  </option>
                                 {%  endfor %}
                             </select>
                             <div class="input-group-append">
