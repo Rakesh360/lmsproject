@@ -4,7 +4,7 @@ from django.shortcuts import redirect, render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .serializers import (  LoginSerializer,
-                            RegisterStudentSerializer , ForgetPasswordSerializer)
+                            RegisterStudentSerializer,StudentSerializer , ForgetPasswordSerializer)
 
 from rest_framework import serializers, status
 from base_rest.viewsets import BaseAPIViewSet
@@ -116,3 +116,30 @@ class AccountViewSet(BaseAPIViewSet , AccountMixin):
             {'status' : 400,
             'message' : 'something went wrong',
             'errors' : serializer.error})
+
+
+    def patch(self , request):
+        try:
+            data = request.data
+            student_obj = Student.objects.get(uid = data.get('uid'))
+            serializer = StudentSerializer(student_obj , data = request.data , partial = True)
+            if serializer.is_valid():
+                serializer.save()
+                                
+                return Response({
+                    'status' : 200,
+                    'message' : 'student updated',
+                    'data' : serializer.data
+                }) 
+            return Response(
+            {'status' : 400,
+            'message' : 'something went wrong',
+            'errors' : serializer.error})
+        except Exception as e:
+            print(e)
+                
+            return Response({
+                'status' : 400,
+                'message' : 'invalid uid',
+                'data' : {}
+            }) 

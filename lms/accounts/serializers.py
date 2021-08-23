@@ -29,7 +29,8 @@ class ResetPasswordSerializer(serializers.Serializer):
     class Meta:
         model = User
         fields = '__all__'
-        
+
+
 
 
 class RegisterStudentSerializer(serializers.Serializer):
@@ -74,6 +75,8 @@ class RegisterStudentSerializer(serializers.Serializer):
         
         return student_obj
     
+
+    
     
     def forget_password(self , instance , validated_data):
         
@@ -83,17 +86,13 @@ class RegisterStudentSerializer(serializers.Serializer):
     
     
 class StudentSerializer(serializers.ModelSerializer):
-    country = serializers.SerializerMethodField()
+    #country = serializers.SerializerMethodField()
 
     class Meta:
-        model = User
-        fields = ['email', 'country']
+        model = Student
+        exclude =['last_login','password','is_staff','is_active','groups','user_permissions' , 'forget_password_token','phone_number','is_superuser','user_ptr']
 
-    
-    def get_country(self, obj):
-        print(obj)
-        return "Nigeria"
-
+   
 
         
     
