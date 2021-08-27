@@ -569,5 +569,3 @@ def delete_course_package(request ):
     messages.success(request, 'Course Package Deleted')
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
  
-
-    
