@@ -1,6 +1,6 @@
 
 import re
-from rest_framework import status
+from rest_framework import exceptions, serializers, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.contrib.auth import authenticate
@@ -10,7 +10,7 @@ import uuid
 from .models import *
 from rest_framework.authtoken.models import Token
 
-from .serializers import (  LoginSerializer,
+from .serializers import ( ChangePasswordSerializer, LoginSerializer,
                             PasswordSerializer,
                             StudentSerializer,RegisterStudentSerializer , ForgetPasswordSerializer)
 from django.contrib.auth import get_user_model
@@ -92,10 +92,31 @@ class AccountMixin:
 
 
     
-    @action(detail=False , methods=['put'] , url_path="change-password" ,url_name="change-password")
+    @action(detail=False , methods=['post']  ,url_name="change-password")
     def change_password(self,request):
         serializer = ChangePasswordSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.change_password() 
+        print('aaaaaa')
+        if serializer.is_valid():
+            student_uid = serializer.data['student_uid']
+            new_password = serializer.data['new_password']
+            old_password = serializer.data['old_password']
+            try:
+                student_obj = Student.objects.get(uid = student_uid)
+                student_obj = authenticate(username =student_obj.email , password =old_password)
+
+                if student_obj is None:
+                    return Response({'status' : 400 , 'message' : 'invalid password'})
+                else:
+                    student_obj.set_password(new_password)
+                    student_obj.save()
+                    return Response({'status' : 200 , 'message' : 'password changed'})
+
+
+            except Exception as e:
+                return Response({'status' : 400 , 'message' : 'invalid uid'})
+
+        return Response({'status' : 400 ,'erros' : serializer.errors})
+
+            
         response = {'staus' : 200 , 'message' : 'Password changed'}
         return Response(response , status.HTTP_200_OK)

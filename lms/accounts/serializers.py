@@ -18,6 +18,12 @@ class LoginSerializer(serializers.Serializer):
     
     
 
+class ChangePasswordSerializer(serializers.Serializer):
+    student_uid = serializers.CharField()
+    new_password =  serializers.CharField()
+    old_password =  serializers.CharField()
+
+
 
 class PasswordSerializer(serializers.Serializer):
     password = serializers.CharField()
