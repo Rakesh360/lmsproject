@@ -25,4 +25,9 @@ urlpatterns = [
    path('delete_lesson/', views.delete_lesson , name="delete_lesson"),
    path('delete_course_package/', views.delete_course_package , name="delete_course_package"),
 
+   path('test/' , views.test , name="test"),
+   path('create-test/' , views.create_test , name="create_test"),
+   path('create-live/' , views.create_live , name="create_live"),
+   
+   
 ]

@@ -1,13 +1,16 @@
 {%extends 'base.html'%}
 {% block start %}
 
-<style type="text/css">
-    .bg-1 {
-        background: #ECECF8;
-    }
-</style>
+
+
+<div class="container">
+    <div class="row">
+        
+        <div class="col s12">
+            <div class="container">
+                <div class="section">
 <div class="section-header">
-    <h1>Add Pakage</h1>
+    <h4>Add Pakage</h4>
     <div class="section-header-breadcrumb">
        <a href="{% url 'add_package' %}" class="btn btn-success">
         Add Package
@@ -17,13 +20,11 @@
 
 
 <div class="card">
-    <!-- <div class="card-header">
-    <h4>Horizontal Form</h4>
-  </div> -->
+ 
     <div class="card-body">
         {% include "utils/alert.html" %}
         <div class="table-responsive">
-            <table id="zero-config" class="table table-striped dataTable" style="width: 100%;" role="grid"
+            <table style="padding: 10px !important;" id="zero-config" class="table table-striped dataTable" style="width: 100%;" role="grid"
                 aria-describedby="zero-config_info">
                 <thead>
                     <tr role="row">
@@ -133,6 +134,9 @@
         </div>
     </div>
 </div>
+
+</div>
+<
 
 
 {%endblock%}

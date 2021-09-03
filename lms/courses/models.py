@@ -118,6 +118,19 @@ class CoursePackageLessons(BaseModel):
         return self.lesson.lesson_title
     
 
+class GoLive(BaseModel):
+    course_package = models.ForeignKey(CoursePackage , on_delete=models.CASCADE)
+    subject = models.ForeignKey(Subject , on_delete=models.SET_NULL , null=True , blank=True)
+    chapter = models.ForeignKey(SubjectChapters , on_delete=models.SET_NULL , null=True , blank=True)
+    live_name = models.CharField(max_length=100)
+    live_url = models.CharField(max_length=10000)
+    image = models.ImageField(upload_to = 'live' , null=True , blank = True)
+    live_date = models.DateTimeField()
+
+
+
+
+
 # [
 # {
 #     'subject' : 'Subject name',

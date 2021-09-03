@@ -1,6 +1,15 @@
+from orders.models import Order
 from django.shortcuts import redirect, render
 from accounts.models import *
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
+from django.contrib import messages
+from django.http import HttpResponseRedirect
+from .helpers import *
+
+
+def dashboard(request):
+    return render(request , 'dashboard/dashboard.html')
 
 
 def students(request):
@@ -30,7 +39,22 @@ def students(request):
 
 
 def send_notification(request):
-    return render(request , 'students/send_notification.html')
+    context = {'course_packages' : CoursePackage.objects.all()}
+    if request.method == 'POST':
+        course_packages = request.POST.getlist('course_packages')
+        notification_title = request.POST.get('notification_title')
+        notification_content = request.POST.get('notification_content')
+        order_obj = Order.objects.filter(course__uid__in = course_packages , is_paid = True)
+
+
+        send_notify_by_order(order_obj,notification_title ,notification_content  )
+        messages.success(request, 'Notification Sent')
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+         
+
+        
+
+    return render(request , 'students/send_notification.html' , context)
 
 
 def export_student_list(request):

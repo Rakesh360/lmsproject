@@ -51,9 +51,58 @@
               data-i18n="Modern">Student List</span></a>
         </li>
 
+        <li><a href="{% url 'send_notification' %}"><i class="material-icons">radio_button_unchecked</i><span
+          data-i18n="Modern">Send notification</span></a>
+    </li>
+
+      
       </ul>
     </div>
   </li>
+
+
+  <li class="bold">
+    <a class="collapsible-header waves-effect waves-cyan " href="JavaScript:void(0)"><i
+        class="material-icons">settings_input_svideo</i><span class="menu-title"
+        data-i18n="Dashboard">Live</a>
+    <div class="collapsible-body">
+      <ul class="collapsible collapsible-sub" data-collapsible="accordion">
+        <li><a href="{% url 'create_live' %}"><i class="material-icons">radio_button_unchecked</i><span
+              data-i18n="Modern">Create Live</span></a>
+        </li>
+
+       
+    </li>
+
+      
+      </ul>
+    </div>
+  </li>
+
+
+  
+  <li class="bold">
+    <a class="collapsible-header waves-effect waves-cyan " href="JavaScript:void(0)"><i
+        class="material-icons">settings_input_svideo</i><span class="menu-title"
+        data-i18n="Dashboard">Test</a>
+    <div class="collapsible-body">
+      <ul class="collapsible collapsible-sub" data-collapsible="accordion">
+        <li><a href="{% url 'test' %}"><i class="material-icons">radio_button_unchecked</i><span
+              data-i18n="Modern">Test Series</span></a>
+        </li>
+
+        <li><a href="{% url 'create_test' %}"><i class="material-icons">radio_button_unchecked</i><span
+          data-i18n="Modern">Create Series</span></a>
+    </li>
+
+        
+    </li>
+
+      
+      </ul>
+    </div>
+  </li>
+
   <li class="bold">
     <a class="waves-effect waves-cyan "
       href="https://pixinvent.com/materialize-material-design-admin-template/documentation/index.html"

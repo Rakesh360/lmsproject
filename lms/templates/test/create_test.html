@@ -1,0 +1,88 @@
+{%extends 'base.html'%}
+{%block start%}
+
+<div class="col s12">
+    <div class="container">
+
+        <div class="section">
+
+            <div class="card">
+                <div class="card-content">
+                    <h4 class="card-title">Form Advance</h4>
+                    <form>
+                        <div class="row">
+                            <div class="input-field col m6 s12">
+                                <input id="first_name01" type="text">
+                                <label for="first_name01">Test Series Name</label>
+                            </div>
+                            <div class="input-field col m6 s12">
+                                <select tabindex="-1">
+                                    <option value="" disabled="" selected="">Choose your profile</option>
+                                    <option value="1">Manager</option>
+                                    <option value="2">Developer</option>
+                                    <option value="3">Business</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="input-field col s12">
+                                <input id="email5" type="email">
+                                <label for="email">Test seires Instruction</label>
+                            </div>
+                        </div>
+                       
+                        <div class="row">
+                            <div class="input-field col m6 s12">
+                               
+                                    <input type="text" class="datepicker" id="start_date">
+                                    <label for="start_date" class="">Start Date</label>
+                                
+                            </div>
+                            <div class="input-field col m6 s12">
+                                <input type="text" class="datepicker" id="dob">
+                                <label for="dob" class="">End date</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col m6 s12 file-field input-field">
+                                <select tabindex="-1" multiple >
+                                    <option value="1">English</option>
+                                    <option value="2">Hindi</option>
+                                </select>
+                                <label>Select Language</label>
+                            </div>
+                            <div class="input-field col m6 s12">
+                                <span>Range</span>
+                                <p class="range-field">
+                                    <input type="range" id="test5" min="0" max="100"><span class="thumb"><span
+                                            class="value"></span></span>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="input-field col s12">
+                                <textarea id="message5" class="materialize-textarea"></textarea>
+                                <label for="message">Message</label>
+                            </div>
+                            <div class="row">
+                                <div class="input-field col s12">
+                                    <button class="btn cyan waves-effect waves-light right" type="submit"
+                                        name="action">Submit
+                                        <i class="material-icons right">send</i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+{%endblock%}

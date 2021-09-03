@@ -1,0 +1,71 @@
+{%extends 'base.html'%}
+
+{%block start%}
+{% include "utils/alert.html" %}
+
+<div class="container">
+    <div class="row">
+        <div class="col s12 m6 l6">
+            <h5 class="breadcrumbs-title mt-0 mb-0"><span>Send Notification to Students</span></h5>
+        </div>
+        <div class="col s12">
+            <div class="container">
+                <div class="section">
+                    <div class="card">
+                        <div class="card-content">
+                            <form method="post" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <div class="row">
+                                    <div class="input-field col m6 s12">
+                                        <select multiple name="course_packages">
+                                            <option value="" disabled selected>Choose your option</option>
+                                            {% for course_package in course_packages%}
+                                            <option value="{{course_package.uid}}">{{course_package.package_title}}
+                                            </option>
+                                            {% endfor %}
+
+                                        </select>
+                                        <label>Select Course Pacakge</label>
+                                    </div>
+
+                                    <div class="input-field col m6 s12">
+                                        <input id="first_name01" name="notification_title" type="text">
+                                        <label for="first_name01" class="">Add Title</label>
+                                    </div>
+
+                                </div>
+                                <div class="row">
+                                    <div class="input-field col s12">
+                                        <textarea id="message5" name="notification_content" class="materialize-textarea"></textarea>
+                                        <label for="message" class="">Message</label>
+                                    </div>
+
+                                    <div class="input-field col s12">
+                                        <input id="image" name="image" type="file">
+
+                                        
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="input-field col s12">
+                                            <button class="btn cyan waves-effect waves-light right" type="submit"
+                                                name="action">Submit
+                                                <i class="material-icons right">send</i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+
+
+            </div>
+
+
+
+            {%endblock%}

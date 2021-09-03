@@ -1,6 +1,7 @@
 from re import L, sub
 import re
 from django.db.models import manager
+from django.db.models.query import RawQuerySet
 from django.shortcuts import redirect, render
 from rest_framework import serializers
 from rest_framework.views import APIView
@@ -157,11 +158,20 @@ def course_packages(request):
 def add_subjects_courses(request,uid):
     context = {
     'subjects' : Subject.objects.all(),
-    'chapters' : SubjectChapters.objects.all()[0:5],
     'course_package_uid' :uid,
-    'subject_uid' :request.GET.get('uid') ,
     }
+    
     course_package_obj = CoursePackage.objects.get(uid = uid)
+
+    if request.GET.get('subject_uid'):
+        subject_uid = Subject.objects.get(uid = request.GET.get('subject_uid'))
+        chapters = SubjectChapters.objects.filter(subject=subject_uid)
+        context['chapters']  = chapters
+        context['subject_uid'] = subject_uid
+        context['selected_subject'] = subject_uid.uid
+
+
+
     if request.GET.get('uid'):
         chapter_obj = SubjectChapters.objects.get(uid = request.GET.get('uid'))
 
@@ -569,3 +579,15 @@ def delete_course_package(request ):
     messages.success(request, 'Course Package Deleted')
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
  
+
+def test(request):
+    return render(request , 'test/test.html')
+
+def create_test(request):
+    return render(request , 'test/create_test.html')
+    
+
+
+def create_live(request):
+    return render(request , 'live/create_live.html')
+                                                                                                      
