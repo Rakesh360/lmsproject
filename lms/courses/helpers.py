@@ -1,6 +1,7 @@
 
 from .models import *
-
+from django.db.models import Q
+import datetime
 def course_to_json(course_objs):
            
     payload = []
@@ -62,6 +63,20 @@ def course_to_json(course_objs):
             subject_dict = {}
 
         course_package_dict['subjects'] = subjects
+        live_class = []
+        #from datetime import date
+        for live in course_obj.live.filter(Q(live_date=datetime.date.today(),live_time__gte=datetime.time()) |Q(live_date__gt=datetime.date.today())):
+            live_class.append({
+                'live_name' : live.live_name,
+                'live_url' : live.live_url,
+                'image' : '/media/' +  str(live.image),
+                'live_date' : str(live.live_date),
+                'live_time' : str(live.live_time),
+                'live_uid' : live.uid
+                
+            })
+        course_package_dict['live'] = live_class
+
         payload.append(course_package_dict)
 
 

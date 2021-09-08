@@ -6,8 +6,10 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 from .helpers import *
+from django.contrib.admin.views.decorators import staff_member_required
 
 
+@staff_member_required(login_url='/accounts/login/')
 def dashboard(request):
     return render(request , 'dashboard/dashboard.html')
 
