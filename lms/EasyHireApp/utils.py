@@ -1,3 +1,4 @@
+from lms.settings import BASE_DIR
 from django.conf import settings
 from django.utils import timezone
 import base64
@@ -1472,9 +1473,10 @@ def save_problem(json_data, request, Administrator, Problem, Topic):
         logger.error("saveProblem: %s at %s", e, str(exc_tb.tb_lineno))
         return -1
 
+from django.conf import settings
 def import_mcq_from_excel(file_path, employee_obj, topic_obj):
     try:
-        wb = xlrd.open_workbook("files/"+file_path)
+        wb = xlrd.open_workbook(f"{settings.BASE_DIR}/public/static/"+file_path)
         sheet = wb.sheet_by_index(0)
     except Exception as e:
         print(e)
@@ -1655,7 +1657,7 @@ def import_mcq_from_excel(file_path, employee_obj, topic_obj):
             video_url = None
             try:
                 problem_obj = Problem.objects.create(description=str(description), solution=str(sol.encode("ascii", errors="ignore")), hint=hint.encode(
-                    "ascii", errors="ignore"), category=category_id, typed_by=employee_obj, difficulty=str(difficulty), image=image_path, video=video_url,
+                    "ascii", errors="ignore"), category=category_id, typed_by='admin', difficulty=str(difficulty), image=image_path, video=video_url,
                 pdf="", options=choices,correct_options=answer)
             except Exception as e:
                logger.error(e)

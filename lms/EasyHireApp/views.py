@@ -210,7 +210,7 @@ def AddProblem(request):
 
 def EditProblem(request, problem_pk):
     if True:
-        adminstrator_obj = User.objects.get(username=str(request.user.username))
+        adminstrator_obj = request.user
         problem_obj = Problem.objects.get(pk=int(problem_pk))
 
         is_editable = False
@@ -375,8 +375,7 @@ class UploadQuestionsExcelAPI(APIView):
         response["status"] = 500
 
         try:
-            if is_user_authenticated(request) and (
-                    request.user.role == "2" or request.user.administrator.can_manage_quiz):
+            if True:
                 data = request.data
                 uploaded_file = request.FILES.getlist('file')[0]
                 logger.info("File %s", str(uploaded_file))
@@ -432,8 +431,7 @@ class UploadQuestionsExcelAPI(APIView):
                             
                             import_success, message = import_mcq_from_excel(
                                 file_path, adminstrator_obj, topic_obj)
-                        elif type_of_questions == "3":
-                            import_success, message = import_video_from_excel(file_path, adminstrator_obj, topic_obj)
+                        
                         if import_success:
                             response["status"] = 200
                         else:
