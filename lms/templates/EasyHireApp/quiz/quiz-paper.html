@@ -1,0 +1,143 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <meta charset="utf-8">
+  <title>STEP - ICICI Bank</title>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <meta name="Description" content="Adaptive quizzing platform for ICICI Bank">
+  <meta name="Keywords" content="job, internship">
+  <link href="/static/EasySTEPApp/img/step-logo-1.png" rel="icon">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- CSS  -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="/static/EasySTEPApp/css/select2.min.css" rel="stylesheet"/>
+  <link href="/static/EasySTEPApp/css/materialize.min.css" type="text/css" rel="stylesheet" 
+  media="screen,projection"/>
+  <link href="/static/EasySTEPApp/css/style.css" type="text/css" rel="stylesheet" 
+  media="screen,projection"/>
+  <!--  Scripts-->
+  <script src="/static/EasySTEPApp/js/jquery-3.3.1.min.js"></script>
+  <script src="/static/EasySTEPApp/js/materialize.min.js"></script>
+  <style type="text/css">
+    nav ul li a{
+      color: black;
+    } 
+  a.btn {
+    margin-right:1em; 
+    background-color:#0d47a1; 
+    color:white; 
+    border:solid black 0.1em;
+  }
+  a.btn:hover{
+    color:black;
+    background-color: white;
+  }
+
+  </style>
+
+</head>
+<body>
+  {% csrf_token %}
+  <div class="navbar-fixed">
+    <nav>
+      <div class="nav-wrapper grey lighten-5">
+        <div class="container">
+          <a href="/" class="brand-logo black-text"><img src="{% static 'EasySTEPApp/img/step-logo-1.png' %}" width="25%"></a>
+        </div>
+      </div>
+    </nav>
+  </div>
+
+  <div class="row">
+
+    <div class="col s12 m3 l3">
+      <div class="card-panel">
+        <div class="row center">
+            <p style="padding:0.5em;" class="grey lighten-3"><b>Total time</b></p>
+        </div>
+        <div class="row" id="global-row-div-clock-div">
+          <div id="global-clockdiv" class="center"></div>    
+        </div>
+      </div>
+      <div class="card-panel">
+        <div class="row">
+            <p style="padding:1em;" class="grey lighten-3 center"><b>Make your notes</b></p>
+            <textarea style="height:10rem !important;"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="col s12 m9 l9">
+        <div class="row center" id="problem-render-preloader" style="display:none;padding:2em 1em 1em 1em;">
+          <div class="preloader-wrapper active">
+            <div class="spinner-layer spinner-red-only">
+              <div class="circle-clipper left">
+                <div class="circle"></div>
+              </div><div class="gap-patch">
+                <div class="circle"></div>
+              </div><div class="circle-clipper right">
+                <div class="circle"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row" id="div-quiz-section-list"></div>
+    </div>
+  </div>
+
+  <div class="row">
+    <!-- Global Capture Video start -->
+    <div class="col s12" style="display:none;">
+      <button id="btn-start-recording">Start</button>
+      <button id="btn-stop-recording" disabled="disabled">Stop</button>
+      <button id="btn-preview-recording" disabled="disabled">Preview</button>
+      <button id="btn-take-screenshot" style="display:none;">Screenshot</button>
+      <img src="" id="captured-image-from-video" style="display:none;">
+      <canvas style="display:none;" id="global-canvas-video-capture"></canvas>
+    </div>
+    <div class="col s12" style="display:none;">
+        <div class="col s12 m6 l6">
+          <br>
+          <video class="responsive-video" id="global-video-captured-response" controls autoplay style="height:10em;" type="video/webm"></video>                      
+        </div>
+    </div>
+    <!-- Global Capture Video end -->          
+  </div>
+
+  <!-- Modal Structure -->
+<div id="modal-end-test" class="modal">
+  <div class="modal-content">
+    Are you sure, you want to end the this section?
+  </div>
+  <div class="modal-footer">
+    <a href="javascript:void(0)" class="modal-close btn">Cancel</a>
+    <a class="modal-close btn" id="btn-agree-end-test" onclick="end_test()">Agree</a>
+  </div>
+</div>
+
+<div id="modal-timeout-test" class="modal">
+  <div class="modal-content">
+    Your test paper is ended. We will send result soon! Thank you for your time.
+  </div>
+  <div class="modal-footer">
+    <a href="javascript:void(0)" class="modal-close btn" id="btn-timeout-submit">Submit</a>
+  </div>
+</div>
+
+<div id="modal-completed-quiz-section" class="modal">
+  <div class="modal-content">
+    Congratulations, you have completed this section successfully. You can now move to next section.
+  </div>
+  <div class="modal-footer">
+    <a href="javascript:void(0)" class="modal-close btn">Start Now</a>
+  </div>
+</div>
+
+<script type="text/javascript" src="{% static 'EasySTEPApp/js/RecordRTC.js' %}"></script>
+<script type="text/javascript" src="{% static 'EasySTEPApp/js/adapter-latest.js' %}"></script>
+<script type="text/javascript" src="{% static 'EasySTEPApp/js/quiz.js' %}"></script>
+</body>
+</html>

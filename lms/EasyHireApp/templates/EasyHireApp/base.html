@@ -1,0 +1,155 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <meta charset="utf-8">
+  <title>Macleods | EasyHire</title>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <meta name="Description" content="Adaptive quizzing platform for Macleods">
+  <meta name="Keywords" content="job, internship">
+  <link href="/static/EasyHireApp/img/favicon.ico" rel="icon">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- CSS  -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="/static/EasyHireApp/css/select2.min.css" rel="stylesheet"/>
+  <link href="/static/EasyHireApp/css/materialize.min.css" type="text/css" rel="stylesheet"media="screen,projection"/>
+  <link href="/static/EasyHireApp/css/style.css" type="text/css" rel="stylesheet"
+  media="screen,projection"/>
+  <link href="/static/EasyHireApp/css/jquery.dataTables.min.css" type="text/css" rel="stylesheet"
+  media="screen,projection"/>
+  <!--  Scripts-->
+  <script src="/static/EasyHireApp/js/jquery-3.3.1.min.js"></script>
+  <script src="/static/EasyHireApp/js/materialize.min.js"></script>
+  <script src="/static/EasyHireApp/ckeditor/ckeditor.js"></script>
+
+  <style type="text/css">
+  	nav ul li a{
+	  color: black;
+	}
+
+  .inline-icon {
+     vertical-align: bottom;
+     font-size: 22px !important;
+  }
+
+  a.btn {
+    margin-right:1em;
+    background-color:#0d47a1;
+    color:white;
+    border:solid black 0.1em;
+  }
+
+  a.btn-floating{
+    margin-right:1em;
+    background-color:#0d47a1;
+    color:white;
+    border:solid black 0.1em;
+  }
+
+  a.btn:hover{
+    color:black;
+    background-color: white;
+  }
+
+  a.btn.two {
+    margin-right:1em;
+    background-color:#e65100;
+    color:white;
+    border:solid black 0.1em;
+  }
+
+  a.btn.two:hover{
+    color:black;
+    background-color: white;
+  }
+
+  a.btn.danger {
+    margin-right:1em;
+    background-color:#b71c1c;
+    color:white;
+    border:solid black 0.1em;
+  }
+
+  a.btn.danger:hover{
+    color:black;
+    background-color: white;
+  }
+
+  a.btn.safe {
+    margin-right:1em;
+    background-color:#1b5e20;
+    color:white;
+    border:solid black 0.1em;
+  }
+
+  a.btn.safe:hover{
+    color:black;
+    background-color: white;
+  }
+  </style>
+
+</head>
+<body>
+  <div id="global-preloader"></div>
+  {% csrf_token %}
+  <div class="navbar-fixed">
+    <nav>
+      <div class="nav-wrapper grey lighten-5">
+      	<div class="container">
+          {% if request.user.is_authenticated %}
+              {% if request.user.role == "2" %}
+                <a href="/administrator/manage-applicants/" class=" black-text"><img src="{% static 'EasyHireApp/img/macleods-logo-1.png' %}" width="10%"></a>
+              {% elif request.user.role == "3" %}
+                <a href="/master-list/create-applicants/" class="black-text"><img src="{% static 'EasyHireApp/img/macleods-logo-1.png' %}" width="10%"></a>
+              {% else %}
+                <a href="/applicant/dashboard" class="black-text"><img src="{% static 'EasyHireApp/img/macleods-logo-1.png' %}" width="10%"></a>
+              {% endif %}
+          {% else %}
+            <a href="/" class="black-text"><img src="{% static 'EasyHireApp/img/macleods-logo-1.png' %}" width="10%"></a>
+          {% endif %}
+          <a href="#" data-target="mobile-demo" class="sidenav-trigger black-text"><i class="material-icons">menu</i></a>
+	        <ul class="right hide-on-med-and-down">
+            {% if request.user.is_authenticated %}
+              {% if request.user.role == "1" %}
+                <li><a href="/applicant/dashboard">Dashboard</a></li>
+              {% endif %}
+                <li><a href="/logout"><i class="material-icons">exit_to_app</i></a></li>
+            {% else %}
+              {# <li><a href="/login">Login</a></li> #}
+            {% endif %}
+	        </ul>
+      	</div>
+      </div>
+    </nav>
+  </div>
+
+  <ul class="sidenav" id="mobile-demo">
+      {% if request.user.is_authenticated %}
+        {% if request.user.role == "1" %}
+          <li><a href="/applicant/dashboard">Dashboard</a></li>
+        {% endif %}
+          <li><a href="/logout" class="tooltipped" data-tooltip="Logout"><i class="material-icons">exit_to_app</i></a></li>
+      {% else %}
+        {# <li><a href="/login">Login</a></li> #}
+      {% endif %}
+  </ul>
+  {% block content %}
+  {% endblock %}
+  <script type="text/javascript">
+    var isMobile = /iPhone|Android/i.test(navigator.userAgent);
+    if (isMobile) {
+        if (window.matchMedia("(orientation: landscape)").matches) {
+          alert("Please use potrait mode. Thank you.")
+          window.location = "/"
+      }
+    } 
+  </script>
+  <script type="text/javascript" src="{% static 'EasyHireApp/js/select2.min.js' %}"></script>
+  <script type="text/javascript" src="{% static 'EasyHireApp/js/aes.js' %}"></script>
+  <script type="text/javascript" src="{% static 'EasyHireApp/js/jquery.dataTables.min.js' %}"></script>
+  <script type="text/javascript" src="{% static 'EasyHireApp/js/init.js' %}?v=1.0.1"></script>
+
+</body>
+</html>

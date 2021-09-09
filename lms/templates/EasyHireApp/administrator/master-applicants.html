@@ -1,0 +1,94 @@
+{% extends 'EasyHireApp/administrator/base.html' %}
+{% block content %}
+{% load static %}
+
+<div class="row" style="padding:1em;">
+    <div class="col s12" style="margin-top:1%;">
+      <h5><blockquote>Create Applicants</blockquote></h5>
+    </div>
+    <div class="col s12">
+      <br>
+
+    <div class = "col s12">
+        <div class="row">
+          <div class="col s6 m6 l6">
+            <br>
+            <!--<span>Institutes</span>
+            <select id="select-institute-excel-upload">
+                <option value="">Choose Institute*</option>
+                {% for institutes in institutes_objs %}
+                <option value="{{ institutes.pk }}"> {{ institutes.name }}</option>
+                {% endfor %}
+            </select> -->
+            <span>Events</span>
+            <select id="select-event-excel-upload">
+                <option value="">Choose Event*</option>
+                {% for event in event_objs %}
+                <option value="{{ event.pk }}"> {{ event.name }}</option>
+                {% endfor %}
+            </select>              
+          </div>
+          <div class="col s12 m6 l6">
+            <a class="btn blue darken-4 waves-effect waves-light right white-text" href="/static/EasyHireApp/files/Upload_Walkin_Applicant_Excel_Format.xlsx">Download Walkin Excel Format</a> 
+            <br><br>       
+          </div>
+          <div class="col s12 m6 l6">
+            <a class="btn blue darken-4 waves-effect waves-light right white-text" href="/static/EasyHireApp/files/Upload_Campus_Applicant_Excel_Format.xlsx">Download Campus Excel Format</a> 
+            <br><br>       
+          </div>
+        </div>
+    </div>
+     <div class = "col s12">
+        <div class="row">
+          <div class="col s6 m6 l6">
+            <br>
+            <span>Streams</span>
+            <select id="select-stream-excel-upload">
+                <option value="">Choose Stream*</option>
+                {% for stream in stream_objs %}
+                <option value="{{ stream.pk }}"> {{ stream.name }}</option>
+                {% endfor %}
+            </select>            
+          </div>
+        </div>
+    </div>
+     <div class = "col s12">
+        <div class="row">
+          <div class="col s6 m6 l6">
+            <br>
+            <span>Category</span>
+            <select id="select-category-excel-upload">
+                <option value="">Choose Category*</option>
+                <option value="1">Campus</option>
+                <option value="2">Walkin</option>
+            </select>            
+          </div>
+        </div>
+    </div>
+     <div class = "col s10 offset-s1">
+      <br>
+      <div class="progress" id="preloader_div" style="display: none;">
+        <div class="indeterminate"></div>
+      </div>
+    </div>
+    <div class = "col s12">
+      <div class = "file-field input-field col s12 m6 l8">
+        <div class = "btn blue darken-4">
+          <span>Select File <i class="material-icons" style="font-size: 0.6em;color: #cc0000;vertical-align: super;">star</i></span>
+          <input id="input-upload-applicant-excel" type = "file">
+        </div>
+        <div class = "file-path-wrapper">
+          <input class = "file-path validate" id="input-upload-applicant-excel-v" type = "text" placeholder = "Upload file">
+        </div>
+      </div>
+    </div>
+    <div class="col s12">
+      <a class="col s4 m2 l2 btn blue darken-4 waves-effect waves-light right" id="btn-upload-applicant-excel">Upload
+      </a>
+    </div>  
+    <div class="col s12" id="upload-applicant-excel-error" style="color: red;font-size: 1.5em;display:none">    
+    </div>
+</div>
+    </div>
+</div>
+{% endblock %}

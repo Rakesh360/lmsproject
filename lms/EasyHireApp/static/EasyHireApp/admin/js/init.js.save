@@ -1,0 +1,2368 @@
+(function($) {
+    $(function() {
+        $('.sidenav').sidenav();
+        $('.dropdown-trigger').dropdown({
+            constrainWidth: false,
+            alignment: 'left'
+        });
+        $('.collapsible').collapsible();
+        $('.modal').modal();
+        $('.tabs').tabs();
+        $('select').select2({
+            width: "100%"
+        });
+        $('.slider').slider();
+        $('.tooltipped').tooltip({
+            position: 'top'
+        });
+        $('.datepicker').datepicker({
+            format: "dd/mm/yyyy"
+        });
+        $('.fixed-action-btn').floatingActionButton();
+        $(".readable-pro-tooltipped").tooltip({
+            position: "top"
+        });
+    }); // end of document ready
+})(jQuery); // end of jQuery name space
+
+$(window).keyup(function(e){
+      if(e.keyCode == 44){
+        $("body").hide();
+      }
+
+});
+
+/*--------------------------
+    preloader
+---------------------------- */
+$(window).on('load', function() {
+    var pre_loader = $('#global-preloader');
+    pre_loader.fadeOut('slow', function() {
+        $(this).remove();
+    });
+});
+
+function showGlobalPreloader() {
+    $("#global-preloader").show(500);
+}
+
+function hideGlobalPreloader() {
+    $("#global-preloader").hide(500);
+}
+
+function getCsrfToken() {
+    var CSRF_TOKEN = $('input[name="csrfmiddlewaretoken"]').val();
+    return CSRF_TOKEN;
+}
+
+function validateEmail(email) {
+    var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(String(email).toLowerCase());
+}
+
+function showToast(message, duration) {
+    M.toast({
+        "html": message
+    }, duration);
+}
+
+function hideChoiceDiv() {
+    $("#div-problem-choices").hide();
+    $("#div-problem-correct-choices").hide();
+}
+
+function showChoiceDiv() {
+    $("#div-problem-choices").show();
+    $("#div-problem-correct-choices").show();
+    hideDescriptiveDiv();
+}
+
+function showDescriptiveDiv() {
+    $("#div-problem-solution").show();
+    $("#div-problem-hint").show();
+    hideChoiceDiv();
+}
+
+function hideDescriptiveDiv() {
+    $("#div-problem-solution").hide();
+    $("#div-problem-hint").hide();
+}
+
+function getEmbedVideoURL(url) {
+    var regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+    var match = url.match(regExp);
+
+    if (match && match[2].length == 11) {
+        return "https://www.youtube.com/embed/" + match[2];
+    } else {
+        return url;
+    }
+}
+
+function scrollToGivenElementId(element_id) {
+    $('html, body').animate({
+        scrollTop: $("#" + element_id).offset().top - 100
+    }, 500);
+}
+
+function focusAtGivenElementID(element_id) {
+    $("#" + element_id).focus();
+}
+
+function isCanvasBlank(canvas) {
+    var blank = document.createElement('canvas');
+    blank.width = canvas.width;
+    blank.height = canvas.height;
+
+    return canvas.toDataURL() == blank.toDataURL();
+}
+
+function showProfileRegisterCardPanel() {
+    $("#profile-register-card-panel").show();
+    $("#profile-verification-card-panel").hide();
+    capturePictureInit();
+}
+
+function showProfileVerificationCardPanel() {
+    $("#profile-register-card-panel").hide();
+    $("#profile-verification-card-panel").show();
+}
+
+if(window.location.pathname=="/master-list/create-administrator/"){
+  $(document).ready(function(){
+      var table = $('#table-coordinator-details').DataTable();
+      setTimeout(function(){
+          window.location.reload();
+      }, 300000);
+  });
+}
+
+if(window.location.pathname=="/administrator/manage-applicants/"){
+  $(document).ready(function(){
+      var table = $('#manage-applicants-table').DataTable(        "aLengthMenu": [[25, 50, 75, -1], [25, 50, 75, "All"]],
+        "iDisplayLength": 25);
+      setTimeout(function(){
+          window.location.reload();
+      }, 300000);
+  });
+}
+if(window.location.pathname=="/master-list/institutes/"){
+  $(document).ready(function(){
+      var table = $('#table-group-discussion-details').DataTable();
+      setTimeout(function(){
+          window.location.reload();
+      }, 300000);
+  });
+}
+$(document).on("click", "#btn-search-applicant", function(e) {
+
+    var search_parameter_list = $("#multiple-select-applicant-search").val();
+
+    if (search_parameter_list.length > 0)
+    {
+        search_url = "/administrator/manage-applicants?";
+        for (var i = 0; i < search_parameter_list.length; i++)
+        {
+            var variable_list = search_parameter_list[i].split("_");
+            var value = variable_list[variable_list.length - 1];
+
+            if(variable_list.indexOf("institute") != -1)
+            {
+                search_url += "institute=" + value;
+            }
+            else if(variable_list.indexOf("department") != -1)
+            {
+                search_url += "department=" + value;
+            }
+            else if(variable_list.indexOf("stream") != -1)
+            {
+                search_url += "stream=" + value;
+            }
+            else if(variable_list.indexOf("event") != -1)
+            {
+                search_url += "event=" + value;
+            }
+            else if(variable_list.indexOf("group") != -1)
+            {
+                search_url += "group=" + value;
+            }
+            else if(variable_list.indexOf("quiz")!=-1){
+                search_url += "quiz=" + value;
+            }
+            else if(value == "1")
+            {
+                search_url += "is_rejected=" + "True";
+            }
+            else if(value == "2")
+            {
+                search_url += "is_selected=" + "True";
+            }
+            else if(value == "3")
+            {
+                search_url += "is_nonapproved=" + "True";
+            }
+            else if(value == "4")
+            {
+                search_url += "is_campus=" + "True";
+            }
+            else if(value == "5")
+            {
+                search_url += "is_walkin=" + "True";
+            }
+            else if(value == "6")
+            {
+                search_url += "is_posting=" + "True";
+            }
+            else if(value == "7")
+            {
+                search_url += "is_male=" + "True";
+            }
+            else if(value == "8")
+            {
+                search_url += "is_female=" + "True";
+            }
+            else if(value == "9")
+            {
+                search_url += "is_others=" + "True";
+            }
+
+            if (i != search_parameter_list.length - 1) {
+                search_url += "&"
+            }
+        }
+        window.location = search_url;
+    }
+    else
+    {
+        window.location = "/administrator/manage-applicants/";
+    }
+});
+
+$(document).on("change", "#global-selected-applicants", function(e) {
+    is_checked = document.getElementById("global-selected-applicants").checked;
+    selected_problem_list = document.getElementsByClassName("selected-applicant");
+    for (var i = 0; i < selected_problem_list.length; i++) {
+        id = selected_problem_list[i].id;
+        document.getElementById(id).checked = is_checked;
+    }
+
+    $(".selected-applicant").change();
+});
+
+$(document).on("change", ".selected-applicant", function(e){
+    selected_applicant_list = document.getElementsByClassName("selected-applicant");
+    show_add_next_round_button = false;
+    for (var i = 0; i < selected_applicant_list.length; i++) {
+        id = selected_applicant_list[i].id;
+        if (document.getElementById(id).checked == true) {
+            show_add_next_round_button = true;
+            break;
+        }
+    }
+
+    if (show_add_next_round_button == true) {
+        $("#btn-assign-task").removeAttr('disabled');
+        $("#btn-applicant-status").removeAttr('disabled');
+        $("#btn-save-applicant-irecruit").removeAttr('disabled');
+    } else {
+        $("#btn-assign-task").attr('disabled','disabled');
+        $("#btn-applicant-status").attr('disabled','disabled');
+	$("#btn-save-applicant-irecruit").attr('disabled','disabled');
+    }
+});
+
+function get_list_of_selected_applicants(){
+    selected_applicant_list = document.getElementsByClassName("selected-applicant");
+    applicant_id_list = [];
+    for (var i = 0; i < selected_applicant_list.length; i++) {
+        id = selected_applicant_list[i].id;
+        if(document.getElementById(id).checked){
+            id_item_list = id.split("-");
+            applicant_id_list.push(id_item_list[id_item_list.length-1]);            
+        }
+    }        
+    return applicant_id_list;
+}
+function save_applicants_at_irecruit(element){
+    selected_applicant_id_list = get_list_of_selected_applicants();
+    if(selected_applicant_id_list == ""){
+      showToast("Please select a candidate.", 2000);
+      return;
+    }
+    json_string = JSON.stringify({
+        selected_applicant_id_list:selected_applicant_id_list
+    });
+    var CSRF_TOKEN = getCsrfToken();
+    element.innerHTML = "Saving...";
+    $.ajax({
+       url: '/administrator/save-applicant-at-irecruit/',
+       type: 'POST',
+       headers: {
+           'X-CSRFToken': CSRF_TOKEN
+       },
+       data: {
+           data: json_string
+       },
+       success: function(response) {
+           if (response["status_code"] == 200) {
+            window.location.reload();
+           } else if(response["status_code"]==101) {
+               showToast(response["status_message"], 2000);
+               console.log("Please report this. ", response["status_message"]);
+           }else{
+               showToast("Unable to push due to some internal server error. Kindly report the same", 2000);
+               console.log("Please report this. ", response["status_message"]);            
+           }
+            element.innerHTML = "iRecruit";
+       },
+       error: function(xhr, textstatus, errorthrown){
+           console.log("Please report this error: " + errorthrown + xhr.status + xhr.responseText);
+            element.innerHTML = "iRecruit";
+       }
+   });
+}
+
+function assign_task_applicants(element){
+    selected_next_round = document.getElementById("selected-next-round").value;
+    selected_quiz_for_next_round = document.getElementById("selected-quiz-for-next-round").value;
+    selected_group_for_next_round = document.getElementById("selected-group-for-next-round").value;
+    selected_bot_for_next_round = document.getElementById("selected-bot-for-next-round").value;
+    quiz_start_date = document.getElementById("input-quiz-start-date").value;
+    quiz_start_time = document.getElementById("input-quiz-start-time").value;
+    quiz_end_date = document.getElementById("input-quiz-end-date").value;
+    quiz_end_time = document.getElementById("input-quiz-end-time").value;
+    selected_applicant_id_list = get_list_of_selected_applicants();
+
+    json_string = JSON.stringify({
+        selected_next_round:selected_next_round,
+        selected_quiz_for_next_round:selected_quiz_for_next_round,
+        selected_group_for_next_round:selected_group_for_next_round,
+        selected_bot_for_next_round:selected_bot_for_next_round,
+        quiz_start_time:quiz_start_time,
+        quiz_start_date:quiz_start_date,
+        quiz_end_date:quiz_end_date,
+        quiz_end_time:quiz_end_time,
+        selected_applicant_id_list:selected_applicant_id_list
+    });
+
+    var CSRF_TOKEN = getCsrfToken();
+    element.innerHTML = "Assigning...";
+    $.ajax({
+       url: '/administrator/assign-task/',
+       type: 'POST',
+       headers: {
+           'X-CSRFToken': CSRF_TOKEN
+       },
+       data: {
+           data: json_string
+       },
+       success: function(response) {
+           if (response["status_code"] == 200) {
+               console.log(response)
+               window.location.reload();
+           } else if(response["status_code"]==101) {
+               showToast(response["status_message"], 2000);
+               console.log("Please report this. ", response["status_message"]);
+           }else{
+               showToast("Unable to schedule due to some internal server error. Kindly report the same", 2000);
+               console.log("Please report this. ", response["status_message"]);            
+           }
+            element.innerHTML = "Assign Task";
+       },
+       error: function(xhr, textstatus, errorthrown){
+           console.log("Please report this error: " + errorthrown + xhr.status + xhr.responseText);
+            element.innerHTML = "Assign Task";
+       }
+   });
+}
+
+function download_applicant_report(element){
+    selected_applicant_id_list = get_list_of_selected_applicants();
+    if(selected_applicant_id_list == ""){
+      showToast("Please select a candidate.", 2000);
+      return;
+    }
+    json_string = JSON.stringify({
+        selected_applicant_id_list:selected_applicant_id_list
+    });
+    var CSRF_TOKEN = getCsrfToken();
+    //element.innerHTML = "Downloading...";
+    $.ajax({
+       url: '/administrator/download-applicant-report/',
+       type: 'POST',
+       headers: {
+           'X-CSRFToken': CSRF_TOKEN
+       },
+       data: {
+           data: json_string
+       },
+       success: function(response) {
+           if (response["status_code"] == 200) {
+               var file_url = response["file_url"];
+              url = window.location.origin + file_url
+            window.open(url)
+           } else if(response["status_code"]==101) {
+               showToast(response["status_message"], 2000);
+               console.log("Please report this. ", response["status_message"]);
+           }else{
+               showToast("Unable to download due to some internal server error. Kindly report the same", 2000);
+               console.log("Please report this. ", response["status_message"]);            
+           }
+            //element.innerHTML = "Download Report";
+       },
+       error: function(xhr, textstatus, errorthrown){
+           console.log("Please report this error: " + errorthrown + xhr.status + xhr.responseText);
+            element.innerHTML = "Download Report";
+       }
+   });
+}
+
+function accepted_applicants(element){
+
+    selected_applicant_id_list = get_list_of_selected_applicants();
+
+    json_string = JSON.stringify({
+        selected_applicant_id_list:selected_applicant_id_list
+    });
+
+    var CSRF_TOKEN = getCsrfToken();
+    element.innerHTML = "Changing status...";
+    $.ajax({
+       url: '/administrator/accepted-applicant/',
+       type: 'POST',
+       headers: {
+           'X-CSRFToken': CSRF_TOKEN
+       },
+       data: {
+           data: json_string
+       },
+       success: function(response) {
+           if (response["status_code"] == 200) {
+               window.location.reload();
+           } else if(response["status_code"]==101) {
+               showToast(response["status_message"], 2000);
+               console.log("Please report this. ", response["status_message"]);
+           }else{
+               showToast("Unable to schedule due to some internal server error. Kindly report the same", 2000);
+               console.log("Please report this. ", response["status_message"]);            
+           }
+            element.innerHTML = "Accept";
+       },
+       error: function(xhr, textstatus, errorthrown){
+           console.log("Please report this error: " + errorthrown + xhr.status + xhr.responseText);
+            element.innerHTML = "Accept";
+       }
+   });
+}
+
+function rejected_applicants(element){
+
+    selected_applicant_id_list = get_list_of_selected_applicants();
+
+    json_string = JSON.stringify({
+        selected_applicant_id_list:selected_applicant_id_list
+    });
+
+    var CSRF_TOKEN = getCsrfToken();
+    element.innerHTML = "Changing status...";
+    $.ajax({
+       url: '/administrator/rejected-applicant/',
+       type: 'POST',
+       headers: {
+           'X-CSRFToken': CSRF_TOKEN
+       },
+       data: {
+           data: json_string
+       },
+       success: function(response) {
+           if (response["status_code"] == 200) {
+               window.location.reload();
+           } else if(response["status_code"]==101) {
+               showToast(response["status_message"], 2000);
+               console.log("Please report this. ", response["status_message"]);
+           }else{
+               showToast("Unable to schedule due to some internal server error. Kindly report the same", 2000);
+               console.log("Please report this. ", response["status_message"]);            
+           }
+            element.innerHTML = "Reject";
+       },
+       error: function(xhr, textstatus, errorthrown){
+           console.log("Please report this error: " + errorthrown + xhr.status + xhr.responseText);
+            element.innerHTML = "Reject";
+       }
+   });
+}
+
+function reset_profile_applicants(element){
+
+    selected_applicant_id_list = get_list_of_selected_applicants();
+
+    json_string = JSON.stringify({
+        selected_applicant_id_list:selected_applicant_id_list
+    });
+
+    var CSRF_TOKEN = getCsrfToken();
+    element.innerHTML = "Changing status...";
+    $.ajax({
+       url: '/administrator/reset-applicant-account/',
+       type: 'POST',
+       headers: {
+           'X-CSRFToken': CSRF_TOKEN
+       },
+       data: {
+           data: json_string
+       },
+       success: function(response) {
+           if (response["status_code"] == 200) {
+               window.location.reload();
+           } else if(response["status_code"]==101) {
+               showToast(response["status_message"], 2000);
+               console.log("Please report this. ", response["status_message"]);
+           }else{
+               showToast("Unable to schedule due to some internal server error. Kindly report the same", 2000);
+               console.log("Please report this. ", response["status_message"]);            
+           }
+            element.innerHTML = "Reset Account";
+       },
+       error: function(xhr, textstatus, errorthrown){
+           console.log("Please report this error: " + errorthrown + xhr.status + xhr.responseText);
+            element.innerHTML = "Reset Account";
+       }
+   });
+}
+
+$(document).on("click", "#btn-add-institute", function(e) 
+{
+    var institute_name = $("#input-institute-name").val();
+    if (institute_name == "") {
+        showToast("Institute name can not be empty.");
+        return;
+    }
+    json_string = JSON.stringify({
+           "name": institute_name,
+       });
+
+       var CSRF_TOKEN = getCsrfToken();
+       $.ajax({
+           url: '/master-list/add-institutes/',
+           type: 'POST',
+           headers: {
+               'X-CSRFToken': CSRF_TOKEN
+           },
+           data: {
+               data: json_string
+           },
+           success: function(response) {
+               if (response["status_code"] == 200) {
+                   window.location.reload();
+               } else {
+                   showToast("Unable to add new institute. Make sure institute name is unique.", 2000);
+                   console.log("Please report this. ", response["status_message"]);
+               }
+           },
+           error: function(xhr, textstatus, errorthrown) {
+               console.log("Please report this error: " + errorthrown + xhr.status + xhr.responseText);
+           }
+       });
+});
+
+function deactivate_institute(institute_name)
+{
+  console.log(institute_name)
+    json_string = JSON.stringify({
+           "institute": institute_name,
+       });
+
+       var CSRF_TOKEN = getCsrfToken();
+       $.ajax({
+           url: '/administrator/deactivate-institute/',
+           type: 'POST',
+           headers: {
+               'X-CSRFToken': CSRF_TOKEN
+           },
+           data: {
+               data: json_string
+           },
+           success: function(response) {
+               if (response["status_code"] == 200) {
+                   window.location.reload();
+               } else {
+                   showToast("Unable to deactivate institute. Try again later.", 2000);
+                   console.log("Please report this. ", response["status_message"]);
+               }
+           },
+           error: function(xhr, textstatus, errorthrown) {
+               console.log("Please report this error: " + errorthrown + xhr.status + xhr.responseText);
+           }
+       });
+}
+
+function activate_institute(institute_name)
+{
+  console.log(institute_name)
+    json_string = JSON.stringify({
+           "institute": institute_name,
+       });
+
+       var CSRF_TOKEN = getCsrfToken();
+       $.ajax({
+           url: '/administrator/activate-institute/',
+           type: 'POST',
+           headers: {
+               'X-CSRFToken': CSRF_TOKEN
+           },
+           data: {
+               data: json_string
+           },
+           success: function(response) {
+               if (response["status_code"] == 200) {
+                   window.location.reload();
+               } else {
+                   showToast("Unable to activate institute. Try again later.", 2000);
+                   console.log("Please report this. ", response["status_message"]);
+               }
+           },
+           error: function(xhr, textstatus, errorthrown) {
+               console.log("Please report this error: " + errorthrown + xhr.status + xhr.responseText);
+           }
+       });
+}
+
+$(document).on("click", "#btn-add-stream", function(e) 
+{
+    var stream_name = $("#input-stream-name").val();
+    if (stream_name == "") {
+        showToast("Stream name can not be empty.");
+        return;
+    }
+    json_string = JSON.stringify({
+           "name": stream_name,
+       });
+
+       var CSRF_TOKEN = getCsrfToken();
+       $.ajax({
+           url: '/master-list/add-streams/',
+           type: 'POST',
+           headers: {
+               'X-CSRFToken': CSRF_TOKEN
+           },
+           data: {
+               data: json_string
+           },
+           success: function(response) {
+               if (response["status_code"] == 200) {
+                   window.location.reload();
+               } else {
+                   showToast("Unable to add new stream. Make sure stream name is unique.", 2000);
+                   console.log("Please report this. ", response["status_message"]);
+               }
+           },
+           error: function(xhr, textstatus, errorthrown) {
+               console.log("Please report this error: " + errorthrown + xhr.status + xhr.responseText);
+           }
+       });
+});
+function delete_stream(stream_id)
+{
+    json_string = JSON.stringify({
+           "stream_id": stream_id,
+       });
+
+       var CSRF_TOKEN = getCsrfToken();
+       $.ajax({
+           url: '/master-list/delete-stream/',
+           type: 'POST',
+           headers: {
+               'X-CSRFToken': CSRF_TOKEN
+           },
+           data: {
+               data: json_string
+           },
+           success: function(response) {
+               if (response["status_code"] == 200) {
+                   window.location.reload();
+               } else {
+                   showToast("Unable to delete stream. Try again later.", 2000);
+                   console.log("Please report this. ", response["status_message"]);
+               }
+           },
+           error: function(xhr, textstatus, errorthrown) {
+               console.log("Please report this error: " + errorthrown + xhr.status + xhr.responseText);
+           }
+       });
+}
+
+if(window.location.pathname=="/master-list/streams/"){
+  $(document).ready(function(){
+      var table = $('#table-streams-details').DataTable();
+  });
+}
+
+
+/////////////////////QUIZ////////////////////////////
+
+
+if(window.location.pathname=="/manage-quiz/"){
+  $(document).ready(function(){
+      var table = $('#table-manage-quiz').DataTable();
+  });
+}
+
+if(window.location.pathname=="/manage-quiz/topics/"){
+  $(document).ready(function(){
+      var table = $('#table-manage-quiz-topics').DataTable();
+  });
+}
+
+
+$(document).on("click", "#btn-add-topic", function(e) {
+    var topicName = $("#topic-name").val();
+    if (topicName == "") {
+        showToast("Topic Name can not be empty.", 2000);
+        return;
+    }
+
+    json_string = JSON.stringify({
+        "topic_name": topicName
+    });
+
+    var CSRF_TOKEN = getCsrfToken()
+    $.ajax({
+        url: "/manage-quiz/add-topic/",
+        type: "POST",
+        headers: {
+            'X-CSRFToken': CSRF_TOKEN
+        },
+        data: {
+            data: json_string
+        },
+        success: function(response) {
+            window.location.reload();
+        },
+        error: function(xhr, textstatus, errorthrown) {
+            console.log("Please report this error: " + errorthrown + xhr.status + xhr.responseText);
+        }
+    });
+});
+
+
+function delete_selected_urls_from_problem(option_id){
+    document.getElementById("li-collection-item-"+option_id).remove();
+}
+
+if(window.location.pathname.indexOf("/problem/edit")!=-1 || window.location.pathname.indexOf("/problem/add")!=-1){
+    document.getElementById('input-url-value').onkeypress=function(e){
+        if(e.keyCode==13){
+            document.getElementById('btn-add-url').click();
+        }
+    }
+}
+
+$(document).on("click", "#btn-add-url", function(e) {
+    number_of_urls = document.getElementsByClassName("url-collection").length;
+    var url_value = $("#input-url-value").val();
+    if (url_value == "") {
+        showToast("URL can not be empty.", 2000);
+        return;
+    }
+    number_of_urls = number_of_urls + 1;
+    html = '<li class="collection-item" id="li-collection-item-'+number_of_urls+'">\
+                <div class="row">\
+                    <div class="col s10">\
+                        <input value="'+url_value+'" class="url-collection" id="input-url-'+number_of_urls+'"></input>\
+                    </div>\
+                    <div class="col s2">\
+                        <i class="material-icons right" onclick="delete_selected_urls_from_problem('+number_of_urls+')">delete</i>\
+                    </div>\
+                </div>\
+            </li>';
+    $("#ul-url-collection").append(html);
+    document.getElementById("input-url-value").value = "";
+});
+
+
+if(window.location.pathname.indexOf("/problem/edit")!=-1 || window.location.pathname.indexOf("/problem/add")!=-1){
+    document.getElementById('input-choice-value').onkeypress=function(e){
+        if(e.keyCode==13){
+            document.getElementById('btn-add-choice').click();
+        }
+    }
+}
+
+$(document).on("click", "#btn-add-choice", function(e) {
+    number_of_choices = document.getElementsByClassName("choice-collection").length;
+    var choice_value = $("#input-choice-value").val();
+    if (choice_value == "") {
+        showToast("Choice value can not be empty.", 2000);
+        return;
+    }
+    number_of_choices = number_of_choices + 1;
+    html = '<li class="collection-item" id="li-collection-item-'+number_of_choices+'">\
+        <div class="row">\
+          <div class="col s10">\
+            <input value="'+choice_value+'" class="choice-collection" id="input-choice-'+number_of_choices+'"></input>\
+          </div>\
+          <div class="col s2">\
+            <i class="material-icons right" onclick="delete_selected_option_from_problem('+number_of_choices+')">delete</i>\
+          </div>\
+        </div>\
+      </li>';
+    $("#ul-choice-collection").append(html);
+    document.getElementById("input-choice-value").value = "";
+});
+
+
+function checkChoices(choice_value)
+{
+    choice_length = document.getElementsByClassName("choice-collection").length;
+    found = false;
+    for(var i=0;i<choice_length;i++)
+    {
+        if(choice_value == document.getElementsByClassName("choice-collection")[i].value)
+        {
+            found = true;
+            break;
+        }
+    }
+    return found;
+}
+function checkRepeatedChoices(choice_value)
+{
+    choice_length = document.getElementsByClassName("choice-correct-collection").length;
+    found = false;
+    for(var i=0;i<choice_length;i++)
+    {
+        if(choice_value == document.getElementsByClassName("choice-correct-collection")[i].value)
+        {
+            found = true;
+            break;
+        }
+    }
+    return found;
+}
+
+if(window.location.pathname.indexOf("/problem/edit")!=-1 || window.location.pathname.indexOf("/problem/add")!=-1){
+    document.getElementById('input-choice-correct-value').onkeypress=function(e){
+        if(e.keyCode==13){
+            document.getElementById('btn-add-correct-choice').click();
+        }
+    }
+}
+
+$(document).on("click", "#btn-add-correct-choice", function(e) {
+
+    number_of_choices = document.getElementsByClassName("choice-correct-collection").length;
+    var choice_value = $("#input-choice-correct-value").val();
+    if (choice_value == "") {
+        showToast("Correct choice value can not be empty.", 2000);
+        return;
+    }
+    found = checkChoices(choice_value);
+    if(found == false)
+    {
+        showToast("Correct choice value should exist in choices.", 2000);
+        return;
+    }
+    repeat = checkRepeatedChoices(choice_value);
+    if(repeat == true)
+    {
+        showToast("This option already exists.", 2000);
+        return;
+    }
+    number_of_choices = number_of_choices + 1;
+    html = '<li class="collection-item" id="li-collection-correct-item-'+number_of_choices+'">\
+        <div class="row">\
+          <div class="col s10">\
+            <input value="'+choice_value+'" class="choice-correct-collection" id="input-choice-correct-'+number_of_choices+'"></input>\
+          </div>\
+          <div class="col s2">\
+            <i class="material-icons right" onclick="delete_selected_correct_option_from_problem('+number_of_choices+')">delete</i>\
+          </div>\
+        </div>\
+      </li>';
+    $("#ul-choice-correct-collection").append(html);
+
+    document.getElementById("input-choice-correct-value").value = "";
+
+});
+
+function delete_selected_option_from_problem(option_id){
+    document.getElementById("li-collection-item-"+option_id).remove();
+}
+
+function delete_selected_correct_option_from_problem(option_id){
+    document.getElementById("li-collection-correct-item-"+option_id).remove();
+}
+
+$(document).on("click", ".delete-topic", function(e) {
+    var topicId = this.id.split("-")[3];
+
+    json_string = JSON.stringify({
+        "topic_id": topicId
+    });
+
+    var CSRF_TOKEN = getCsrfToken();
+    $.ajax({
+        url: "/manage-quiz/delete-topic/",
+        type: "POST",
+        headers: {
+            'X-CSRFToken': CSRF_TOKEN
+        },
+        data: {
+            data: json_string
+        },
+        success: function(response) {
+            window.location.reload();
+        },
+        error: function(xhr, textstatus, errorthrown) {
+            console.log("Please report this error: " + errorthrown + xhr.status + xhr.responseText);
+        }
+    });
+});
+
+
+$(document).on("click", ".rename-topic", function(e) {
+
+    var topicId = this.id.split("-")[3];
+    var topicName = document.getElementById("input-topic-new-name-" + topicId).value;
+
+    if (topicName == "") {
+        showToast("Topic name can not be empty!");
+        return;
+    }
+
+    json_string = JSON.stringify({
+        "topic_id": topicId,
+        "topic_name": topicName
+    });
+
+    var CSRF_TOKEN = getCsrfToken();
+    $.ajax({
+        url: "/manage-quiz/rename-topic/",
+        type: "POST",
+        headers: {
+            'X-CSRFToken': CSRF_TOKEN
+        },
+        data: {
+            data: json_string
+        },
+        success: function(response) {
+            window.location.reload();
+        },
+        error: function(xhr, textstatus, errorthrown) {
+            console.log("Please report this error: " + errorthrown + xhr.status + xhr.responseText);
+        }
+    });
+});
+
+
+$(document).on("change", "#problem-category", function(e) {
+    var problemCategory = $("#problem-category").val();
+    if (problemCategory == "1" || problemCategory == "2") {
+        showChoiceDiv();
+    } else if (problemCategory == "3") {
+        showDescriptiveDiv();
+    } else if (problemCategory == "4" || problemCategory == "5") {
+        hideChoiceDiv();
+        hideDescriptiveDiv();
+    }
+});
+
+if (window.location.pathname.indexOf("/problem/edit") != -1) {
+    $("#problem-category").change();
+    $("#multiple-select-choices").change();
+}
+
+$(document).on("click", ".save-problem", function(e) {
+
+    var problemID = "None";
+    if (window.location.pathname.indexOf("/problem/edit") != -1) {
+        problemID = window.location.pathname.split("/")[4];
+    }
+
+    var problemCategory = $("#problem-category").val();
+    if (problemCategory == undefined || problemCategory == "" || problemCategory == null) {
+        showToast("Please select problem category.", 2000);
+        return;
+    }
+
+    var problemDifficulty = $("#problem-difficulty").val();
+    if (problemDifficulty == undefined || problemDifficulty == "" || problemDifficulty == null) {
+        showToast("Please select problem difficulty.", 2000);
+        return;
+    }
+
+    var problemTopics = $("#multiple-select-problem-topics").val();
+    if (problemTopics.length == 0) {
+        showToast("Please select topic for problem", 2000);
+        return;
+    }
+
+    var problem_description = CKEDITOR.instances['problem-description'].getData();
+    // var problem_solution = CKEDITOR.instances['problem-solution'].getData();
+    var problem_solution = $("#problem-solution").val();
+    var problem_hint = CKEDITOR.instances['problem-hint'].getData();
+
+    if (problem_description == null || problem_description == undefined || problem_description == "") {
+        showToast("Problem description can not be empty.", 2000);
+        return;
+    }
+
+
+    var selected_urls = "";
+    var selected_urls_length = document.getElementsByClassName("url-collection").length;
+    if(selected_urls_length>0){
+        selected_urls += document.getElementsByClassName("url-collection")[0].value;
+        for(var i=1; i<selected_urls_length; i++)
+        {
+            selected_urls += ",";
+            selected_urls += document.getElementsByClassName("url-collection")[i].value;
+        }        
+    }
+
+
+    var selected_choices = "";
+    correct_choices = "";
+    if(problemCategory == "1" || problemCategory == "2"){
+        var selected_choices_length = document.getElementsByClassName("choice-collection").length;
+        selected_choices += document.getElementsByClassName("choice-collection")[0].value;
+        for(var i=1; i<selected_choices_length; i++)
+        {
+            selected_choices += "|";
+            selected_choices += document.getElementsByClassName("choice-collection")[i].value;
+        }
+        correct_choices_length = document.getElementsByClassName("choice-correct-collection").length;
+        correct_choices += document.getElementsByClassName("choice-correct-collection")[0].value;
+        for(i=1;i<correct_choices_length;i++)
+        {
+            correct_choices += "|";
+            correct_choices += document.getElementsByClassName("choice-correct-collection")[i].value
+        }
+    }
+
+    var selected_video_urls = "";
+    var selected_video_urls_length = document.getElementsByClassName("video-url-collection").length;
+    if(selected_video_urls_length>0){
+        selected_video_urls += document.getElementsByClassName("video-url-collection")[0].value;
+        for(var i=1; i<selected_video_urls_length; i++)
+        {
+            selected_video_urls += ",";
+            selected_video_urls += document.getElementsByClassName("video-url-collection")[i].value;
+        }        
+    }
+
+    var pdf_url = "";
+    pdf_url = document.getElementById("input-pdf-url-value").value;
+
+    var text_to_speech = document.getElementById("checkbox-text-to-speech").checked;
+    json_string = JSON.stringify({
+        "problem_id": problemID,
+        "problem_category": problemCategory,
+        "problem_difficulty": problemDifficulty,
+        "problem_topics": problemTopics,
+        "problem_description": problem_description,
+        "problem_solution": problem_solution,
+        "problem_hint": problem_hint,
+        "selected_choices": selected_choices,
+        "correct_choices": correct_choices,
+        "video_url": selected_video_urls,
+        "text_to_speech": text_to_speech,
+        "pdf_url":pdf_url,
+        "selected_urls":selected_urls
+    });
+
+    problemImage = ($("#input_upload_image"))[0].files[0];
+    formdata = new FormData();
+    formdata.append('file', problemImage);
+    formdata.append('data', json_string);
+
+    var CSRF_TOKEN = getCsrfToken();
+    showToast("Saving problem...");
+    $.ajax({
+        url: '/manage-quiz/save-problem/',
+        type: 'POST',
+        headers: {
+            'X-CSRFToken': CSRF_TOKEN
+        },
+        data: formdata,
+        processData: false,
+        contentType: false,
+        success: function(response) {
+            if (response["status_code"] == 200) {
+                window.location = "/manage-quiz/problem/edit/" + response["problem_id"];
+            } else {
+                showToast("Unable to save the problem. Kindly report the same.");
+            }
+        },
+        error: function(xhr, textstatus, errorthrown) {
+            console.log("Please report this error: " + errorthrown + xhr.status + xhr.responseText);
+        }
+    });
+});
+
+$(document).on("click", "#btn-add-video", function(e) {
+    var video_url = $("#input-video-url").val();
+    var video_url = getEmbedVideoURL(video_url);
+    $("#problem-video-url").val(video_url);
+});
+
+$(document).on("click", "#btn-add-quiz-config", function(e) {
+    var quizTitle = $("#quiz-title").val();
+    if (quizTitle == "") {
+        showToast("Quiz title can not be empty.", 2000);
+        return;
+    }
+
+    json_string = JSON.stringify({
+        "quiz_title": quizTitle
+    });
+
+    var CSRF_TOKEN = getCsrfToken()
+    $.ajax({
+        url: "/manage-quiz/add-quiz/",
+        type: "POST",
+        headers: {
+            'X-CSRFToken': CSRF_TOKEN
+        },
+        data: {
+            data: json_string
+        },
+        success: function(response) {
+            window.location.reload();
+        },
+        error: function(xhr, textstatus, errorthrown) {
+            console.log("Please report this error: " + errorthrown + xhr.status + xhr.responseText);
+        }
+    });
+});
+
+$(document).on("click", ".delete-quiz-config", function(e) {
+    var quizId = this.id.split("-")[3];
+
+    json_string = JSON.stringify({
+        "quiz_id": quizId
+    });
+
+    var CSRF_TOKEN = getCsrfToken();
+    $.ajax({
+        url: "/manage-quiz/delete-quiz/",
+        type: "POST",
+        headers: {
+            'X-CSRFToken': CSRF_TOKEN
+        },
+        data: {
+            data: json_string
+        },
+        success: function(response) {
+            window.location.reload();
+        },
+        error: function(xhr, textstatus, errorthrown) {
+            console.log("Please report this error: " + errorthrown + xhr.status + xhr.responseText);
+        }
+    });
+});
+
+if(window.location.pathname.indexOf("/quiz-config/edit")!=-1){
+    $(document).ready(function(e){
+        $("#select-quiz-section-topic").select2({
+            dropdownParent: $("#modal-add-quiz-section"),
+            width:"100%",
+        });
+    });
+}
+
+$(document).on("click", ".save-quiz-config", function(e) {
+
+    var quizConfigID = "None";
+    if (window.location.pathname.indexOf("/manage-quiz/quiz/edit") != -1) {
+        quizConfigID = window.location.pathname.split("/")[4];
+    }
+
+    var quiz_title = $("#quiz-config-title").val();
+    if (quiz_title == "") {
+        showToast("Quiz title can not be empty.", 2000);
+        return;
+    }
+
+    var quiz_instruction = CKEDITOR.instances['quiz-config-instruction'].getData();
+
+    if (quiz_instruction == "") {
+        showToast("Quiz instruction can not be empty.", 2000);
+        return;
+    }
+
+    include_personality_profiler = document.getElementById("checkbox-include-personality-profiler").checked;
+
+    var json_string = JSON.stringify({
+        quiz_id: quizConfigID,
+        quiz_title: quiz_title,
+        quiz_instruction: quiz_instruction,
+        include_personality_profiler: include_personality_profiler
+    });
+
+    var CSRF_TOKEN = getCsrfToken();
+
+    $.ajax({
+        url: '/manage-quiz/save-quiz-config/',
+        type: 'POST',
+        headers: {
+            'X-CSRFToken': CSRF_TOKEN
+        },
+        data: {
+            data: json_string
+        },
+        success: function(response) {
+            window.location.reload();
+        },
+        error: function(xhr, textstatus, errorthrown) {
+            console.log("Please report this error: " + errorthrown + xhr.status + xhr.responseText);
+        }
+    });
+});
+
+function scrollToGivenElementId(element_id) {
+    $('html, body').animate({
+        scrollTop: $("#" + element_id).offset().top - 100
+    }, 500);
+}
+
+function focusAtGivenElementID(element_id) {
+    $("#" + element_id).focus();
+}
+
+$(document).on("click", ".remove-problem-image", function(e) {
+    problem_id = this.id.split("-")[4];
+    var CSRF_TOKEN = getCsrfToken();
+
+    json_string = JSON.stringify({
+        "problem_id": problem_id,
+        "remove_image": true,
+        "remove_video": false
+    });
+
+    $.ajax({
+        url: "/problem/remove-media",
+        type: "POST",
+        headers: {
+            'X-CSRFToken': CSRF_TOKEN
+        },
+        data: {
+            data: json_string
+        },
+        success: function(response) {
+            window.location.reload();
+        },
+        error: function(xhr, textstatus, errorthrown) {
+            console.log("Please report this error: " + errorthrown + xhr.status + xhr.responseText);
+        }
+    });
+});
+
+$(document).on("click", ".remove-problem-video", function(e) {
+    problem_id = this.id.split("-")[4];
+    var CSRF_TOKEN = getCsrfToken();
+
+    json_string = JSON.stringify({
+        "problem_id": problem_id,
+        "remove_image": false,
+        "remove_video": true
+    });
+
+    $.ajax({
+        url: "/problem/remove-media",
+        type: "POST",
+        headers: {
+            'X-CSRFToken': CSRF_TOKEN
+        },
+        data: {
+            data: json_string
+        },
+        success: function(response) {
+            window.location.reload();
+        },
+        error: function(xhr, textstatus, errorthrown) {
+            console.log("Please report this error: " + errorthrown + xhr.status + xhr.responseText);
+        }
+
+    });
+});
+
+$(document).on("click", "#btn-add-quiz-section", function(e) {
+
+    quiz_config_id = window.location.pathname.split("/")[4];
+    quiz_section_topic_id = $("#select-quiz-section-topic").val();
+    quiz_section_weightage = $("#quiz-section-weightage").val();
+    quiz_section_no_questions = $("#quiz-section-no-questions").val();
+    quiz_section_time = $("#quiz-section-time").val();
+
+    if (quiz_section_topic_id == "") {
+        showToast("Please select Topic to add section", 2000);
+        focusAtGivenElementID("select-quiz-section-topic");
+        $("#modal-add-quiz-section").modal('open');
+        return;
+    }
+
+    if (quiz_section_weightage == "") {
+        showToast("Please assign weightage to quiz section", 2000);
+        focusAtGivenElementID("quiz-section-weightage");
+        $("#quiz-section-weightage").modal('open');
+        return;
+    }
+
+    if (quiz_section_no_questions == "") {
+        showToast("Please add no of questions", 2000);
+        focusAtGivenElementID("quiz-section-no-questions");
+        $("#modal-add-quiz-section").modal('open');
+        return;
+    }
+
+    if (quiz_section_time == "") {
+        showToast("Please add time for section in minutes", 2000);
+        focusAtGivenElementID("quiz-section-time");
+        $("#modal-add-quiz-section").modal('open');
+        return;
+    }
+
+    var CSRF_TOKEN = getCsrfToken();
+
+    json_string = JSON.stringify({
+        "quiz_config_id": quiz_config_id,
+        "quiz_section_weightage": quiz_section_weightage,
+        "quiz_section_topic_id": quiz_section_topic_id,
+        "quiz_section_no_questions": quiz_section_no_questions,
+        "quiz_section_time": quiz_section_time
+    });
+
+    $.ajax({
+        url: "/manage-quiz/add-quiz-section/",
+        type: "POST",
+        headers: {
+            'X-CSRFToken': CSRF_TOKEN
+        },
+        data: {
+            data: json_string
+        },
+        success: function(response) {
+            if (response["status_code"] == 200) {
+                window.location.reload();
+            } else {
+                showToast(response["status_message"], 2000);
+            }
+        },
+        error: function(xhr, textstatus, errorthrown) {
+            console.log("Please report this error: " + errorthrown + xhr.status + xhr.responseText);
+        }
+
+    });
+});
+
+function delete_selected_video_urls_from_problem(option_id){
+    document.getElementById("li-collection-video-item-"+option_id).remove();
+}
+
+if(window.location.pathname.indexOf("/problem/edit")!=-1 || window.location.pathname.indexOf("/problem/add")!=-1){
+    document.getElementById('input-video-url-value').onkeypress=function(e){
+        if(e.keyCode==13){
+            document.getElementById('btn-add-video-url').click();
+        }
+    }
+}
+
+$(document).on("click", "#btn-add-video-url", function(e) {
+    number_of_urls = document.getElementsByClassName("video-url-collection").length;
+    var url_value = $("#input-video-url-value").val();
+    if (url_value == "") {
+        showToast("URL can not be empty.", 2000);
+        return;
+    }
+    number_of_urls = number_of_urls + 1;
+    url_value = getEmbedVideoURL(url_value);
+    html = '<li class="collection-item" id="li-collection-video-item-'+number_of_urls+'">\
+                <div class="row">\
+                    <div class="col s10">\
+                        <input value="'+url_value+'" class="video-url-collection" id="input-video-url-'+number_of_urls+'"></input>\
+                    </div>\
+                    <div class="col s2">\
+                        <i class="material-icons right" onclick="delete_selected_video_urls_from_problem('+number_of_urls+')">delete</i>\
+                    </div>\
+                </div>\
+            </li>';
+    $("#ul-video-url-collection").append(html);
+    document.getElementById("input-video-url-value").value = "";
+});
+
+function hideChoiceDiv() {
+    $("#div-problem-choices").hide();
+    $("#div-problem-correct-choices").hide();
+}
+
+function showChoiceDiv() {
+    $("#div-problem-choices").show();
+    $("#div-problem-correct-choices").show();
+    hideDescriptiveDiv();
+}
+
+function showDescriptiveDiv() {
+    $("#div-problem-solution").show();
+    $("#div-problem-hint").show();
+    hideChoiceDiv();
+}
+
+function hideDescriptiveDiv() {
+    $("#div-problem-solution").hide();
+    $("#div-problem-hint").hide();
+}
+
+$(document).on("change", "#global-selected-problem", function(e) {
+    is_checked = document.getElementById("global-selected-problem").checked;
+    selected_problem_list = document.getElementsByClassName("selected-problem");
+    for (var i = 0; i < selected_problem_list.length; i++) {
+        id = selected_problem_list[i].id;
+        document.getElementById(id).checked = is_checked;
+    }
+
+    $(".selected-problem").change();
+});
+
+$(document).on("change", ".selected-problem", function(e) {
+    selected_problem_list = document.getElementsByClassName("selected-problem");
+    is_delete_button_show = false;
+    for (var i = 0; i < selected_problem_list.length; i++) {
+        id = selected_problem_list[i].id;
+        if (document.getElementById(id).checked == true) {
+            is_delete_button_show = true;
+            break;
+        }
+    }
+
+    delete_button_element = document.getElementById("delete-selected-problem");
+    if (is_delete_button_show == true) {
+        delete_button_element.style.display = "block";
+    } else {
+        delete_button_element.style.display = "none";
+    }
+});
+
+$(document).on("click", "#btn-delete-selected-problem", function(e) {
+    var topicId = document.location.pathname.split("/")[3];
+    var url = "/manage-quiz/delete-problem/" + topicId + "?";
+    selected_problem_list = document.getElementsByClassName("selected-problem");
+    for (var i = 0; i < selected_problem_list.length; i++) {
+        id = selected_problem_list[i].id;
+        if (document.getElementById(id).checked) {
+            url += "problem_id=" + id.split("-")[4] + "&";
+        }
+    }
+
+    $.ajax({
+        url: url,
+        type: "GET",
+        data: {},
+        success: function(response) {
+            window.location.reload();
+        },
+        error: function(xhr, textstatus, errorthrown) {
+            console.log("Please report this error: " + errorthrown + xhr.status + xhr.responseText);
+        }
+    })
+});
+
+$(document).on("click", "#btn-upload-questions-excel", function(e) {
+
+    e.preventDefault();
+
+    var selected_question_type_to_upload = $("#selected-question-type-excel-upload").val();
+    if (selected_question_type_to_upload == "") {
+        showToast("Please select type of questions which you want to upload through excel.");
+        return;
+    }
+
+    var files = ($("#input-upload-questions-excel"))[0].files
+    if (files.length == 0) {
+        showToast("Kindly select an excel file to upload.", 2000);
+        return;
+    }
+    file = files[0];
+
+    var formData = new FormData();
+    fname = file['name'].split('.');
+    fname = fname[fname.length - 1].toLowerCase();
+    if (fname == "xlsx" || fname == "xlx") {
+        formData.append("file", file);
+    } else {
+        showToast("Kindly select an excel file to upload.", 2000);
+        return;
+    }
+
+    url = window.location.pathname.split('/')
+    formData.append("topic_pk", url[url.length - 1]);
+    formData.append("type_of_questions", selected_question_type_to_upload);
+
+    btn_element = document.getElementById("btn-upload-questions-excel");
+    btn_element.disabled = true;
+    var CSRF_TOKEN = getCsrfToken();
+    $("#preloader_div").show();
+    $.ajax({
+        url: "upload-questions-excel/",
+        type: "POST",
+        headers: {
+           'X-CSRFToken': CSRF_TOKEN
+        },
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(response) {
+            $("#preloader_div").hide();
+            if (response["status"] == 200) {
+                showToast("Questions Added Successfully.", 2000);
+                setTimeout(function() {
+                    console.log("success reloading")
+                    window.location.reload();
+                }, 2100);
+            } else if (response["status"] == 301) {
+                showToast("File Extension Error. Please Upload Valid File", 2000);
+            } else if (response["status"] == 302) {
+                error_div = document.getElementById("upload-questions-excel-error");
+                error_div.style.display = "block";
+                error_div.innerHTML = response["message"];
+                showToast("An Error Occuredselected-problem.", 6000);
+            } else {
+                showToast("Internal Server Error. Please try again later.", 2000);
+            }
+            document.getElementById("input-upload-questions-excel").value = "";
+            document.getElementById("input-upload-questions-excel-v").value = "";
+            btn_element.disabled = false;
+        },
+        error: function(xhr, textstatus, errorthrown) {
+            $("#preloader_div").hide();
+            showToast("Internal Server Error. Please try again later.", 2000);
+            console.log("Please report this error: " + errorthrown + xhr.status + xhr.responseText);
+            document.getElementById("#input-upload-questions-excel").val("");
+            btn_element.disabled = false;
+        }
+    });
+});
+
+var frequency_count_section_id = {}
+
+function expandQuizSectionResult(section_id) {
+    if (section_id in frequency_count_section_id) {
+        frequency_count_section_id[section_id] += 1;
+        if (frequency_count_section_id[section_id] % 2 == 0) {
+            $("#expand-quiz-section-result-" + section_id).hide();
+            $("#quiz-section-result-expand-icon-" + section_id).html("expand_more");
+        } else {
+            $("#expand-quiz-section-result-" + section_id).show(1000);
+            $("#quiz-section-result-expand-icon-" + section_id).html("expand_less");
+        }
+    } else {
+        frequency_count_section_id[section_id] = 1;
+        $("#expand-quiz-section-result-" + section_id).show(1000);
+        $("#quiz-section-result-expand-icon-" + section_id).html("expand_less");
+    }
+}
+
+function expandAllQuizSectionResult() {
+    $(".expand-quiz-section-result").show(1000);
+    $(".quiz-section-result-expand-icon").html("expand_less");
+}
+
+function hideAllQuizSectionResult() {
+    $(".expand-quiz-section-result").hide();
+    $(".quiz-section-result-expand-icon").html("expand_more");
+}
+
+function showApplicantDetails(applicant_id) {
+    window.location = "/administrator/applicant-details/" + applicant_id;
+}
+
+function load_quiz_result(student_id, hiring_round_id) {
+
+    $("#attempted-quiz-result-content-" + hiring_round_id).hide();
+    $("#attempted-quiz-preloader-" + hiring_round_id).show();
+
+    authkey = "";
+    if (window.location.pathname.indexOf("/applicant/report-card") != -1) {
+        authkey = getUrlVars()["authkey"];
+    }
+
+    $.ajax({
+        url: "/administrator/quiz-result/",
+        type: "POST",
+        headers: {
+            "X-CSRFToken": getCsrfToken()
+        },
+        data: {
+            student_id: student_id,
+            quiz_config_id: hiring_round_id,
+            hiring_round_id: hiring_round_id,
+            authkey: authkey
+        },
+        success: function(response) {
+            if (response["status_code"] == 200) {
+                quiz_result = "";
+                if (response["quiz_result"].length == 0) {
+                    quiz_result += "<div class='col s12'><p style='padding:1em;' class='green lighten-3 center'>Applicant haven't attempted quiz yet.</p></div>";
+                } else {
+                    quiz_result_list = response["quiz_result"]["quiz_section_result_list"];
+                      if(quiz_result_list.length > 0){
+                      quiz_result += '\
+                      <div class="col s12 m6 l6">\
+                          <table>\
+                              <tbody>\
+                                  <tr>\
+                                      <td><b>Applicant Percentage</b></td>\
+                                      <td>' + response["quiz_result"]["applicant_total_score"] + ' %</td>\
+                                  </tr>\
+                              </tbody>\
+                          </table>\
+                      </div>\
+                      <div class="col s12 m6 l6">\
+                          <table>\
+                              <tbody>\
+                                  <tr>\
+                                      <td><b>Applicant Percentile</b></td>\
+                                      <td>' + response["quiz_result"]["applicant_percentile"] + ' %</td>\
+                                  </tr>\
+                              </tbody>\
+                          </table>\
+                      </div>\
+                      <div class="col s12">\
+                          <table>\
+                              <thead>\
+                                <tr>\
+                                    <th>Quiz Section</th>\
+                                    <th>Pass score</th>\
+                                    <th>Correct score</th>\
+                                    <th>Adjusted difficulty score</th>\
+                                    <th>Norm Rasch Score</th>\
+                                </tr>\
+                              </thead>\
+                              <tbody>';
+
+                      for (var i = 0; i < quiz_result_list.length; i++) {
+                          quiz_result += '\
+                                        <tr onmouseover="" style="cursor: pointer;" onclick="expandQuizSectionResult(' + quiz_result_list[i]["id"] + ')">\
+                                          <td>\
+                                              <i class="material-icons inline-icon quiz-section-result-expand-icon" \
+                                              id="quiz-section-result-expand-icon-' + quiz_result_list[i]["id"] + '">expand_more</i> \
+                                              ' + quiz_result_list[i]["section_name"] + '\
+                                          </td>\
+                                          <!-- <td>';
+
+                          if (quiz_result_list[i]["is_completed"] == true) {
+                              quiz_result += '<i class="material-icons green-text">check</i>';
+                          } else {
+                              quiz_result += '<i class="material-icons red-text">cancel</i>';
+                          }
+
+                          quiz_result += '</td>--><!-- <td>';
+
+                          if (quiz_result_list[i]["is_cleared"] == true) {
+                              quiz_result += '<i class="material-icons green-text">check</i>';
+                          } else {
+                              quiz_result += '<i class="material-icons red-text">cancel</i>';
+                          }
+
+                          quiz_result += '</td>-->';
+
+                          quiz_result += '<td>' + quiz_result_list[i]["pass_score"] + '</td>\
+                                          <td>' + quiz_result_list[i]["right_answers"] + '</td>\
+                                          <td>' + quiz_result_list[i]["adjusted_diff_score"] + '</td>\
+                                          <td>' + quiz_result_list[i]["diff_score"] + ' %</td>\
+                                        </tr>\
+                                        <!-- Detailed Quiz Section Result Report -->\
+                                        <tr class="expand-quiz-section-result"\
+                                        id="expand-quiz-section-result-' + quiz_result_list[i]["id"] + '"\
+                                        style="display:none;">\
+                                          <td colspan="6">        \
+                                              <div class="row">\
+                                                  <div class="col s12 m8 l8">\
+                                                      <table class="highlight centered" style="border:0.1em solid black;border-radius:1em;">\
+                                                          <thead>\
+                                                            <tr>\
+                                                                <th></th>\
+                                                                <th>Easy</th>\
+                                                                <th>Medium</th>\
+                                                                <th>Hard</th>\
+                                                                <th>Total</th>\
+                                                            </tr>\
+                                                          </thead>\
+                                                          <tbody>\
+                                                            <tr>\
+                                                              <td>Attempt</td>\
+                                                              <td>' + quiz_result_list[i]["attempts"]["easy"] + '</td>\
+                                                              <td>' + quiz_result_list[i]["attempts"]["medium"] + '</td>\
+                                                              <td>' + quiz_result_list[i]["attempts"]["hard"] + '</td>\
+                                                              <td>' + quiz_result_list[i]["attempts"]["total"] + '</td>\
+                                                            </tr>\
+                                                            <tr>\
+                                                              <td>Correct</td>\
+                                                              <td>' + quiz_result_list[i]["correct"]["easy"] + '</td>\
+                                                              <td>' + quiz_result_list[i]["correct"]["medium"] + '</td>\
+                                                              <td>' + quiz_result_list[i]["correct"]["hard"] + '</td>\
+                                                              <td>' + quiz_result_list[i]["correct"]["total"] + '</td>\
+                                                            </tr>\
+                                                            <tr>\
+                                                              <td>%</td>\
+                                                              <td>' + quiz_result_list[i]["abs_per"]["easy"] + ' %</td>\
+                                                              <td>' + quiz_result_list[i]["abs_per"]["medium"] + ' %</td>\
+                                                              <td>' + quiz_result_list[i]["abs_per"]["hard"] + ' %</td>\
+                                                              <td>' + quiz_result_list[i]["abs_per"]["total"] + ' %</td>\
+                                                            </tr>\
+                                                          </tbody>\
+                                                       </table>\
+                                                  </div>\
+                                                  <div class="col s12 m4 l4">\
+                                                      <table class="highlight centered" style="border:0.1em solid black;border-radius:1em;">\
+                                                          <thead>\
+                                                          </thead>\
+                                                          <tbody>\
+                                                            <tr>\
+                                                              <td>Abs Score</td>\
+                                                              <td>\
+                                                              ' + quiz_result_list[i]["total_abs_per"] + ' %</td>\
+                                                            </tr>\
+                                                            <!-- <tr>\
+                                                              <td>Rasch Score</td>\
+                                                              <td>\
+                                                              ' + quiz_result_list[i]["rasch_score"] + '</td>\
+                                                            </tr> -->\
+                                                            <tr>\
+                                                              <td>Norm Rasch Score</td>\
+                                                              <td>\
+                                                                  ' + quiz_result_list[i]["diff_score"] + ' %\
+                                                              </td>\
+                                                            </tr>\
+                                                          </tbody>\
+                                                       </table>\
+                                                  </div>\
+                                              </div>\
+                                          </td>\
+                                        </tr>';
+                      }
+
+                      quiz_result += '</tbody>\
+                              </table>\
+                          </div>\
+                          <div class="col s12">\
+                              <br>\
+                              <a class="btn one right" onclick="expandAllQuizSectionResult()">Expand</a>\
+                              <a class="btn one right" onclick="hideAllQuizSectionResult()">Hide</a>\
+                          </div>';
+                  }
+                  console.log(hiring_round_id)
+
+                  document.getElementById("attempted-quiz-result-content-" + hiring_round_id).innerHTML = quiz_result;
+                }
+            } else {
+                document.getElementById("attempted-quiz-result-content-" + hiring_round_id).innerHTML = "<div class='col s12'><p style='padding:1em;' class='red lighten-3 center'>Unable to load the result.</p></div>";
+            }
+
+            $("#attempted-quiz-result-content-" + hiring_round_id).show();
+            $("#attempted-quiz-preloader-" + hiring_round_id).hide();
+        },
+        error: function(xhr, textstatus, errorthrown) {
+            console.log("Please report this error: " + errorthrown + xhr.status + xhr.responseText);
+        }
+    });
+}
+/*
+$(document).on("click", "#btn-upload-applicant-excel", function(e) {
+
+    e.preventDefault();
+
+    var selected_insititute_upload = $("#select-institute-excel-upload").val();
+    console.log(selected_insititute_upload)
+    if (selected_insititute_upload == "") {
+        showToast("Please select the institute for which you want to create applicants through excel.");
+        return;
+    }
+
+    var selected_stream_upload = $("#select-stream-excel-upload").val();
+    if (selected_stream_upload == "") {
+        showToast("Please select the stream for which you want to create applicants through excel.");
+        return;
+    }
+
+    var files = ($("#input-upload-applicant-excel"))[0].files
+    if (files.length == 0) {
+        showToast("Kindly select an excel file to upload.", 2000);
+        return;
+    }
+    file = files[0];
+
+    var formData = new FormData();
+    fname = file['name'].split('.');
+    fname = fname[fname.length - 1].toLowerCase();
+    if (fname == "xlsx" || fname == "xlx") {
+        formData.append("file", file);
+    } else {
+        showToast("Kindly select an excel file to upload.", 2000);
+        return;
+    }
+
+    formData.append("institute", selected_insititute_upload);
+    formData.append("stream", selected_stream_upload);
+
+    btn_element = document.getElementById("btn-upload-applicant-excel");
+    btn_element.disabled = true;
+
+    var CSRF_TOKEN = getCsrfToken();
+
+    $("#preloader_div").show();
+    $.ajax({
+        url: "/master-list/create-applicants-excel/",
+        type: "POST",
+        headers: {
+           'X-CSRFToken': CSRF_TOKEN
+       },
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(response) {
+            $("#preloader_div").hide();
+            if (response["status"] == 200) {
+                showToast("Applicants Created Successfully.", 2000);
+                setTimeout(function() {
+                    console.log("success reloading")
+                    window.location.reload();
+                }, 2100);
+            } else if (response["status"] == 301) {
+                showToast("File Extension Error. Please Upload Valid File", 2000);
+            } else if (response["status"] == 302) {
+                error_div = document.getElementById("upload-applicant-excel-error");
+                error_div.style.display = "block";
+                error_div.innerHTML = response["message"];
+                showToast("An Error Occured.", 6000);
+            } else {
+                showToast("Internal Server Error. Please try again later.", 2000);
+            }
+            document.getElementById("input-upload-applicant-excel").value = "";
+            document.getElementById("input-upload-applicant-excel-v").value = "";
+            btn_element.disabled = false;
+        },
+        error: function(xhr, textstatus, errorthrown) {
+            $("#preloader_div").hide();
+            showToast("Internal Server Error. Please try again later.", 2000);
+            console.log("Please report this error: " + errorthrown + xhr.status + xhr.responseText);
+            document.getElementById("#input-upload-applicant-excel").val("");
+            btn_element.disabled = false;
+        }
+    });
+});*/
+
+$(document).on("click", "#btn-upload-applicant-excel", function(e) {
+
+    e.preventDefault();
+
+    var selected_event_upload = $("#select-event-excel-upload").val();
+    console.log(selected_event_upload)
+    if (selected_event_upload == "") {
+        showToast("Please select the event for which you want to create applicants through excel.");
+        return;
+    }
+
+    var selected_stream_upload = $("#select-stream-excel-upload").val();
+    if (selected_stream_upload == "") {
+        showToast("Please select the stream for which you want to create applicants through excel.");
+        return;
+    }
+
+    var files = ($("#input-upload-applicant-excel"))[0].files
+    if (files.length == 0) {
+        showToast("Kindly select an excel file to upload.", 2000);
+        return;
+    }
+    file = files[0];
+
+    var formData = new FormData();
+    fname = file['name'].split('.');
+    fname = fname[fname.length - 1].toLowerCase();
+    if (fname == "xlsx" || fname == "xlx") {
+        formData.append("file", file);
+    } else {
+        showToast("Kindly select an excel file to upload.", 2000);
+        return;
+    }
+
+    formData.append("event", selected_event_upload);
+    formData.append("stream", selected_stream_upload);
+
+    btn_element = document.getElementById("btn-upload-applicant-excel");
+    btn_element.disabled = true;
+
+    var CSRF_TOKEN = getCsrfToken();
+
+    $("#preloader_div").show();
+    $.ajax({
+        url: "/master-list/create-applicants-excel/",
+        type: "POST",
+        headers: {
+           'X-CSRFToken': CSRF_TOKEN
+       },
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(response) {
+            $("#preloader_div").hide();
+            if (response["status"] == 200) {
+                showToast("Applicants Created Successfully.", 2000);
+                setTimeout(function() {
+                    console.log("success reloading")
+                    window.location.reload();
+                }, 2100);
+            } else if (response["status"] == 301) {
+                showToast("File Extension Error. Please Upload Valid File", 2000);
+            } else if (response["status"] == 302) {
+                error_div = document.getElementById("upload-applicant-excel-error");
+                error_div.style.display = "block";
+                error_div.innerHTML = response["message"];
+                showToast("An Error Occured.", 6000);
+            } else {
+                showToast("Internal Server Error. Please try again later.", 2000);
+            }
+            document.getElementById("input-upload-applicant-excel").value = "";
+            document.getElementById("input-upload-applicant-excel-v").value = "";
+            btn_element.disabled = false;
+        },
+        error: function(xhr, textstatus, errorthrown) {
+            $("#preloader_div").hide();
+            showToast("Internal Server Error. Please try again later.", 2000);
+            console.log("Please report this error: " + errorthrown + xhr.status + xhr.responseText);
+            document.getElementById("#input-upload-applicant-excel").val("");
+            btn_element.disabled = false;
+        }
+    });
+});
+
+function load_descriptive_section_text_analysis(attempted_problem_id, quiz_status_id,applicant_id){
+    // document.getElementById("div-text-analysis-descriptive-section-"+attempted_problem_id).innerHTML="1";
+    $.ajax({
+        url:"/manage-quiz/get-text-analysis-attempted-problem/",
+        type:"POST",
+        headers:{
+            "X-CSRFToken":getCsrfToken()
+        },
+        data:{
+            "attempted_problem_id":attempted_problem_id,
+            "quiz_status_id":quiz_status_id,
+            "applicant_id":applicant_id
+        },
+        success: function(response){
+            text_analysis_html = '';
+            if(response["status_code"]==200){
+                //text_analysis_html += '<div class="center"><p>Applicant Percentage: '+response["total_score"]+'%</p></div><hr>';
+                //document.getElementById("div-descriptive-section-"+attempted_problem_id).innerHTML=text_analysis_html;
+                //text_analysis_html = ''
+                text_analysis_html += '<div class="row"><p><b>Applicant Answer:</b> '+response["answer"]+'</p>';
+                text_analysis_html += '<p><b>Solution:</b> '+response["solution"]+'</p><hr>';
+                text_analysis_html += '<p><b>Total Maching Words:</b> '+response["common_words"]+'</p><p><b>Percentage:</b> '+response["score"]+'%</p></div>';
+                //text_analysis_html += '<div class="row"><p><b>Applicant Answer:</b> '+response["answer"]+'</p></div>';
+                // tone_analysis = response["text_analysis"]["tone_analysis"];
+                // document_tone = JSON.parse(tone_analysis)["document_tone"]["tones"];
+                // type_of_tones = {
+                //     "Anger":0,
+                //     "Fear":0,
+                //     "Joy":0,
+                //     "Sadness":0,
+                //     "Analytical":0,
+                //     "Confident":0,
+                //     "Tentative":0
+                // }
+                // for(var i=0;i<document_tone.length;i++){
+                //     tone_details = document_tone[i];
+                //     type_of_tones[tone_details["tone_name"]]=Math.round(tone_details["score"]*100);
+                // }
+
+                // tone_analysis_html = "<div class='row'><h6>Tones</h6><hr><br>";
+                // for(var tone in type_of_tones){
+                //     if(type_of_tones[tone]==0){
+                //         tone_analysis_html+='<span style="margin:0em 1em 0em 1em;">'+tone+'&nbsp;&nbsp;<i class="material-icons inline-icon">cancel</i></span>';
+                //     }else{
+                //         tone_analysis_html+='<span style="margin:0em 1em 0em 1em;">'+tone+'&nbsp;&nbsp;<i class="material-icons inline-icon green-text text-darken-4 tooltipped" data-position="bottom" data-tooltip="'+type_of_tones[tone]+' %">check_circle</i></span>';
+                //     }
+                // }
+                // tone_analysis_html += "</div>";
+
+                // personality_insights = {"personality":[], "needs":[], "values":[]};
+                // try{
+                //     personality_insights = JSON.parse(response["text_analysis"]["personality_insights"]);
+                // }catch{
+                //     console.log("unable to get personality_insights");
+                // }
+                // personality_insights_html = '<div class="row"><br><h6>Personality Portrait</h6><hr><br>';
+                // personality_insights_html += '<div class="col s4">\
+                //                         <table>\
+                //                             <thead>\
+                //                                 <tr>\
+                //                                     <th>Personality</th>\
+                //                                     <th></th>\
+                //                                 </tr>\
+                //                             </thead><tbody>';
+                // for(var i=0;i<personality_insights["personality"].length;i++){
+                //     score = Math.round(personality_insights["personality"][i]["raw_score"]*100);
+                //     personality_insights_html += '<tr>\
+                //         <td>'+personality_insights["personality"][i]["name"]+'</td>\
+                //         <td>'+score+' %</td>\
+                //     </tr>';
+                // }
+
+                // personality_insights_html += '</tbody></table></div>';
+                // personality_insights_html += '<div class="col s4">\
+                //                         <table>\
+                //                             <thead>\
+                //                                 <th>Consumer Needs</th>\
+                //                                 <th></th>\
+                //                             </thead><tbody>';
+
+                // for(var i=0;i<personality_insights["needs"].length;i++){
+                //     score = Math.round(personality_insights["needs"][i]["raw_score"]*100);
+                //     personality_insights_html += '<tr>\
+                //                                     <td>'+personality_insights["needs"][i]["name"]+'</td>\
+                //                                     <td>'+score+' %</td>\
+                //                                 </tr>';                    
+                // }
+                
+                // personality_insights_html +='</tbody></table></div>';
+                // personality_insights_html += '<div class="col s4">\
+                //                         <table>\
+                //                             <thead>\
+                //                                 <th>Values</th>\
+                //                                 <th></th>\
+                //                             </thead><tbody>';
+
+                // for(var i=0;i<personality_insights["values"].length;i++){
+                //     score = Math.round(personality_insights["values"][i]["raw_score"]*100);
+                //     personality_insights_html += '<tr>\
+                //                                     <td>'+personality_insights["values"][i]["name"]+'</td>\
+                //                                     <td>'+score+' %</td>\
+                //                                 </tr>';                    
+                // }
+                // personality_insights_html +='</tbody></table></div></div>';
+                // text_analysis_html += tone_analysis_html + personality_insights_html + get_readable_text_analysis_html(response["text_analysis"]["text_analysis"]);
+            }
+            document.getElementById("div-text-analysis-descriptive-section-"+attempted_problem_id).innerHTML=text_analysis_html;
+            $('.tooltipped').tooltip();
+        },
+        error: function(xhr, textstatus, errorthrown){
+           console.log("Please report this error: " + errorthrown + xhr.status + xhr.responseText);
+        }        
+    });
+}
+
+
+
+$(document).on("click", "#btn-add-administrator", function(e) 
+{
+    var username = document.getElementById("input-administrator-username").value;
+    if(username == ""){
+      showToast("Please enter a unique username.", 2000);
+      return;
+    }
+    var name = document.getElementById("input-administrator-name").value;
+    if(!/^[a-zA-Z ]*$/.test(name) || name == ""){
+      showToast("Please enter a valid name.");
+      return;
+    }
+    var email = document.getElementById("input-administrator-email").value;
+    if(email == ""){
+      showToast("Please enter a valid email.");
+      return;
+    }
+    if(!/^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/.test(email)){
+     showToast("Please enter a valid email.");
+      return; 
+    }
+    var password = document.getElementById("input-administrator-password").value;
+    if(password == ""){
+       showToast("Please enter the password.");
+      return; 
+    }
+    json_string = JSON.stringify({
+           "username": username,
+           "name":name,
+           "email":email,
+           "password":password
+       });
+
+       var CSRF_TOKEN = getCsrfToken();
+       $.ajax({
+           url: '/master-list/create-new-administrator/',
+           type: 'POST',
+           headers: {
+               'X-CSRFToken': CSRF_TOKEN
+           },
+           data: {
+               data: json_string
+           },
+           success: function(response) {
+               if (response["status_code"] == 200) {
+                   showToast("Coordinator created successfully.", 2000);
+                   window.location.reload();
+               }else if(response["status_code"] == 301){
+                showToast("Coordinator already exist. Try another username.", 2000);
+               } 
+               else {
+                   showToast("Unable to create new Coordinator. Make sure institute name is unique.", 2000);
+                   console.log("Please report this. ", response["status_message"]);
+               }
+           },
+           error: function(xhr, textstatus, errorthrown) {
+               console.log("Please report this error: " + errorthrown + xhr.status + xhr.responseText);
+           }
+       });
+});
+
+function deactivate_administrator(administrator_id)
+{
+    json_string = JSON.stringify({
+           "administrator_id": administrator_id,
+       });
+
+       var CSRF_TOKEN = getCsrfToken();
+       $.ajax({
+           url: '/administrator/deactivate-administrator/',
+           type: 'POST',
+           headers: {
+               'X-CSRFToken': CSRF_TOKEN
+           },
+           data: {
+               data: json_string
+           },
+           success: function(response) {
+               if (response["status_code"] == 200) {
+                   window.location.reload();
+               } else {
+                   showToast("Unable to deactivate coordinator. Try again later.", 2000);
+                   console.log("Please report this. ", response["status_message"]);
+               }
+           },
+           error: function(xhr, textstatus, errorthrown) {
+               console.log("Please report this error: " + errorthrown + xhr.status + xhr.responseText);
+           }
+       });
+}
+
+function activate_adminstrator(administrator_id)
+{
+    json_string = JSON.stringify({
+           "administrator_id": administrator_id,
+       });
+
+       var CSRF_TOKEN = getCsrfToken();
+       $.ajax({
+           url: '/administrator/activate-administrator/',
+           type: 'POST',
+           headers: {
+               'X-CSRFToken': CSRF_TOKEN
+           },
+           data: {
+               data: json_string
+           },
+           success: function(response) {
+               if (response["status_code"] == 200) {
+                   window.location.reload();
+               } else {
+                   showToast("Unable to activate coordinator. Try again later.", 2000);
+                   console.log("Please report this. ", response["status_message"]);
+               }
+           },
+           error: function(xhr, textstatus, errorthrown) {
+               console.log("Please report this error: " + errorthrown + xhr.status + xhr.responseText);
+           }
+       });
+}
+
+
+$(document).on("click", "#btn-add-event", function(e) 
+{
+    var event_name = $("#input-event-name").val();
+    if (event_name == "") {
+        showToast("Event name can not be empty.");
+        return;
+    }
+    //var event_quiz = document.getElementById("select-event-quiz").value;
+    var event_quiz = $('#multiple-select-event-quiz').val();
+    if(event_quiz == ""){
+      showToast("Please select a valid quiz");
+      return;
+    }
+    json_string = JSON.stringify({
+           "name": event_name,
+           "event_quiz":event_quiz
+       });
+
+       var CSRF_TOKEN = getCsrfToken();
+       $.ajax({
+           url: '/master-list/add-events/',
+           type: 'POST',
+           headers: {
+               'X-CSRFToken': CSRF_TOKEN
+           },
+           data: {
+               data: json_string
+           },
+           success: function(response) {
+               if (response["status_code"] == 200) {
+                   window.location.reload();
+               } else {
+                   showToast("Unable to add new event. Make sure event name is unique.", 2000);
+                   console.log("Please report this. ", response["status_message"]);
+               }
+           },
+           error: function(xhr, textstatus, errorthrown) {
+               console.log("Please report this error: " + errorthrown + xhr.status + xhr.responseText);
+           }
+       });
+});
+function delete_event(event_id)
+{
+    json_string = JSON.stringify({
+           "event_id": event_id,
+       });
+
+       var CSRF_TOKEN = getCsrfToken();
+       $.ajax({
+           url: '/master-list/delete-events/',
+           type: 'POST',
+           headers: {
+               'X-CSRFToken': CSRF_TOKEN
+           },
+           data: {
+               data: json_string
+           },
+           success: function(response) {
+               if (response["status_code"] == 200) {
+                   window.location.reload();
+               } else {
+                   showToast("Unable to delete event. Try again later.", 2000);
+                   console.log("Please report this. ", response["status_message"]);
+               }
+           },
+           error: function(xhr, textstatus, errorthrown) {
+               console.log("Please report this error: " + errorthrown + xhr.status + xhr.responseText);
+           }
+       });
+}
+
+function edit_event(event_id)
+{
+  //var event_quiz = document.getElementById("select-event-quiz-edit-"+event_id).value;
+    var event_quiz = $('#"select-event-quiz-edit-'+event_id).val();
+    if(event_quiz == ""){
+      showToast("Please select a valid quiz");
+      return;
+    }
+    json_string = JSON.stringify({
+           "event_id": event_id,
+           "event_quiz":event_quiz
+       });
+
+       var CSRF_TOKEN = getCsrfToken();
+       $.ajax({
+           url: '/master-list/edit-events/',
+           type: 'POST',
+           headers: {
+               'X-CSRFToken': CSRF_TOKEN
+           },
+           data: {
+               data: json_string
+           },
+           success: function(response) {
+               if (response["status_code"] == 200) {
+                   window.location.reload();
+               } else {
+                   showToast("Unable to delete event. Try again later.", 2000);
+                   console.log("Please report this. ", response["status_message"]);
+               }
+           },
+           error: function(xhr, textstatus, errorthrown) {
+               console.log("Please report this error: " + errorthrown + xhr.status + xhr.responseText);
+           }
+       });
+}
+
+if(window.location.pathname=="/master-list/events/"){
+  $(document).ready(function(){
+      var table = $('#table-events-details').DataTable();
+  });
+}
+
+
+
+$(document).on("click", "#btn-add-department", function(e) 
+{
+    var department = $("#input-department-name").val();
+    if (department == "") {
+        showToast("Department name can not be empty.");
+        return;
+    }
+    json_string = JSON.stringify({
+           "name": department,
+       });
+
+       var CSRF_TOKEN = getCsrfToken();
+       $.ajax({
+           url: '/master-list/add-departments/',
+           type: 'POST',
+           headers: {
+               'X-CSRFToken': CSRF_TOKEN
+           },
+           data: {
+               data: json_string
+           },
+           success: function(response) {
+               if (response["status_code"] == 200) {
+                   window.location.reload();
+               } else {
+                   showToast("Unable to add new department. Make sure department name is unique.", 2000);
+                   console.log("Please report this. ", response["status_message"]);
+               }
+           },
+           error: function(xhr, textstatus, errorthrown) {
+               console.log("Please report this error: " + errorthrown + xhr.status + xhr.responseText);
+           }
+       });
+});
+function delete_department(department_id)
+{
+    json_string = JSON.stringify({
+           "department_id": department_id,
+       });
+
+       var CSRF_TOKEN = getCsrfToken();
+       $.ajax({
+           url: '/master-list/delete-departments/',
+           type: 'POST',
+           headers: {
+               'X-CSRFToken': CSRF_TOKEN
+           },
+           data: {
+               data: json_string
+           },
+           success: function(response) {
+               if (response["status_code"] == 200) {
+                   window.location.reload();
+               } else {
+                   showToast("Unable to delete department. Try again later.", 2000);
+                   console.log("Please report this. ", response["status_message"]);
+               }
+           },
+           error: function(xhr, textstatus, errorthrown) {
+               console.log("Please report this error: " + errorthrown + xhr.status + xhr.responseText);
+           }
+       });
+}
+
+if(window.location.pathname=="/master-list/departments/"){
+  $(document).ready(function(){
+      var table = $('#table-departments-details').DataTable();
+  });
+}
+
+
+
+
+
+

@@ -1,0 +1,36 @@
+{% extends 'EasyHireApp/base.html' %}
+{% block content %}
+{% load static %}
+
+
+<div class="row" style="background-image:url('{% static 'EasyHireApp/img/dark-red-bg.jpg' %}')">
+
+	<div class="col m4 l4">
+		
+	</div>
+
+	<div class="col s12 m4 l4">
+
+        <div class="card z-depth-1">
+          <div class="card-content black-text">
+		      <!--<img class="responsive-img" src="{% static 'EasyHireApp/img/icicibanklogo.png' %}" width="200em" height="10em">-->
+		      <h5><b><span class="cyan-text">Macleods | EasyHire</span></b></h5>
+		      <div class="divider"></div>
+		      <br>
+		      <p style="padding: 1.5em; border: 0.1em green solid;">Thank you, your account has been registered successfully. We have sent you credentials to your registered Mobile Number/Email id. Use your 10 digit phone number as your username.</p>
+		      <div class="center-align" style="margin: 1em;">
+			      <a class="btn" href="/login">Login</a>		      	
+		      </div>
+          </div>
+        </div>
+        <br>
+	</div>
+
+	<div class="col m4 l4">
+		
+	</div>
+	
+</div>
+
+
+{% endblock %}

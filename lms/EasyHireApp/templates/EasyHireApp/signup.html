@@ -1,0 +1,275 @@
+{% extends 'EasyHireApp/base.html' %}
+{% block content %}
+{% load static %}
+
+
+<div class="row" style="background-image:url('{% static 'EasyHireApp/img/dark-red-bg.jpg' %}')">
+
+	<div class="col m3 l3">
+		
+	</div>
+	<div class="col s12 m6 l6">
+		<div class="hide-on-small-only"><br><br><br></div>
+
+		<!-- Profile Verification  -->
+		<div class="card-panel" id="profile-verification-card-panel">
+			<div class="row">
+				<div class="col s12">
+					<h5><p style="padding:0.5em;" class="center">Verification 
+						<span class="cyan-text">@EasyHire</span></p></h5>
+				</div>
+				<div class="col s12 m12 l12">
+					<div class="input-field col s12 m12 l6">
+					  Email Id<sup>*</sup>
+			          <input id="input-student-verification-emailid" type="text" class="validate" maxlength="100">
+			        </div>
+					<div class="input-field col s12 m12 l6">
+					  Phone Number<sup>*</sup>
+			          <input id="input-student-verification-phone-number" type="number" class="validate" maxlength="10">
+			        </div>
+			        <div class="col s12"> 
+						<a class="btn" style="margin-right:1em;" id="btn-profile-verify">Verify</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Profile Verification Ends -->
+
+
+		<!-- Profile Signup Form -->
+		<div class="card-panel" id="profile-register-card-panel" style="display:none;">
+				<div class="row">
+				<div class="col s12">
+					<h5><p style="padding:0.5em;" class="center">Registration <span class="cyan-text">@EasyHire</span></p></h5>
+				</div>
+				<div class="col s12 m12 l12">
+					<div class="col s12">
+						<div class="col s12 m12 l6">
+							<!-- Stream video via webcam -->
+							<p>Capture your photo (allow access to your webcam)</p>
+							<div class="video-wrap">
+							    <video id="video" autoplay></video>
+							</div>
+							<!-- Trigger canvas web API -->
+							<div class="controller">
+							    <button id="snap" class="btn blue darken-4">Capture
+							    </button>
+							</div>						
+						</div>
+
+						<div class="hide-on-med-and-up center">
+							<span>OR</span>
+							<div class="divider"></div>
+						</div>
+
+						<div class="col s12 m12 l6" style="margin-top:5%;">
+							<div class="file-field input-field col s12">
+								<div class="btn blue darken-4">
+								  <span>Upload Picture</span>
+								  <input id="input_profile_image" type="file">
+								</div>
+								<div class="file-path-wrapper">
+								  <input id="input_profile_image2" class="file-path validate" type="text">
+								</div>
+							</div>
+							<div class="col s12">
+								<a class="btn one" id="upload-profile-pic" style="display:none;">Upload Picture</a>
+								<br>
+							</div>
+						</div>
+					</div>
+
+					<div class="col s12">
+						<!-- Webcam video snapshot -->
+						<canvas id="canvas-profile-pic" width="150" height="150" class="right"></canvas>
+						<br>
+					</div>
+
+					<div class="input-field col s12 m12 l6">
+					  Full Name<sup>*</sup>
+			          <input id="input-student-name" type="text" class="validate" maxlength="30">
+			        </div>
+					<div class="input-field col s12 m12 l6">
+					  Email Id<sup>*</sup>
+			          <input id="input-student-emailid" type="text" class="validate" maxlength="100" readonly>
+			        </div>
+					<div class="input-field col s12 m12 l6">
+					  Phone Number<sup>*</sup>
+			          <input id="input-student-phonenumber" type="number" class="validate" maxlength="10" readonly>
+			        </div>
+			        <div class="input-field col s12 m12 l6">
+			          Date of Birth<sup>*</sup>
+			          <input id="input-student-dob" type="date" class="validate">
+			        </div>
+                                <div class="input-field col s12 m12 l12">
+					    <select id="input-gender">
+					    	<option value="None">Choose your gender<sup>*</sup></option>
+					      <option value="1">Male</option>
+					      <option value="2">Female</option>
+					      <option value="3">Others</option>
+					    </select>
+			        </div>
+			        <div class="input-field col s12 m12 l12" onchange="show_category()">
+					    <select id="input-category">
+					    	<option value="">Choose category</option>
+					      <option value="1">Campus</option>
+					      <option value="2">Walk-In</option>
+					      <!-- <option value="3">Posting</option> -->
+					    </select>
+                                          
+			        </div>
+
+			        <div id="div-get-company" class="input-field col s12 m12 l12" style="display:none;">
+					  Current Company<sup>*</sup>
+			          <input id="input-student-current-company" type="text" class="validate">
+			        </div>
+
+
+			        <div id="div-get-designation" class="input-field col s12 m12 l12" style="display:none;">
+					  Current Designation<sup>*</sup>
+			          <input id="input-student-current-designation" type="text" class="validate">
+			        </div>
+
+
+			        <div id="div-get-current-ctc" class="input-field col s12 m12 l12" style="display:none;">
+					  Current CTC<sup>*</sup>
+			          <input id="input-student-current-ctc" type="text" class="validate">
+			        </div>
+
+			      
+                    <div id="div-get-institiute" class="input-field col s12 m12 l12" style="display:none;">
+					  Institute<sup>*</sup>
+			          <input id="input-student-college-name" type="text" class="validate">
+			        </div>
+					<div id="div-get-passing-year" class="input-field col s12 m12 l6" style="display:none;">
+					    <select id="input-student-year-of-passing">
+					      <option value="None" disabled selected>Choose year of passing<sup>*</sup></option>
+					      {% for year in YEAR_OF_PASSING %}
+						      <option value="{{ year }}">{{ year }}</option>
+					      {% endfor %}
+					    </select>
+			        </div>
+					<div id="div-get-stream" class="input-field col s12 m12 l6" style="display:none;">
+					    <select id="input-student-stream">
+					      <option value="None" disabled selected>Choose your stream<sup>*</sup></option>
+					      {% for stream in STREAM_LIST %}
+						      <option value="{{ stream.pk }}">{{ stream.name }}</option>
+					      {% endfor %}
+					    </select>
+			        </div>
+                    <div id="div-get-specialization" class="input-field col s12 m12 l12" style="display:none;">
+					  Specialization<sup>*</sup>
+			          <input id="input-student-specialization" type="text" class="validate">
+			        </div>
+                    <div id="div-coming-from" class="input-field col s12 m12 l12">
+			        	<div class="input-field col s12 m12 l12" id="div-input-walkin-location">
+						  Coming From<sup>*</sup>
+				          <input id="input-walkin-location" type="text" class="validate" maxlength="30">
+				        </div>
+			        </div>
+                     <div class="input-field col s12 m12 l12" id="div-select-event" >
+					    <select id="input-student-selected-event" onchange="show_quiz_section()">
+					      <option value="None" disabled selected>Choose Event<sup>*</sup></option>
+					      {% for event in EVENT_LIST %}
+						      <option value="{{ event.pk }}">{{ event.name }}</option>
+					      {% endfor %}
+					    </select>			        	
+			        </div>
+                    <div class="input-field col s12 m12 l12" id="div-input-event-quiz" style="display:none;">
+					</div>
+					<div class = "col s10 offset-s1">
+				      <br>
+				      <div class="progress" id="preloader_div" style="display: none;">
+				        <div class="indeterminate"></div>
+				      </div>
+				    </div>
+				    <div class="col s12" id="get-event-quiz-error" style="color: red;font-size: 1.5em;display:none">    
+    				</div>
+                    <div id="div-get-department" class="input-field col s12 m12 l12" style="display:none;">
+					    <select id="input-student-department-name">
+					      <option value="None" disabled selected>Choose Department<sup>*</sup></option>
+					      {% for department in DEPARTMENT_LIST %}
+						      <option value="{{ department.pk }}">{{ department.name }}</option>
+					      {% endfor %}
+					    </select>
+			        </div>
+
+					<div id="div-get-percentage" class="input-field col s12 m12 l6" style="display:none;">
+						Passout Percentage (at scale of 100)<sup>*</sup>
+						<input type="number" step="0.05" class="tooltipped" data-tooltip="Percentage achieved so far until the previous sem" id="input-student-percentage">
+			        </div>
+					<div class="file-field input-field col s12 m12 l6">
+						<div class="btn blue darken-4">
+						  <span>Upload Resume</span>
+						  <input id="input_profile_resume" type="file" accept=".doc,.docx,.pdf">
+						</div>
+						<div class="file-path-wrapper">
+						  <input id="input_profile_resume2" class="file-path validate" 
+						  type="text" accept=".doc,.docx,.pdf">
+						</div>
+					</div>
+                    <div class="input-field col s12 m12 l12">
+						  Please enter your 12 digit valid Adhaar Number<sup>*</sup>
+				          <input id="input-student-id-proof-adhaar-number" type="text" class="validate" maxlength="30" required pattern="^(\d{4}[ ,-]?\d{4}[ ,-]?\d{4})$" title="Enter valid 12 digit Aadhar Number" >
+				        </div>
+				        <div class="input-field col s12 m12 l12">
+						  Please enter your valid Pan Number<sup>(optional)</sup>
+				          <input id="input-student-id-proof-pan-number" type="text" class="validate" maxlength="30">
+				        </div>
+			        <div class="col s12"> 
+			        	<br>
+						<a class="btn safe right" style="margin-right:1em;" id="btn-signup">Signup</a>
+					</div>
+				</div>
+				<div class = "col s10 offset-s1">
+				      <br>
+				      <div class="progress" id="preloader_signup_div" style="display: none;">
+				        <div class="indeterminate"></div>
+				      </div>
+				</div>
+			</div>
+		</div>
+		<!-- Profile Signup Form -->
+
+
+	</div>
+	<div class="col m3 l3"></div>
+</div>
+<script type="text/javascript">
+        function show_category(){
+		category = document.getElementById("input-category").value;
+		if(category == "1"){
+			document.getElementById("div-get-institiute").style.display="block";
+			document.getElementById("div-get-stream").style.display="block";
+			document.getElementById("div-get-passing-year").style.display="block";
+			document.getElementById("div-get-department").style.display="block";
+			document.getElementById("div-get-percentage").style.display="block";	
+                        document.getElementById("div-get-specialization").style.display="block";
+
+			document.getElementById("div-get-current-ctc").style.display="none";
+			document.getElementById("div-get-company").style.display="none";	
+			document.getElementById("div-get-designation").style.display="none";		
+ 
+                        show_events("1");
+ 
+		}
+		else{
+			document.getElementById("div-get-institiute").style.display="none";
+			document.getElementById("div-get-stream").style.display="none";
+			document.getElementById("div-get-passing-year").style.display="none";
+			document.getElementById("div-get-department").style.display="block";
+			document.getElementById("div-get-percentage").style.display="none";	
+                        document.getElementById("div-get-specialization").style.display="none";
+
+			document.getElementById("div-get-current-ctc").style.display="block";
+			document.getElementById("div-get-company").style.display="block";	
+			document.getElementById("div-get-designation").style.display="block";	
+
+                        show_events("2");
+
+		}
+	}
+</script>
+
+{% endblock %}
+

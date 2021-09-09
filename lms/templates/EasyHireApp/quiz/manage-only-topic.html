@@ -1,0 +1,140 @@
+{% extends 'EasyHireApp/quiz/base.html' %}
+{% block content %}
+{% load static %}
+
+<div class="row" style="padding:1em;">
+	<br>
+
+	<div class="col s12">
+		<a class="btn right blue white-text" href="/manage-quiz/problem/add">Add New Problem</a>
+		<!-- <a class="btn modal-trigger right blue white-text" href="#modal-add-topic" style="margin-right:1em;">Add Topic</a> -->
+                <a class="btn modal-trigger right blue white-text" href="javascript:void(0)" onclick="open_modal('modal-add-topic')" style="margin-right:1em;">Add Topic</a>
+	</div>
+
+	<div class="col s12" style="margin-top:1%;">
+		{% if topics %}
+
+				<table id="table-manage-quiz-topics">
+					<thead>
+						<tr>
+							<th>Topic</th>
+							<th>Category</th>
+							<th>Tag</th>
+							<th>No of questions</th>
+							<th>Edit</th>
+							<th>Delete</th>
+							<th>Status</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for topic in topics %}
+							<tr>
+								<td><a href="/manage-quiz/topic/{{ topic.pk }}">{{ topic.name }}</a></td>
+								<td>{{ topic.get_category  }} </td>
+								<td>{{ topic.tag }}</td>
+								<td>{{ topic.no_questions }}</td>
+								<!--<td><a class="modal-trigger tooltipped" href="#modal-rename-topic-{{ topic.pk }}" data-tooltip="Edit"><i class="material-icons green-text text-darken-3">edit</i></a></td>
+								<td><a class="modal-trigger tooltipped" href="#modal-delete-topic-{{ topic.pk }}" data-tooltip="Delete"><i class="material-icons red-text text-darken-3">delete</i></a></td>
+								<td><a class=""><i class="material-icons grey-text tooltipped" data-position="bottom" data-tooltip="Delete is disabled">delete</i></a></td>-->
+								<td>
+									{% if topic.is_editable %}
+										<a class="modal-trigger tooltipped" href="#modal-rename-topic-{{ topic.pk }}" data-tooltip="Edit"><i class="material-icons green-text text-darken-3">edit</i></a> 
+									{% else %}
+										<a class=""><i class="material-icons grey-text tooltipped" data-position="bottom" data-tooltip="Edit is disabled">edit</i></a>
+									{% endif %}
+								</td>
+								<td>
+									{% if topic.is_editable %}
+										<a class="modal-trigger tooltipped" href="#modal-delete-topic-{{ topic.pk }}" data-tooltip="Delete"><i class="material-icons red-text text-darken-3">delete</i>
+										</a> 
+									{% else %}
+										<a class=""><i class="material-icons grey-text tooltipped" data-position="bottom" data-tooltip="Delete is disabled">delete</i></a>
+									{% endif %}
+								</td>
+								<td>
+									{% if topic.is_activated %}
+										<a class="btn green safe" id="btn-deactivate" onclick="deactivate_topic('{{ topic.pk }}')">Active</a>
+									{% else %}
+										<a class="btn red safe" id="btn-activate" onclick="activate_topic('{{ topic.pk }}')">Deactive</a>
+									{% endif %}
+								</td>
+							</tr>
+
+							<div id="modal-delete-topic-{{ topic.pk }}" class="modal" style="border:0.1em solid black;">
+								<div class="modal-content">
+									<h6>Are you sure, you want to delete <b>{{ topic.name }}</b> topic?</h6>
+								</div>
+								<div class="modal-footer">
+									<a href="javascript:void(0)" class="btn modal-close">Cancel</a>
+									<a class="btn danger modal-close delete-topic" id="btn-delete-topic-{{ topic.pk }}">Delete</a>
+								</div>
+							</div>
+
+							<div id="modal-rename-topic-{{ topic.pk }}" class="modal" style="border:0.1em solid black;">
+								<div class="modal-content">
+									<p>Topic Name</p>
+									<input type="text" name="input-topic-new-name-{{ topic.pk }}" style="border:0.05em solid black; background-color:white; padding:0em 1em 0em 1em; width:90%;" placeholder="Enter topic name" value="{{ topic.name }}"
+										id="input-topic-new-name-{{ topic.pk }}">
+								</div>
+								<div class="modal-footer">
+									<a href="javascript:void(0)" class="btn modal-close">Cancel</a>
+									<a class="btn safe modal-close rename-topic" id="btn-rename-topic-{{ topic.pk }}">Rename</a>
+								</div>
+							</div>
+
+						{% endfor %}
+
+					</tbody>
+
+				</table>
+
+		{% else %}
+
+			<p style="padding:1em; border: solid black 0.1em;">No topics</p>
+
+		{% endif %}
+	</div>
+
+<!--    <div id="modal-add-topic" class="modal" style="border:0.1em solid black;">
+    	<div class="modal-content">
+    		<div class="input-field col s6">
+    			<h6>Topic Name</h6>
+    			<input id="topic-name" type="text" class="validate">
+    		</div>
+    	</div>
+    	<div class="modal-footer">
+    		<a href="javascript:void(0)" class="btn modal-close">Cancel</a>
+    		<a class="btn green darken-3 modal-close" id="btn-add-topic">Add</a>
+    	</div>
+    </div> -->
+
+	<div id="modal-add-topic" class="modal" style="border:0.1em solid black">
+	        <div class="modal-content">
+	            <div class="row">
+	                <div class="input-field col s6">
+	                    <h6>Topic Name</h6>
+	                    <input id="topic-name" type="text" class="validate">
+	                </div>
+	                <div class="input-field col s6">
+	                    <h6>Topic Category</h6>
+	                    <select id="select-topic-category">
+	                        <option value="1">Objective</option>
+	                        <option value="3">Descriptive</option>
+	                        <option value="5">Video</option>
+	                    </select>
+	                </div>
+	            </div>
+	        </div>
+	        <div class="modal-footer">
+	            <a href="javascript:void(0)" class="btn modal-close">Cancel</a>
+	            <a class="btn green darken-3 modal-close" id="btn-add-topic">Add</a>
+	        </div>
+	    </div>
+	<script>
+	function open_modal(modal_id){
+	    $('#'+modal_id).modal('open');
+	    $('#'+modal_id).removeAttr('tabindex');
+	}
+	</script>
+
+{% endblock %}

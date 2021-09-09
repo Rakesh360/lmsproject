@@ -1,0 +1,54 @@
+{% extends 'EasyHireApp/base.html' %}
+{% block content %}
+{% load static %}
+
+<div style="background-image:url('{% static 'EasyHireApp/img/dark-red-bg.jpg' %}')">
+	
+<div class="row container" style="margin-top:5%;">
+
+	<div class="col s12 m9 l9">
+		<div class="card-panel">
+			<div class="row">
+
+				<div class="col s12 m6 l6 center">
+					<h5><p style="padding:0.5em;" class="center">Registration 
+						<span class="red-text">@EasyHire</span></p></h5>
+					<p>New applicants, please complete your online registration by clicking below button.</p>				
+					<a class="btn" style="margin-right:1em;" href="/signup">Registration</a>
+					<br><br>
+					<p><a href="/administrator/login"><u>HR Login</u></a></p>
+				</div>
+
+				<div class="col s12 m6 l6">
+					<h5><p style="padding:0.5em;" class="center">Applicant Login </p></h5>
+					<div class="input-field">
+					  Registered mobile number
+			          <input id="input-student-username" type="number" class="validate" maxlength="30" placeholder="10-digit Number">
+			        </div>
+			        <div class="input-field">
+			          Password<sup><i class="tiny material-icons tooltipped" data-position="top" data-tooltip="Password has been sent to your registered mobile number">help</i></sup>
+			          <input id="input-student-password" type="password" class="validate">
+			        </div>
+				    <a href="/forgot-password" style="margin-right:1em;"><u>Forgot Password?</u></a>
+					<a class="btn" id="btn-login">Login</a>
+				</div>
+
+			</div>
+		</div>		
+	</div>
+
+	<div class="col s12 m3 l3">
+
+		<div class="collection">
+	        <a href="https://www.macleodspharma.com/about.asp" class="collection-item black-text">About us</a>
+	        <a href="https://www.macleodspharma.com/research_development.asp" class="collection-item black-text">Research and Development</a>
+	        <a href="https://www.macleodspharma.com/careers.asp" class="collection-item black-text">Careers</a>
+      	</div>
+	</div>
+
+</div>
+
+</div>
+
+
+{% endblock %}

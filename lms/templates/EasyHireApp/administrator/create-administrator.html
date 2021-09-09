@@ -1,0 +1,192 @@
+{% extends 'EasyHireApp/administrator/base.html' %}
+{% block content %}
+{% load static %}
+
+<!-- <div class="row" style="padding:1em;">
+    <div class="col s12" style="margin-top:1%;">
+      <h5><blockquote>Coordinators List
+        <a class="btn blue modal-trigger right" href="#modal-add-new-administrator">Create New Coodinator</a>
+      </blockquote></h5>
+    </div>
+    <div class="col s12">
+      <br>
+      <table id="table-coordinator-details">
+          <thead>
+              <tr>
+                  <th>Username</th>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Status</th>
+                  <th>Edit</th>
+              </tr>
+          </thead>
+          <tbody>
+            {% for administrator_obj in administrator_objs %}
+              <tr>
+                  <td>{{ administrator_obj.username }}</td>
+                  <td>{{ administrator_obj.name }}</td>
+                  <td>
+                    {{ administrator_obj.email }}
+                </td>
+                <td>
+                  {% if administrator_obj.is_active %}
+                    <span>Active</span>
+                  {% else %}
+                    <span>Inactive</span>
+                  {% endif %}
+                </td>
+                <td>
+                  {% if  administrator_obj.is_active %}
+                    <a class="btn red safe modal-close" id="btn-deactivate" onclick="deactivate_administrator('{{ administrator_obj.pk }}')">Deactivate</a>
+                  {% else %}
+                    <a class="btn blue safe modal-close" id="btn-activate" onclick="activate_adminstrator('{{ administrator_obj.pk }}')">Activate</a>
+                  {%endif%}
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>      
+    </div>
+</div> -->
+
+<div class="row" style="padding:1em;">
+    <div class="col s12" style="margin-top:1%;">
+      <h5><blockquote>Coordinators List
+        <a class="btn blue right" href="#" onclick="add_coordinator_modal()">Create New Coodinator</a>
+      </blockquote></h5>
+    </div>
+    <div class="col s12">
+      <br>
+      <table id="table-coordinator-details">
+          <thead>
+              <tr>
+                  <th>Username</th>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Edit Info</th>
+                  <!-- <th>Status</th> -->
+                  <th>Current Status</th>
+              </tr>
+          </thead>
+          <tbody>
+            {% for administrator_obj in administrator_objs %}
+              <tr>
+                <!-- feature admin rights -->
+                  <td id="administrator-username-{{administrator_obj.administrator_id}}">{{ administrator_obj.username }}</td>
+                  <td id="administrator-name-{{administrator_obj.administrator_id}}">{{ administrator_obj.name }}</td>
+                  <td id="administrator-email-{{administrator_obj.administrator_id}}">{{ administrator_obj.email }}</td>
+                <td class="center">
+                  <a href="#" onclick="edit_coordinator_modal('{{administrator_obj.administrator_id}}')"><i class="material-icons">edit</i></a>
+                </td>
+                <!--<td>
+                  {% if administrator_obj.is_active %}
+                    <span>Active</span>
+                  {% else %}
+                    <span>Inactive</span>
+                  {% endif %}
+                </td>-->
+                <td>
+                  {% if administrator_obj.is_active %}
+                    <a class="btn green safe modal-close" id="btn-activate" onclick="deactivate_administrator('{{ administrator_obj.pk }}')">Active</a>
+                  {% else %}
+                    <a class="btn red safe modal-close" id="btn-deactivate" onclick="activate_adminstrator('{{ administrator_obj.pk }}')">Inactive</a>
+                  {%endif%}
+                </td>
+              </tr>
+              <div>
+                <div id="administrator-rights-{{administrator_obj.administrator_id}}" style="display: none;">
+                  {{administrator_obj.get_rights_array}}
+                </div>
+                <div id="administrator-events-{{administrator_obj.administrator_id}}" style="display: none;">
+                  {{administrator_obj.get_event_pk_list}}
+                </div>
+              </div>
+            {% endfor %}
+          </tbody>
+        </table>      
+    </div>
+</div>
+
+
+<!-- <div id="modal-add-new-administrator" class="modal" style="border:0.1em solid black;">
+    <div class="modal-content row s12">
+      <div class="input-field col s6">
+          <h6>Username<sup>*</sup></h6>
+            <input id="input-administrator-username" type="text" class="validate">
+      </div>
+      <div class="input-field col s6">
+          <h6>Name<sup>*</sup></h6>
+            <input id="input-administrator-name" type="text" class="validate">
+      </div>
+      <div class="input-field col s6">
+          <h6>Email<sup>*</sup></h6>
+            <input id="input-administrator-email" type="text" class="validate">
+      </div>
+      <div class="input-field col s6">
+          <h6>Password<sup>*</sup></h6>
+            <input id="input-administrator-password" type="password" class="validate">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <a href="javascript:void(0)" class="btn grey modal-close">Cancel</a>
+      <a class="btn blue safe modal-close" id="btn-add-administrator">Create</a>
+    </div>
+</div> -->
+
+
+
+<div id="modal-add-new-administrator" class="modal" style="border:0.1em solid black;">
+    <!-- feature admin rights -->
+
+    <form action="#" autocomplete="asdlkasd">
+      <input type="text" style="display: none;" id="input-administrator-id" value="-1">
+      <div class="modal-content row s12">
+        <div class="input-field col s6">
+            <h6>Username<sup>*</sup></h6>
+              <input id="input-administrator-username" type="text" class="validate" autocomplete="new-password">
+        </div>
+        <div class="input-field col s6">
+            <h6>Name<sup>*</sup></h6>
+              <input id="input-administrator-name" type="text" class="validate" autocomplete="new-password">
+        </div>
+        <div class="input-field col s6">
+            <h6>Email<sup>*</sup></h6>
+              <input id="input-administrator-email" type="text" class="validate" autocomplete="new-password">
+        </div>
+        <div class="input-field col s6">
+            <h6>Password<sup>*</sup></h6>
+              <input id="input-administrator-password" type="password" class="validate" autocomplete="new-password">
+        </div>
+        <!-- feature admin rights -->
+        <div class="input-field col s6">
+          <h6>Rights</h6>
+          <select id="select-administrator-rights" multiple>
+            <option value="" disabled>Select Rights of Coordinator</option>
+            <option value="can_create_applicants" selected>Can create applicants</option>
+            <option value="can_manage_applicants">Can manage applicants</option>
+            <option value="can_manage_quiz">Can manage quiz</option>
+            <option value="can_manage_database">Can manage master database</option>
+            <option value="has_access_to_all_events">Can access all events</option>
+        </select>
+        </div>
+
+        <!-- feature admin events -->
+        <div class="input-field col s6">
+          <h6>Events</h6>
+          <select id="select-administrator-events" multiple>
+            <option value="" disabled>Select events the coordinator can access</option>
+            {% for event in event_objs %}
+              <option value="{{event.pk}}">{{event}}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+    </form>
+    <div class="modal-footer">
+      <a href="javascript:void(0)" class="btn grey modal-close">Cancel</a>
+      <a class="btn blue safe modal-close" id="btn-add-administrator">Create</a>
+    </div>
+</div>
+
+
+{% endblock %}

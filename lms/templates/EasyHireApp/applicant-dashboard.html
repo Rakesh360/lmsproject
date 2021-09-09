@@ -1,0 +1,214 @@
+{% extends 'EasyHireApp/base.html' %}
+{% block content %}
+{% load static %}
+
+<style type="text/css" media="print">
+    * { display: none; }
+</style>
+
+<div class="row">
+	<div class="col m2 l2">
+	</div>
+	<div class="col s12 m8 l8">
+		<!-- Applicant Basic Details -->
+		<div class="card-panel">
+			<div class="row">
+				<h5 class="center orange-text text-darken-4">Applicant Details</h5>
+				<hr>
+				<div class="col s10">
+					{% if applicant_obj.name %}
+			    		<div class="input-field col s12 m12 l6">
+			    			<b>Applicant Name: </b> {{ applicant_obj.name }}
+			    		</div>
+			    	{% endif %}
+			    	{% if applicant_obj.email_id %}
+			    		<div class="input-field col s12 m12 l6">
+			    			<b>Applicant Email Id: </b> <a href="mailto:{{ applicant_obj.email_id }}">{{ applicant_obj.email_id }}</a>
+			    		</div>
+			    	{% endif %}
+			    	{% if applicant_obj.phone_number %}
+			    		<div class="input-field col s12 m12 l6">
+			    			<b>Applicant Contact Number: </b> {{ applicant_obj.phone_number }}
+			    		</div>
+			    	{% endif %}
+			    	{% if applicant_obj.dob %}
+			    		<div class="input-field col s12 m12 l6">
+			    			<b>Applicant DOB: </b> {{ applicant_obj.dob }}
+			    		</div>
+			    	{% endif %}
+			    	{% if applicant_obj.college_name %}
+			    		<div class="input-field col s12 m12 l6">
+			    			<b>Applicant College: </b> {{ applicant_obj.college_name }}
+			    		</div>
+			    	{% endif %}
+			    	{% if applicant_obj.year_of_passing %}
+			    		<div class="input-field col s12 m12 l6">
+			    			<b>Applicant Year Of Passing: </b> {{ applicant_obj.year_of_passing }}
+			    		</div>
+		    		{% endif %}
+		    		{% if applicant_obj.stream %}
+			    		<div class="input-field col s12 m12 l6">
+			    			<b>Applicant Stream: </b> {{ applicant_obj.stream }}
+			    		</div>
+			    	{% endif %}
+			    	{% if applicant_obj.percentage %}
+			    		<div class="input-field col s12 m12 l6">
+			    			<b>Applicant Percentage: </b> {{ applicant_obj.percentage }} %
+			    		</div>
+			    	{% endif %}
+                                {% if applicant_obj.date_joined %}
+			    		<div class="input-field col s12 m12 l6">
+			    		<b>Registered at: </b> {{ applicant_obj.date_joined }}
+			    		</div>
+		    		{% endif %}
+			    	{% if applicant_obj.category %}
+			    		<div class="input-field col s12 m12 l6">
+			    			{% if applicant_obj.category == "1" %}
+			    			<b>Category: </b> Campus
+			    			{% elif applicant_obj.category == "2" %}
+			    				<b>Category: </b> Walk-In
+			    			{% else %}
+			    				<b>Category: </b> Posting
+			    			{% endif %}
+			    		</div>
+		    		{% endif %}
+                                {% if applicant_obj.event %}
+			    		<div class="input-field col s12 m12 l6">
+			    			<b>Event: </b> {{ applicant_obj.event.name }}
+			    		</div>
+		    		{% endif %}
+		    		{% if applicant_obj.resume %}
+			    		<div class="input-field col s12 m12 l6">
+			    			<b>Resume: </b> <a href="/files/{{ applicant_obj.resume }}" target="_blank"><i class="material-icons inline-icon">attach_file</i> Attached file</a>
+			    		</div>
+		    		{% endif %}
+				</div>
+	    		<div class="input-field col s12 m12 l2">
+	    			{% if applicant_obj.image %}
+						<img src="{{ applicant_obj.image.url }}" class="right">
+	    			{% endif %}
+				</div>
+			</div>
+		</div>
+
+			<!-- Applicantion Status -->
+			<div class="card-panel">
+
+				<div class="row">
+
+					<h5 class="center red-text text-darken-4">Application Updates</h5>
+					<hr>
+
+					{% if applicant_obj.is_rejected %}
+
+			      		<p style="padding:1em;" class="red lighten-3 center">Sorry, we are not able to process further with your application. Thank you for applying at Macleods.</p>
+
+			      	{% elif applicant_obj.is_selected %}
+
+			      		<p style="padding:1em;" class="red lighten-3 center">Congratulations, You have cleared all the rounds and been selected. Our team will get in touch with you shortly.</p>
+
+					{% else %}
+
+						{% if applicant_obj.is_approved %}
+
+							<!-- Current Round is Quiz -->
+							{% if applicant_obj.status == "1" %}
+
+																{% if quiz_status_list %}
+
+                                    {% for quiz_status in quiz_status_list %}
+                                        {% if quiz_status.is_quiz_ended %}
+
+                                            <p style="padding:1em;" class="green lighten-3 center">
+                                                Quiz <b>{{ quiz_status.quiz }} </b>is submitted successfully. We are currently evaluating your quiz. Kindly stay connected for updates.
+                                            </p>
+
+                                        {% elif quiz_status.is_allowed_to_take_quiz %}
+
+                                            {% if quiz_status.is_quiz_started %}
+                                                <p style="padding:1em;" class="yellow lighten-3 center">Congratulations, <u><a class="black-text" href="/applicant/start-test/{{ quiz_status.quiz.uuid }}">Please click here</a></u> to complete the quiz <b>{{ quiz_status.quiz }}</b> now.</p>
+                                            {% else %}
+                                                <p style="padding:1em;" class="green lighten-3 center">Congratulations, you are eligible to give quiz. <u><a class="black-text" href="/applicant/start-test/{{ quiz_status.quiz.uuid }}">Please click here</a></u> to start quiz <b>{{ quiz_status.quiz}}</b> now.</p>
+                                            {% endif %}
+
+                                        {% else %}
+
+                                            <p style="padding:1em;" class="green lighten-3 center">Congratulations, you are eligible to give quiz <b>{{ quiz_status.quiz }}</b>.</p>
+                                            <table>
+                                                <thead>
+                                                    <tr>
+                                                        <th>Quiz Start DateTime</th>
+                                                        <th>Due</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>{{ quiz_status.quiz_start_time }}</td>
+                                                        <td>{{ quiz_status.quiz_end_time }}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+
+                                        {% endif %}
+                                    {% endfor %}
+								{% else %}
+						      		<p style="padding:1em;" class="green lighten-3 center">Next round is quiz. Kindly stay connected. We will notify you as soon as quiz is assigned to you.</p>
+
+					      		{% endif %}
+							<!-- Applicant current round is interview -->
+							{% elif applicant_obj.status == "2" %}
+
+								<p style="padding:1em;" class="green lighten-3 center">Congratulations, You have been selected for interview. Please stay connected for future updates</p>
+
+							<!-- Nothing assigned so far -->
+							{% else %}
+
+					      		<p style="padding:1em;" class="green lighten-3 center">We are currently evaluting your profile. Please stay connected for updates.</p>
+
+							{% endif %}
+
+						{% else %}
+
+				      		<p style="padding:1em;" class="green lighten-3 center">We are currently evaluting your profile. Please stay connected for updates.</p>
+
+						{% endif %}
+
+					{% endif %}
+
+				</div>
+			</div>
+
+	</div>
+	<div class="col m2 l2">
+	</div>
+</div>
+
+<script>
+$(document).ready(function(){
+
+      onselectstart = (e) => {
+      e.preventDefault()
+      console.log("Text Selection is diabled")
+      }
+
+      navigator.getUserMedia (
+       // constraints
+       {
+          video: true,
+          audio: true
+       },
+
+       // successCallback
+       function(localMediaStream) {
+
+       },
+
+       // errorCallback
+       function(err) {
+           alert("Kindly go to site settings and allow permission for Camera and Microphone to continue for the quiz");
+       }
+    );
+  })
+</script>
+
+{% endblock %}
