@@ -12,6 +12,7 @@
 	<link rel="stylesheet" href="/media/app-assets/vendors/bootstrap-select/dist/css/bootstrap-select.min.css">
     <link rel="stylesheet" href="/media/app-assets/css/style.css">
 	<link rel="stylesheet" href="/media/app-assets/css/skin.css">
+    <link href="/media/app-assets/vendors/datatables/css/jquery.dataTables.min.css" rel="stylesheet">
 </head>
 <body>
 
@@ -210,9 +211,9 @@
                             <span class="nav-text">Manage Courses</span>
                         </a>
                         <ul aria-expanded="false">
-                            <li><a href="add-courses.html">Add Subjects</a></li>
-                            <li><a href="edit-courses.html">Add Topic/Chapter</a></li>
-                            <li><a href="about-courses.html">Add Videos</a></li>
+                            <li><a href="/courses/subjects/">All Subjects</a></li>
+                            <li><a href="edit-courses.html">All Topic/Chapter</a></li>
+                            <li><a href="about-courses.html">All Videos</a></li>
                         </ul>
                     </li>
 
@@ -280,9 +281,12 @@
             Content body start
         ***********************************-->
         <div class="content-body">
-            {% block start %}
 
-            {% endblock %}
+            <div class="container-fluid">
+                {% block start %}
+
+                {% endblock %}
+            </div>
         </div>
         <!--**********************************
             Content body end
@@ -338,7 +342,9 @@
     <script src="/media/app-assets/vendors/svganimation/vivus.min.js"></script>
     <script src="/media/app-assets/vendors/svganimation/svg.animation.js"></script>
     
+    <!-- Datatable -->
+    <script src="/media/app-assets/vendors/datatables/js/jquery.dataTables.min.js"></script>
+    <script src="/media/app-assets/js/plugins-init/datatables.init.js"></script>
 		
-	
 </body>
 </html>

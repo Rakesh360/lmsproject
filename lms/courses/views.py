@@ -29,7 +29,7 @@ def subjects(request):
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
     
     context = {'subjects' : Subject.objects.all()}
-    return render(request , 'course/subjects.html' , context)
+    return render(request , 'new_dashboard/all_subjects.html' , context)
 
 def edit_subject(request ,uid):
     try:
