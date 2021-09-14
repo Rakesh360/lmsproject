@@ -479,7 +479,7 @@ class SaveCoursePackage(APIView):
         response = {'status' : 400 , 'message' : 'Something went wrong'}
         try:
             data = request.data
-            print(data)
+
             course_package_obj = CoursePackage.objects.get(uid = data.get('course_package_uid'))
             _subject_uid = data.get('subject_uid')
             _chapter_uid = data.get('chapter_uid')
@@ -553,6 +553,8 @@ def delete_subject(request):
         print(e)
     messages.success(request, 'Subject Deleted')
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+
 @staff_member_required(login_url='/accounts/login/')
 def delete_chapter(request):
     try:

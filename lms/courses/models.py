@@ -98,13 +98,14 @@ class CoursePackage(BaseModel):
 class CoursePackageSubjects(BaseModel):
     course_package = models.ForeignKey(CoursePackage,related_name='pacakge_subjects', on_delete=models.CASCADE)
     subject = models.ForeignKey(Subject  , on_delete=models.CASCADE)
-
+    s_no = models.IntegerField(default=1)
     def __str__(self) -> str:
         return self.subject.subject_title
 
 class CoursePackageChapters(BaseModel):
     course_package_subject = models.ForeignKey(CoursePackageSubjects , related_name='pacakge_subject_chapters',on_delete=models.CASCADE)
     subject_chapter = models.ForeignKey(SubjectChapters , on_delete=models.CASCADE)
+    s_no = models.IntegerField(default=1)
     
     def __str__(self) -> str:
         return self.subject_chapter.chapter_title
@@ -113,6 +114,7 @@ class CoursePackageLessons(BaseModel):
     course_package_chapter = models.ForeignKey(CoursePackageChapters , related_name='pacakge_subject_chapters_lessons',on_delete=models.CASCADE)
     lesson = models.ForeignKey(Lessons , on_delete=models.CASCADE)
     sequence = models.IntegerField(default=1)
+    s_no = models.IntegerField(default=1)
 
     def __str__(self) -> str:
         return self.lesson.lesson_title
@@ -149,3 +151,35 @@ class GoLive(BaseModel):
 class LiveStream(BaseModel):
     live_stream_link = models.TextField()
     
+
+
+
+class Coupoun(BaseModel):
+    coupon_code = models.CharField(max_length=100 , unique=True)
+    # coupon_type = models.ManyToManyField(choices=(
+    #     ('One time' , 'One time'),
+    #     ('Validity' , 'Validity'),
+    #     ('Specific Course','Specific Course')), to = choices)
+
+    courses = models.ManyToManyField(CoursePackage)
+    start_date = models.DateField(null=True , blank=True)
+    expiry_date = models.DateField(null=True , blank=True)
+
+    coupon_discount_type = models.CharField(max_length=100 , choices=(('Percentage' ,'Percentage') , ('Amount' , 'Amount')))
+    discount =  models.IntegerField(default=0)
+
+    is_active = models.BooleanField(default=True)
+
+    def __str__(self) -> str:
+        return self.coupon_code
+
+    class Meta:
+        db_table = "coupons"
+        verbose_name_plural = "Coupon "
+        ordering = ['-created_at']
+
+
+    
+    
+
+
