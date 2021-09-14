@@ -32,8 +32,8 @@
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table id="example3" class="display" style="min-width: 845px">
-                    <thead>
+                <table id="example3" class="display" style="min-width: 845px" >
+                    <thead >
                         <tr>
                             <th>S. No.</th>
                             <th>Lesson Title</th>
@@ -51,7 +51,7 @@
                         <tr>
                             <td>{{forloop.counter}}</td>
                             <td class="chapter">{{lesson.lesson_title}}</td>
-                            <td class="subject">{{lesson.subject_chapter}}</td>
+                            <td class="subject">{{lesson.subject_chapter.chapter_title}}</td>
                             <td>{{lesson.lesson_type}}</td>
                             <td>
                                 {% if lesson.lesson_type  %}

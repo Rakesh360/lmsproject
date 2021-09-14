@@ -119,7 +119,7 @@ def add_package(request):
         )
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
-    return render(request , 'course/add_package.html' , context)
+    return render(request , 'new_dashboard/add_package.html' , context)
 
 @staff_member_required(login_url='/accounts/login/')
 def course_package_edit(request , uid):
@@ -153,7 +153,7 @@ def course_package_edit(request , uid):
 @staff_member_required(login_url='/accounts/login/')
 def course_packages(request):
     context = {'course_packages' : CoursePackage.objects.all()}
-    return render(request , 'course/package.html' , context)
+    return render(request , 'new_dashboard/all_packages.html' , context)
 
 
 @staff_member_required(login_url='/accounts/login/')

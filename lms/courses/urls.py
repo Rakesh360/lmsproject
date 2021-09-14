@@ -13,7 +13,7 @@ urlpatterns = [
    path('subject-chapters/' , views.subject_chapters , name="subject_chapters"),
    path('add-lessons/' , views.add_lessons , name="add_lessons"),
    path('lessons/' , views.lessons, name="lessons"),
-   path('course-packages/' , views.course_packages, name="course_packages"),
+   path('packages/' , views.course_packages, name="packages"),
    path('add-package/' , views.add_package , name="add_package"),
    path('add-subjects-package/<uid>/' , views.add_subjects_courses,name="add_subjects_courses"),
 

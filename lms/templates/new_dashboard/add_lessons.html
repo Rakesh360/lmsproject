@@ -9,6 +9,10 @@
     a.active{
         background-color: #FF8F16;
     }
+
+    .tag{
+        cursor: pointer;
+    }
 </style>
 <div class="section-header" style="margin-top: 5%;">
     <h1>Add Lesson</h1>
@@ -41,25 +45,24 @@
                         placeholder="Enter lesson title">
                 </div>
                 <div class="form-group col-md-6">
-                    <label for="inputPassword4">Subject Chapters</label>
+                    <label for="visibility">Choose Subject</label>
+                    <select required id="subjects" name="subjects" class="form-control basic tagging ">
+                        <option value="physics">physics</option>
+                        <option value="chemistry">chemistry</option>
+                        <option value="maths">maths</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-6">
+
+                    <label for="inputPassword4">Choose Chapter</label>
                     <select required id="chapters" name="chapters" class="form-control basic tagging ">
                         {% for subject_chapter in  subject_chapters %}
                         <option value="{{subject_chapter.uid}}">{{subject_chapter.chapter_title}}</option>
                         {% endfor  %}
                     </select>
                 </div>
-                <div class="form-group col-md-6">
-
-                    <label for="inputEmail4">Is free</label>
-                    <select class="form-control" name="is_free">
-                        <option value="0">No</option>
-                        <option value="1">Yes</option>
-
-                    </select>
-                </div>
 
                 <div class="form-group col-md-6">
-
                     <label for="inputEmail4">Lesson Type</label>
                     <select class="form-control" id="element" name="lesson_type" onchange="changeLessonType()">
                         <option value="Video">Video</option>
@@ -76,21 +79,31 @@
 
                 <div class="form-group col-md-6">
                     <label for="inputAddress">Video Platform</label>
-                    <select required class="form-control" name="video_uploaded_on">
+                    <select required class="form-control" name="video_uploaded_on" id="videoType" onchange="changeVideoType()">
+                        <option value="Live">Live</option>
                         <option value="Vimeo">Vimeo</option>
-                        <option value="Youtube">Youtube</option>
+                        <option value="Youtube" selected>Youtube</option>
 
                     </select>
+
+                    <div id="timePicker" style="display: none;">
+                        <label for="startTime" class="mt-4"> Enter Start Time Of Live </label>
+                        <input class="form-control" type="datetime-local" name="startTime">
+                    </div>
+
                 </div>
+
+
                 <div class="form-group col-md-6">
                     <label for="inputEmail4">Lesson Link</label>
                     <input type="text" onchange="loadLesson()" required id="lesson_link" class="form-control"
                         name="video_link" id="inputEmail4" placeholder="Enter lesson title">
-                    <small>Paste Id only</small>
-                    <iframe width="550" id="iframe" height="215" src="" style="display: none;">
+                    <small>Paste Id only | preview appears here</small>
+                    <iframe width="560" id="iframe" height="315" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="display: none;">
                     </iframe>
                 </div>
             </div>
+            
 
             <div class="form-row mb-4" id="document_upload" style="display: none;">
 
@@ -100,12 +113,6 @@
                 </div>
 
             </div>
-
-            <div class="form-row mb-4">
-                tags appear heer
-            </div>
-
-
 
             <button type="submit" class="btn btn-primary mt-3">Add Chapters</button>
         </form>
@@ -124,16 +131,10 @@
             {% csrf_token %}
             <div class="form-row mb-4">
                 <div class="form-group col-md-6">
-                    <label for="inputEmail4">Testtsttst title</label>
-                    <input type="text" class="form-control" required name="lesson_title" id="inputEmail4"
-                        placeholder="Enter lesson title">
-                </div>
-                <div class="form-group col-md-6">
-                    <label for="inputPassword4">Subject Chapters</label>
-                    <select required id="chapters" name="chapters" class="form-control basic tagging ">
-                        {% for subject_chapter in  subject_chapters %}
-                        <option value="{{subject_chapter.uid}}">{{subject_chapter.chapter_title}}</option>
-                        {% endfor  %}
+                    <label for="visibility">Visibility</label>
+                    <select required id="chapters" name="visibility" class="form-control basic tagging ">
+                        <option value="0">Hidden</option>
+                        <option value="1">Visible</option>
                     </select>
                 </div>
                 <div class="form-group col-md-6">
@@ -145,57 +146,37 @@
 
                     </select>
                 </div>
-
-                <div class="form-group col-md-6">
-
-                    <label for="inputEmail4">Lesson Type</label>
-                    <select class="form-control" id="element" name="lesson_type" onchange="changeLessonType()">
-                        <option value="Video">Video</option>
-                        <option value="Document">Document</option>
-                        <option value="Video + Document">Video + Document</option>
-
-
-                    </select>
-                </div>
-
-
             </div>
+
+
             <div class="form-row mb-4" id="video_upload">
+                <!-- tags selection part -->
+                <label for="tags">Select Packages To Include</label>
+                <select required id="tagsDropdown" name="tags" class="form-control basic tagging" onchange="includeTag(event)">
+                    <option value="" selected>Choose Package</option>
+                    {% for subject_chapter in  subject_chapters %}
+                    <option value="{{subject_chapter.uid}}">{{subject_chapter.chapter_title}}</option>
+                    {% endfor  %}
+                </select>   
 
-                <div class="form-group col-md-6">
-                    <label for="inputAddress">Video Platform</label>
-                    <select required class="form-control" name="video_uploaded_on">
-                        <option value="Vimeo">Vimeo</option>
-                        <option value="Youtube">Youtube</option>
-
-                    </select>
-                </div>
-                <div class="form-group col-md-6">
-                    <label for="inputEmail4">Lesson Link</label>
-                    <input type="text" onchange="loadLesson()" required id="lesson_link" class="form-control"
-                        name="video_link" id="inputEmail4" placeholder="Enter lesson title">
-                    <small>Paste Id only</small>
-                    <iframe width="550" id="iframe" height="215" src="" style="display: none;">
-                    </iframe>
-                </div>
+                <div class="all-tags">
+                    <div class="tags" id="tags">
+                        <div class="badge badge-dark p-1 m-1 tag" id="1" onclick="clickTag(event)">Tag1</div>
+                        <div class="badge badge-dark p-1 m-1 tag" id="2" onclick="clickTag(event)">Tag2</div>
+                        <div class="badge badge-dark p-1 m-1 tag" id="3" onclick="clickTag(event)">Tag3</div>
+                    </div>  
+                </div>               
             </div>
 
-            <div class="form-row mb-4" id="document_upload" style="display: none;">
-
-                <div class="form-group col-md-6">
-                    <label>Upload Document</label>
-                    <input class="form-control" id="document" type="file" name="document">
-                </div>
-
-            </div>
 
             <div class="form-row mb-4">
-                tags appear heer
+                <div class="form-group col-md-6">
+                    <label for="selectedTag">Visibility</label>
+                    <input type="datetime-local" name="selectedTag" id="selectedTagDateTime">
+                </div>
             </div>
 
-
-
-            <button type="submit" class="btn btn-primary mt-3">Add Chapters</button>
+           <button type="submit" class="btn btn-primary mt-3">Add Chapters</button>
         </form>
 
     </div>
@@ -206,6 +187,8 @@
     let publishBtn = document.getElementById('publishBtn');
     let contentDiv = document.getElementById('contentDiv');
     let publishDiv = document.getElementById('publishDiv');
+    let tagSection = document.getElementById('tagSection');
+    let tagsDropdown = document.getElementById('tagsDropdown');
 
     contentBtn.addEventListener('click', function () {
         contentBtn.classList.add('active');
@@ -222,7 +205,56 @@
     });
 
 
+    let allTags = document.getElementsByClassName('tag');
+    function checkTag(tagName) {
+        let flag = false;
+        for (let i = 0; i < allTags.length; i++) {
+            let singleTag = allTags[i];
+            if (singleTag.innerHTML === tagName) {
+                flag = true;
+                break;
+            }
+            
+        }
 
+        return flag;
+    }
+
+    function clickTag(event) {
+        let tagName = event.target.innerHTML;
+        let tagId = event.target.id;
+        console.log(tagName, tagId);
+    }
+
+
+    let tags = document.getElementById('tags');
+    function includeTag(event) {
+        let tagName = event.currentTarget.selectedOptions[0].innerText;
+        let tagId = event.currentTarget.value;
+        if (event.currentTarget.value === "") {
+            console.log('fu');
+        } else {
+           if (checkTag(tagName) === true ) {
+               console.log('Tag already exists...');
+           } else {
+                let tagElement = document.createElement('div');
+                tagElement.className = "badge badge-dark p-1 m-1 tag";
+                tagElement.id = tagId;
+                tagElement.innerHTML = tagName;
+                tagElement.onclick = 'clickTag(event)';
+                tags.appendChild(tagElement);
+           }
+        }
+    }
+
+    function changeVideoType() {
+        let videoType = document.getElementById('videoType');
+        if (videoType.value == 'Live') {
+            document.getElementById('timePicker').style.display = 'block';
+        } else {
+            document.getElementById('timePicker').style.display = 'none';
+        }
+    };
 
 
     function changeLessonType() {
