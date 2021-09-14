@@ -75,7 +75,8 @@ def edit_subject_chapter(request , uid):
             subject_chapter_obj.save()
           
             context = messages.success(request, 'Subject Chapter updated')
-            return HttpResponse(context)
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
         
         context = {'subjects' : Subject.objects.all(), 'subject_chapter' :  SubjectChapters.objects.get(uid = uid)}
         return render(request , 'course/edit_subject_chapters.html' , context)
