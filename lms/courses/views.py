@@ -9,7 +9,7 @@ from .models import *
 from .serializers import *
 from rest_framework.response import Response
 from django.contrib import messages
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from .forms import PackageForm
 import json
 from django.contrib.admin.views.decorators import staff_member_required
@@ -29,7 +29,7 @@ def subjects(request):
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
     
     context = {'subjects' : Subject.objects.all()}
-    return render(request , 'course/subjects.html' , context)
+    return render(request , 'new_dashboard/all_subjects.html' , context)
 
 def edit_subject(request ,uid):
     try:
@@ -61,7 +61,7 @@ def subject_chapters(request):
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
     
     context = {'subjects' : Subject.objects.all(), 'subject_chapters' : SubjectChapters.objects.all()}
-    return render(request , 'course/subject_chapters.html' , context)
+    return render(request , 'new_dashboard/all_topics.html' , context)
 
 def edit_subject_chapter(request , uid):
     try:
@@ -74,11 +74,12 @@ def edit_subject_chapter(request , uid):
             subject_chapter_obj.chapter_title = chapter_title
             subject_chapter_obj.save()
           
-            messages.success(request, 'Subject Chapter updated')
-            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+            context = messages.success(request, 'Subject Chapter updated')
+            return HttpResponse(context)
         
         context = {'subjects' : Subject.objects.all(), 'subject_chapter' :  SubjectChapters.objects.get(uid = uid)}
         return render(request , 'course/edit_subject_chapters.html' , context)
+        # return {'status': 'OKOK'}
 
     except Exception as e:
         print(e)

@@ -1,295 +1,350 @@
-<html class="loading" lang="en" data-textdirection="ltr">
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
-  <meta name="description"
-    content="Materialize is a Material Design Admin Template,It's modern, responsive and based on Material Design by Google.">
-  <meta name="keywords"
-    content="materialize, admin template, dashboard template, flat admin template, responsive admin template, eCommerce dashboard, analytic dashboard">
-  <meta name="author" content="ThemeSelect">
-  <title>Dropdown | Materialize - Material Design Admin Template</title>
-
-  <link rel="apple-touch-icon" href="/media/app-assets/images/favicon/apple-touch-icon-152x152.png">
-  <link rel="shortcut icon" type="image/x-icon" href="/media/app-assets/images/favicon/favicon-32x32.png">
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <link rel="stylesheet" type="text/css" href="/media/app-assets/vendors/vendors.min.css">
-  <link rel="stylesheet" type="text/css"
-    href="/media/app-assets/css/themes/vertical-gradient-menu-template/materialize.min.css">
-  <link rel="stylesheet" type="text/css"
-    href="/media/app-assets/css/themes/vertical-gradient-menu-template/style.min.css">
-  <link rel="stylesheet" type="text/css" href="/media/app-assets/css/custom/custom.css">
-
+	
+	<meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Edumin - Bootstrap Admin Dashboard </title>
+    <!-- Favicon icon -->
+    <link rel="shortcut icon" type="image/x-icon" href="/media/app-assets/images/favicon/favicon-32x32.png">
+	<link rel="stylesheet" href="/media/app-assets/vendors/bootstrap-select/dist/css/bootstrap-select.min.css">
+    <link rel="stylesheet" href="/media/app-assets/css/style.css">
+	<link rel="stylesheet" href="/media/app-assets/css/skin.css">
+    <link href="/media/app-assets/vendors/datatables/css/jquery.dataTables.min.css" rel="stylesheet">
 </head>
-</head>
-<!-- END: Head-->
+<body>
 
-<body
-  class="vertical-layout page-header-light vertical-menu-collapsible vertical-gradient-menu preload-transitions 2-columns   "
-  data-open="click" data-menu="vertical-gradient-menu" data-col="2-columns">
-
-  <!-- BEGIN: Header-->
-  <header class="page-topbar" id="header">
-    <div class="navbar navbar-fixed">
-      <nav class="navbar-main navbar-color nav-collapsible sideNav-lock navbar-light">
-        <div class="nav-wrapper">
-          <div class="header-search-wrapper hide-on-med-and-down"><i class="material-icons">search</i>
-            <input class="header-search-input z-depth-2" type="text" name="Search" placeholder="Explore Materialize"
-              data-search="template-list">
-            <ul class="search-list collection display-none"></ul>
-          </div>
-          <ul class="navbar-list right">
-            <li class="dropdown-language"><a class="waves-effect waves-block waves-light translation-button" href="#"
-                data-target="translation-dropdown"><span class="flag-icon flag-icon-gb"></span></a></li>
-            <li class="hide-on-med-and-down"><a class="waves-effect waves-block waves-light toggle-fullscreen"
-                href="javascript:void(0);"><i class="material-icons">settings_overscan</i></a></li>
-            <li class="hide-on-large-only search-input-wrapper"><a
-                class="waves-effect waves-block waves-light search-button" href="javascript:void(0);"><i
-                  class="material-icons">search</i></a></li>
-            <li><a class="waves-effect waves-block waves-light notification-button" href="javascript:void(0);"
-                data-target="notifications-dropdown"><i class="material-icons">notifications_none<small
-                    class="notification-badge">5</small></i></a></li>
-            <li><a class="waves-effect waves-block waves-light profile-button" href="javascript:void(0);"
-                data-target="profile-dropdown"><span class="avatar-status avatar-online"><img
-                    src="/media/app-assets/images/avatar/avatar-7.png" alt="avatar"><i></i></span></a></li>
-            <li><a class="waves-effect waves-block waves-light sidenav-trigger" href="#"
-                data-target="slide-out-right"><i class="material-icons">format_indent_increase</i></a></li>
-          </ul>
-          <!-- translation-button-->
-          <ul class="dropdown-content" id="translation-dropdown">
-            <li class="dropdown-item"><a class="grey-text text-darken-1" href="#!" data-language="en"><i
-                  class="flag-icon flag-icon-gb"></i> English</a></li>
-            <li class="dropdown-item"><a class="grey-text text-darken-1" href="#!" data-language="fr"><i
-                  class="flag-icon flag-icon-fr"></i> French</a></li>
-            <li class="dropdown-item"><a class="grey-text text-darken-1" href="#!" data-language="pt"><i
-                  class="flag-icon flag-icon-pt"></i> Portuguese</a></li>
-            <li class="dropdown-item"><a class="grey-text text-darken-1" href="#!" data-language="de"><i
-                  class="flag-icon flag-icon-de"></i> German</a></li>
-          </ul>
-          <!-- notifications-dropdown-->
-          <ul class="dropdown-content" id="notifications-dropdown">
-            <li>
-              <h6>NOTIFICATIONS<span class="new badge">5</span></h6>
-            </li>
-            <li class="divider"></li>
-            <li><a class="black-text" href="#!"><span
-                  class="material-icons icon-bg-circle cyan small">add_shopping_cart</span> A new order has been
-                placed!</a>
-              <time class="media-meta grey-text darken-2" datetime="2015-06-12T20:50:48+08:00">2 hours ago</time>
-            </li>
-            <li><a class="black-text" href="#!"><span class="material-icons icon-bg-circle red small">stars</span>
-                Completed the task</a>
-              <time class="media-meta grey-text darken-2" datetime="2015-06-12T20:50:48+08:00">3 days ago</time>
-            </li>
-
-            <li><a class="black-text" href="#!"><span
-                  class="material-icons icon-bg-circle deep-orange small">today</span> Director meeting started</a>
-              <time class="media-meta grey-text darken-2" datetime="2015-06-12T20:50:48+08:00">6 days ago</time>
-            </li>
-            <li><a class="black-text" href="#!"><span
-                  class="material-icons icon-bg-circle amber small">trending_up</span> Generate monthly report</a>
-              <time class="media-meta grey-text darken-2" datetime="2015-06-12T20:50:48+08:00">1 week ago</time>
-            </li>
-          </ul>
-          <!-- profile-dropdown-->
-          <ul class="dropdown-content" id="profile-dropdown">
-            <li><a class="grey-text text-darken-1" href="user-profile-page.html"><i
-                  class="material-icons">person_outline</i> Profile</a></li>
-            <li><a class="grey-text text-darken-1" href="app-chat.html"><i
-                  class="material-icons">chat_bubble_outline</i> Chat</a></li>
-            <li><a class="grey-text text-darken-1" href="page-faq.html"><i class="material-icons">help_outline</i>
-                Help</a></li>
-            <li class="divider"></li>
-            <li><a class="grey-text text-darken-1" href="user-lock-screen.html"><i
-                  class="material-icons">lock_outline</i> Lock</a></li>
-            <li><a class="grey-text text-darken-1" href="user-login.html"><i class="material-icons">keyboard_tab</i>
-                Logout</a></li>
-          </ul>
+    <!--*******************
+        Preloader start
+    ********************-->
+    <div id="preloader">
+        <div class="sk-three-bounce">
+            <div class="sk-child sk-bounce1"></div>
+            <div class="sk-child sk-bounce2"></div>
+            <div class="sk-child sk-bounce3"></div> 
         </div>
-        <nav class="display-none search-sm">
-          <div class="nav-wrapper">
-            <form id="navbarForm">
-              <div class="input-field search-input-sm">
-                <input class="search-box-sm mb-0" type="search" required="" id="search"
-                  placeholder="Explore Materialize" data-search="template-list">
-                <label class="label-icon" for="search"><i class="material-icons search-sm-icon">search</i></label><i
-                  class="material-icons search-sm-close">close</i>
-                <ul class="search-list collection search-list-sm display-none"></ul>
-              </div>
-            </form>
-          </div>
-        </nav>
-      </nav>
     </div>
-  </header>
-  <!-- END: Header-->
-  <ul class="display-none" id="default-search-main">
-    <li class="auto-suggestion-title"><a class="collection-item" href="#">
-        <h6 class="search-title">FILES</h6>
-      </a></li>
-    <li class="auto-suggestion"><a class="collection-item" href="#">
-        <div class="display-flex">
-          <div class="display-flex align-item-center flex-grow-1">
-            <div class="avatar"><img src="/media/app-assets/images/icon/pdf-image.png" width="24" height="30"
-                alt="sample image"></div>
-            <div class="member-info display-flex flex-column"><span class="black-text">Two new item
-                submitted</span><small class="grey-text">Marketing Manager</small></div>
-          </div>
-          <div class="status"><small class="grey-text">17kb</small></div>
+    <!--*******************
+        Preloader end
+    ********************-->
+
+    <!--**********************************
+        Main wrapper start
+    ***********************************-->
+    <div id="main-wrapper">
+
+        <!--**********************************
+            Nav header start
+        ***********************************-->
+        <div class="nav-header">
+            <a href="index.html" class="brand-logo">
+                <img class="logo-abbr" src="/media/app-assets/images/logo-white-2.png" alt="">
+                <img class="logo-compact" src="/media/app-assets/images/logo-text-white.png" alt="">
+                <img class="brand-title" src="/media/app-assets/images/logo-text-white.png" alt="">
+            </a>
+
+            <div class="nav-control">
+                <div class="hamburger">
+                    <span class="line"></span><span class="line"></span><span class="line"></span>
+                </div>
+            </div>
         </div>
-      </a></li>
-    <li class="auto-suggestion"><a class="collection-item" href="#">
-        <div class="display-flex">
-          <div class="display-flex align-item-center flex-grow-1">
-            <div class="avatar"><img src="/media/app-assets/images/icon/doc-image.png" width="24" height="30"
-                alt="sample image"></div>
-            <div class="member-info display-flex flex-column"><span class="black-text">52 Doc file
-                Generator</span><small class="grey-text">FontEnd Developer</small></div>
-          </div>
-          <div class="status"><small class="grey-text">550kb</small></div>
+        <!--**********************************
+            Nav header end
+        ***********************************-->
+
+        <!--**********************************
+            Header start
+        ***********************************-->
+        <div class="header">
+            <div class="header-content">
+                <nav class="navbar navbar-expand">
+                    <div class="collapse navbar-collapse justify-content-between">
+                        <div class="header-left">
+                            <div class="search_bar dropdown">
+                                <span class="search_icon p-3 c-pointer" data-toggle="dropdown">
+                                    <i class="mdi mdi-magnify"></i>
+                                </span>
+                                <div class="dropdown-menu p-0 m-0">
+                                    <form>
+                                        <input class="form-control" type="search" placeholder="Search" aria-label="Search">
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <ul class="navbar-nav header-right">
+                            <li class="nav-item dropdown notification_dropdown">
+                                <a class="nav-link bell ai-icon" href="#" role="button" data-toggle="dropdown">
+                                    <svg id="icon-user" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-bell">
+										<path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+										<path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+									</svg>
+                                    <div class="pulse-css"></div>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-right">
+                                    <ul class="list-unstyled">
+                                        <li class="media dropdown-item">
+                                            <span class="success"><i class="ti-user"></i></span>
+                                            <div class="media-body">
+                                                <a href="#">
+                                                    <p><strong>Martin</strong> has added a <strong>customer</strong> Successfully
+                                                    </p>
+                                                </a>
+                                            </div>
+                                            <span class="notify-time">3:20 am</span>
+                                        </li>
+                                        <li class="media dropdown-item">
+                                            <span class="primary"><i class="ti-shopping-cart"></i></span>
+                                            <div class="media-body">
+                                                <a href="#">
+                                                    <p><strong>Jennifer</strong> purchased Light Dashboard 2.0.</p>
+                                                </a>
+                                            </div>
+                                            <span class="notify-time">3:20 am</span>
+                                        </li>
+                                        <li class="media dropdown-item">
+                                            <span class="danger"><i class="ti-bookmark"></i></span>
+                                            <div class="media-body">
+                                                <a href="#">
+                                                    <p><strong>Robin</strong> marked a <strong>ticket</strong> as unsolved.
+                                                    </p>
+                                                </a>
+                                            </div>
+                                            <span class="notify-time">3:20 am</span>
+                                        </li>
+                                        <li class="media dropdown-item">
+                                            <span class="primary"><i class="ti-heart"></i></span>
+                                            <div class="media-body">
+                                                <a href="#">
+                                                    <p><strong>David</strong> purchased Light Dashboard 1.0.</p>
+                                                </a>
+                                            </div>
+                                            <span class="notify-time">3:20 am</span>
+                                        </li>
+                                        <li class="media dropdown-item">
+                                            <span class="success"><i class="ti-image"></i></span>
+                                            <div class="media-body">
+                                                <a href="#">
+                                                    <p><strong> James.</strong> has added a<strong>customer</strong> Successfully
+                                                    </p>
+                                                </a>
+                                            </div>
+                                            <span class="notify-time">3:20 am</span>
+                                        </li>
+                                    </ul>
+                                    <a class="all-notification" href="#">See all notifications <i class="ti-arrow-right"></i></a>
+                                </div>
+                            </li>
+                            <li class="nav-item dropdown header-profile">
+                                <a class="nav-link" href="#" role="button" data-toggle="dropdown">
+                                    <img src="/media/app-assets/images/avatar/avatar-7.png" width="20" alt="">
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-right">
+
+                                    <a href="app-profile.html" class="dropdown-item ai-icon">
+                                        <svg id="icon-user1" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                                        <span class="ml-2">Profile </span>
+                                    </a>
+
+                                    <a href="app-chat.html" class="dropdown-item ai-icon">
+                                        <svg id="icon-chat" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-help"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                                        <span class="ml-2">Chat </span>
+                                    </a>
+
+                                    <a href="app-help.html" class="dropdown-item ai-icon">
+                                        <svg id="icon-help" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                                        <span class="ml-2">Help </span>
+                                    </a>
+
+                                    <a href="user-lockscreen.html" class="dropdown-item ai-icon">
+                                        <svg id="icon-lock" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-mail"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                                        <span class="ml-2">Lock </span>
+                                    </a>
+
+                                    <a href="page-login.html" class="dropdown-item ai-icon">
+                                        <svg id="icon-logout" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-log-out"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                                        <span class="ml-2">Logout </span>
+                                    </a>
+
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+            </div>
         </div>
-      </a></li>
-    <li class="auto-suggestion"><a class="collection-item" href="#">
-        <div class="display-flex">
-          <div class="display-flex align-item-center flex-grow-1">
-            <div class="avatar"><img src="/media/app-assets/images/icon/xls-image.png" width="24" height="30"
-                alt="sample image"></div>
-            <div class="member-info display-flex flex-column"><span class="black-text">25 Xls File Uploaded</span><small
-                class="grey-text">Digital Marketing Manager</small></div>
-          </div>
-          <div class="status"><small class="grey-text">20kb</small></div>
-        </div>
-      </a></li>
-    <li class="auto-suggestion"><a class="collection-item" href="#">
-        <div class="display-flex">
-          <div class="display-flex align-item-center flex-grow-1">
-            <div class="avatar"><img src="/media/app-assets/images/icon/jpg-image.png" width="24" height="30"
-                alt="sample image"></div>
-            <div class="member-info display-flex flex-column"><span class="black-text">Anna Strong</span><small
-                class="grey-text">Web Designer</small></div>
-          </div>
-          <div class="status"><small class="grey-text">37kb</small></div>
-        </div>
-      </a></li>
-    <li class="auto-suggestion-title"><a class="collection-item" href="#">
-        <h6 class="search-title">MEMBERS</h6>
-      </a></li>
-    <li class="auto-suggestion"><a class="collection-item" href="#">
-        <div class="display-flex">
-          <div class="display-flex align-item-center flex-grow-1">
-            <div class="avatar"><img class="circle" src="/media/app-assets/images/avatar/avatar-7.png" width="30"
-                alt="sample image"></div>
-            <div class="member-info display-flex flex-column"><span class="black-text">John Doe</span><small
-                class="grey-text">UI designer</small></div>
-          </div>
-        </div>
-      </a></li>
-    <li class="auto-suggestion"><a class="collection-item" href="#">
-        <div class="display-flex">
-          <div class="display-flex align-item-center flex-grow-1">
-            <div class="avatar"><img class="circle" src="/media/app-assets/images/avatar/avatar-8.png" width="30"
-                alt="sample image"></div>
-            <div class="member-info display-flex flex-column"><span class="black-text">Michal Clark</span><small
-                class="grey-text">FontEnd Developer</small></div>
-          </div>
-        </div>
-      </a></li>
-    <li class="auto-suggestion"><a class="collection-item" href="#">
-        <div class="display-flex">
-          <div class="display-flex align-item-center flex-grow-1">
-            <div class="avatar"><img class="circle" src="/media/app-assets/images/avatar/avatar-10.png" width="30"
-                alt="sample image"></div>
-            <div class="member-info display-flex flex-column"><span class="black-text">Milena Gibson</span><small
-                class="grey-text">Digital Marketing</small></div>
-          </div>
-        </div>
-      </a></li>
-    <li class="auto-suggestion"><a class="collection-item" href="#">
-        <div class="display-flex">
-          <div class="display-flex align-item-center flex-grow-1">
-            <div class="avatar"><img class="circle" src="/media/app-assets/images/avatar/avatar-12.png" width="30"
-                alt="sample image"></div>
-            <div class="member-info display-flex flex-column"><span class="black-text">Anna Strong</span><small
-                class="grey-text">Web Designer</small></div>
-          </div>
-        </div>
-      </a></li>
-  </ul>
-  <ul class="display-none" id="page-search-title">
-    <li class="auto-suggestion-title"><a class="collection-item" href="#">
-        <h6 class="search-title">PAGES</h6>
-      </a></li>
-  </ul>
-  <ul class="display-none" id="search-not-found">
-    <li class="auto-suggestion"><a class="collection-item display-flex align-items-center" href="#"><span
-          class="material-icons">error_outline</span><span class="member-info">No results found.</span></a></li>
-  </ul>
+        <!--**********************************
+            Header end ti-comment-alt
+        ***********************************-->
+
+        <!--**********************************
+            Sidebar start
+        ***********************************-->
+        <div class="dlabnav">
+            <div class="dlabnav-scroll">
+                <ul class="metismenu" id="menu">
+                    <li class="nav-label first">Main Menu</li>
+
+                    <!-- <li><a class="has-arrow" href="javascript:void()" aria-expanded="false">
+							<i class="la la-home"></i>
+							<span class="nav-text">Dashboard</span>
+						</a>
+                        <ul aria-expanded="false">
+                            <li><a href="index.html">Dashboard 1</a></li>
+                            <li><a href="index-2.html">Dashboard 2</a></li>
+                            <li><a href="index-3.html">Dashboard 3</a></li>
+                        </ul>
+                    </li> -->
 
 
+					<li><a class="ai-icon" href="#" aria-expanded="false">
+							<i class="la la-home"></i>
+							<span class="nav-text">Dashboard</span>
+						</a>
+                    </li>
 
-  <!-- BEGIN: SideNav-->
-  <aside
-    class="sidenav-main nav-expanded nav-lock nav-collapsible sidenav-dark gradient-45deg-deep-purple-blue sidenav-gradient sidenav-active-rounded">
-    <div class="brand-sidebar">
-      <h1 class="logo-wrapper " style="color:#fff;font-size: 13px;">
+                    <li><a class="has-arrow" href="javascript:void()" aria-expanded="false">
+                            <i class="la la-graduation-cap"></i>
+                            <span class="nav-text">Manage Courses</span>
+                        </a>
+                        <ul aria-expanded="false">
+                            <li><a href="/courses/subjects/">All Subjects</a></li>
+                            <li><a href="/courses/subject-chapters/">All Topic/Chapter</a></li>
+                            <li><a href="about-courses.html">All Videos</a></li>
+                        </ul>
+                    </li>
 
-      </h1>
+
+					<li><a class="has-arrow" href="javascript:void()" aria-expanded="false">
+							<i class="la la-users"></i>
+							<span class="nav-text">Manage Users</span>
+						</a>
+                        <ul aria-expanded="false">
+                            <li><a href="all-students.html">All Users</a></li>
+                            <li><a href="add-student.html">Add New Users</a></li>
+                        </ul>
+                    </li>
+
+
+					<li><a class="has-arrow" href="javascript:void()" aria-expanded="false">
+							<i class="la la-book"></i>
+							<span class="nav-text">Manage Packages</span>
+						</a>
+                        <ul aria-expanded="false">
+                            <li><a href="all-library.html">All Packages</a></li>
+                            <li><a href="add-library.html">Create Packages</a></li>
+                        </ul>
+                    </li>
+					<li><a class="has-arrow" href="javascript:void()" aria-expanded="false">
+							<i class="la la-file-invoice"></i>
+							<span class="nav-text">Manage Tests</span>
+						</a>
+                        <ul aria-expanded="false">
+                            <li><a href="all-departments.html">All Tests</a></li>
+                            <li><a href="add-departments.html">All Questions</a></li>
+                        </ul>
+                    </li>
+
+                    <li><a class="has-arrow" href="javascript:void()" aria-expanded="false">
+                            <i class="la la-users"></i>
+                            <span class="nav-text">Manage App</span>
+                        </a>
+                        <ul aria-expanded="false">
+                            <li><a href="app-profile.html">Add Sliders</a></li>
+                        </ul>
+                    </li>
+
+
+                    <li><a class="ai-icon" href="#" aria-expanded="false">
+                            <i class="la la-tags"></i>
+                            <span class="nav-text">Coupons</span>
+                        </a>
+                    </li>
+                    
+
+                    <li><a class="ai-icon" href="#" aria-expanded="false">
+                            <i class="la la-flag"></i>
+                            <span class="nav-text">Reports</span>
+                        </a>
+                    </li>
+
+            </div>
+        </div>
+        <!--**********************************
+            Sidebar end
+        ***********************************-->
+		
+		<!--**********************************
+            Content body start
+        ***********************************-->
+        <div class="content-body">
+
+            <div class="container-fluid">
+                {% block start %}
+
+                {% endblock %}
+            </div>
+        </div>
+        <!--**********************************
+            Content body end
+        ***********************************-->
+
+
+        <!--**********************************
+            Footer start
+        ***********************************-->
+        <div class="footer">
+            <div class="copyright">
+                <p>Copyright © Designed &amp; Developed by <a href="../index.htm" target="_blank">DexignLab</a> 2020</p>
+            </div>
+        </div>
+        <!--**********************************
+            Footer end
+        ***********************************-->
+
+		<!--**********************************
+           Support ticket button start
+        ***********************************-->
+
+        <!--**********************************
+           Support ticket button end
+        ***********************************-->
+
+
     </div>
+    <!--**********************************
+        Main wrapper end
+    ***********************************-->
 
-
-    {% include "snippets/sidebar.html" %}
-
-
-    <div class="navigation-background"></div><a
-      class="sidenav-trigger btn-sidenav-toggle btn-floating btn-medium waves-effect waves-light hide-on-large-only"
-      href="#" data-target="slide-out"><i class="material-icons">menu</i></a>
-  </aside>
-  <!-- END: SideNav-->
-
-  <!-- BEGIN: Page Main-->
-  <div id="main">
-    <div class="row">
-      <div class="pt-3 pb-1" id="breadcrumbs-wrapper">
-        <!-- Search for small screen-->
-        {% block start %}
-
-        {% endblock %}
-
-      </div>
-      <!-- START RIGHT SIDEBAR NAV -->
-
-      <!-- END RIGHT SIDEBAR NAV -->
-      <div style="bottom: 50px; right: 19px;" class="fixed-action-btn direction-top"><a
-          class="btn-floating btn-large gradient-45deg-light-blue-cyan gradient-shadow"><i
-            class="material-icons">add</i></a>
-        <ul>
-          <li><a href="css-helpers.html" class="btn-floating blue"><i class="material-icons">help_outline</i></a>
-          </li>
-          <li><a href="cards-extended.html" class="btn-floating green"><i class="material-icons">widgets</i></a>
-          </li>
-          <li><a href="app-calendar.html" class="btn-floating amber"><i class="material-icons">today</i></a></li>
-          <li><a href="app-email.html" class="btn-floating red"><i class="material-icons">mail_outline</i></a></li>
-        </ul>
-      </div>
-    </div>
-    <div class="content-overlay"></div>
-  </div>
-  </div>
-  </div>
-
-  <!-- END: Footer-->
-  <!-- BEGIN VENDOR JS-->
-  <script type="application/javascript" src="/media/app-assets/js/vendors.min.js"></script>
-  <!-- BEGIN VENDOR JS-->
-  <!-- BEGIN PAGE VENDOR JS-->
-  <!-- END PAGE VENDOR JS-->
-  <!-- BEGIN THEME  JS-->
-  <script type="application/javascript" src="/media/app-assets/js/plugins.min.js"></script>
-  <script type="application/javascript" src="/media/app-assets/js/search.min.js"></script>
-  <script type="application/javascript" src="/media/app-assets/js/custom/custom-script.min.js"></script>
-  <script type="application/javascript" src="/media/app-assets/js/scripts/customizer.min.js"></script>
-
+    <!--**********************************
+        Scripts
+    ***********************************-->
+    <!-- Required vendors -->
+    <script src="/media/app-assets/vendors/global/global.min.js"></script>
+	<script src="/media/app-assets/vendors/bootstrap-select/dist/js/bootstrap-select.min.js"></script>
+	<script src="/media/app-assets/js/custom.min.js"></script>
+		
+    <!-- Chart Morris plugin files -->
+    <script src="/media/app-assets/vendors/raphael/raphael.min.js"></script>
+    <script src="/media/app-assets/vendors/morris/morris.min.js"></script>
+		
+	
+	<!-- Chart piety plugin files -->
+    <script src="/media/app-assets/vendors/peity/jquery.peity.min.js"></script>
+	
+		<!-- Demo scripts -->
+    <script src="/media/app-assets/js/dashboard-2.js"></script>
+	
+	<!-- Svganimation scripts -->
+    <script src="/media/app-assets/vendors/svganimation/vivus.min.js"></script>
+    <script src="/media/app-assets/vendors/svganimation/svg.animation.js"></script>
+    
+    <!-- Datatable -->
+    <script src="/media/app-assets/vendors/datatables/js/jquery.dataTables.min.js"></script>
+    <script src="/media/app-assets/js/plugins-init/datatables.init.js"></script>
+		
 </body>
-
 </html>
