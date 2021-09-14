@@ -266,7 +266,7 @@ def add_lessons(request):
                 
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
-    return render(request , 'course/add_lessons.html' , context)
+    return render(request , 'new_dashboard/add_lessons.html' , context)
 @staff_member_required(login_url='/accounts/login/')
 def update_lesson(request , uid):
     try:
