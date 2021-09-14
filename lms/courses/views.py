@@ -90,7 +90,7 @@ def edit_subject_chapter(request , uid):
 @staff_member_required(login_url='/accounts/login/')
 def lessons(request):
     context = {'lessons' : Lessons.objects.all()}
-    return render(request , 'course/lessons.html' , context)
+    return render(request , 'new_dashboard/all_videos.html' , context)
 
 @staff_member_required(login_url='/accounts/login/')
 def add_package(request):
@@ -314,7 +314,7 @@ def update_lesson(request , uid):
         print(e)
     
     context = {'lesson' : lesson_obj , 'subject_chapters' : SubjectChapters.objects.all()}
-    return render(request , 'course/update_lesson.html',context )
+    return render(request , 'new_dashboard/update_lesson.html',context )
 
 
 class CoursesView(APIView):
