@@ -96,7 +96,7 @@
         <form id="editSubjectForm" method="POST">
             {% csrf_token %}
             <div class="form-group">
-
+                
               <select class="custom-select" aria-label="Default select example" name="subject" id="selectSublect">
                 <option selected>Select Subject</option>
                 {% for subject_chapter in subject_chapters %}
