@@ -10,7 +10,7 @@
         background-color: #FF8F16;
     }
 
-    .tag{
+    .deleteBtn{
         cursor: pointer;
     }
 </style>
@@ -159,12 +159,20 @@
                     {% endfor  %}
                 </select>   
 
-                <div class="all-tags">
-                    <div class="tags" id="tags">
-                        <div class="badge badge-dark p-1 m-1 tag" id="1" onclick="clickTag(event)">Tag1</div>
-                        <div class="badge badge-dark p-1 m-1 tag" id="2" onclick="clickTag(event)">Tag2</div>
-                        <div class="badge badge-dark p-1 m-1 tag" id="3" onclick="clickTag(event)">Tag3</div>
-                    </div>  
+                <div class="table table-striped" style="margin: 1%;">
+                    <table class="display">
+                        <!-- <thead>
+                            <tr><td>Package Name</td></tr>
+                            <tr><td>Published Date</td></tr>
+                            <tr><td>Action</td></tr>
+                        </thead> -->
+                        <tbody id="tags">
+                            <!-- use for loop to show already selected pacages... -->
+                            <tr><td class="tag">Tag1</td> <td><input type="date"></td> <td class="delBtn" onclick="deleteTag(event)">❌</td></tr>
+                            <tr><td class="tag">Tag2</td> <td><input type="date"></td> <td class="delBtn" onclick="deleteTag(event)">❌</td></tr>
+                            <tr><td class="tag">Tag3</td> <td><input type="date"></td> <td class="delBtn" onclick="deleteTag(event)">❌</td></tr>
+                        </tbody>
+                    </table>  
                 </div>               
             </div>
 
@@ -205,11 +213,16 @@
     });
 
 
+    function deleteTag(event) {
+        event.currentTarget.parentNode.remove();
+    };
+
     let allTags = document.getElementsByClassName('tag');
     function checkTag(tagName) {
         let flag = false;
         for (let i = 0; i < allTags.length; i++) {
             let singleTag = allTags[i];
+            console.log(singleTag);
             if (singleTag.innerHTML === tagName) {
                 flag = true;
                 break;
@@ -228,7 +241,7 @@
 
 
     let tags = document.getElementById('tags');
-    function includeTag(event) {
+    function includeTag(event, id) {
         let tagName = event.currentTarget.selectedOptions[0].innerText;
         let tagId = event.currentTarget.value;
         if (event.currentTarget.value === "") {
@@ -237,11 +250,20 @@
            if (checkTag(tagName) === true ) {
                console.log('Tag already exists...');
            } else {
-                let tagElement = document.createElement('div');
-                tagElement.className = "badge badge-dark p-1 m-1 tag";
-                tagElement.id = tagId;
-                tagElement.innerHTML = tagName;
-                tagElement.onclick = 'clickTag(event)';
+                let tagElement = document.createElement('tr');
+                // tagElement.className = "badge badge-dark p-1 m-1 tag";
+                let td1 = document.createElement('td');
+                td1.innerHTML = tagName;
+                td1.id = tagId;
+                let td2 = document.createElement('td');
+                td2.innerHTML = '<input type="date" name='+id+'>';
+                let td3 = document.createElement('td');
+                td3.innerHTML = '❌';
+                td3.className = 'delBtn';
+                td3.onclick = 'deleteTag(event)';
+                tagElement.appendChild(td1);
+                tagElement.appendChild(td2);
+                tagElement.appendChild(td3);
                 tags.appendChild(tagElement);
            }
         }
