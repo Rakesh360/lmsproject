@@ -158,12 +158,13 @@ def course_packages(request):
 
 @staff_member_required(login_url='/accounts/login/')
 def add_subjects_courses(request,uid):
+    course_package_obj = CoursePackage.objects.get(uid = uid)
     context = {
+    'course_package_obj' : course_package_obj,
     'subjects' : Subject.objects.all(),
     'course_package_uid' :uid,
     }
     
-    course_package_obj = CoursePackage.objects.get(uid = uid)
 
     if request.GET.get('subject_uid'):
         subject_uid = Subject.objects.get(uid = request.GET.get('subject_uid'))
@@ -190,7 +191,6 @@ def add_subjects_courses(request,uid):
         )
 
 
-
         payload = []
         old_lessons = []
         for lesson in course_package_subject_chapter_obj.pacakge_subject_chapters_lessons.all():
@@ -214,7 +214,7 @@ def add_subjects_courses(request,uid):
 
 
     #print(context)
-    return render(request , 'course/add_subjects_courses.html' , context)
+    return render(request , 'new_dashboard/edit_subjects_courses.html' , context)
 
 @staff_member_required(login_url='/accounts/login/')
 def course_tree(request,course_package_uid):

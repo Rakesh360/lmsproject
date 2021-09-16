@@ -1,0 +1,73 @@
+{%extends 'base.html'%}
+
+{%block start%}
+
+
+<div style="margin-top: 6%; display: flex;">
+    <div style="margin: 0 auto; font-size: xxx-large;">
+        All Students
+    </div>
+    
+    <div style="margin-right: 5px; margin-top: 2px;">
+        <a href="#" class="btn btn-primary">Add New User</a>
+    </div>
+</div>
+
+<hr>
+
+
+<div class="col-12" style="margin-top: 2%;">
+    <div class="card">
+        <div class="card-header">
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table id="example3" class="display" style="min-width: 845px">
+                    <thead class="thead-primary">
+                        <tr>
+                            <th>S. No.</th>
+                            <th>Name</th>                            
+                            <th>Phone No.</th>
+                            <th>WhatsApp No.</th>
+                            <th>E-Mail</th>
+                            <th>Interested Courses</th>
+                            <th>Join Date</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                        {% for student in student_objs %}
+
+                        <tr>
+                            <td>{{forloop.counter}}</td>
+                            <td class="package">{{student.student_name}}</td>
+                            <td class="type">{{student.phone_number}}</td>
+                            <td>{{student.whatsapp_number}}</td>
+                            <td>E-Main</td>
+                            <td>{{student.course}}</td>
+                            <td>Date</td>
+
+                            <td>
+            
+                                <a href="#" id="{{course_package.uid}}" class="btn btn-sm btn-primary editSubject"><i class="la la-pencil"></i></a>
+                                <button data-toggle="tooltip" data-placement="top" title="Block User" class="btn btn-sm btn-danger"><i class="la la-ban"></i></button>
+                            </td>
+                        </tr>
+
+                        {% endfor %}
+
+                                
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    })
+</script>
+
+{%endblock%}

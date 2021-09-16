@@ -5,115 +5,287 @@
     .bg-1 {
         background: #ECECF8;
     }
+
+    .deleteBtn{
+        cursor: pointer;
+    }
 </style>
+
 <div class="section-header" style="margin-top: 5%;">
-    <h1>Update Lesson</h1>
-    <!-- <div class="section-header-breadcrumb">
-        <div class="breadcrumb-item active"><a href="#">Dashboard</a></div>
-        <div class="breadcrumb-item">Add Pakage</div>
+    <h1>Edit Lesson</h1>
+
+</div>
+
+
+<ul class="nav nav-pills nav-fill" style="margin: 2% auto;">
+    <li class="nav-item">
+      <a class="nav-link active" aria-current="page" id="contentBtn" href="#">Edit Content</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" id="publishBtn" href="#">Edit Publish Details</a>
+    </li>
+  </ul>
+
+    <div class="card" id="contentDiv" style="display: block;">  
+        <!-- <div class="card-header">
+        <h4>Horizontal Form</h4>
     </div> -->
-</div>
-
-
-<div class="card">  
-    <!-- <div class="card-header">
-    <h4>Horizontal Form</h4>
-  </div> -->
-    <div class="card-body">
-        {% include "utils/alert.html" %}
-        <form method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
-            <div class="form-row mb-4">
-                <div class="form-group col-md-6">
-                    <label for="inputEmail4">Lesson title</label>
-                    <input type="text" class="form-control" required name="lesson_title" value="{{lesson.lesson_title}}"
-                        id="inputEmail4" placeholder="Enter lesson title">
-                </div>
-                <div class="form-group col-md-6">
-                    <label for="inputPassword4">Subject Chapters</label>
-                    <select required id="chapters" name="chapters" class="form-control basic tagging ">
-                        {% for subject_chapter in  subject_chapters %}
-                        <option {% if lesson.subject_chapters ==  subject_chapter %} selected {% endif %}
-                            value="{{subject_chapter.uid}}">{{subject_chapter.chapter_title}}</option>
-                        {% endfor  %}
-                    </select>
-                </div>
-
-                <div class="form-group col-md-6">
-
-                    <label for="inputEmail4">Is free</label>
-                    <select class="form-control" name="is_free">
-                        <option value="0">No</option>
-                        <option value="1">Yes</option>
-
-                    </select>
-                </div>
-
-                <div class="form-group col-md-6">
-                    
-                    <label for="inputEmail4">Lesson Type</label>
-                    <select class="form-control" id="element" name="lesson_type" onchange="changeLessonType()">
-                        <option  {% if lesson.lesson_type == 'Video' %} selected {% endif %} value="Video">Video</option>
-                        <option  {% if lesson.lesson_type == 'Document' %} selected {% endif %} value="Document">Document</option>
-                        <option  {% if lesson.lesson_type == 'Video + Document' %} selected {% endif %} value="Video + Document">Video + Document</option>
-
-
-                    </select>
-                </div>
-
-             
-
-</div>
-
-                <div class="form-row mb-4" id="video_upload">
+        <div class="card-body">
+            {% include "utils/alert.html" %}
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-row mb-4">
+                    <div class="form-group col-md-6">
+                        <label for="inputEmail4">Lesson title</label>
+                        <input type="text" class="form-control" required name="lesson_title" value="{{lesson.lesson_title}}"
+                            id="inputEmail4" placeholder="Enter lesson title">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="inputPassword4">Subject Chapters</label>
+                        <select required id="chapters" name="chapters" class="form-control basic tagging ">
+                            {% for subject_chapter in  subject_chapters %}
+                            <option {% if lesson.subject_chapters ==  subject_chapter %} selected {% endif %}
+                                value="{{subject_chapter.uid}}">{{subject_chapter.chapter_title}}</option>
+                            {% endfor  %}
+                        </select>
+                    </div>
 
                     <div class="form-group col-md-6">
-                        <label for="inputAddress">Video Platform</label>
-                        <select required class="form-control" name="video_uploaded_on">
-                            <option {% if lesson.video_uploaded_on == 'Vimeo' %} selected {% endif %} value="Vimeo">Vimeo
-                            </option>
-                            <option {% if lesson.video_uploaded_on == 'Youtube' %} selected {% endif %} value="Youtube">
-                                Youtube</option>
-    
+
+                        <label for="inputEmail4">Is free</label>
+                        <select class="form-control" name="is_free">
+                            <option value="0">No</option>
+                            <option value="1">Yes</option>
+
+                        </select>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        
+                        <label for="inputEmail4">Lesson Type</label>
+                        <select class="form-control" id="element" name="lesson_type" onchange="changeLessonType()">
+                            <option  {% if lesson.lesson_type == 'Video' %} selected {% endif %} value="Video">Video</option>
+                            <option  {% if lesson.lesson_type == 'Document' %} selected {% endif %} value="Document">Document</option>
+                            <option  {% if lesson.lesson_type == 'Video + Document' %} selected {% endif %} value="Video + Document">Video + Document</option>
+
+
+                        </select>
+                    </div>
+
+                
+
+    </div>
+
+                    <div class="form-row mb-4" id="video_upload">
+
+                        <div class="form-group col-md-6">
+                            <label for="inputAddress">Video Platform</label>
+                            <select required class="form-control" name="video_uploaded_on">
+                                <option {% if lesson.video_uploaded_on == 'Vimeo' %} selected {% endif %} value="Vimeo">Vimeo
+                                </option>
+                                <option {% if lesson.video_uploaded_on == 'Youtube' %} selected {% endif %} value="Youtube">
+                                    Youtube</option>
+        
+                            </select>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="inputEmail4">Lesson Link</label>
+                            <input value="{{lesson.video.video_link}}" type="text" onchange="loadLesson()" required id="lesson_link" class="form-control"
+                                name="video_link" id="inputEmail4" placeholder="Enter lesson title">
+                            <small>Paste Id only</small>
+                            <iframe width="550" id="iframe" height="215" src="">
+                            </iframe>
+                        </div>
+                    </div>
+
+                    <div class="form-row mb-4" id="document_upload" style="display: none;">
+
+                        <div class="form-group col-md-6">
+                            <label>Upload Document</label>
+                            <input class="form-control" id="document" type="file" name="document">
+                        </div>
+
+                    </div>
+
+
+
+                </div>
+
+
+
+                <button type="submit" class="btn btn-primary mt-3">Update Chapters</button>
+            </form>
+
+    </div>
+
+    <div class="card" id="publishDiv" style="display: none;">
+        <!-- <div class="card-header">
+        <h4>Horizontal Form</h4>    
+      </div> -->
+        <div class="card-body">
+            {% include "utils/alert.html" %}
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-row mb-4">
+                    <div class="form-group col-md-6">
+                        <label for="visibility">Visibility</label>
+                        <select required id="chapters" name="visibility" class="form-control basic tagging ">
+                            <option value="0">Hidden</option>
+                            <option value="1">Visible</option>
                         </select>
                     </div>
                     <div class="form-group col-md-6">
-                        <label for="inputEmail4">Lesson Link</label>
-                        <input value="{{lesson.video.video_link}}" type="text" onchange="loadLesson()" required id="lesson_link" class="form-control"
-                            name="video_link" id="inputEmail4" placeholder="Enter lesson title">
-                        <small>Paste Id only</small>
-                        <iframe width="550" id="iframe" height="215" src="" style="display: none;">
-                        </iframe>
+    
+                        <label for="inputEmail4">Is free</label>
+                        <select class="form-control" name="is_free">
+                            <option value="0">No</option>
+                            <option value="1">Yes</option>
+    
+                        </select>
                     </div>
                 </div>
+    
+    
+                <div class="form-row mb-4" id="video_upload">
+                    <!-- tags selection part -->
+    
+    
+                    
+                    <div>
+                        <label for="tags">Select Packages To Include</label>
+                        <select required id="tagsDropdown" name="tags" class="fstdropdown-select" onchange="includeTag(event)">
+                            <option value="" selected>Choose Package</option>
+                            {% for subject_chapter in  subject_chapters %}
+                            <option value="{{subject_chapter.uid}}">{{subject_chapter.chapter_title}}</option>
+                            {% endfor  %}
+                        </select>  
+                    </div> 
+    
+                    <br>
 
-                <div class="form-row mb-4" id="document_upload" style="display: none;">
-
-                    <div class="form-group col-md-6">
-                        <label>Upload Document</label>
-                        <input class="form-control" id="document" type="file" name="document">
-                    </div>
-
+                    <div class="table table-striped" style="margin: 1%;">
+                        <table class="display">
+                            <!-- <thead>
+                                <tr><td>Package Name</td></tr>
+                                <tr><td>Published Date</td></tr>
+                                <tr><td>Action</td></tr>
+                            </thead> -->
+                            <tbody id="tags">
+                                <!-- use for loop to show already selected pacages... -->
+                                <tr><td class="tag">Tag1</td> <td><input type="datetime-local"></td> <td class="delBtn" onclick="deleteTag(event)">❌</td></tr>
+                                <tr><td class="tag">Tag2</td> <td><input type="datetime-local"></td> <td class="delBtn" onclick="deleteTag(event)">❌</td></tr>
+                                <tr><td class="tag">Tag3</td> <td><input type="datetime-local"></td> <td class="delBtn" onclick="deleteTag(event)">❌</td></tr>
+                            </tbody>
+                        </table>  
+                    </div>               
                 </div>
-
-
-
-            </div>
-
-
-
-            <button type="submit" class="btn btn-primary mt-3">Update Chapters</button>
-        </form>
-
+    
+    
+                
+    
+               <button type="submit" class="btn btn-primary mt-3">Update Published Details</button>
+            </form>
+    
+        </div>
     </div>
-</div>
-</div>
-</div>
-</div>
-</div>
-
 
 <script>
+    let iframe = document.getElementById('iframe');
+    let lesson_link = document.getElementById('lesson_link');
+    lesson_link.onchange = loadLesson;
+    if (lesson_link.value !== '') {
+        loadLesson();
+    }
+
+    let contentBtn = document.getElementById('contentBtn');
+    let publishBtn = document.getElementById('publishBtn');
+    let contentDiv = document.getElementById('contentDiv');
+    let publishDiv = document.getElementById('publishDiv');
+    let tagSection = document.getElementById('tagSection');
+    let tagsDropdown = document.getElementById('tagsDropdown');
+
+    contentBtn.addEventListener('click', function () {
+        contentBtn.classList.add('active');
+        publishBtn.classList.remove('active');
+        contentDiv.style.display = 'block';
+        publishDiv.style.display = 'none';
+    });
+
+    publishBtn.addEventListener('click', function () {
+        contentBtn.classList.remove('active');
+        publishBtn.classList.add('active');
+        contentDiv.style.display = 'none';
+        publishDiv.style.display = 'block';
+    });
+
+
+    function deleteTag(event) {
+        event.currentTarget.parentNode.remove();
+    };
+
+    
+    function checkTag(tagName) {
+        let allTags = document.getElementsByClassName('tag');
+        let flag = false;
+        for (let i = 0; i < allTags.length; i++) {
+            let singleTag = allTags[i];
+            if (singleTag.innerHTML === tagName) {
+                flag = true;
+                break;
+            }
+            
+        }
+
+        return flag;
+    }
+
+    function clickTag(event) {
+        let tagName = event.target.innerHTML;
+        let tagId = event.target.id;
+        console.log(tagName, tagId);
+    }
+
+
+    let tags = document.getElementById('tags');
+    function includeTag(event, id) {
+        let tagName = event.currentTarget.selectedOptions[0].innerText;
+        let tagId = event.currentTarget.value;
+        if (event.currentTarget.value === "") {
+            console.log('nothing selected');
+        } else {
+           if (checkTag(tagName) === true ) {
+               console.log('Tag already exists...');
+           } else {
+                let tagElement = document.createElement('tr');
+                // tagElement.className = "badge badge-dark p-1 m-1 tag";
+                let td1 = document.createElement('td');
+                td1.className = "tag";
+                td1.innerHTML = tagName;
+                td1.id = tagId;
+                let td2 = document.createElement('td');
+                td2.innerHTML = '<input type="datetime-local" name='+id+'>';
+                let td3 = document.createElement('td');
+                td3.innerHTML = '❌';
+                td3.className = 'delBtn';
+                td3.addEventListener("click", deleteTag);
+                tagElement.appendChild(td1);
+                tagElement.appendChild(td2);
+                tagElement.appendChild(td3);
+                tags.appendChild(tagElement);
+           }
+        }
+    }
+
+    function changeVideoType() {
+        let videoType = document.getElementById('videoType');
+        if (videoType.value == 'Live') {
+            document.getElementById('timePicker').style.display = 'block';
+        } else {
+            document.getElementById('timePicker').style.display = 'none';
+        }
+    };
+
+
     function changeLessonType() {
         var element = document.getElementById('element')
         console.log(element.value)
@@ -123,12 +295,12 @@
             document.getElementById('document').required = false
             document.getElementById('lesson_link').required = true
 
-        } else if (element.value == 'Document') {
+        } else if(element.value == 'Document') {
             document.getElementById('document_upload').style.display = ''
             document.getElementById('video_upload').style.display = 'none'
             document.getElementById('document').required = true
             document.getElementById('lesson_link').required = false
-        } else if (element.value == 'Video + Document') {
+        }else if(element.value == 'Video + Document'){
             document.getElementById('document_upload').style.display = ''
             document.getElementById('video_upload').style.display = ''
             document.getElementById('document').required = true
@@ -143,7 +315,7 @@
             var url = `https://www.youtube.com/embed/${element}`
             document.getElementById('iframe').style.display = ''
             document.getElementById('iframe').src = url
-        } else {
+        }else{
             document.getElementById('iframe').style.display = 'none'
             document.getElementById('iframe').src = ''
         }

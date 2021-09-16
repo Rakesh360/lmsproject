@@ -1,0 +1,727 @@
+{%extends 'base.html'%}
+{% block start %}
+
+<style>
+    @import url('https://fonts.googleapis.com/css?family=Lato&display=swap');
+
+    :root {
+    --border-color: #e3e5e4;
+    --background-color: #c3c7ca;
+    --text-color: #34444f;
+    }
+
+    .draggable-list {
+        border: 1px solid var(--border-color);
+        color: var(--text-color);
+        padding: 0;
+        list-style-type: none;
+        margin: 1%;
+    }
+
+    .draggable-list li {
+    background-color: #fff;
+    display: flex;
+    flex: 1;
+    }
+
+    .draggable-list li:not(:last-of-type) {
+    border-bottom: 1px solid var(--border-color);
+    }
+
+    .draggable-list .number {
+    background-color: var(--background-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    height: 60px;
+    width: 60px;
+    }
+
+    .draggable-list li.over .draggable {
+    background-color: #eaeaea;
+    }
+
+    .draggable-list .person-name {
+    margin: 0 20px 0 0;
+    }
+
+    .draggable-list li.right .person-name {
+    color: #3ae374;
+    }
+
+    .draggable-list li.wrong .person-name {
+    color: #ff3838;
+    }
+
+    .draggable {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px;
+    flex: 1;
+    }
+
+    .draggable2 {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px;
+    flex: 1;
+    }
+
+    .draggable3 {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px;
+    flex: 1;
+    }
+
+    .check-btn {
+    background-color: var(--background-color);
+    border: none;
+    color: var(--text-color);
+    font-size: 16px;
+    padding: 10px 20px;
+    cursor: pointer;
+    margin: 1%;
+    }
+
+    .check-btn:active {
+    transform: scale(0.98);
+    }
+
+    .check-btn:focus {
+    outline: none;
+    }
+</style>
+
+<script
+    src="https://kit.fontawesome.com/3da1a747b2.js"
+    crossorigin="anonymous"
+></script>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/js/materialize.min.js"></script>
+
+{% include "utils/alert.html" %}
+
+<ul class="nav nav-pills nav-fill" style="margin-top: 8%;">
+    <li class="nav-item">
+        <a class="nav-link active" aria-current="page" id="contentBtn" href="#">Package Details</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" id="treeBtn" href="#">View Tree</a>
+    </li>
+    </ul>
+
+    <hr>
+
+<div class="collapse show" style="margin: 2%;" id="contentDiv">
+  <div class="card-body">
+
+    {% include "utils/alert.html" %}
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-row mb-4">
+            <div class="form-group col-md-6">
+                <label for="lesson_title">Package Name</label>
+                <input type="text" value="{{course_package_obj.package_title}}" class="form-control" required name="lesson_title" id="inputEmail4"
+                    placeholder="Enter lesson title">
+            </div>
+            <div class="form-group col-md-6">
+                <label for="package_type"> Package Type</label>
+                <select required id="subjects" name="package_type" class="form-control basic tagging ">
+                    <option value="video">Video</option>
+                    <option value="text">Text</option>
+                </select>
+            </div>
+            <div class="form-group col-md-6">
+
+                <label for="actual_price">Actual Price</label>
+                <input type="number" value="course_package_obj.actual_price name="actual_price" class="form-control" placeholder="Enter Actual Price in Rupees"> 
+                
+            </div>
+
+            <div class="form-group col-md-6">
+                <label for="selling_price">Selling Price</label>
+                <input type="number" name="selling_price" value="course_package_obj.selling_price" class="form-control" placeholder="Enter Selling Price in Rupees"> 
+            </div>
+
+
+        </div>
+        <div class="form-row mb-4" id="video_upload">
+
+            <div class="form-group col-md-6">
+                <div id="expiryTypePicker">
+                    <label for="expiryType"> Enter Start Time Of Live </label>
+                    <select name="expiryType" class="form-control" onchange="changeExpiryType(event)">
+                        <option selected>Choose Expiry Type</option>
+                        <option value="fixed-date">Fixed Date</option>
+                        <option value="subscription">Subscription</option>
+                    </select>
+                </div>
+
+
+                <div id="expiryDateContainer" style="display: none; margin-top: 3%;">
+                    <label for="expiryDate">Choose Expiry Date</label>
+                    <input type="date" name="expiryDate" class="form-control" id="expiryDate">
+                </div>
+
+                <div id="subscriptionContainer" style="display: none; margin-top: 3%;">
+                    <label for="subscriptionDays">Subscription Period</label>
+                    <input type="number" class="form-control" placeholder="Enter Subscription Period (in Days)">
+                </div>
+
+            </div>
+
+           
+
+           
+        </div>
+        
+
+        <div class="form-row mb-4">
+            <div class="form-group col-md-12">
+                <label for="description">Description </label>
+                <textarea id="summernote" name="description" class="form-control" cols="30" rows="5"></textarea>
+            </div>
+        </div>
+
+        <div class="form-row mb-4" id="document_upload">
+
+            <div class="form-group mb-6">
+                <div class="custom-file">
+                    <input type="file" class="custom-file-input" name="image_for_web" id="inputGroupFile01">
+                    <label class="custom-file-label" for="image_for_web">Choose file For Web</label>
+                </div>
+            </div>
+
+            <div class="form-group mb-6">
+                <div class="custom-file">
+                    <input type="file" class="custom-file-input" name="image_for_app" id="inputGroupFile01">
+                    <label class="custom-file-label" for="image_for_app">Choose file For App</label>
+                </div>
+            </div>
+
+        </div>
+
+        <button type="submit" class="btn btn-primary mt-3">Create Package</button>
+    </form>
+
+</div>
+
+</div>
+
+<div class="collapse show" id="treeDiv" style="display: none;">
+    <div class="container-fluid">
+        <div class="row">
+
+            <div class="col-md-4">
+                <h3>Subject</h3>
+                <ul class="draggable-list" id="draggable-list" style="height: 610px; overflow-y: scroll;"></ul>
+                <button class="check-btn" id="saveSubject">
+                Save Subjects
+                <i class="fas fa-save"></i>
+                </button>
+            </div>
+        
+        
+            <div class="col-md-4">
+                <h3>Chapter</h3>
+                <ul class="draggable-list" id="draggable-list2" style="height: 610px; overflow-y: scroll;"></ul>
+                <button class="check-btn" id="saveChapter">
+                    Save Chapters
+                    <i class="fas fa-save"></i>
+                    </button>
+            </div>
+        
+        
+            <div class="col-md-4">
+                <h3>Videos</h3>
+                <ul class="draggable-list" id="draggable-list3" style="height: 610px; overflow-y: scroll;"></ul>
+                <button class="check-btn" id="saveVideos">
+                    Save Videos
+                    <i class="fas fa-save"></i>
+                    </button>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+
+
+<script>
+    // script for nav btn start
+    let flag = true;
+    let contentBtn = document.getElementById('contentBtn');
+    let treeBtn = document.getElementById('treeBtn');
+    let contentDiv = document.getElementById('contentDiv');
+    let treeDiv = document.getElementById('treeDiv');
+    let tagSection = document.getElementById('tagSection');
+    let tagsDropdown = document.getElementById('tagsDropdown');
+
+    contentBtn.addEventListener('click', function () {
+        console.log('ssss');
+        contentBtn.classList.add('active');
+        treeBtn.classList.remove('active');
+        contentDiv.style.display = 'block';
+        treeDiv.style.display = 'none';
+    });
+
+    treeBtn.addEventListener('click', function () {
+        console.log('dddddd');
+        contentBtn.classList.remove('active');
+        treeBtn.classList.add('active');
+        contentDiv.style.display = 'none';
+        treeDiv.style.display = 'block';
+        if (flag === true) {
+            draggableTree();
+            flag = false;    
+        }
+        
+    });
+
+    // script for nav btn ends
+
+
+    // script for draggable tree starts
+    function draggableTree() {  
+        let saveSubject = document.getElementById('saveSubject');
+        let saveChapter = document.getElementById('saveChapter');
+        let saveVideos = document.getElementById('saveVideos');
+
+        const draggable_list = document.getElementById('draggable-list');
+        const draggable_list2 = document.getElementById('draggable-list2');
+        const draggable_list3 = document.getElementById('draggable-list3');
+        let selectedSubject;
+        let selectedChapter;
+        let selectedVideo;
+        let subjectsChanged = false;
+        let chaptersChanged = false;
+        let videosChanged = false;
+
+        const richestPeople = [
+        'Jeff Bezos',
+        'Bill Gates',
+        'Warren Buffett',
+        'Bernard Arnault',
+        'Carlos Slim Helu',
+        'Amancio Ortega',
+        'Larry Ellison',
+        'Mark Zuckerberg',
+        'Michael Bloomberg',
+        'Larry Page'
+        ];
+
+        const chapters = [
+            ['a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c','a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c'],
+            ['d', 'e', 'f'],
+            ['g', 'h', 'i'],
+            ['j', 'k', 'l'],
+            ['m', 'n', 'o'],
+            ['p', 'q', 'r'],
+            ['s', 't', 'u'],
+            ['v', 'w', 'x'],
+            ['y', 'z', 'aa'],
+            ['y', 'z', 'aa']
+        ]
+
+        const videos = [
+            ['a', 'b', 'c', 'a', 'b', 'c'],
+            ['d', 'e', 'f'],
+            ['g', 'h', 'i'],
+            ['j', 'k', 'l'],
+            ['m', 'n', 'o'],
+            ['p', 'q', 'r'],
+            ['s', 't', 'u'],
+            ['v', 'w', 'x'],
+            ['y', 'z', 'aa'],
+            ['y', 'z', 'aa']
+        ]
+        // Store listitems
+        const listItems = [];
+        const listItems2 = [];
+        const listItems3 = [];
+
+        let dragStartIndex;
+        let dragStartIndex2;
+        let dragStartIndex3;
+
+        let array = [...richestPeople];
+        createList(array);
+
+        // Insert list items into DOM
+
+        function createList(array) {
+            array.forEach((person, index) => {
+                const listItem = document.createElement('li');
+                listItem.className = 'subject-li';
+
+                listItem.onclick = (event) => {
+                    document.getElementById('draggable-list2').innerHTML = '';
+                    document.getElementById('draggable-list3').innerHTML = '';
+                    if (selectedSubject) {
+                        selectedSubject.style.border = 'none';
+                        selectedSubject.style.borderBottom = '1px solid var(--border-color)';
+                    }
+
+                    if (videosChanged === true) {
+                        window.alert('You have unsaved changes to your videos. Are you sure you want to leave this page?');
+                    }
+
+                    if (subjectsChanged === false) {
+                        selectedSubject = event.currentTarget;
+                        createList2(chapters[index]);
+                    } else {
+                        window.alert('Please Save the subjects before proceeding further!!!')
+                    }
+                    
+                }
+
+                listItem.setAttribute('data-index', index);
+
+                listItem.innerHTML = `
+                    <span class="number">${index + 1}</span>
+                    <div class="draggable" draggable="true">
+                    <p class="person-name">${person}</p>
+                    <i class="fas fa-arrow-right"></i>
+                    </div>
+                `;
+
+                listItems.push(listItem);
+
+                draggable_list.appendChild(listItem);
+                });
+
+            addEventListeners();
+        }
+
+        function createList2(array) {
+            array.forEach((person, index) => {
+                const listItem = document.createElement('li');
+
+                listItem.onclick = (event) => {
+                    document.getElementById('draggable-list3').innerHTML = '';
+                    if (selectedChapter) {
+                        selectedChapter.style.border = 'none';
+                        selectedChapter.style.borderBottom = '1px solid var(--border-color)';
+                    }
+                    
+                    if (chaptersChanged === false) {
+                        selectedChapter = event.currentTarget;
+                        createList3(videos[index]);
+                    } else {
+                        window.alert('Please Save the chapters before proceeding further!!!')
+                    }
+                }
+
+                listItem.setAttribute('data-index', index);
+
+                listItem.innerHTML = `
+                    <span class="number">${index + 1}</span>
+                    <div class="draggable2" draggable="true">
+                    <p class="person-name">${person}</p>
+                    <i class="fas fa-arrow-right"></i>
+                    </div>
+                `;
+
+                listItems2.push(listItem);
+
+                draggable_list2.appendChild(listItem);
+                });
+
+            addEventListeners2();
+        }
+
+        function createList3(array) {
+            array.map(a => ({ value: a, sort: Math.random() }))
+                .sort((a, b) => a.sort - b.sort)
+                .map(a => a.value)
+                .forEach((person, index) => {
+                const listItem = document.createElement('li');
+
+                listItem.onclick = (event) => {
+                    console.log('wwooeee');
+                }
+
+                listItem.setAttribute('data-index', index);
+
+                listItem.innerHTML = `
+                    <span class="number">${index + 1}</span>
+                    <div class="draggable3" draggable="true">
+                    <p class="person-name">${person}</p>
+                    <i class="fas fa-grip-lines"></i>
+                    </div>
+                `;
+
+                listItems3.push(listItem);
+
+                draggable_list3.appendChild(listItem);
+                });
+
+            addEventListeners3();
+        }
+
+
+        function dragStart() {
+            // console.log('Event: ', 'dragstart', );
+            dragStartIndex = +this.closest('li').getAttribute('data-index');
+        }
+
+        function dragStart2() {
+            // console.log('Event: ', 'dragstart', );
+            dragStartIndex2 = +this.closest('li').getAttribute('data-index');
+        }
+
+        function dragStart3() {
+            // console.log('Event: ', 'dragstart', );
+            dragStartIndex3 = +this.closest('li').getAttribute('data-index');
+        }
+
+
+        function dragEnter() {
+            // console.log('Event: ', 'dragenter', this.closest('li'));
+            this.classList.add('over');
+        }
+
+        function dragLeave() {
+            // console.log('Event: ', 'dragleave');
+            this.classList.remove('over');
+        }
+
+        function dragOver(e) {
+            // console.log('Event: ', 'dragover');
+            e.preventDefault();
+        }
+
+        function dragDrop() {
+            console.log('Event: ', 'drop');
+            const dragEndIndex = +this.getAttribute('data-index');
+            swapItems(dragStartIndex, dragEndIndex);
+            saveSubject.style.backgroundColor = '#9fff83';
+            subjectsChanged = true;
+
+            this.classList.remove('over');
+        }
+
+        function dragDrop2() {
+            // console.log('Event: ', 'drop');
+            const dragEndIndex2 = +this.getAttribute('data-index');
+            swapItems2(dragStartIndex2, dragEndIndex2);
+            // draggable_list.style.border = '1px solid red';
+            selectedSubject.style.border = '1px solid red';
+            saveChapter.style.backgroundColor = '#9fff83';
+            chaptersChanged = true;
+            draggable_list.style.pointerEvents = 'none';
+            this.classList.remove('over');
+        }
+
+        function dragDrop3() {
+            // console.log('Event: ', 'drop');
+            const dragEndIndex3 = +this.getAttribute('data-index');
+            swapItems3(dragStartIndex3, dragEndIndex3);
+            selectedChapter.style.border = '1px solid red';
+            selectedSubject.style.border = '1px solid red';
+            saveVideos.style.backgroundColor = '#9fff83';
+            videosChanged = true;
+            draggable_list.style.pointerEvents = 'none';
+            draggable_list2.style.pointerEvents = 'none';
+            this.classList.remove('over');
+        }
+
+        // Swap list items that are drag and drop
+        function swapItems(fromIndex, toIndex) {
+            const itemOne = listItems[fromIndex].querySelector('.draggable');
+            const itemTwo = listItems[toIndex].querySelector('.draggable');
+
+            console.log(itemOne, itemTwo);
+
+            listItems[fromIndex].appendChild(itemTwo);
+            listItems[toIndex].appendChild(itemOne);
+        }
+
+        function swapItems2(fromIndex, toIndex) {
+            const itemOne = listItems2[fromIndex].querySelector('.draggable2');
+            const itemTwo = listItems2[toIndex].querySelector('.draggable2');
+
+            listItems2[fromIndex].appendChild(itemTwo);
+            listItems2[toIndex].appendChild(itemOne);
+        }
+
+
+        function swapItems3(fromIndex, toIndex) {
+            const itemOne = listItems3[fromIndex].querySelector('.draggable3');
+            const itemTwo = listItems3[toIndex].querySelector('.draggable3');
+
+            listItems3[fromIndex].appendChild(itemTwo);
+            listItems3[toIndex].appendChild(itemOne);
+        }
+
+        function addEventListeners() {
+            const draggables = document.querySelectorAll('.draggable');
+            const dragListItems = document.querySelectorAll('#draggable-list li');
+
+            draggables.forEach(draggable => {
+                draggable.addEventListener('dragstart', dragStart);
+            });
+
+            dragListItems.forEach(item => {
+                item.addEventListener('dragover', dragOver);
+                item.addEventListener('drop', dragDrop);
+                item.addEventListener('dragenter', dragEnter);
+                item.addEventListener('dragleave', dragLeave);
+            });
+        }
+
+        function addEventListeners2() {
+            const draggables = document.querySelectorAll('.draggable2');
+            const dragListItems2 = document.querySelectorAll('#draggable-list2 li');
+
+            draggables.forEach(draggable => {
+                draggable.addEventListener('dragstart', dragStart2);
+            });
+
+            dragListItems2.forEach(item => {
+                item.addEventListener('dragover', dragOver);
+                item.addEventListener('drop', dragDrop2);
+                item.addEventListener('dragenter', dragEnter);
+                item.addEventListener('dragleave', dragLeave);
+            });
+        }
+
+        function addEventListeners3() {
+            const draggables = document.querySelectorAll('.draggable3');
+            const dragListItems = document.querySelectorAll('#draggable-list3 li');
+
+            draggables.forEach(draggable => {
+                draggable.addEventListener('dragstart', dragStart3);
+            });
+
+            dragListItems.forEach(item => {
+                item.addEventListener('dragover', dragOver);
+                item.addEventListener('drop', dragDrop3);
+                item.addEventListener('dragenter', dragEnter);
+                item.addEventListener('dragleave', dragLeave);
+            });
+        }
+
+    }
+    // scripts for draggable tree ends
+
+
+let one = document.querySelector('#container1')
+let two = document.querySelector('#container2')
+var course_package_uid = '{{course_package_uid}}'
+var CSRF_TOKEN = '{{csrf_token}}'
+
+
+function addLessonToChapter(subject_uid, chapter_uid, lesson_uid) {
+    var payload = {
+        'subject_uid': subject_uid,
+        'chapter_uid': chapter_uid,
+        'lesson_uid': lesson_uid,
+        'course_package_uid': course_package_uid
+    }
+
+    const headers = {
+        'X-CSRFToken': CSRF_TOKEN
+    }
+
+    axios.post('/api/courses/save-course-package/', payload, {
+            headers: headers
+        })
+        .then(function (response) {
+            console.log(response);
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+
+
+
+
+}
+
+function getUid() {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get('uid');
+}
+
+function getSubjectUid(){
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get('subject_uid');
+}
+
+function getChapters(v = 1) {
+    
+    var subject_uid =  document.getElementById('subject').value
+    window.location.href = `?subject_uid=${subject_uid}`
+    
+    return
+    if (v == 0) {
+        clearTable()
+    }
+    var subject = document.getElementById('subject').value
+    axios.get(`/api/courses/get-chapters/?uid=${subject}`)
+        .then(response => {
+            console.log(response)
+
+            var chapters = response.data.data
+            $("#chapter").empty();
+            var opt = document.createElement('option');
+
+            opt.innerHTML = 'Choose';
+            document.getElementById('chapter').appendChild(opt);
+            console.log(chapters.length)
+            for (var i = 0; i < chapters.length; i++) {
+                var opt = document.createElement('option');
+                console.warn(chapters[i].uid)
+                opt.value = chapters[i].uid;
+                opt.innerHTML = chapters[i].chapter_title;
+
+                if (chapters[i].uid == getUid()) {
+                    opt.setAttribute('selected', true);
+                }
+
+                document.getElementById('chapter').appendChild(opt);
+                console.log('append')
+            }
+        })
+}
+
+function getLessons() {
+    var chapter = document.getElementById('chapter').value
+    window.location.href = `?uid=${chapter}&subject_uid=${getSubjectUid()}`
+    return;
+}
+
+function clearTable() {
+    document.getElementById('table').innerHTML = ''
+}
+
+
+
+
+
+function getSelectedValues() {
+    var selectedVal = $("#multiselect").val();
+    for (var i = 0; i < selectedVal.length; i++) {
+        function innerFunc(i) {
+            setTimeout(function () {
+                location.href = selectedVal[i];
+            }, i * 2000);
+        }
+        innerFunc(i);
+    }
+}
+</script>
+
+
+{% endblock %}

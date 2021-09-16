@@ -37,7 +37,7 @@ def students(request):
     except EmptyPage:
         student_objs = paginator.page(paginator.num_pages)
 
-    return render(request , 'students/students.html', {'subjects' : subjects, 'student_objs': student_objs })
+    return render(request , 'new_dashboard/user/allStudents.html', {'subjects' : subjects, 'student_objs': student_objs })
 
 
 def send_notification(request):
