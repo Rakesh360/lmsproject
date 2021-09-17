@@ -411,8 +411,6 @@ class ChaptersView(APIView):
             chapters = SubjectChapters.objects.filter(subject=subject_uid)
             serializer = SubjectChaptersSerializer(chapters , many=True)
 
-
-
             return Response({'status' : 200 , 'data' :serializer.data})
 
         except Exception as e:
@@ -420,52 +418,19 @@ class ChaptersView(APIView):
         return Response({'status' : 400 , 'message' : 'Something went wrong'})
 
 
+
+
+
 class LessonsView(APIView):
     def get(self , request):
         try:
             chapter_obj = SubjectChapters.objects.get(uid = request.GET.get('uid'))
-            course_package_obj = CoursePackage.objects.get(uid = request.GET.get('course_package_uid'))
             
-            course_package_chapter_obj = CoursePackageChapters.objects.filter(
-                course_package_subject__course_package = course_package_obj,
-                subject_chapter = chapter_obj
-            ).first()
-
-    
-
-
-
             lessons = chapter_obj.subject_lessons.all()
-            
-            new_serializer = LessonSerializer(lessons , many = True)
-            
-            payload = []
-            if course_package_chapter_obj:
-                for data in new_serializer.data:
-                    if CoursePackageLessons.objects.filter(
-                        course_package_chapter = course_package_chapter_obj,
-                        lesson = Lessons.objects.get(uid = data['uid'])
-                        ).exists():
-                        payload.append({
-                        'uid' : data['uid'],
-                        'is_added' : True,
-                        'lesson_title' : data['lesson_title']
-                            })
-                       
-                    else:
-                        payload.append({
-                            'uid' : data['uid'],
-                            'is_added' : False,
-                            'lesson_title' : data['lesson_title']
-                        })
+            serializer = LessonSerializer(lessons , many = True)
 
-            
-            print(payload)
-
-
-
-           
-            return Response({'status' : 200 , 'data' :payload})
+        
+            return Response({'status' : 200 , 'data' :serializer.data})
 
         except Exception as e:
             print(e)        
