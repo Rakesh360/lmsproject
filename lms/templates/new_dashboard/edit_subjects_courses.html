@@ -307,18 +307,21 @@
         let chaptersChanged = false;
         let videosChanged = false;
 
-        const richestPeople = [
-        'Jeff Bezos',
-        'Bill Gates',
-        'Warren Buffett',
-        'Bernard Arnault',
-        'Carlos Slim Helu',
-        'Amancio Ortega',
-        'Larry Ellison',
-        'Mark Zuckerberg',
-        'Michael Bloomberg',
-        'Larry Page'
-        ];
+        let uid = '{{course_package_obj.uid}}'
+        console.log(uid);
+        
+        fetch('/api/courses/course-packages/'+ uid, {
+        method: 'GET',
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('1',data.data);
+            allSubjects = data.data;
+            let array = [...allSubjects];
+            createList(array);
+        });
+
+        let allSubjects; // all subjects array
 
         const chapters = [
             ['a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c','a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c'],
@@ -354,8 +357,7 @@
         let dragStartIndex2;
         let dragStartIndex3;
 
-        let array = [...richestPeople];
-        createList(array);
+        
 
         // Insert list items into DOM
 

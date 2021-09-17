@@ -241,7 +241,7 @@ def course_tree(request,course_package_uid):
 
 @staff_member_required(login_url='/accounts/login/')
 def add_lessons(request):
-    context = {'subject_chapters' : SubjectChapters.objects.all()}
+    context = {'subject_chapters' : SubjectChapters.objects.all(), 'course_packages' : CoursePackage.objects.all()}
     if request.method == 'POST':
         chapters = request.POST.get('chapters')
         lesson_title = request.POST.get('lesson_title')

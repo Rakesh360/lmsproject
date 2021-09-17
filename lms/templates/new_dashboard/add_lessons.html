@@ -34,21 +34,23 @@
                     <input type="text" class="form-control" required name="lesson_title" id="inputEmail4"
                         placeholder="Enter lesson title">
                 </div>
+
+
+
                 <div class="form-group col-md-6">
                     <label for="visibility">Choose Subject</label>
-                    <select required id="subjects" name="subjects" class="form-control basic tagging ">
-                        <option value="physics">physics</option>
-                        <option value="chemistry">chemistry</option>
-                        <option value="maths">maths</option>
+                    <select required id="chooseSubject" name="subjects" class="form-control basic tagging " onchange="updateChapters()">
+                        <option value="" selected disabled>Choose Subject</option>
                     </select>
+
+
+
                 </div>
                 <div class="form-group col-md-6">
 
                     <label for="inputPassword4">Choose Chapter</label>
-                    <select required id="chapters" name="chapter" class="form-control basic tagging ">
-                        {% for subject_chapter in  subject_chapters %}
-                        <option value="{{subject_chapter.uid}}">{{subject_chapter.chapter_title}}</option>
-                        {% endfor  %}
+                    <select required id="chooseChapters" name="chapter" class="form-control basic tagging ">
+                        <option value="" selected disabled>Choose Chapter</option>
                     </select>
                 </div>
 
@@ -79,6 +81,9 @@
                     <div id="timePicker" style="display: none;">
                         <label for="startTime" class="mt-4"> Enter Start Time Of Live </label>
                         <input class="form-control" type="datetime-local" name="startTime">
+                        <br>
+                        <label for="live_image">Upload Live Image Here</label>
+                        <input type="file" name="live_image" class="form-control">
                     </div>
 
                 </div>
@@ -125,15 +130,7 @@
                         <option value="1">Visible</option>
                     </select>
                 </div>
-                <div class="form-group col-md-6">
-
-                    <label for="inputEmail4">Is free</label>
-                    <select class="form-control" name="is_free">
-                        <option value="0">No</option>
-                        <option value="1">Yes</option>
-
-                    </select>
-                </div>
+              
             </div>
 
 
@@ -146,7 +143,10 @@
                     <label for="tags">Select Packages To Include</label>
                     <select required id="tagsDropdown" name="tags" class="fstdropdown-select" onchange="includeTag(event)">
                         <option value="" selected disabled>Choose Package</option>
-                        
+                        {% for course_package in  course_packages %}
+                            <option value="{{course_package.uid}}">{{course_package.package_title}}</option>
+                        {% endfor  %}
+
                     </select>  
                 </div> 
 
@@ -177,16 +177,56 @@
 <script>
     let tagSection = document.getElementById('tagSection');
     let tagsDropdown = document.getElementById('tagsDropdown');
+    let chooseSubject = document.getElementById('chooseSubject');
+    let chooseChapters = document.getElementById('chooseChapters');
 
     // make a fetch call on 'http://13.232.227.45/api/courses/course-packages/' to get all packages using no-cors
-    fetch('http://13.232.227.45/api/courses/course-packages/', {
+    fetch('/api/courses/subjects/', {
         method: 'GET',
         })
         .then(response => response.json())
         .then(data => {
-            console.log(data);
+            data.data.forEach((e, i) => {
+                let option = document.createElement('option');
+                option.text = e.subject_title;
+                option.value = e.uid;
+                chooseSubject.appendChild(option);
+                
+            });
     });
 
+    fetch('/api/courses/course-packages/', {
+        method: 'GET',
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('1',data.data);
+            data.data.forEach((e, i) => {
+                let option = document.createElement('option');
+                option.text = e.package_title;
+                option.value = e.uid;
+                tagsDropdown.appendChild(option);
+                
+            });
+    });
+    
+
+    // update options of chooseChapters
+    function updateChapters() {
+        let selectedSubject = chooseSubject.value;
+        fetch('/api/courses/get-chapters/?uid=' + selectedSubject, {
+            method: 'GET',
+        })
+        .then(response => response.json())
+        .then(data => {
+            data.data.forEach((e, i) => {
+                let option = document.createElement('option');
+                option.text = e.chapter_title;
+                option.value = e.uid;
+                chooseChapters.appendChild(option);
+            });
+        })
+    }
 
 
     function deleteTag(event) {
