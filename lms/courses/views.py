@@ -1,5 +1,4 @@
-from re import L, sub
-import re
+
 from django.db.models import manager
 from django.db.models.query import RawQuerySet
 from django.shortcuts import redirect, render
@@ -22,6 +21,10 @@ def add_course(request):
 def subjects(request):
     if request.method == 'POST':
         subject = request.POST.get('subject')
+        if Subject.objects.filter(subject_title = subject).exists():
+            messages.error(request, 'Subject already exists')
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
         Subject.objects.create(
             subject_title = subject
         )
@@ -402,6 +405,28 @@ class CoursesView(APIView):
 
         return Response({'status' : 200 , 'data' :payload})
 
+
+class CoursePackageAPI(APIView):
+    def get(self , request):
+        course_package_objs = CoursePackage.objects.filter(is_active = True)
+        serializer = CoursePackageSerializer(course_package_objs , many= True)
+        return Response({
+            'status' : True ,
+            'message' : 'course packages',
+            'data' : serializer.data
+        })
+
+
+
+class SubjectsView(APIView):
+    def get(self , request):
+        subjects = Subject.objects.all()
+        serializer = SubjectSerializer(subjects , many   = True)
+        return Response({
+            'status' : True,
+            'message' : 'all subjects',
+            'data' : serializer.data
+        })
 
 class ChaptersView(APIView):
     

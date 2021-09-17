@@ -96,6 +96,11 @@ class SubjectSerializer(serializers.ModelSerializer):
         exclude = ['created_at' , 'updated_at']
 
 
+class CoursePackageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model= CoursePackage
+        fields = ['uid' , 'package_title' ]
+
 class CoursePackageLessonsSerializer(serializers.ModelSerializer):
     class Meta:
         model = CoursePackageLessons
@@ -109,6 +114,8 @@ class CoursePackageChaptersSerializer(serializers.ModelSerializer):
         model = CoursePackageChapters
         exclude = ['created_at' , 'updated_at']
        
+
+
 class CoursePackageSubjectsSerializer(serializers.ModelSerializer):
     subject = SubjectSerializer()
     chapters = CoursePackageChaptersSerializer(source ='pacakge_subject_chapters' , many =True)

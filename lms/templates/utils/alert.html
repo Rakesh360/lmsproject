@@ -2,7 +2,13 @@
 
     {% for message in messages %}
     <script>
+        {% if message.tags  == 'success' %}
         tata.success('Success', '{{message}}', {})
+        {% elif message.tags == 'error' %}
+        tata.error('Error', '{{message}}', {})
+        {% elif message.tags == 'info' %}
+        tata.info('Info', '{{message}}', {})
+        {% endif %}
      </script>
     {% endfor %}
 
