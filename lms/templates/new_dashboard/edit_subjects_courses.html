@@ -310,7 +310,7 @@
         let uid = '{{course_package_obj.uid}}'
         console.log(uid);
         
-        fetch('/api/courses/course-packages/'+ uid, {
+        fetch('/api/courses/course-package-info/?uid='+ uid, {
         method: 'GET',
         })
         .then(response => response.json())

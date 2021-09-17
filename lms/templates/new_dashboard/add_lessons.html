@@ -72,9 +72,10 @@
                 <div class="form-group col-md-6">
                     <label for="inputAddress">Video Platform</label>
                     <select required class="form-control" name="video_uploaded_on" id="videoType" onchange="changeVideoType()">
+                        <option value="" selected disabled>Choose Video Platform</option>
                         <option value="Live">Live</option>
                         <option value="Vimeo">Vimeo</option>
-                        <option value="Youtube" selected>Youtube</option>
+                        <option value="Youtube">Youtube</option>
 
                     </select>
 
@@ -90,10 +91,11 @@
 
 
                 <div class="form-group col-md-6">
-                    <label for="inputEmail4">Lesson Link</label>
+                    <label for="inputEmail4" id="videoLink">Link</label>
                     <input type="text" onchange="loadLesson()" required id="lesson_link" class="form-control"
                         name="video_link" id="inputEmail4" placeholder="Enter lesson title">
-                    <small>Paste Id only | preview appears here</small>
+                    <small>Paste Id only | preview appears here</small> 
+                    <br>
                     <iframe width="560" id="iframe" height="315" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="display: none;">
                     </iframe>
                 </div>
@@ -290,8 +292,10 @@
         let videoType = document.getElementById('videoType');
         if (videoType.value == 'Live') {
             document.getElementById('timePicker').style.display = 'block';
+            document.getElementById('videoLink').innerText = 'Enter Live Link';
         } else {
             document.getElementById('timePicker').style.display = 'none';
+            document.getElementById('videoLink').innerText = 'Enter Video Link';
         }
     };
 

@@ -39,7 +39,7 @@
                             <th>Lesson Title</th>
                             <th>Lesson Chapter</th>
                             <th>Lesson Type</th>
-                            <th>Video Link</th>
+                            <th>Video Platform</th>
                             <th>Created At</th>
                             <th>Action</th>
                         </tr>
@@ -53,14 +53,7 @@
                             <td class="chapter">{{lesson.lesson_title}}</td>
                             <td class="subject">{{lesson.subject_chapter.chapter_title}}</td>
                             <td>{{lesson.lesson_type}}</td>
-                            <td>
-                                {% if lesson.lesson_type  %}
-                                <a href="{{lesson.video.video_link}}" class="btn btn-info btn-sm" target="_blank">View</a>
-                                {% else %}
-                                <a href="{{lesson.document.document_file}}" class="btn btn-info btn-sm" target="_blank">View</a>
-                               
-                                {% endif %}
-                            </td>
+                            <td>{{lesson.video_platform}}</td>
 
                             <td>{{lesson.created_at}}</td>
 
@@ -74,7 +67,13 @@
                                       <a class="dropdown-item" href="{% url 'update_lesson' lesson.uid%}">Edit</a>
                                       <a class="dropdown-item" href="#">Delete</a>
                                       <a class="dropdown-item" href="#">Start Live</a>
-                                      <a class="dropdown-item" href="#">Endss Live</a>
+                                      <a class="dropdown-item" href="#">Ends Live</a>
+                                      {% if lesson.lesson_type  %}
+                                        <a href="{{lesson.video.video_link}}" class="dropdown-item" target="_blank">View</a>
+                                        {% else %}
+                                        <a href="{{lesson.document.document_file}}" class="dropdown-item" target="_blank">View</a>
+                                    
+                                    {% endif %}
                                     </div>
                                   </div>
             
