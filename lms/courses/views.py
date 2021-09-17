@@ -432,6 +432,75 @@ class CoursePackageAPI(APIView):
         })
 
 
+class CoursePackageSubjectsAPI(APIView):
+    def get(self , request):
+        try:
+            uid = request.GET.get('uid')
+            if not uid:
+                return Response({
+                    'status' : False,
+                    'message' : 'uid is required',
+                    'data' : {}
+                })
+
+            try:
+                course_obj = CoursePackage.objects.get(uid = uid)
+            except Exception as e:
+                return Response({
+                    'status' : False,
+                    'message' : 'invalid uid',
+                    'data' : {}
+                })
+
+            course_package_dict = {}
+            payload = []
+            subjects = [] 
+            for subject in course_obj.pacakge_subjects.all():
+                subject_dict = {}
+                subject_dict['subject_title'] = subject.subject.subject_title
+                subject_dict['subject_uid'] = subject.subject.uid
+                chapters = []
+                for chapter in subject.pacakge_subject_chapters.all():
+                    chapter_dict = {}
+                    chapter_dict['chapter_title'] = chapter.subject_chapter.chapter_title
+                    chapter_dict['chapter_uid'] = chapter.subject_chapter.uid
+                    lessons = []
+                    for lesson in chapter.pacakge_subject_chapters_lessons.all():
+                        lesson_dict = {}
+                        lesson_dict['lesson_title'] = lesson.lesson.lesson_title
+                        lesson_dict['uid'] = lesson.lesson.uid
+                       
+
+                        lessons.append(lesson_dict)
+                    chapter_dict['lessons'] = lessons
+                        
+                    chapters.append(chapter_dict)
+            
+                subject_dict['chapters'] = chapters
+                subjects.append(subject_dict)
+                subject_dict = {}
+
+            course_package_dict['subjects'] = subjects
+            payload.append(course_package_dict)
+
+            return Response({
+                'status' : True,
+                'message' : 'fetch course package info',
+                'data' : course_package_dict
+            })
+
+
+
+        
+        except Exception as e:
+            return Response({
+                    'status' : False,
+                    'message' : 'invalid uid',
+                    'data' : {}
+                })
+
+
+
 
 class SubjectsView(APIView):
     def get(self , request):
@@ -483,8 +552,38 @@ class LessonsView(APIView):
         try:
             data = request.data
             serializer = LessonSerializer(data = request.data)
+
             if serializer.is_valid():
                 serializer.save()
+                lesson_obj = Lessons.objects.get(uid = serializer.data['uid'])
+                chapter_obj = lesson_obj.chapter
+                subject_obj = lesson_obj.chapter.subject
+                packages = data.get('packages')
+                print(packages)
+                if packages:
+                    i = 0
+                    for package in packages:
+                        try:
+                            course_package_obj = CoursePackage.objects.get(uid = package)
+                        except Exception as e:
+                            return Response({
+                                'status' : False,
+                                'message' : f'lesson created but not added to packages invalid uid at index {i}'
+                            })
+                        i = i + 1
+                        course_package_subject_obj, _ = CoursePackageSubjects.objects.get_or_create(
+                            course_package = course_package_obj,
+                            subject = subject_obj
+                        )
+                        course_package_chapter_obj, _ = CoursePackageChapters.objects.get_or_create(
+                            course_package_subject = course_package_subject_obj,
+                            subject_chapter = chapter_obj
+                        )
+                        CoursePackageLessons.objects.get_or_create(
+                            course_package_chapter = course_package_chapter_obj,
+                            lesson = lesson_obj
+                        )
+
                 return Response({
                     'status' : True,
                     'data' : serializer.data,

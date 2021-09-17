@@ -115,7 +115,6 @@ class CoursePackageChapters(BaseModel):
 class CoursePackageLessons(BaseModel):
     course_package_chapter = models.ForeignKey(CoursePackageChapters , related_name='pacakge_subject_chapters_lessons',on_delete=models.CASCADE)
     lesson = models.ForeignKey(Lessons , on_delete=models.CASCADE)
-    sequence = models.IntegerField(default=1)
     s_no = models.IntegerField(default=1)
 
     def __str__(self) -> str:
