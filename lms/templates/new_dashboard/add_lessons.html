@@ -20,16 +20,6 @@
 </div>
 
 
-<ul class="nav nav-pills nav-fill" style="margin: 2% auto;">
-    <li class="nav-item">
-      <a class="nav-link active" aria-current="page" id="contentBtn" href="#">Content</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" id="publishBtn" href="#">Publish</a>
-    </li>
-  </ul>
-
-
 <div class="card" id="contentDiv">
     <!-- <div class="card-header">
     <h4>Horizontal Form</h4>    
@@ -55,7 +45,7 @@
                 <div class="form-group col-md-6">
 
                     <label for="inputPassword4">Choose Chapter</label>
-                    <select required id="chapters" name="chapters" class="form-control basic tagging ">
+                    <select required id="chapters" name="chapter" class="form-control basic tagging ">
                         {% for subject_chapter in  subject_chapters %}
                         <option value="{{subject_chapter.uid}}">{{subject_chapter.chapter_title}}</option>
                         {% endfor  %}
@@ -124,21 +114,9 @@
 
             </div>
 
-            <button type="submit" class="btn btn-primary mt-3">Add Chapters</button>
-        </form>
-
-    </div>
-</div>
 
 
-<div class="card" id="publishDiv" style="display: none;">
-    <!-- <div class="card-header">
-    <h4>Horizontal Form</h4>    
-  </div> -->
-    <div class="card-body">
-        {% include "utils/alert.html" %}
-        <form method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
+            <br><hr><br>
             <div class="form-row mb-4">
                 <div class="form-group col-md-6">
                     <label for="visibility">Visibility</label>
@@ -164,13 +142,13 @@
 
 
                 
-                <label for="tags">Select Packages To Include</label>
-                <select required id="tagsDropdown" name="tags" class="fstdropdown-select" onchange="includeTag(event)">
-                    <option value="" selected>Choose Package</option>
-                    {% for subject_chapter in  subject_chapters %}
-                    <option value="{{subject_chapter.uid}}">{{subject_chapter.chapter_title}}</option>
-                    {% endfor  %}
-                </select>   
+                <div>
+                    <label for="tags">Select Packages To Include</label>
+                    <select required id="tagsDropdown" name="tags" class="fstdropdown-select" onchange="includeTag(event)">
+                        <option value="" selected disabled>Choose Package</option>
+                        
+                    </select>  
+                </div> 
 
                 <div class="table table-striped" style="margin: 1%;">
                     <table class="display">
@@ -181,44 +159,34 @@
                         </thead> -->
                         <tbody id="tags">
                             <!-- use for loop to show already selected pacages... -->
-                            <tr><td class="tag">Tag1</td> <td><input type="datetime-local"></td> <td class="delBtn" onclick="deleteTag(event)">❌</td></tr>
+                            <!-- <tr><td class="tag">Tag1</td> <td><input type="datetime-local"></td> <td class="delBtn" onclick="deleteTag(event)">❌</td></tr>
                             <tr><td class="tag">Tag2</td> <td><input type="datetime-local"></td> <td class="delBtn" onclick="deleteTag(event)">❌</td></tr>
-                            <tr><td class="tag">Tag3</td> <td><input type="datetime-local"></td> <td class="delBtn" onclick="deleteTag(event)">❌</td></tr>
+                            <tr><td class="tag">Tag3</td> <td><input type="datetime-local"></td> <td class="delBtn" onclick="deleteTag(event)">❌</td></tr> -->
                         </tbody>
                     </table>  
                 </div>               
             </div>
 
-
-            
-
-           <button type="submit" class="btn btn-primary mt-3">Add Chapters</button>
+            <button type="submit" class="btn btn-primary mt-3">Add Chapters</button>
         </form>
 
     </div>
 </div>
 
+
 <script>
-    let contentBtn = document.getElementById('contentBtn');
-    let publishBtn = document.getElementById('publishBtn');
-    let contentDiv = document.getElementById('contentDiv');
-    let publishDiv = document.getElementById('publishDiv');
     let tagSection = document.getElementById('tagSection');
     let tagsDropdown = document.getElementById('tagsDropdown');
 
-    contentBtn.addEventListener('click', function () {
-        contentBtn.classList.add('active');
-        publishBtn.classList.remove('active');
-        contentDiv.style.display = 'block';
-        publishDiv.style.display = 'none';
+    // make a fetch call on 'http://13.232.227.45/api/courses/course-packages/' to get all packages using no-cors
+    fetch('http://13.232.227.45/api/courses/course-packages/', {
+        method: 'GET',
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
     });
 
-    publishBtn.addEventListener('click', function () {
-        contentBtn.classList.remove('active');
-        publishBtn.classList.add('active');
-        contentDiv.style.display = 'none';
-        publishDiv.style.display = 'block';
-    });
 
 
     function deleteTag(event) {
