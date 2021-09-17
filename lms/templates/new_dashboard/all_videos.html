@@ -65,9 +65,21 @@
                             <td>{{lesson.created_at}}</td>
 
                             <td>
+                                <div class="dropdown show">
+                                    <a class="btn btn-primary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="la la-pencil"></i>
+                                    </a>
+                                  
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                      <a class="dropdown-item" href="#">Edit</a>
+                                      <a class="dropdown-item" href="#">Delete</a>
+                                      <a class="dropdown-item" href="#">Start Live</a>
+                                      <a class="dropdown-item" href="#">Endss Live</a>
+                                    </div>
+                                  </div>
             
-                                <a href="{% url 'update_lesson' lesson.uid%}" id="{{lesson.uid}}" class="btn btn-sm btn-primary editSubject"><i class="la la-pencil"></i></a>
-                                <button {% if subject.check_in_package %} disabled  {% else %}  onclick="deleteSubject('{{subject.uid}}')" {% endif %}  class="btn btn-sm btn-danger"><i class="la la-trash-o"></i></button>
+                                <!-- <a href="{% url 'update_lesson' lesson.uid%}" id="{{lesson.uid}}" class="btn btn-sm btn-primary editSubject"><i class="la la-pencil"></i></a>
+                                <button {% if subject.check_in_package %} disabled  {% else %}  onclick="deleteSubject('{{subject.uid}}')" {% endif %}  class="btn btn-sm btn-danger"><i class="la la-trash-o"></i></button> -->
                             </td>
                         </tr>
 

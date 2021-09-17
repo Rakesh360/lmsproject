@@ -8,7 +8,42 @@
     </div>
     
     <div style="margin-right: 5px;">
-        <button class="btn btn-primary">Add New</button>
+        <button class="btn btn-primary" data-toggle="modal" data-target="#addTopicModal">Add New</button>
+
+        <div class="modal fade" id="addTopicModal" tabindex="-1" role="dialog" aria-labelledby="addTopicModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addTopicModalLabel">Add Subject Chapter</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="editSubjectForm" method="POST" action="">
+                        {% csrf_token %}
+                        <div class="form-group">
+            
+                        <select class="custom-select" aria-label="Default select example" name="subject" id="selectSublect"> 
+                            <option selected>Choose Subject</option>
+                            {% for subject in subjects %}
+                            <option value="{{subject.uid}}"> {{subject.subject_title}}</option>
+                            {% endfor %}
+                            
+                        </select>
+                        <br>
+                        <br>
+            
+                        <label for="chapter_title">Subject Chapter Name</label>
+                        <input type="text" name="chapter_title" class="form-control" id="subjectName" placeholder="">
+                        </div>
+                        
+                        <button id="submitAddTopic" class="btn btn-primary">Add Topic</button>
+                    </form>
+                </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -43,42 +78,41 @@
                             <td>
             
                                 <button data-toggle="modal" data-target="#exampleModal" id="{{subject_chapter.uid}}" class="btn btn-sm btn-primary editSubject {{forloop.counter}}"><i class="la la-pencil"></i></button>
-                           
                                 
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-        <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Update Subject Chapter</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-        <div class="modal-body">
-            <form id="editSubjectForm" method="POST" action="{% url 'edit_subject_chapter' subject_chapter.uid %}">
-                {% csrf_token %}
-                <div class="form-group">
-    
-                  <select class="custom-select" aria-label="Default select example" name="subject" id="selectSublect">
-                   
-                    {% for subject in subjects %}
-                    <option value="{{subject.uid}}" {% if subject_chapter.subject.uid == subject.uid %} selected {% endif %}>{{subject.subject_title}}</option>
-                    {% endfor %}
-                    
-                  </select>
-                  <br>
-                  <br>
-    
-                  <label for="chapter_title">Subject Chapter Name</label>
-                  <input type="text" name="chapter_title" value="subject_chapter.chapter_title" class="form-control" id="subjectName" placeholder="">
-                </div>
-                
-                <button id="submit" class="btn btn-primary">Submit</button>
-              </form>
-        </div>
-        </div>
-    </div>
-    </div>
+                                <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel">Update Subject Chapter</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form id="editSubjectForm" method="POST" action="{% url 'edit_subject_chapter' subject_chapter.uid %}">
+                                                {% csrf_token %}
+                                                <div class="form-group">
+                                    
+                                                <select class="custom-select" aria-label="Default select example" name="subject" id="selectSublect"> 
+                                                
+                                                    {% for subject in subjects %}
+                                                    <option value="{{subject.uid}}" {% if subject_chapter.subject.uid == "{{subject.uid}}" %} selected {% endif %} > {{subject.subject_title}}</option>
+                                                    {% endfor %}
+                                                    
+                                                </select>
+                                                <br>
+                                                <br>
+                                    
+                                                <label for="chapter_title">Subject Chapter Name</label>
+                                                <input type="text" name="chapter_title" value="{{subject_chapter.chapter_title}}" class="form-control" id="subjectName" placeholder="">
+                                                </div>
+                                                
+                                                <button id="submit" class="btn btn-primary">Submit</button>
+                                            </form>
+                                        </div>
+                                        </div>
+                                    </div>
+                                </div>
     
     
                            
