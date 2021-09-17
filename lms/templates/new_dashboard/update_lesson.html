@@ -17,15 +17,6 @@
 </div>
 
 
-<ul class="nav nav-pills nav-fill" style="margin: 2% auto;">
-    <li class="nav-item">
-      <a class="nav-link active" aria-current="page" id="contentBtn" href="#">Edit Content</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" id="publishBtn" href="#">Edit Publish Details</a>
-    </li>
-  </ul>
-
     <div class="card" id="contentDiv" style="display: block;">  
         <!-- <div class="card-header">
         <h4>Horizontal Form</h4>
@@ -110,15 +101,11 @@
 
 
                 </div>
-
-
-
-                <button type="submit" class="btn btn-primary mt-3">Update Chapters</button>
             </form>
 
     </div>
 
-    <div class="card" id="publishDiv" style="display: none;">
+    <div class="card" id="publishDiv" style="display: block;">
         <!-- <div class="card-header">
         <h4>Horizontal Form</h4>    
       </div> -->
@@ -172,9 +159,9 @@
                             </thead> -->
                             <tbody id="tags">
                                 <!-- use for loop to show already selected pacages... -->
-                                <tr><td class="tag">Tag1</td> <td><input type="datetime-local"></td> <td class="delBtn" onclick="deleteTag(event)">❌</td></tr>
+                                <!-- <tr><td class="tag">Tag1</td> <td><input type="datetime-local"></td> <td class="delBtn" onclick="deleteTag(event)">❌</td></tr>
                                 <tr><td class="tag">Tag2</td> <td><input type="datetime-local"></td> <td class="delBtn" onclick="deleteTag(event)">❌</td></tr>
-                                <tr><td class="tag">Tag3</td> <td><input type="datetime-local"></td> <td class="delBtn" onclick="deleteTag(event)">❌</td></tr>
+                                <tr><td class="tag">Tag3</td> <td><input type="datetime-local"></td> <td class="delBtn" onclick="deleteTag(event)">❌</td></tr> -->
                             </tbody>
                         </table>  
                     </div>               
@@ -197,26 +184,10 @@
         loadLesson();
     }
 
-    let contentBtn = document.getElementById('contentBtn');
-    let publishBtn = document.getElementById('publishBtn');
-    let contentDiv = document.getElementById('contentDiv');
-    let publishDiv = document.getElementById('publishDiv');
     let tagSection = document.getElementById('tagSection');
     let tagsDropdown = document.getElementById('tagsDropdown');
 
-    contentBtn.addEventListener('click', function () {
-        contentBtn.classList.add('active');
-        publishBtn.classList.remove('active');
-        contentDiv.style.display = 'block';
-        publishDiv.style.display = 'none';
-    });
-
-    publishBtn.addEventListener('click', function () {
-        contentBtn.classList.remove('active');
-        publishBtn.classList.add('active');
-        contentDiv.style.display = 'none';
-        publishDiv.style.display = 'block';
-    });
+    
 
 
     function deleteTag(event) {
