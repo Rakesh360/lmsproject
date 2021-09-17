@@ -56,6 +56,16 @@ def subject_chapters(request):
         subject = request.POST.get('subject')
         chapter_title = request.POST.get('chapter_title')
         subject_obj = Subject.objects.get(uid = subject)
+
+        if SubjectChapters.objects.filter(
+            subject =subject_obj,
+            chapter_title=chapter_title
+        ).exists():
+            messages.error(request, 'Subject Chapter already exists')
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+    
+
+
         SubjectChapters.objects.create(
             subject =subject_obj,
             chapter_title=chapter_title
@@ -73,6 +83,11 @@ def edit_subject_chapter(request , uid):
             subject = request.POST.get('subject')
             chapter_title = request.POST.get('chapter_title')
             subject_obj = Subject.objects.get(uid = subject)
+            if SubjectChapters.objects.filter(subject =subject_obj,chapter_title=chapter_title).exists():
+                messages.error(request, 'Subject Chapter already exists')
+                return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+    
+
             subject_chapter_obj.subject = subject_obj
             subject_chapter_obj.chapter_title = chapter_title
             subject_chapter_obj.save()

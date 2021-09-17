@@ -3,8 +3,8 @@
 {%block start%}
 
 <div style="margin-top: 6%; display: flex;">
-    <div style="margin: 0 auto; font-size: xxx-large;">
-        All Topics
+    <div style="margin: 0 auto;">
+        All Chapters
     </div>
     
     <div style="margin-right: 5px;">
@@ -77,9 +77,9 @@
                             <td>{{subject_chapter.created_at}}</td>
                             <td>
             
-                                <button data-toggle="modal" data-target="#exampleModal" id="{{subject_chapter.uid}}" class="btn btn-sm btn-primary editSubject {{forloop.counter}}"><i class="la la-pencil"></i></button>
+                                <button data-toggle="modal" data-target="#exampleModal-{{subject_chapter.uid}}" id="{{subject_chapter.uid}}" class="btn btn-sm btn-primary editSubject {{forloop.counter}}"><i class="la la-pencil"></i></button>
                                 
-                                <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal fade" id="exampleModal-{{subject_chapter.uid}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                     <div class="modal-dialog" role="document">
                                         <div class="modal-content">
                                         <div class="modal-header">
@@ -96,7 +96,7 @@
                                                 <select class="custom-select" aria-label="Default select example" name="subject" id="selectSublect"> 
                                                 
                                                     {% for subject in subjects %}
-                                                    <option value="{{subject.uid}}" {% if subject_chapter.subject.uid == "{{subject.uid}}" %} selected {% endif %} > {{subject.subject_title}}</option>
+                                                    <option value="{{subject.uid}}" {{subject_chapter.subject.uid}} {% if subject_chapter.subject.uid == subject.uid %} selected {% endif %} > {{subject.subject_title}}</option>
                                                     {% endfor %}
                                                     
                                                 </select>
@@ -116,7 +116,7 @@
     
     
                            
-                                <button {% if subject.check_in_package %} disabled  {% else %}  onclick="deleteSubject('{{subject.uid}}')" {% endif %}  class="btn btn-sm btn-danger"><i class="la la-trash-o"></i></button>
+                                <button {% if subject.check_in_package %} disabled  {% else %}  onclick="deleteChapter('{{subject_chapter.uid}}')" {% endif %}  class="btn btn-sm btn-danger"><i class="la la-trash-o"></i></button>
                             </td>
                         </tr>
 
@@ -133,6 +133,24 @@
   
 <!-- Modal -->
 <script>
+     function deleteChapter(uid){
+        swal({
+                title: "Are you sure?",
+                text: "You want to delete?",
+                icon: "success",
+                buttons: true,
+                dangerMode: true,
+            })
+            .then((willDelete) => {
+                if (willDelete) {
+            window.location.href = `{% url 'delete_chapter' %}?uid=${uid}`
+
+                } else {
+                    swal("No deleted");
+                }
+            });
+      }
+
     let allSubjects = document.getElementsByClassName('editSubject');
     for (let i = 0; i < allSubjects.length; i++) {
         let sub = allSubjects[i];
@@ -163,6 +181,7 @@
         })        
     }
 </script>
+
 
 
 
