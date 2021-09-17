@@ -49,7 +49,8 @@ INSTALLED_APPS = [
     'orders',
     'base_rest',
     'dashboard',
-    'EasyHireApp'
+    'EasyHireApp',
+     'corsheaders',
     
 ]
 
@@ -61,6 +62,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    #'django.middleware.common.CommonMiddleware',
 ]
 
 ROOT_URLCONF = 'lms.urls'

@@ -141,3 +141,6 @@ class CourseSerializer(serializers.ModelSerializer):
     #     return json.loads(obj.course_package_info)
 
 
+
+class GoLiveSerializer(serializers.ModelSerializer):
+    
