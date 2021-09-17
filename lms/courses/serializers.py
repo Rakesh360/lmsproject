@@ -143,4 +143,4 @@ class CourseSerializer(serializers.ModelSerializer):
 
 
 class GoLiveSerializer(serializers.ModelSerializer):
-    
+    pass    
