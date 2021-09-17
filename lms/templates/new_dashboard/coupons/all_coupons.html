@@ -1,0 +1,150 @@
+{%extends 'base.html'%}
+
+{%block start%}
+
+<!-- <div style="margin-top: 6%; display: flex;">
+    <div style="margin: 0 auto;">
+        <button class="btn btn-primary" style="font-size: xx-large;">Content</button>
+    </div>
+    
+    <div style="margin: 0 auto;">
+        <button class="btn btn-primary" style="font-size: xx-large;">Publish</button>
+    </div>
+</div> -->
+
+
+<div style="margin-top: 6%; display: flex;">
+    <div style="margin: 0 auto; font-size: xxx-large;">
+        All Coupons
+    </div>
+    
+    <div style="margin-right: 5px; margin-top: 2px;">
+        <button class="btn btn-primary" data-toggle="modal" data-target="#addTopicModal">Add Coupon</button>
+
+        <div class="modal fade" id="addTopicModal" tabindex="-1" role="dialog" aria-labelledby="addTopicModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="editSubjectForm" method="POST" action="">
+                        {% csrf_token %}
+                        <div class="form-group">
+
+                            <label for="coupon_name">Coupon Name</label>
+                            <input type="text" name="coupon_name" class="form-control" placeholder="">
+                            <br>
+
+
+                            <label for="coupon_type"></label>    
+                            <select class="custom-select" aria-label="Default select example" name="coupon_type" id="selectSublect"> 
+                                <option selected disabled>Choose Coupon Type</option>
+                                <option value="a">Type-a</option>
+                                <option value="b">Type-b</option>
+                                <option value="c">Type-c</option>
+                            </select>
+                            <br>
+
+                            <label for="coupon_number">Coupon Number</label>
+                            <input type="number" name="coupon_number" class="form-control" placeholder="">
+                            <br>
+                            
+                            <label for="coupon_code">Coupon Code</label>
+                            <input type="text" name="coupon_code" class="form-control" placeholder="">
+                            <br>
+
+                            <label for="coupon_validity">Coupon Validity</label>
+                            <input type="datetime-local" name="coupon_validity" class="form-control" placeholder="">
+                            <br>
+
+            
+                        <button id="submitAddTopic" class="btn btn-primary">Add Coupon</button>
+                    </form>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<hr>
+
+<div class="col-12" style="margin-top: 2%;">
+    <div class="card">
+        <div class="card-header">
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table id="example3" class="display" style="min-width: 845px" >
+                    <thead >
+                        <tr>
+                            <th>S. No.</th>
+                            <th>Name</th>
+                            <th>Coupon Type</th>
+                            <th>Total no.</th>
+                            <th>Code</th>
+                            <th>Validity</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                        {% for lesson in lessons %}
+
+                        <tr>
+                            <td>{{forloop.counter}}</td>
+                            <td class="chapter">{{lesson.lesson_title}}</td>
+                            <td class="subject">{{lesson.subject_chapter.chapter_title}}</td>
+                            <td>{{lesson.lesson_type}}</td>
+                            <td>
+                                {% if lesson.lesson_type  %}
+                                <a href="{{lesson.video.video_link}}" class="btn btn-info btn-sm" target="_blank">View</a>
+                                {% else %}
+                                <a href="{{lesson.document.document_file}}" class="btn btn-info btn-sm" target="_blank">View</a>
+                               
+                                {% endif %}
+                            </td>
+
+                            <td>{{lesson.created_at}}</td>
+
+                            <td>
+                                <div class="dropdown show">
+                                    <a class="btn btn-primary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="la la-pencil"></i>
+                                    </a>
+                                  
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                      <a class="dropdown-item" href="#">Edit</a>
+                                      <a class="dropdown-item" href="#">Delete</a>
+                                      <a class="dropdown-item" href="#">Start Live</a>
+                                      <a class="dropdown-item" href="#">Ends Live</a>
+                                    </div>
+                                  </div>
+            
+                                <!-- <a href="{% url 'update_lesson' lesson.uid%}" id="{{lesson.uid}}" class="btn btn-sm btn-primary editSubject"><i class="la la-pencil"></i></a>
+                                <button {% if subject.check_in_package %} disabled  {% else %}  onclick="deleteSubject('{{subject.uid}}')" {% endif %}  class="btn btn-sm btn-danger"><i class="la la-trash-o"></i></button> -->
+                            </td>
+                        </tr>
+
+                        {% endfor %}
+
+                                
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+  
+
+<script>
+
+</script>
+
+
+
+{%endblock%}
