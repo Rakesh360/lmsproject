@@ -3,7 +3,7 @@ import re
 from django.db.models import manager
 from django.db.models.query import RawQuerySet
 from django.shortcuts import redirect, render
-from rest_framework import serializers
+from rest_framework import exceptions, serializers
 from rest_framework.views import APIView
 from .models import *
 from .serializers import *
@@ -424,17 +424,48 @@ class ChaptersView(APIView):
 class LessonsView(APIView):
     def get(self , request):
         try:
+            if request.GET.get('uid') is None:
+                return Response({
+                    'status' : False,
+                    'message' : 'uid is required'
+                })
             chapter_obj = SubjectChapters.objects.get(uid = request.GET.get('uid'))
             
             lessons = chapter_obj.subject_lessons.all()
-            serializer = LessonSerializer(lessons , many = True)
-
-        
+            serializer = LessonSerializer(lessons , many = True)        
             return Response({'status' : 200 , 'data' :serializer.data})
 
         except Exception as e:
             print(e)        
-        return Response({'status' : 400 , 'message' : 'Something went wrong'})
+        return Response({'status' : 400 , 'message' : 'Something went wrong invalid uid'})
+
+    def post(self , request):
+        try:
+            data = request.data
+            serializer = LessonSerializer(data = request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response({
+                    'status' : True,
+                    'data' : serializer.data,
+                    'message' : 'lesson created'
+                })
+            
+            return Response({
+                'status' : False,
+                'data' : serializer.errors,
+                'message' : 'lesson not created'
+            })
+        
+        except Exception as e:
+            print(e)
+        
+        return Response({
+                'status' : False,
+                'data' : {},
+                'message' : 'something went wrong'
+            })
+         
 
 from rest_framework.permissions import IsAuthenticated
 import sys, os

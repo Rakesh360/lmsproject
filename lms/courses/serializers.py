@@ -1,5 +1,6 @@
 
-from rest_framework import serializers
+from django.utils.translation import LANGUAGE_SESSION_KEY
+from rest_framework import exceptions, serializers
 from base_rest.utils import *
 from .models import *
 
@@ -16,10 +17,69 @@ class CourseChaptersSerializers(serializers.ModelSerializer):
         exclude = ['created_at', 'updated_at']
 
 
+class VideoSerializer(serializers.ModelSerializer):
+    video_link = serializers.CharField(required = True)
+    class Meta:
+        model = Video
+        exclude = ['created_at' , 'updated_at']
+
+class DocumentSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = Document
+        exclude = ['created_at' , 'updated_at']
+ 
+
+
 class LessonSerializer(serializers.ModelSerializer):
+    document = DocumentSerializer(required = False)
+    video = VideoSerializer(required = False)
+    lesson_type = serializers.CharField(required = True)
+    video_platform = serializers.CharField(required = True)
+    is_free = serializers.BooleanField(required= True)
+
     class Meta:
         model = Lessons
         exclude = ['created_at' , 'updated_at']
+
+    def create(self , validated_data):
+        try:
+            lesson_title = validated_data['lesson_title']
+            chapter = validated_data['chapter']
+            lesson_type = validated_data['lesson_type']
+            video_platform = validated_data['video_platform']
+            is_free = validated_data['is_free']
+            video_obj = None
+            document_obj = None
+            if 'document' in validated_data:
+                document = validated_data['document']
+                if not document is None: 
+                    document_obj = Document.objects.create(
+                        document = validated_data['document']['document_file']
+                    )
+            if 'video'  in validated_data:
+                video = validated_data['video']
+                video_obj = Video.objects.create(
+                    #video_uploaded_on = validated_data['video']['video_uploaded_on'],
+                    video_link = validated_data['video']['video_link']
+                )
+
+            
+            obj = Lessons.objects.create(
+                lesson_title = lesson_title,
+                chapter = chapter,
+                lesson_type = lesson_type,
+                video_platform = video_platform,
+                is_free = is_free,
+                video = video_obj,
+                document = document_obj
+            )
+
+
+            return obj
+
+        except Exception as e :
+            print(e)
 
 
 class SubjectChaptersSerializer(serializers.ModelSerializer):

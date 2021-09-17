@@ -20,7 +20,7 @@ class SubjectChaperAdmin(admin.ModelAdmin):
 
 @admin.register(Lessons)
 class LessonAdmin(admin.ModelAdmin):
-    list_display = ['lesson_title' ,'subject_chapters']
+    list_display = ['lesson_title' ,'chapter']
 
 
 @admin.register(CoursePackageLessons)
