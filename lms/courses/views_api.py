@@ -270,7 +270,7 @@ class LessonsView(APIView):
                     i = 0
                     for package in packages:
                         try:
-                            course_package_obj = CoursePackage.objects.get(uid = package)
+                            course_package_obj = CoursePackage.objects.get(uid = package['uid'])
                         except Exception as e:
                             return Response({
                                 'status' : False,
@@ -285,9 +285,12 @@ class LessonsView(APIView):
                             course_package_subject = course_package_subject_obj,
                             subject_chapter = chapter_obj
                         )
+                        created_at = package['created_at']
+
                         CoursePackageLessons.objects.get_or_create(
                             course_package_chapter = course_package_chapter_obj,
-                            lesson = lesson_obj
+                            lesson = lesson_obj,
+                            added_at = created_at
                         )
 
                 return Response({

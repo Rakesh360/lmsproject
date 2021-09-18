@@ -25,7 +25,7 @@ class LessonAdmin(admin.ModelAdmin):
 
 @admin.register(CoursePackageLessons)
 class LessonAdmin(admin.ModelAdmin):
-    list_display = ['lesson' ,'get_package_name','get_subject_chapter']
+    list_display = ['lesson' ,'get_package_name','get_subject_chapter','added_at', 'updated_at' , 'created_at']
 
     def get_subject_chapter(self , obj):
         return obj.course_package_chapter.subject_chapter
