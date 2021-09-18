@@ -240,50 +240,9 @@ def course_tree(request,course_package_uid):
 @staff_member_required(login_url='/accounts/login/')
 def add_lessons(request):
     context = {'subject_chapters' : SubjectChapters.objects.all(), 'course_packages' : CoursePackage.objects.all()}
-    if request.method == 'POST':
-        chapters = request.POST.get('chapters')
-        lesson_title = request.POST.get('lesson_title')
-        video_uploaded_on = request.POST.get('video_uploaded_on')
-        video_link = request.POST.get('video_link')
-        is_free = request.POST.get('is_free')
-        lesson_type = request.POST.get('lesson_type')
-        
-        lesson_obj ,_ = Lessons.objects.get_or_create(
-            lesson_title =lesson_title,
-            is_free = is_free,
-            subject_chapters = SubjectChapters.objects.get(uid = chapters)
-        )
-
-
-        if lesson_type == 'Video':
-            obj = Video.objects.create(
-               video_uploaded_on =video_uploaded_on,
-               video_link    =video_link,
-            )
-            lesson_obj.video = obj
-        elif lesson_type == 'Document':
-            obj = Document.objects.create(
-                document_file =  request.FILES['document']
-            )
-            lesson_obj.document = obj
-        else:
-            obj = Video.objects.create(
-               video_uploaded_on =video_uploaded_on,
-               video_link    =video_link,
-            )
-            lesson_obj.video = obj
-            obj = Document.objects.create(
-                document_file =  request.FILES['document']
-            )
-            lesson_obj.document = obj
-
-        lesson_obj.save()
-
-        messages.success(request, 'Lesson create Successfully')
-                
-        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
     return render(request , 'new_dashboard/add_lessons.html' , context)
+
 @staff_member_required(login_url='/accounts/login/')
 def update_lesson(request , uid):
     try:
@@ -401,31 +360,6 @@ def create_live(request):
         'subjects' : Subject.objects.all(),
         'chapters' : SubjectChapters.objects.all(),
     }
-
-    if request.method == 'POST':
-        image = request.FILES.get('image')
-        live_url = request.POST.get('live_url')
-        time = request.POST.get('time')
-        date = request.POST.get('date')
-        chapter = request.POST.get('chapter')
-        subject = request.POST.get('subject')
-        package = request.POST.get('package')
-        live_name = request.POST.get('live_name')
-
-        GoLive.objects.create(
-            course_package = package,
-            subject = subject,
-            chapter = chapter,
-            live_name = live_name,
-            live_url = live_url,
-            image = image,
-            live_time = time,
-            live_date = date,
-        )
-        messages.success(request, 'Your Live is created')
-        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
- 
-
     return render(request , 'live/create_live.html', context)
 
 

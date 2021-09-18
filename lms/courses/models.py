@@ -116,6 +116,7 @@ class CoursePackageLessons(BaseModel):
     course_package_chapter = models.ForeignKey(CoursePackageChapters , related_name='pacakge_subject_chapters_lessons',on_delete=models.CASCADE)
     lesson = models.ForeignKey(Lessons , on_delete=models.CASCADE)
     s_no = models.IntegerField(default=1)
+    added_at = models.DateTimeField(null=True , blank=True)
 
     def __str__(self) -> str:
         return self.lesson.lesson_title
