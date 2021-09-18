@@ -16,7 +16,7 @@ urlpatterns = [
    path('packages/' , views.course_packages, name="packages"),
    path('add-package/' , views.add_package , name="add_package"),
    path('add-subjects-package/<uid>/' , views.add_subjects_courses,name="add_subjects_courses"),
-
+   
    path('course-tree/<course_package_uid>/' , views.course_tree , name="course_tree"),
    path('update-lesson/<uid>/' , views.update_lesson ,name="update_lesson"),
    path('course-package-edit/<uid>/' , views.course_package_edit , name="course_package_edit" ),
@@ -24,7 +24,8 @@ urlpatterns = [
    path('delete_chapter/', views.delete_chapter , name="delete_chapter"),
    path('delete_lesson/', views.delete_lesson , name="delete_lesson"),
    path('delete_course_package/', views.delete_course_package , name="delete_course_package"),
-
+   path('allcoupons/' , views.all_coupons, name="coupons"),
+   path('addcoupons/' , views.add_coupons, name="addcoupons"),
    path('test/' , views.test , name="test"),
    path('create-test/' , views.create_test , name="create_test"),
    path('create-live/' , views.create_live , name="create_live"),
