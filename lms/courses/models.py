@@ -131,7 +131,7 @@ class GoLive(BaseModel):
     live_url = models.CharField(max_length=10000)
     image = models.ImageField(upload_to = 'live' , null=True , blank = True)
     live_date_time = models.DateTimeField(default=datetime.now)
-
+    live_date = models.CharField(max_length=100 , null = True , blank=True)
 
 
 
