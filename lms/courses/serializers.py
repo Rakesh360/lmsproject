@@ -101,6 +101,13 @@ class CoursePackageSerializer(serializers.ModelSerializer):
         model= CoursePackage
         fields = ['uid' , 'package_title' ]
 
+class CoursePackageSaveSerializer(serializers.ModelSerializer):
+    package_type = serializers.CharField(required = True)
+    
+    class Meta:
+        model = CoursePackage
+        exclude = ['updated_at']
+
 class CoursePackageLessonsSerializer(serializers.ModelSerializer):
     class Meta:
         model = CoursePackageLessons

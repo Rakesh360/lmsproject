@@ -80,15 +80,15 @@ class Lessons(BaseModel):
 
 class CoursePackage(BaseModel):
     package_title = models.CharField(max_length=100)
-    package_description = models.TextField(null=True , blank=True)
-    actual_price = models.IntegerField(null=True , blank=True)
-    selling_price = models.IntegerField(default = 0)
-    sell_from = models.CharField(null=True , blank=True, max_length=100)
-    sell_till = models.CharField(null=True , blank=True ,  max_length=100)
+    package_description = models.TextField()
+    actual_price = models.IntegerField()
+    selling_price = models.IntegerField()
+    package_type = models.CharField(max_length=100, default='Fixed Date' , choices=(('Fixed Date' , 'Fixed Date') , ('Subscription' , 'Subscrption')))
+    days = models.IntegerField(default=0)
+    sell_till = models.DateField(null=True , blank=True ,  max_length=100)
     is_active = models.BooleanField(default=True)
-    course_validity = models.DateField(null=True , blank=True)
-    web_image = models.ImageField(upload_to = "course_package",null=True , blank=True)
-    mobile_image = models.ImageField(upload_to = "course_package",null=True , blank=True)
+    web_image = models.ImageField(upload_to = "course_package",)
+    mobile_image = models.ImageField(upload_to = "course_package")
 
     class Meta:
         db_table = "course_package"
