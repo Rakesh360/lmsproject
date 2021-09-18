@@ -143,4 +143,7 @@ class CourseSerializer(serializers.ModelSerializer):
 
 
 class GoLiveSerializer(serializers.ModelSerializer):
-    pass    
+
+    class Meta:
+        model = GoLive
+        exclude = ['created_at' , 'updated_at']    

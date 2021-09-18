@@ -761,4 +761,36 @@ def create_live(request):
  
 
     return render(request , 'live/create_live.html', context)
-                                                                                                      
+
+
+
+
+class GoLiveView(APIView):
+    def post(self , request):
+        try:
+            data = request.data
+            serializer = GoLiveSerializer(data=data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response({
+                    'status' : True,
+                    'message' : 'Live created Successfully',
+                    'data' : serializer.data
+                })
+
+            return Response({
+                'status' : False,
+                    'message' : 'live not created',
+                    'data' : serializer.errors
+                })  
+        except Exception as e:
+            print(e)
+            return Response({
+                'status' : False,
+                    'message' : 'something went wrong',
+                    'data' : str(e)
+
+                }) 
+
+            
+                                                                                                    

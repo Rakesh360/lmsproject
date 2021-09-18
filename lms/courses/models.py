@@ -122,14 +122,15 @@ class CoursePackageLessons(BaseModel):
     
 
 class GoLive(BaseModel):
+    from datetime import datetime
     course_package = models.ForeignKey(CoursePackage , related_name='live' , on_delete=models.CASCADE)
-    subject = models.ForeignKey(Subject , on_delete=models.SET_NULL , null=True , blank=True)
-    chapter = models.ForeignKey(SubjectChapters , on_delete=models.SET_NULL , null=True , blank=True)
+    subject = models.ForeignKey(Subject , on_delete=models.CASCADE)
+    chapter = models.ForeignKey(SubjectChapters , on_delete=models.CASCADE)
     live_name = models.CharField(max_length=100)
     live_url = models.CharField(max_length=10000)
     image = models.ImageField(upload_to = 'live' , null=True , blank = True)
-    live_date = models.DateField(null=True , blank=True)
-    live_time = models.CharField(max_length=100)
+    live_date_time = models.DateTimeField(default=datetime.now)
+
 
 
 
