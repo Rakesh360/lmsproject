@@ -430,7 +430,17 @@ def create_live(request):
 
 
 
+def all_coupons(request ):
+    context = {
+        'allcoupons' : Coupoun.objects.all(),
+        'subjects' : Subject.objects.all(),
+        'chapters' : SubjectChapters.objects.all(),
+    }
+    return render(request , 'new_dashboard/coupons/all_coupons.html' , context)
 
 
+def add_coupons(request):
+
+    return render(request, 'new_dashboard/coupons/add_coupons.html' , )
             
                                                                                                     

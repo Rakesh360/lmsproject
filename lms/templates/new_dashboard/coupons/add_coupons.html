@@ -1,0 +1,75 @@
+{%extends 'base.html'%}
+
+{%block start%}
+
+<div style="margin-top: 6%; ">
+    <div style="margin-top: 6%; display: flex;">
+    <div style="margin: 0 auto; font-size: xxx-large;">
+        add coupons
+    </div>
+    
+    <div style="margin-right: 5px; margin-top: 2px;">
+        <a href="{% url 'add_lessons' %}" class="btn btn-primary">Add New</a href="">
+    </div>
+</div>
+
+<hr>
+                <div class="modal-body">
+                    <form id="editSubjectForm" method="POST" action="">
+                        {% csrf_token %}
+                        <div class="form-group">
+
+                            <label for="coupon_code">Coupon Code</label>
+                            <input type="text" name="coupon_code" class="form-control" placeholder="enter unique code">
+                            <br>
+
+                            <label for="coupon_validity">Coupon Validity</label>
+                            <input type="datetime-local" name="coupon_validity" class="form-control" placeholder="">
+                            <br>
+
+                            <label for="coupon_name">usages limit</label>
+                            <input type="number" name="usages_limit" class="form-control" placeholder="">
+                            <br>
+                            <label for="coupon_number">User per use limit</label>
+                            <input type="number" name="user_limit" class="form-control" placeholder="">
+                            <br>
+
+
+                            <label for="coupon_type"></label>    
+                            <select class="custom-select" aria-label="Default select example" name="coupon_type" id="selectSublect"> 
+                                <option selected disabled>Discount in </option>
+                                <option value="a">percentage</option>
+                                <option value="b"> flat amount</option>
+                                
+                            </select>
+                            <br>
+
+                            <label for="apply type"></label>    
+                            <select class="custom-select" aria-label="Default select example" name="coupon_type" id="selectSublect"> 
+                                <option selected disabled>Apply in </option>
+                                <option value="a">All packages</option>
+                                <option value="b"> only these packages</option>
+                                
+                            </select>
+                            <br>
+
+                            
+                            
+                            
+
+                            
+
+            
+                        <button id="submitAddTopic" class="btn btn-primary">Add Coupon</button>
+                    </form>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+</div>
+
+{%endblock %}
