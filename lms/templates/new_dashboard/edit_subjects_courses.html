@@ -221,33 +221,35 @@
     <div class="container-fluid">
         <div class="row">
 
-            <div class="col-md-4">
-                <h3>Subject</h3>
+            <div class="col-md-6">
+                <h3>You Are Re-odering All Subjects </h3>
+                <ul class="nav nav-pills nav-fill" style="margin-top: 8%;">
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" id="reorderChapterBtn" href="#">Reorder Chapters</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="reorderLessonsBtn" href="#">Reorder Lessons</a>
+                    </li>
+                </ul>
+
+
+                <div class="collapse show m-2" id="reorderChapterDiv" style="display: none;">
+                    <p>Select Chapters to reorder</p>
+                </div>
+                <div class="collapse show m-2" id="reorderLessonsDiv" style="display: none;">
+                    <p>Select Lessons to reorder</p>
+                </div>
+
+            </div>
+
+
+            <div class="col-md-6">
+                <h3 id="titleData">Subject</h3>
                 <ul class="draggable-list" id="draggable-list" style="height: 610px; overflow-y: scroll;"></ul>
-                <button class="check-btn" id="saveSubject">
-                Save Subjects
+                <button class="check-btn" id="saveBtn">
+                    Save 
                 <i class="fas fa-save"></i>
                 </button>
-            </div>
-        
-        
-            <div class="col-md-4">
-                <h3>Chapter</h3>
-                <ul class="draggable-list" id="draggable-list2" style="height: 610px; overflow-y: scroll;"></ul>
-                <button class="check-btn" id="saveChapter">
-                    Save Chapters
-                    <i class="fas fa-save"></i>
-                    </button>
-            </div>
-        
-        
-            <div class="col-md-4">
-                <h3>Videos</h3>
-                <ul class="draggable-list" id="draggable-list3" style="height: 610px; overflow-y: scroll;"></ul>
-                <button class="check-btn" id="saveVideos">
-                    Save Videos
-                    <i class="fas fa-save"></i>
-                    </button>
             </div>
 
         </div>
@@ -268,7 +270,6 @@
     let tagsDropdown = document.getElementById('tagsDropdown');
 
     contentBtn.addEventListener('click', function () {
-        console.log('ssss');
         contentBtn.classList.add('active');
         treeBtn.classList.remove('active');
         contentDiv.style.display = 'block';
@@ -276,7 +277,6 @@
     });
 
     treeBtn.addEventListener('click', function () {
-        console.log('dddddd');
         contentBtn.classList.remove('active');
         treeBtn.classList.add('active');
         contentDiv.style.display = 'none';
@@ -291,21 +291,34 @@
     // script for nav btn ends
 
 
+    // script for tree
+
+    let reorderChapterBtn = document.getElementById('reorderChapterBtn');
+    let reorderLessonsBtn = document.getElementById('reorderLessonsBtn');
+    let reorderChapterDiv = document.getElementById('reorderChapterDiv');
+    let reorderLessonsDiv = document.getElementById('reorderLessonsDiv');
+
+    reorderChapterBtn.addEventListener('click', function () {
+        reorderChapterDiv.style.display = 'block';
+        reorderLessonsDiv.style.display = 'none';
+        reorderChapterBtn.classList.add('active');
+        reorderLessonsBtn.classList.remove('active');
+    });
+
+    reorderLessonsBtn.addEventListener('click', function () {
+        reorderChapterDiv.style.display = 'none';
+        reorderLessonsDiv.style.display = 'block';
+        reorderChapterBtn.classList.remove('active');
+        reorderLessonsBtn.classList.add('active');
+    });
+
+
     // script for draggable tree starts
     function draggableTree() {  
-        let saveSubject = document.getElementById('saveSubject');
-        let saveChapter = document.getElementById('saveChapter');
-        let saveVideos = document.getElementById('saveVideos');
+        let saveBtn = document.getElementById('saveBtn');
+
 
         const draggable_list = document.getElementById('draggable-list');
-        const draggable_list2 = document.getElementById('draggable-list2');
-        const draggable_list3 = document.getElementById('draggable-list3');
-        let selectedSubject;
-        let selectedChapter;
-        let selectedVideo;
-        let subjectsChanged = false;
-        let chaptersChanged = false;
-        let videosChanged = false;
 
         let uid = '{{course_package_obj.uid}}'
         console.log(uid);
@@ -315,49 +328,22 @@
         })
         .then(response => response.json())
         .then(data => {
-            console.log('1',data.data);
+            
             allSubjects = data.data;
-            let array = [...allSubjects];
+            let array = [];
+            allSubjects.subjects.forEach(e => {
+                console.log(e);
+                array.push(e.subject_title);
+            })
             createList(array);
         });
 
         let allSubjects; // all subjects array
 
-        const chapters = [
-            ['a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c','a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c'],
-            ['d', 'e', 'f'],
-            ['g', 'h', 'i'],
-            ['j', 'k', 'l'],
-            ['m', 'n', 'o'],
-            ['p', 'q', 'r'],
-            ['s', 't', 'u'],
-            ['v', 'w', 'x'],
-            ['y', 'z', 'aa'],
-            ['y', 'z', 'aa']
-        ]
-
-        const videos = [
-            ['a', 'b', 'c', 'a', 'b', 'c'],
-            ['d', 'e', 'f'],
-            ['g', 'h', 'i'],
-            ['j', 'k', 'l'],
-            ['m', 'n', 'o'],
-            ['p', 'q', 'r'],
-            ['s', 't', 'u'],
-            ['v', 'w', 'x'],
-            ['y', 'z', 'aa'],
-            ['y', 'z', 'aa']
-        ]
-        // Store listitems
+       
         const listItems = [];
-        const listItems2 = [];
-        const listItems3 = [];
 
-        let dragStartIndex;
-        let dragStartIndex2;
-        let dragStartIndex3;
-
-        
+        let dragStartIndex;       
 
         // Insert list items into DOM
 
@@ -367,23 +353,7 @@
                 listItem.className = 'subject-li';
 
                 listItem.onclick = (event) => {
-                    document.getElementById('draggable-list2').innerHTML = '';
-                    document.getElementById('draggable-list3').innerHTML = '';
-                    if (selectedSubject) {
-                        selectedSubject.style.border = 'none';
-                        selectedSubject.style.borderBottom = '1px solid var(--border-color)';
-                    }
-
-                    if (videosChanged === true) {
-                        window.alert('You have unsaved changes to your videos. Are you sure you want to leave this page?');
-                    }
-
-                    if (subjectsChanged === false) {
-                        selectedSubject = event.currentTarget;
-                        createList2(chapters[index]);
-                    } else {
-                        window.alert('Please Save the subjects before proceeding further!!!')
-                    }
+                    console.log('wwooeee');
                     
                 }
 
@@ -405,88 +375,11 @@
             addEventListeners();
         }
 
-        function createList2(array) {
-            array.forEach((person, index) => {
-                const listItem = document.createElement('li');
-
-                listItem.onclick = (event) => {
-                    document.getElementById('draggable-list3').innerHTML = '';
-                    if (selectedChapter) {
-                        selectedChapter.style.border = 'none';
-                        selectedChapter.style.borderBottom = '1px solid var(--border-color)';
-                    }
-                    
-                    if (chaptersChanged === false) {
-                        selectedChapter = event.currentTarget;
-                        createList3(videos[index]);
-                    } else {
-                        window.alert('Please Save the chapters before proceeding further!!!')
-                    }
-                }
-
-                listItem.setAttribute('data-index', index);
-
-                listItem.innerHTML = `
-                    <span class="number">${index + 1}</span>
-                    <div class="draggable2" draggable="true">
-                    <p class="person-name">${person}</p>
-                    <i class="fas fa-arrow-right"></i>
-                    </div>
-                `;
-
-                listItems2.push(listItem);
-
-                draggable_list2.appendChild(listItem);
-                });
-
-            addEventListeners2();
-        }
-
-        function createList3(array) {
-            array.map(a => ({ value: a, sort: Math.random() }))
-                .sort((a, b) => a.sort - b.sort)
-                .map(a => a.value)
-                .forEach((person, index) => {
-                const listItem = document.createElement('li');
-
-                listItem.onclick = (event) => {
-                    console.log('wwooeee');
-                }
-
-                listItem.setAttribute('data-index', index);
-
-                listItem.innerHTML = `
-                    <span class="number">${index + 1}</span>
-                    <div class="draggable3" draggable="true">
-                    <p class="person-name">${person}</p>
-                    <i class="fas fa-grip-lines"></i>
-                    </div>
-                `;
-
-                listItems3.push(listItem);
-
-                draggable_list3.appendChild(listItem);
-                });
-
-            addEventListeners3();
-        }
-
 
         function dragStart() {
             // console.log('Event: ', 'dragstart', );
             dragStartIndex = +this.closest('li').getAttribute('data-index');
         }
-
-        function dragStart2() {
-            // console.log('Event: ', 'dragstart', );
-            dragStartIndex2 = +this.closest('li').getAttribute('data-index');
-        }
-
-        function dragStart3() {
-            // console.log('Event: ', 'dragstart', );
-            dragStartIndex3 = +this.closest('li').getAttribute('data-index');
-        }
-
 
         function dragEnter() {
             // console.log('Event: ', 'dragenter', this.closest('li'));
@@ -513,31 +406,6 @@
             this.classList.remove('over');
         }
 
-        function dragDrop2() {
-            // console.log('Event: ', 'drop');
-            const dragEndIndex2 = +this.getAttribute('data-index');
-            swapItems2(dragStartIndex2, dragEndIndex2);
-            // draggable_list.style.border = '1px solid red';
-            selectedSubject.style.border = '1px solid red';
-            saveChapter.style.backgroundColor = '#9fff83';
-            chaptersChanged = true;
-            draggable_list.style.pointerEvents = 'none';
-            this.classList.remove('over');
-        }
-
-        function dragDrop3() {
-            // console.log('Event: ', 'drop');
-            const dragEndIndex3 = +this.getAttribute('data-index');
-            swapItems3(dragStartIndex3, dragEndIndex3);
-            selectedChapter.style.border = '1px solid red';
-            selectedSubject.style.border = '1px solid red';
-            saveVideos.style.backgroundColor = '#9fff83';
-            videosChanged = true;
-            draggable_list.style.pointerEvents = 'none';
-            draggable_list2.style.pointerEvents = 'none';
-            this.classList.remove('over');
-        }
-
         // Swap list items that are drag and drop
         function swapItems(fromIndex, toIndex) {
             const itemOne = listItems[fromIndex].querySelector('.draggable');
@@ -547,23 +415,6 @@
 
             listItems[fromIndex].appendChild(itemTwo);
             listItems[toIndex].appendChild(itemOne);
-        }
-
-        function swapItems2(fromIndex, toIndex) {
-            const itemOne = listItems2[fromIndex].querySelector('.draggable2');
-            const itemTwo = listItems2[toIndex].querySelector('.draggable2');
-
-            listItems2[fromIndex].appendChild(itemTwo);
-            listItems2[toIndex].appendChild(itemOne);
-        }
-
-
-        function swapItems3(fromIndex, toIndex) {
-            const itemOne = listItems3[fromIndex].querySelector('.draggable3');
-            const itemTwo = listItems3[toIndex].querySelector('.draggable3');
-
-            listItems3[fromIndex].appendChild(itemTwo);
-            listItems3[toIndex].appendChild(itemOne);
         }
 
         function addEventListeners() {
@@ -577,38 +428,6 @@
             dragListItems.forEach(item => {
                 item.addEventListener('dragover', dragOver);
                 item.addEventListener('drop', dragDrop);
-                item.addEventListener('dragenter', dragEnter);
-                item.addEventListener('dragleave', dragLeave);
-            });
-        }
-
-        function addEventListeners2() {
-            const draggables = document.querySelectorAll('.draggable2');
-            const dragListItems2 = document.querySelectorAll('#draggable-list2 li');
-
-            draggables.forEach(draggable => {
-                draggable.addEventListener('dragstart', dragStart2);
-            });
-
-            dragListItems2.forEach(item => {
-                item.addEventListener('dragover', dragOver);
-                item.addEventListener('drop', dragDrop2);
-                item.addEventListener('dragenter', dragEnter);
-                item.addEventListener('dragleave', dragLeave);
-            });
-        }
-
-        function addEventListeners3() {
-            const draggables = document.querySelectorAll('.draggable3');
-            const dragListItems = document.querySelectorAll('#draggable-list3 li');
-
-            draggables.forEach(draggable => {
-                draggable.addEventListener('dragstart', dragStart3);
-            });
-
-            dragListItems.forEach(item => {
-                item.addEventListener('dragover', dragOver);
-                item.addEventListener('drop', dragDrop3);
                 item.addEventListener('dragenter', dragEnter);
                 item.addEventListener('dragleave', dragLeave);
             });
