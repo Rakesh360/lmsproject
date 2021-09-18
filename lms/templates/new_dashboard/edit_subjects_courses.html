@@ -223,22 +223,33 @@
 
             <div class="col-md-6">
                 <h3>You Are Re-odering All Subjects </h3>
-                <ul class="nav nav-pills nav-fill" style="margin-top: 8%;">
-                    <li class="nav-item">
-                        <a class="nav-link" aria-current="page" id="reorderChapterBtn" href="#">Reorder Chapters</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" id="reorderLessonsBtn" href="#">Reorder Lessons</a>
-                    </li>
-                </ul>
+    
 
+                <div class="collapse show m-2" id="reorderChapterDiv">
+                    <label for="selectedSubject">Select Subject whose chapters you want to reorder </label>
+                    <select name="selectedSubject" id="selectedSubject" class="form-control" onchange="reorderChapters(event)">
+                        <option value="0" selected disabled>Choose Subject</option>
+                        
+                    </select>
 
-                <div class="collapse show m-2" id="reorderChapterDiv" style="display: none;">
-                    <p>Select Chapters to reorder</p>
+                    <div id="selectChapterDiv" style="display: none;">
+                        <label for="selectedChapter">Select chapter whose lessons you want to reorder </label>
+                        <select name="selectedChapter" id="selectedChapter" class="form-control" onchange="reorderChapters(event)">
+                            <option value="0" selected disabled>Choose Chapter</option>
+                            
+                        </select>
+                    </div>
+
+                    <button class="check-btn" id="chooseChapterBtn">
+                            Choose Chapter 
+                    </button>
+
+                    <button class="check-btn" id="reorderBtn">
+                        Reorder 
+                    </button>
+
                 </div>
-                <div class="collapse show m-2" id="reorderLessonsDiv" style="display: none;">
-                    <p>Select Lessons to reorder</p>
-                </div>
+                
 
             </div>
 
@@ -291,26 +302,48 @@
     // script for nav btn ends
 
 
-    // script for tree
+    // script for tree options start
 
     let reorderChapterBtn = document.getElementById('reorderChapterBtn');
     let reorderLessonsBtn = document.getElementById('reorderLessonsBtn');
     let reorderChapterDiv = document.getElementById('reorderChapterDiv');
     let reorderLessonsDiv = document.getElementById('reorderLessonsDiv');
 
-    reorderChapterBtn.addEventListener('click', function () {
-        reorderChapterDiv.style.display = 'block';
-        reorderLessonsDiv.style.display = 'none';
-        reorderChapterBtn.classList.add('active');
-        reorderLessonsBtn.classList.remove('active');
-    });
+    // reorderChapterBtn.addEventListener('click', function () {
+    //     reorderChapterDiv.style.display = 'block';
+    //     reorderLessonsDiv.style.display = 'none';
+    //     reorderChapterBtn.classList.add('active');
+    //     reorderLessonsBtn.classList.remove('active');
+    // });
 
-    reorderLessonsBtn.addEventListener('click', function () {
-        reorderChapterDiv.style.display = 'none';
-        reorderLessonsDiv.style.display = 'block';
-        reorderChapterBtn.classList.remove('active');
-        reorderLessonsBtn.classList.add('active');
-    });
+    // reorderLessonsBtn.addEventListener('click', function () {
+    //     reorderChapterDiv.style.display = 'none';
+    //     reorderLessonsDiv.style.display = 'block';
+    //     reorderChapterBtn.classList.remove('active');
+    //     reorderLessonsBtn.classList.add('active');
+    // });
+
+    // script for tree ends
+
+    // script to add reorder chapters
+
+    let selectedSubject = document.getElementById('selectedSubject');
+    let selectedChapter = document.getElementById('selectedChapter');
+    let selectChapterDiv = document.getElementById('selectChapterDiv');
+    let chooseChapterBtn = document.getElementById('chooseChapterBtn');
+    let reorderBtn = document.getElementById('reorderBtn');
+    let allSubjects; // all subjects array
+    let subjectUid;
+    let chapterUid;
+    let subjectssArray = [];
+    let chaptersArray = [];
+    let lessonsArray = [];
+
+
+    function reorderChapters(event) {
+        console.log(event.target.value);
+    };
+
 
 
     // script for draggable tree starts
@@ -330,15 +363,87 @@
         .then(data => {
             
             allSubjects = data.data;
-            let array = [];
+            let subjectsArray = [];
             allSubjects.subjects.forEach(e => {
                 console.log(e);
-                array.push(e.subject_title);
+                subjectsArray.push(e.subject_title);
+                // adding all subjects to options in dropdown
+                let opt = document.createElement('option');
+                opt.innerHTML = e.subject_title;
+                opt.value = e.subject_uid;
+                selectedSubject.appendChild(opt);
+
             })
-            createList(array);
+            createList(subjectsArray);
+
+            selectedSubject.addEventListener('change', function () {
+                console.log('onchange');
+                subjectUid = selectedSubject.value;
+                let allChapters;
+                allSubjects.subjects.forEach((e, i) => {
+                    if (e.subject_uid === subjectUid) {
+                        console.log(e.chapters);
+                        allChapters = e.chapters;
+                        allChapters.forEach(e => {
+                            chaptersArray.push(e.chapter_title);
+                            // adding all chapters to options in dropdown
+                            let opt = document.createElement('option');
+                            opt.innerHTML = e.chapter_title;
+                            opt.value = e.chapter_uid;
+                            selectedChapter.appendChild(opt);
+
+                        })
+                    }
+                })
+
+           
+            }) ///
+
+            selectedChapter.addEventListener('change', function () {
+                chapterUid = selectedChapter.value;
+                // updating lessons array
+                allSubjects.subjects.forEach(e => {
+                    if (e.subject_uid === subjectUid) {
+                        e.chapters.forEach(e => {
+                            if (e.chapter_uid === chapterUid) {
+                                e.lessons.forEach(e => {
+                                    lessonsArray.push(e.lesson_title);
+                                    console.log(lessonsArray);
+                                })
+                            }
+                        })
+                    }
+                })
+            });
+
+            chooseChapterBtn.addEventListener('click', function () {
+                selectChapterDiv.style.display = 'block';
+                chooseChapterBtn.style.display = 'none';
+            });
+
+            reorderBtn.addEventListener('click', function () {
+                if (selectedSubject.value === "0") {
+                    alert('Please select a subject');
+                    return;
+                } else if (selectedSubject.value !== "0") {
+                    // code to send list of chapters to reorder
+                    console.log('send chapters array');
+
+                } else if (selectedChapter.value === "0" && selectedSubject.value !== "0") {
+                    let selectedSubjectUID = selectedSubject.value;
+                    // code to send list of lessons to reorder
+                    console.log('send lesson array');
+
+                }
+
+
+                chooseChapterBtn.style.display = 'none';
+
+
+            });
         });
 
-        let allSubjects; // all subjects array
+        
 
        
         const listItems = [];
