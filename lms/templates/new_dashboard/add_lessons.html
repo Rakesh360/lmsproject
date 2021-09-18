@@ -26,20 +26,20 @@
   </div> -->
     <div class="card-body">
         {% include "utils/alert.html" %}
-        <form method="POST" enctype="multipart/form-data">
+        <form>
             {% csrf_token %}
             <div class="form-row mb-4">
                 <div class="form-group col-md-6">
-                    <label for="inputEmail4">Lesson title</label>
-                    <input type="text" class="form-control" required name="lesson_title" id="inputEmail4"
+                    <label for="lesson_title">Lesson title</label>
+                    <input type="text" class="form-control" required name="lesson_title" id="lesson_title"
                         placeholder="Enter lesson title">
                 </div>
 
 
 
                 <div class="form-group col-md-6">
-                    <label for="visibility">Choose Subject</label>
-                    <select required id="chooseSubject" name="subjects" class="form-control basic tagging " onchange="updateChapters()">
+                    <label for="subject">Choose Subject</label>
+                    <select required id="chooseSubject" name="subject" class="form-control basic tagging " onchange="updateChapters()">
                         <option value="" selected disabled>Choose Subject</option>
                     </select>
 
@@ -48,16 +48,16 @@
                 </div>
                 <div class="form-group col-md-6">
 
-                    <label for="inputPassword4">Choose Chapter</label>
+                    <label for="chapter">Choose Chapter</label>
                     <select required id="chooseChapters" name="chapter" class="form-control basic tagging ">
                         <option value="" selected disabled>Choose Chapter</option>
                     </select>
                 </div>
 
                 <div class="form-group col-md-6">
-                    <label for="inputEmail4">Lesson Type</label>
-                    <select class="form-control" id="element" name="lesson_type" onchange="changeLessonType()">
-                        <option value="Video">Video</option>
+                    <label for="lesson_type">Lesson Type</label>
+                    <select required class="form-control" id="lesson_type" name="lesson_type" id="lesson_type" onchange="changeLessonType()">
+                        <option selected value="Video">Video</option>
                         <option value="Document">Document</option>
                         <option value="Video + Document">Video + Document</option>
 
@@ -70,30 +70,29 @@
             <div class="form-row mb-4" id="video_upload">
 
                 <div class="form-group col-md-6">
-                    <label for="inputAddress">Video Platform</label>
-                    <select required class="form-control" name="video_uploaded_on" id="videoType" onchange="changeVideoType()">
-                        <option value="" selected disabled>Choose Video Platform</option>
-                        <option value="Live">Live</option>
+                    <label for="video_platform">Video Platform</label>
+                    <select required class="form-control" name="video_platform" id="videoType" onchange="changeVideoType()">
+                        <option value="Live">YouTube Live</option>
                         <option value="Vimeo">Vimeo</option>
-                        <option value="Youtube">Youtube</option>
+                        <option selected value="Youtube">YouTube</option>
 
                     </select>
 
                     <div id="timePicker" style="display: none;">
                         <label for="startTime" class="mt-4"> Enter Start Time Of Live </label>
-                        <input class="form-control" type="datetime-local" name="startTime">
+                        <input class="form-control" type="datetime-local" name="startTime" id="startTime">
                         <br>
                         <label for="live_image">Upload Live Image Here</label>
-                        <input type="file" name="live_image" class="form-control">
+                        <input type="file" name="live_image" class="form-control" id="live_image">
                     </div>
 
                 </div>
 
 
                 <div class="form-group col-md-6">
-                    <label for="inputEmail4" id="videoLink">Link</label>
-                    <input type="text" onchange="loadLesson()" required id="lesson_link" class="form-control"
-                        name="video_link" id="inputEmail4" placeholder="Enter lesson title">
+                    <label for="video_link" id="videoLink">Link</label>
+                    <input type="text" onchange="loadLesson()" required id="video_link" class="form-control"
+                        name="video_link" id="inputEmail4" placeholder="Enter lesson link">
                     <small>Paste Id only | preview appears here</small> 
                     <br>
                     <iframe width="560" id="iframe" height="315" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="display: none;">
@@ -104,8 +103,8 @@
             <div class="form-group col-md-6">
 
                 <label for="inputEmail4">Is free</label>
-                <select class="form-control" name="is_free">
-                    <option value="0">No</option>
+                <select class="form-control" name="is_free" id="is_free">
+                    <option selected value="0">No</option>
                     <option value="1">Yes</option>
 
                 </select>
@@ -115,8 +114,8 @@
             <div class="form-row mb-4" id="document_upload" style="display: none;">
 
                 <div class="form-group col-md-6">
-                    <label>Upload Document</label>
-                    <input class="form-control" id="document" type="file" name="document">
+                    <label for="document_link">Upload Document</label>
+                    <input class="form-control" id="document_link" type="file" name="document_link">
                 </div>
 
             </div>
@@ -124,16 +123,6 @@
 
 
             <br><hr><br>
-            <div class="form-row mb-4">
-                <div class="form-group col-md-6">
-                    <label for="visibility">Visibility</label>
-                    <select required id="chapters" name="visibility" class="form-control basic tagging ">
-                        <option value="0">Hidden</option>
-                        <option value="1">Visible</option>
-                    </select>
-                </div>
-              
-            </div>
 
 
             <div class="form-row mb-4" id="video_upload">
@@ -143,7 +132,7 @@
                 
                 <div>
                     <label for="tags">Select Packages To Include</label>
-                    <select required id="tagsDropdown" name="tags" class="fstdropdown-select" onchange="includeTag(event)">
+                    <select id="tagsDropdown" name="tags" class="fstdropdown-select" onchange="includeTag(event)">
                         <option value="" selected disabled>Choose Package</option>
                         {% for course_package in  course_packages %}
                             <option value="{{course_package.uid}}">{{course_package.package_title}}</option>
@@ -169,7 +158,8 @@
                 </div>               
             </div>
 
-            <button type="submit" class="btn btn-primary mt-3">Add Chapters</button>
+            <button id="submitFormBtn" type="submit" class="btn btn-primary mt-3">Add Chapter</button>
+            <button id="testBtn" class="btn btn-primary mt-3">Test Code</button>
         </form>
 
     </div>
@@ -181,6 +171,122 @@
     let tagsDropdown = document.getElementById('tagsDropdown');
     let chooseSubject = document.getElementById('chooseSubject');
     let chooseChapters = document.getElementById('chooseChapters');
+
+    let testBtn = document.getElementById('testBtn');
+    testBtn.addEventListener('click', function (e) {
+        // getting data of all tags...
+        let allTags = document.getElementsByClassName('tag');
+        let allPackageDates = document.getElementsByClassName('packageDate');
+        for (let i = 0; i < allTags.length; i++) {
+            console.log(allTags[i].id);
+            console.log(allPackageDates[i].value);
+            
+        }
+    });
+
+    // handling form submission using fetch POST method starts here
+    let submitFormBtn = document.getElementById('submitFormBtn');
+    submitFormBtn.addEventListener('click', function (e) {
+        e.preventDefault();
+        console.log('Submitting form...');
+
+
+        // let fileupload = document.getElementById('document_link');
+        // async function uploadFile() {
+        // let formData = new FormData(); 
+        // formData.append("file", fileupload.files[0]);
+        // await fetch('/', {
+        //     method: "POST", 
+        //     body: formData
+        // }); 
+        // alert('The file has been uploaded successfully.');
+        // }
+
+        let data = {
+            'lesson_title' : document.getElementById('lesson_title').value,
+            'chapter' : document.getElementById('chooseChapters').value,
+            'lesson_type': document.getElementById('lesson_type').value,
+            'video_platform': document.getElementById('videoType').value,
+            'start_time': document.getElementById('startTime').value,
+            'video': {
+                'video_link': document.getElementById('video_link').value,
+            },
+            'document': {
+                'document_link': document.getElementById('document_link').value,
+            },
+            'live_image': document.getElementById('live_image').value,
+            'is_free': document.getElementById('is_free').value,
+        
+
+        };
+
+        // getting data of all packages...
+        let allTags = document.getElementsByClassName('tag');
+        let allPackageDates = document.getElementsByClassName('packageDate');
+        let packages = [];
+        for (let i = 0; i < allTags.length; i++) {
+            packages.push({
+                "uid" : allTags[i].id,
+                "created_at" : allPackageDates[i].value
+            });
+            
+        };
+
+        function getCookie(name) {
+            if (!document.cookie) {
+            return null;
+            }
+
+            const xsrfCookies = document.cookie.split(';')
+            .map(c => c.trim())
+            .filter(c => c.startsWith(name + '='));
+
+            if (xsrfCookies.length === 0) {
+            return null;
+            }
+            return decodeURIComponent(xsrfCookies[0].split('=')[1]);
+            }
+        data['packages'] = packages;
+        const csrfToken = getCookie('csrftoken');
+
+        if (data['video_platform'] === 'Live') {
+            fetch('/api/courses/go-live/', {
+                method: 'POST', // or 'PUT'
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                    body: JSON.stringify(data),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Success:', data);
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+            });
+        } else {
+            fetch('/api/courses/lessons/', {
+                method: 'POST', // or 'PUT'
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                    body: JSON.stringify(data),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Success:', data);
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+            });
+        }
+
+        console.log(data);
+    });
+
+    // handling form submissions ends here
 
     // make a fetch call on 'http://13.232.227.45/api/courses/course-packages/' to get all packages using no-cors
     fetch('/api/courses/subjects/', {
@@ -256,7 +362,10 @@
         let tagId = event.target.id;
         console.log(tagName, tagId);
     }
-
+    // handleChangePackageDateTime 
+    function handleChangePackageDateTime(event) {
+        console.log(event.target.value);
+    }
 
     let tags = document.getElementById('tags');
     function includeTag(event, id) {
@@ -275,7 +384,7 @@
                 td1.innerHTML = tagName;
                 td1.id = tagId;
                 let td2 = document.createElement('td');
-                td2.innerHTML = '<input type="datetime-local" name='+id+'>';
+                td2.innerHTML = '<input type="datetime-local" class="packageDate" onchange="handleChangePackageDateTime(event)" name='+id+'>';
                 let td3 = document.createElement('td');
                 td3.innerHTML = '❌';
                 td3.className = 'delBtn';
@@ -293,6 +402,7 @@
         if (videoType.value == 'Live') {
             document.getElementById('timePicker').style.display = 'block';
             document.getElementById('videoLink').innerText = 'Enter Live Link';
+            document.getElementById('startTime').setAttribute('required', 'required');
         } else {
             document.getElementById('timePicker').style.display = 'none';
             document.getElementById('videoLink').innerText = 'Enter Video Link';
@@ -301,29 +411,28 @@
 
 
     function changeLessonType() {
-        var element = document.getElementById('element')
-        console.log(element.value)
-        if (element.value == 'Video') {
+        var lesson_type = document.getElementById('lesson_type')
+        console.log(lesson_type.value)
+        if (lesson_type.value == 'Video') {
             document.getElementById('video_upload').style.display = ''
             document.getElementById('document_upload').style.display = 'none'
-            document.getElementById('document').required = false
-            document.getElementById('lesson_link').required = true
+            document.getElementById('video_link').required = true
 
-        } else if(element.value == 'Document') {
+        } else if(lesson_type.value == 'Document') {
+            document.getElementById('document_link').setAttribute('required', 'required')
             document.getElementById('document_upload').style.display = ''
             document.getElementById('video_upload').style.display = 'none'
-            document.getElementById('document').required = true
-            document.getElementById('lesson_link').required = false
-        }else if(element.value == 'Video + Document'){
+            document.getElementById('video_link').required = false
+        }else if(lesson_type.value == 'Video + Document'){
+            document.getElementById('document_link').setAttribute('required', 'required')
             document.getElementById('document_upload').style.display = ''
             document.getElementById('video_upload').style.display = ''
-            document.getElementById('document').required = true
-            document.getElementById('lesson_link').required = true
+            document.getElementById('video_link').required = true
         }
     }
 
     function loadLesson() {
-        var element = document.getElementById('lesson_link').value
+        var element = document.getElementById('video_link').value
 
         if (element) {
             var url = `https://www.youtube.com/embed/${element}`

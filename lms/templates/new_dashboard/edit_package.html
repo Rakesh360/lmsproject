@@ -26,7 +26,7 @@
 
 <div style="margin-top: 6%; display: flex;">
     <div style="margin: 0 auto; font-size: xxx-large;">
-        Create New Package
+        Create New Packagess
     </div>
 </div>
 
@@ -39,27 +39,27 @@
             {% csrf_token %}
             <div class="form-row mb-4">
                 <div class="form-group col-md-6">
-                    <label for="lesson_title">Package Name</label>
-                    <input type="text" class="form-control" required name="lesson_title" id="inputEmail4"
-                        placeholder="Enter lesson title">
+                    <label for="package_title">Package Name</label>
+                    <input type="text" class="form-control" required name="package_title" id="package_title"
+                        placeholder="Enter Package Title">
                 </div>
                 <div class="form-group col-md-6">
                     <label for="package_type"> Package Type</label>
-                    <select required id="subjects" name="package_type" class="form-control basic tagging ">
+                    <select required id="package_type" name="package_type" class="form-control basic tagging ">
                         <option value="video">Video</option>
-                        <option value="text">Text</option>
+                        <option value="text">Test</option>
                     </select>
                 </div>
                 <div class="form-group col-md-6">
 
                     <label for="actual_price">Actual Price</label>
-                    <input type="number" name="actual_price" class="form-control" placeholder="Enter Actual Price in Rupees"> 
+                    <input type="number" id="actual_price" name="actual_price" class="form-control" placeholder="Enter Actual Price in Rupees"> 
                     
                 </div>
 
                 <div class="form-group col-md-6">
                     <label for="selling_price">Selling Price</label>
-                    <input type="number" name="selling_price" class="form-control" placeholder="Enter Selling Price in Rupees"> 
+                    <input type="number" id="selling_price" name="selling_price" class="form-control" placeholder="Enter Selling Price in Rupees"> 
                 </div>
 
 
@@ -68,7 +68,7 @@
 
                 <div class="form-group col-md-6">
                     <div id="expiryTypePicker">
-                        <label for="expiryType"> Enter Start Time Of Live </label>
+                        <label for="expiryType"> Expiry Type </label>
                         <select name="expiryType" class="form-control" onchange="changeExpiryType(event)">
                             <option selected>Choose Expiry Type</option>
                             <option value="fixed-date">Fixed Date</option>
@@ -120,35 +120,30 @@
 
             </div>
 
-            <button type="submit" class="btn btn-primary mt-3">Create Package</button>
+            <button type="submit" id="handleSubmit" class="btn btn-primary mt-3">Create Package</button>
         </form>
 
     </div>
 </div>
 
 
-<!-- CK EDITOR DUMMY -->
-
-<!-- 
-<script src="https://cdn.ckeditor.com/ckeditor5/29.2.0/classic/ckeditor.js"></script>
-
-<h1>Classic editor</h1>
-<div id="editor">
-    <p>This is some sample content.</p>
-</div>
-<script>
-    ClassicEditor
-        .create( document.querySelector( '#editor' ) )
-        .catch( error => {
-            console.error( error );
-        } );
-</script> -->
-
-
-
 <script>
     let expiryDateContainer = document.getElementById('expiryDateContainer');
     let subscriptionContainer = document.getElementById('subscriptionContainer');
+
+    // handle form submission start
+    let handleSubmit = document.getElementById('handleSubmit');
+    handleSubmit.addEventListener('click', function (event) {
+        let data = {
+            'package_title' : document.getElementById('inputEmail4').value,
+            'package_type' : document.getElementById('subjects').value,
+            'actual_price' : document.getElementById('actual_price').value,
+            'selling_price' : document.getElementById('selling_price').value,
+        }
+    });
+
+
+    // handle form submission end
 
     function changeExpiryType() {
         if (event.currentTarget.value === 'fixed-date') {

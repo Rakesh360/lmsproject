@@ -21,7 +21,7 @@
 <div class="card">
     <div class="card-body">
         {% include "utils/alert.html" %}
-        <form method="POST" enctype="multipart/form-data">
+        <form>
             {% csrf_token %}
             <div class="form-row mb-4">
                 <div class="form-group col-md-6">
@@ -36,16 +36,17 @@
                         <option value="test">Test</option>
                     </select>
                 </div>
+
                 <div class="form-group col-md-6">
 
                     <label for="actual_price">Actual Price</label>
-                    <input type="number" name="actual_price" class="form-control" placeholder="Enter Actual Price in Rupees"> 
+                    <input type="number" id="actual_price" name="actual_price" class="form-control" placeholder="Enter Actual Price in Rupees"> 
                     
                 </div>
 
                 <div class="form-group col-md-6">
                     <label for="selling_price">Selling Price</label>
-                    <input type="number" name="selling_price" class="form-control" placeholder="Enter Selling Price in Rupees"> 
+                    <input id="selling_price" type="number" name="selling_price" class="form-control" placeholder="Enter Selling Price in Rupees"> 
                 </div>
 
 
@@ -54,9 +55,9 @@
 
                 <div class="form-group col-md-6">
                     <div id="expiryTypePicker">
-                        <label for="expiryType"> Enter Start Time Of Live </label>
-                        <select name="expiryType" class="form-control" onchange="changeExpiryType(event)">
-                            <option selected>Choose Expiry Type</option>
+                        <label for="expiryType"> Expiry Type </label>
+                        <select required name="expiryType" id="expiryType" class="form-control" onchange="changeExpiryType(event)">
+                            <option disabled selected>Choose Expiry Type</option>
                             <option value="fixed-date">Fixed Date</option>
                             <option value="subscription">Subscription</option>
                         </select>
@@ -70,14 +71,36 @@
 
                     <div id="subscriptionContainer" style="display: none; margin-top: 3%;">
                         <label for="subscriptionDays">Subscription Period</label>
-                        <input type="number" class="form-control" placeholder="Enter Subscription Period (in Days)">
+                        <input type="number" id="subscriptionDays" class="form-control" placeholder="Enter Subscription Period (in Days)">
                     </div>
 
                 </div>
 
-               
+                <div class="form-group col-md-6">
+                    <div id="expiryTypePicker">
+                        <label for="is_active"> Is Active </label>
+                        <select required name="is_active" id="is_active" class="form-control">
+                            <option value="false">No</option>
+                            <option value="true" selected>Yes</option>
+                        </select>
+                    </div>
 
-               
+                </div>
+
+            </div>
+
+            <div class="form-group md-4">
+                <div class="form-group col-md-6">
+
+                    <label for="sell_start_time">Set Selling Start Time</label>
+                    <input type="date" id="sell_start_time" name="sell_start_time" class="form-control" placeholder="Choose Date"> 
+                    
+                </div>
+    
+                <div class="form-group col-md-6">
+                    <label for="sell_end_time">Set Selling End Time Price</label>
+                    <input id="sell_end_time" type="date" name="sell_end_time" class="form-control" placeholder="Choose Date"> 
+                </div>
             </div>
             
 
@@ -92,28 +115,33 @@
 
                 <div class="form-group mb-6">
                     <div class="custom-file">
-                        <input type="file" class="custom-file-input" name="image_for_web" id="inputGroupFile01">
+                        <input type="file" class="custom-file-input" name="image_for_web" id="image_for_web">
                         <label class="custom-file-label" for="image_for_web">Choose file For Web</label>
                     </div>
                 </div>
 
                 <div class="form-group mb-6">
                     <div class="custom-file">
-                        <input type="file" class="custom-file-input" name="image_for_app" id="inputGroupFile01">
+                        <input type="file" class="custom-file-input" name="image_for_app" id="image_for_app">
                         <label class="custom-file-label" for="image_for_app">Choose file For App</label>
                     </div>
                 </div>
 
             </div>
 
-            <button type="submit" class="btn btn-primary mt-3">Create Package</button>
+            <button type="submit" id="handleSubmit" class="btn btn-primary mt-3">Create Package</button>
         </form>
 
     </div>
 </div>
 
 <script>
-    CKEDITOR.replace( 'description' );
+    let editor = CKEDITOR.replace( 'description' );
+    var description;
+    editor.on( 'change', function( evt ) {
+    // getData() returns CKEditor's HTML content.
+    description =  evt.editor.getData();
+});
 </script>
 
 
@@ -123,6 +151,37 @@
 <script>
     let expiryDateContainer = document.getElementById('expiryDateContainer');
     let subscriptionContainer = document.getElementById('subscriptionContainer');
+
+    // handlesubmit starts
+    let handleSubmit = document.getElementById('handleSubmit');
+    handleSubmit.addEventListener('click', function (event) {
+        event.preventDefault();
+        let data = {
+            'package_title' : document.getElementById('inputEmail4').value,
+            'package_type' : document.getElementById('subjects').value,
+            'actual_price' : document.getElementById('actual_price').value,
+            'selling_price' : document.getElementById('selling_price').value,
+            'expiry_type' : document.getElementById('expiryType').value,
+            'sell_till' : document.getElementById('expiryDate').value,
+            'days' : document.getElementById('subscriptionDays').value,
+            'description' : description,
+            'web_image' : document.getElementById('image_for_web').value,
+            'mobile_image': document.getElementById('image_for_app').value,
+            'is_active' : document.getElementById('is_active').value,
+            'sell_start_time' : document.getElementById('sell_start_time').value,
+            'sell_end_time' : document.getElementById('sell_end_time').value,
+        };
+
+        if (data['package_type'] == 'video') {
+            // fetch for video API
+        } else {
+            // fetch for test API
+        }
+
+        console.log(data);
+    });
+    // handlesubmit ends
+
 
     function changeExpiryType() {
         if (event.currentTarget.value === 'fixed-date') {
