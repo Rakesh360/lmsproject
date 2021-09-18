@@ -61,7 +61,7 @@ class CoursesView(APIView):
                     lessons = []
                     for lesson in chapter.pacakge_subject_chapters_lessons.all():
                         lesson_dict = {}
-                        lesson_dict['sequence'] = lesson.sequence
+                        lesson_dict['sequence'] = lesson.s_no
                         lesson_dict['lesson_title'] = lesson.lesson.lesson_title
                         lesson_dict['lesson_type'] = lesson.lesson.lesson_type
                         lesson_dict['is_free'] = lesson.lesson.is_free
