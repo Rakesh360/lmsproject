@@ -1,5 +1,5 @@
 from django.urls import path , include
-from . import views
+from . import views_api as views
 
 
 
@@ -10,6 +10,6 @@ urlpatterns = [
    path('lessons/' , views.LessonsView.as_view()),
    path('course-packages/' , views.CoursePackageAPI.as_view()),
    path('save-course-package/' , views.SaveCoursePackage.as_view()),
-   path('course-package-info/' , views.CoursePackageSubjectsAPI.as_view())
-
+   path('course-package-info/' , views.CoursePackageSubjectsAPI.as_view()),
+   path('go-live/' , views.GoLiveView.as_view()),
 ]

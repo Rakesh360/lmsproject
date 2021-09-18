@@ -80,15 +80,15 @@ class Lessons(BaseModel):
 
 class CoursePackage(BaseModel):
     package_title = models.CharField(max_length=100)
-    package_description = models.TextField(null=True , blank=True)
-    actual_price = models.IntegerField(null=True , blank=True)
-    selling_price = models.IntegerField(default = 0)
-    sell_from = models.CharField(null=True , blank=True, max_length=100)
-    sell_till = models.CharField(null=True , blank=True ,  max_length=100)
+    package_description = models.TextField()
+    actual_price = models.IntegerField()
+    selling_price = models.IntegerField()
+    package_type = models.CharField(max_length=100, default='Fixed Date' , choices=(('Fixed Date' , 'Fixed Date') , ('Subscription' , 'Subscrption')))
+    days = models.IntegerField(default=0)
+    sell_till = models.DateField(null=True , blank=True ,  max_length=100)
     is_active = models.BooleanField(default=True)
-    course_validity = models.DateField(null=True , blank=True)
-    web_image = models.ImageField(upload_to = "course_package",null=True , blank=True)
-    mobile_image = models.ImageField(upload_to = "course_package",null=True , blank=True)
+    web_image = models.ImageField(upload_to = "course_package",)
+    mobile_image = models.ImageField(upload_to = "course_package")
 
     class Meta:
         db_table = "course_package"
@@ -116,20 +116,22 @@ class CoursePackageLessons(BaseModel):
     course_package_chapter = models.ForeignKey(CoursePackageChapters , related_name='pacakge_subject_chapters_lessons',on_delete=models.CASCADE)
     lesson = models.ForeignKey(Lessons , on_delete=models.CASCADE)
     s_no = models.IntegerField(default=1)
+    added_at = models.DateTimeField(null=True , blank=True)
 
     def __str__(self) -> str:
         return self.lesson.lesson_title
     
 
 class GoLive(BaseModel):
+    from datetime import datetime
     course_package = models.ForeignKey(CoursePackage , related_name='live' , on_delete=models.CASCADE)
-    subject = models.ForeignKey(Subject , on_delete=models.SET_NULL , null=True , blank=True)
-    chapter = models.ForeignKey(SubjectChapters , on_delete=models.SET_NULL , null=True , blank=True)
+    subject = models.ForeignKey(Subject , on_delete=models.CASCADE)
+    chapter = models.ForeignKey(SubjectChapters , on_delete=models.CASCADE)
     live_name = models.CharField(max_length=100)
     live_url = models.CharField(max_length=10000)
     image = models.ImageField(upload_to = 'live' , null=True , blank = True)
-    live_date = models.DateField(null=True , blank=True)
-    live_time = models.CharField(max_length=100)
+    live_date_time = models.DateTimeField(default=datetime.now)
+
 
 
 
