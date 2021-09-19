@@ -29,11 +29,11 @@
                     <div class="form-group col-md-6">
                         <label for="inputEmail4">Lesson title</label>
                         <input type="text" class="form-control" required name="lesson_title" value="{{lesson.lesson_title}}"
-                            id="inputEmail4" placeholder="Enter lesson title">
+                            id="lesson_title" placeholder="Enter lesson title">
                     </div>
                     <div class="form-group col-md-6">
                         <label for="inputPassword4">Subject Chapters</label>
-                        <select required id="chapters" name="chapters" class="form-control basic tagging ">
+                        <select required id="chooseChapters" name="chapters" class="form-control basic tagging ">
                             {% for subject_chapter in  subject_chapters %}
                             <option {% if lesson.subject_chapters ==  subject_chapter %} selected {% endif %}
                                 value="{{subject_chapter.uid}}">{{subject_chapter.chapter_title}}</option>
@@ -53,8 +53,8 @@
 
                     <div class="form-group col-md-6">
                         
-                        <label for="inputEmail4">Lesson Type</label>
-                        <select class="form-control" id="element" name="lesson_type" onchange="changeLessonType()">
+                        <label for="lesson_type">Lesson Type</label>
+                        <select class="form-control" id="lesson_type" name="lesson_type" onchange="changeLessonType()">
                             <option  {% if lesson.lesson_type == 'Video' %} selected {% endif %} value="Video">Video</option>
                             <option  {% if lesson.lesson_type == 'Document' %} selected {% endif %} value="Document">Document</option>
                             <option  {% if lesson.lesson_type == 'Video + Document' %} selected {% endif %} value="Video + Document">Video + Document</option>
@@ -70,8 +70,8 @@
                     <div class="form-row mb-4" id="video_upload">
 
                         <div class="form-group col-md-6">
-                            <label for="inputAddress">Video Platform</label>
-                            <select required class="form-control" name="video_uploaded_on">
+                            <label for="video_uploaded_on">Video Platform</label>
+                            <select id="videoType" required class="form-control" name="video_uploaded_on">
                                 <option {% if lesson.video_uploaded_on == 'Vimeo' %} selected {% endif %} value="Vimeo">Vimeo
                                 </option>
                                 <option {% if lesson.video_uploaded_on == 'Youtube' %} selected {% endif %} value="Youtube">
@@ -80,9 +80,9 @@
                             </select>
                         </div>
                         <div class="form-group col-md-6">
-                            <label for="inputEmail4">Lesson Link</label>
+                            <label for="video_link">Lesson Link</label>
                             <input value="{{lesson.video.video_link}}" type="text" onchange="loadLesson()" required id="lesson_link" class="form-control"
-                                name="video_link" id="inputEmail4" placeholder="Enter lesson title">
+                                name="video_link" id="video_link" placeholder="Enter lesson title">
                             <small>Paste Id only</small>
                             <iframe width="550" id="iframe" height="215" src="">
                             </iframe>
@@ -92,8 +92,8 @@
                     <div class="form-row mb-4" id="document_upload" style="display: none;">
 
                         <div class="form-group col-md-6">
-                            <label>Upload Document</label>
-                            <input class="form-control" id="document" type="file" name="document">
+                            <label>Upload Document</label>  <a href="/{{lesson.document}}"></a>
+                            <input class="form-control" id="document_link" type="file" name="document">
                         </div>
 
                     </div>
@@ -114,17 +114,11 @@
             <form method="POST" enctype="multipart/form-data">
                 {% csrf_token %}
                 <div class="form-row mb-4">
-                    <div class="form-group col-md-6">
-                        <label for="visibility">Visibility</label>
-                        <select required id="chapters" name="visibility" class="form-control basic tagging ">
-                            <option value="0">Hidden</option>
-                            <option value="1">Visible</option>
-                        </select>
-                    </div>
+                  
                     <div class="form-group col-md-6">
     
                         <label for="inputEmail4">Is free</label>
-                        <select class="form-control" name="is_free">
+                        <select class="form-control" id="is_free" name="is_free">
                             <option value="0">No</option>
                             <option value="1">Yes</option>
     
@@ -149,7 +143,7 @@
                     </div> 
     
                     <br>
-
+                    <p>{{lesson.packages}}</p>
                     <div class="table table-striped" style="margin: 1%;">
                         <table class="display">
                             <!-- <thead>
@@ -170,13 +164,28 @@
     
                 
     
-               <button type="submit" class="btn btn-primary mt-3">Update Published Details</button>
+               <button type="submit" id="updateBtn" class="btn btn-primary mt-3">Update Published Details</button>
             </form>
     
         </div>
     </div>
 
 <script>
+    // function to parse date from 1632058848038 to 2018-12-31T00:00:00.000Z
+    function parseDate(date) {
+        var date = new Date(date);
+        var year = date.getFullYear();
+        var month = date.getMonth() + 1;
+        var day = date.getDate();
+        var hour = date.getHours();
+        var min = date.getMinutes();
+        var sec = date.getSeconds();
+        var dateString = year + "-" + month + "-" + day + "T" + hour + ":" + min + ":" + sec + "Z";
+        return dateString;
+        
+    }
+
+
     let iframe = document.getElementById('iframe');
     let lesson_link = document.getElementById('lesson_link');
     lesson_link.onchange = loadLesson;
@@ -234,7 +243,7 @@
                 td1.innerHTML = tagName;
                 td1.id = tagId;
                 let td2 = document.createElement('td');
-                td2.innerHTML = '<input type="datetime-local" name='+id+'>';
+                td2.innerHTML = '<input class="packageDate" type="datetime-local" name='+id+'>';
                 let td3 = document.createElement('td');
                 td3.innerHTML = '❌';
                 td3.className = 'delBtn';
@@ -293,6 +302,138 @@
 
 
     }
+
+    function getCookie(name) {
+        if (!document.cookie) {
+            return null;
+        }
+        const xsrfCookies = document.cookie.split(';')
+        .map(c => c.trim())
+        .filter(c => c.startsWith(name + '='));
+        if (xsrfCookies.length === 0) {
+            return null;
+        }
+            return decodeURIComponent(xsrfCookies[0].split('=')[1]);
+    }
+    
+    const csrfToken = getCookie('csrftoken');
+
+    let docReUploaded = false;
+    document.getElementById('document_link').onchange = function() {
+        docReUploaded = true;
+        console.log('doc uploaded changed');
+    }
+
+    async function uploadoc() {
+        console.log('Uploading file...');
+        // document.getElementById('loader').style.display = 'block';
+        const formData = new FormData();
+        formData.append('document_file', document.getElementById('document_link').files[0]);
+        let response = await fetch('/api/courses/document/', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': csrfToken
+            }
+        });
+        const json = await response.json();
+        console.log(json);
+        return json.uid;
+
+        
+
+    }
+
+    
+    const submitForm = async (e) => {
+        e.preventDefault();
+
+        
+        let video_platform = document.getElementById('videoType').value;
+        let data = {
+            'uid': '{{lesson.uid}}',
+            'lesson_title' : document.getElementById('lesson_title').value,
+            'chapter' : document.getElementById('chooseChapters').value,
+            'video_platform' : video_platform,
+            'lesson_type' : document.getElementById('lesson_type').value,
+            'is_free' : document.getElementById('is_free').value,
+            'video': {
+                'video_link': document.getElementById('lesson_link').value,
+            }
+        };
+
+        // document upload
+        if (docReUploaded === true) {
+            let docLink = await uploadoc();
+            console.log('...', docLink);
+            data['document'] = docLink;
+        }
+        
+    
+        // getting data of all packages...
+        let allTags = document.getElementsByClassName('tag');
+        let allPackageDates = document.getElementsByClassName('packageDate');
+        let packages = [];
+        for (let i = 0; i < allTags.length; i++) {
+            if (allPackageDates[i].value === '') {
+                packages.push({
+                    "uid" : allTags[i].id,
+                    "created_at" : parseDate(Date.now()),
+                });
+            } else {
+                packages.push({
+                    "uid" : allTags[i].id,
+                    "created_at" : allPackageDates[i].value
+                });
+            }
+            
+            
+        };
+        data['packages'] = packages;
+
+        console.log(data);
+
+        if (video_platform === 'Live') {
+            fetch('/api/courses/go-live/', {
+                method: 'POST', // or 'PUT'
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                body: JSON.stringify(data)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Success:', data);
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+            });
+        } else {
+            fetch('/api/courses/lessons/', {
+                method: 'POST', // or 'PUT'
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                    body: JSON.stringify(data)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Success:', data);
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+            });
+        }
+
+        // log all data of form data
+    };
+
+    const updateBtn = document.getElementById('updateBtn');
+    updateBtn.addEventListener('click', submitForm)
+
+
 </script>
 
 

@@ -216,59 +216,7 @@
         
 
     }
-    let document_link = document.getElementById('document_link');
-
-    // function _(el) {
-    //     return document.getElementById(el);
-    // }
-
-    // function progressHandler(event) {
-    // _("loaded_n_total").innerHTML = "Uploaded " + event.loaded + " bytes of " + event.total;
-    // var percent = (event.loaded / event.total) * 100;
-    // _("progressBar").value = Math.round(percent);
-    // _("status").innerHTML = Math.round(percent) + "% uploaded... please wait";
-    // }
-
-    // function completeHandler(event) {
-    // _("status").innerHTML = event.target.responseText;
-    // _("progressBar").value = 0; //wil clear progress bar after successful upload
-    // return JSON.parse(event.target.responseText).uid;
-    // }
-
-    // function errorHandler(event) {
-    // _("status").innerHTML = "Upload Failed";
-    // }
-
-    // function abortHandler(event) {
-    // _("status").innerHTML = "Upload Aborted";
-    // }
-
-    // let testBtn = document.getElementById('testBtn');
-    // testBtn.addEventListener('click', function (e) {
-    //     // getting data of all tags...
-    //     let test = document.getElementById('document_link');
-    //     console.log(test.value);
-    //     const formData = new FormData();
-    //     formData.append('document_link', test.files[0]);
-    //     formData.append('csrfmiddlewaretoken', csrfToken);
-    //     fetch('/api/courses/go-live/', {
-    //         method: 'POST',
-    //         body: formData,
-    //         headers: {
-    //             'X-CSRFToken': csrfToken
-    //         }
-    //     })
-    //     .then(response => response.json())
-    //     .then(data => {
-    //         console.log('da', data)
-    //     })
-    //     .catch(error => {
-    //         console.error('err', error)
-    //     })
-        
-    // });
-
-    
+    let document_link = document.getElementById('document_link');    
     
     const submitForm = async (e) => {
         e.preventDefault();
@@ -312,7 +260,7 @@
             });
             
         };
-        // data['packages'] = packages;
+        data['packages'] = packages;
 
         console.log(data);
 

@@ -42,15 +42,15 @@
     background-color: #eaeaea;
     }
 
-    .draggable-list .person-name {
+    .draggable-list .p_tags {
     margin: 0 20px 0 0;
     }
 
-    .draggable-list li.right .person-name {
+    .draggable-list li.right .p_tags {
     color: #3ae374;
     }
 
-    .draggable-list li.wrong .person-name {
+    .draggable-list li.wrong .p_tags {
     color: #ff3838;
     }
 
@@ -131,7 +131,7 @@
                 <div class="form-row mb-4">
                     <div class="form-group col-md-6">
                         <label for="lesson_title">Package Name</label>
-                        <input type="text" class="form-control" required name="lesson_title" id="inputEmail4"
+                        <input type="text" class="form-control" required name="lesson_title" id="lesson_title"
                             value="{{ course_package_obj.package_title }}" placeholder="Enter lesson title">
                     </div>
                     <div class="form-group col-md-6">
@@ -185,8 +185,8 @@
                         <div id="expiryTypePicker">
                             <label for="is_active"> Is Active </label>
                             <select required name="is_active" id="is_active" class="form-control">
-                                <option {% if course_package_obj.is_active == false %} selected {% endif %} value="inactive">Inactive</option>
-                                <option {% if course_package_obj.is_active == true %} selected {% endif %} value="active" >Active</option>
+                                <option {% if course_package_obj.is_active == false %} selected {% endif %} value=false>Inactive</option>
+                                <option {% if course_package_obj.is_active == true %} selected {% endif %} value=true >Active</option>
                             </select>
                         </div>
     
@@ -218,6 +218,8 @@
                             <label class="custom-file-label" for="image_for_web">Choose file For Web</label>
                         </div>
                     </div>
+                    <br>
+                    <a href="/{{course_package_obj.web_image}}">Open Here</a>
     
                     <div class="form-group mb-6">
                         <div class="custom-file">
@@ -225,11 +227,11 @@
                             <label class="custom-file-label" for="image_for_app">Choose file For App</label>
                         </div>
                     </div>
-    
+                    <br>
+                    <a href="/{{course_package_obj.mobile_image}}">Open Here</a>
                 </div>
     
                 <button type="submit" id="handleSubmit" class="btn btn-primary mt-3">Create Package</button>
-                <div id="testContent"></div>
             </form>
     
         </div>
@@ -247,14 +249,14 @@
 
                 <div class="collapse show m-2" id="reorderChapterDiv">
                     <label for="selectedSubject">Select Subject whose chapters you want to reorder </label>
-                    <select name="selectedSubject" id="selectedSubject" class="form-control" onchange="reorderChapters(event)">
+                    <select name="selectedSubject" id="selectedSubject" class="form-control">
                         <option value="0" selected disabled>Choose Subject</option>
                         
                     </select>
 
                     <div id="selectChapterDiv" style="display: none;">
                         <label for="selectedChapter">Select chapter whose lessons you want to reorder </label>
-                        <select name="selectedChapter" id="selectedChapter" class="form-control" onchange="reorderChapters(event)">
+                        <select name="selectedChapter" id="selectedChapter" class="form-control">
                             <option value="0" selected disabled>Choose Chapter</option>
                             
                         </select>
@@ -277,7 +279,7 @@
             <div class="col-md-6">
                 <h3 id="titleData">Subject</h3>
                 <ul class="draggable-list" id="draggable-list" style="height: 610px; overflow-y: scroll;"></ul>
-                <button class="check-btn" id="saveBtn">
+                <button class="check-btn" id="saveBtn" onclick="updateOrder(editingMode)">
                     Save 
                 <i class="fas fa-save"></i>
                 </button>
@@ -291,6 +293,70 @@
 
 
 <script>
+    const handleSubmit = document.getElementById('handleSubmit');
+    handleSubmit.addEventListener('click', function (event) {
+        event.preventDefault();
+        let formData = new FormData();
+        formData.append('uid', '{{course_package_obj.uid}}');
+        formData.append('package_title', document.getElementById('lesson_title').value);
+        formData.append('package_type', document.getElementById('subjects').value);
+        formData.append('actual_price', document.getElementById('actual_price').value);
+        formData.append('selling_price', document.getElementById('selling_price').value);
+        formData.append('expiry_type', document.getElementById('expiryType').value);
+        formData.append('sell_till_date', document.getElementById('expiryDate').value);
+        formData.append('days', document.getElementById('subscriptionDays').value);
+        formData.append('package_description', description);
+        formData.append('web_image', '{{course_package_obj.web_image}}');
+        formData.append('mobile_image', '{{course_package_obj.mobile_image}}');
+        formData.append('is_active', document.getElementById('is_active').value);
+        formData.append('sell_end_time', document.getElementById('sell_end_time').value);
+        console.log();
+            
+
+        if (document.getElementById('subjects').value === 'video') {
+            
+            fetch('/api/courses/course-packages/', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': csrfToken
+                },
+            })
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(response) {
+                console.log(response);
+                if (response.status === true) {
+                    alert('Successfully created package');
+                } else {
+                    alert('Error while creating package');
+                }
+            });
+                
+
+        } else {
+            // fetch for test API
+        }
+
+    });
+
+
+
+    function getCookie(name) {
+        if (!document.cookie) {
+            return null;
+        }
+        const xsrfCookies = document.cookie.split(';')
+        .map(c => c.trim())
+        .filter(c => c.startsWith(name + '='));
+        if (xsrfCookies.length === 0) {
+            return null;
+        }
+            return decodeURIComponent(xsrfCookies[0].split('=')[1]);
+    }
+    
+    const csrfToken = getCookie('csrftoken');
     let editor = CKEDITOR.replace( 'description' );
     var description;
     editor.on( 'change', function( evt ) {
@@ -304,17 +370,37 @@
         evt.editor.setData('{{course_package_obj.package_description}}');
     });    
 
-    document.getElementById('testContent').innerHTML = '{{course_package_obj.package_description}}';
-
 
     // script for nav btn start
     let flag = true;
-    let contentBtn = document.getElementById('contentBtn');
-    let treeBtn = document.getElementById('treeBtn');
-    let contentDiv = document.getElementById('contentDiv');
-    let treeDiv = document.getElementById('treeDiv');
-    let tagSection = document.getElementById('tagSection');
-    let tagsDropdown = document.getElementById('tagsDropdown');
+    const contentBtn = document.getElementById('contentBtn');
+    const treeBtn = document.getElementById('treeBtn');
+    const contentDiv = document.getElementById('contentDiv');
+    const treeDiv = document.getElementById('treeDiv');
+    const tagSection = document.getElementById('tagSection');
+    const tagsDropdown = document.getElementById('tagsDropdown');
+    const reorderChapterBtn = document.getElementById('reorderChapterBtn');
+    const reorderLessonsBtn = document.getElementById('reorderLessonsBtn');
+    const reorderChapterDiv = document.getElementById('reorderChapterDiv');
+    const reorderLessonsDiv = document.getElementById('reorderLessonsDiv');
+    const titleData = document.getElementById('titleData');
+    const draggable_list = document.getElementById('draggable-list');
+    let chaptergroupuid;
+    let lessongroupuid;
+
+    const selectedSubject = document.getElementById('selectedSubject');
+    const selectedChapter = document.getElementById('selectedChapter');
+    const selectChapterDiv = document.getElementById('selectChapterDiv');
+    const chooseChapterBtn = document.getElementById('chooseChapterBtn');
+    const reorderBtn = document.getElementById('reorderBtn');
+    var allSubjects; // all subjects array
+    let subjectUid;
+    let chapterUid;
+    const listItems = [];
+    let subjectsArray = [];
+    let chaptersArray = [];
+    // let lessonsArray = [];
+    let editingMode = 'subject';
 
     contentBtn.addEventListener('click', function () {
         contentBtn.classList.add('active');
@@ -348,50 +434,110 @@
         }
     }
     
+  
 
-    // script for nav btn ends
 
 
-    // script for tree options start
+    async function updateOrder(editingMode) {
+        if (editingMode === 'subject') {
+            let allData = document.getElementsByClassName('p_tags');
+            let subjects=[];
+            for (let i = 0; i < allData.length; i++) {
+                var element = allData[i];
+                subjects.push({
+                    'subject_uid': element.id,
+                    's_no': i+1
+                });
+            };
+            console.log('subjects',subjects);
+            let payloadData = {
+                'coure_package_uid': course_package_uid,
+                'sequence_for': 'subject',
+                'subjects': subjects
+            }
 
-    let reorderChapterBtn = document.getElementById('reorderChapterBtn');
-    let reorderLessonsBtn = document.getElementById('reorderLessonsBtn');
-    let reorderChapterDiv = document.getElementById('reorderChapterDiv');
-    let reorderLessonsDiv = document.getElementById('reorderLessonsDiv');
+            let response = await fetch('/api/courses/package-sequence/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                body: JSON.stringify(payloadData)
+            })
 
-    // reorderChapterBtn.addEventListener('click', function () {
-    //     reorderChapterDiv.style.display = 'block';
-    //     reorderLessonsDiv.style.display = 'none';
-    //     reorderChapterBtn.classList.add('active');
-    //     reorderLessonsBtn.classList.remove('active');
-    // });
+            let json = await response.json();
+            alert(json.message);
 
-    // reorderLessonsBtn.addEventListener('click', function () {
-    //     reorderChapterDiv.style.display = 'none';
-    //     reorderLessonsDiv.style.display = 'block';
-    //     reorderChapterBtn.classList.remove('active');
-    //     reorderLessonsBtn.classList.add('active');
-    // });
 
-    // script for tree ends
+        } else if (editingMode === 'chapter') {
+            let allData = document.getElementsByClassName('p_tags');
+            let chapters=[];
+            for (let i = 0; i < allData.length; i++) {
+                var element = allData[i];
+                chapters.push({
+                    'uid': chaptergroupuid,
+                    'subject_uid': element.id,
+                    's_no': i+1
+                });
+            };
+            console.log('chapters', chapters);
+            let payloadData = {
+                'coure_package_uid': course_package_uid,
+                'sequence_for': 'chapter',
+                'chapters': chapters
+            }
 
-    // script to add reorder chapters
+            let response = await fetch('/api/courses/package-sequence/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                body: JSON.stringify(payloadData)
+            })
 
-    let selectedSubject = document.getElementById('selectedSubject');
-    let selectedChapter = document.getElementById('selectedChapter');
-    let selectChapterDiv = document.getElementById('selectChapterDiv');
-    let chooseChapterBtn = document.getElementById('chooseChapterBtn');
-    let reorderBtn = document.getElementById('reorderBtn');
-    let allSubjects; // all subjects array
-    let subjectUid;
-    let chapterUid;
-    let subjectssArray = [];
-    let chaptersArray = [];
-    let lessonsArray = [];
+            let json = await response.json();
+            alert(json.message);
 
+        } else if (editingMode === 'lesson') {
+            let allData = document.getElementsByClassName('p_tags');
+            let lessons=[];
+            for (let i = 0; i < allData.length; i++) {
+                var element = allData[i];
+                lessons.push({
+                    'uid': lessongroupuid,
+                    'lesson_uid': element.id,
+                    's_no': i+1
+                });
+            };
+            console.log('lessons', lessons);
+            let payloadData = {
+                'coure_package_uid': course_package_uid,
+                'sequence_for': 'lesson',
+                'lessons': lessons
+            }
+
+            let response = await fetch('/api/courses/package-sequence/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                body: JSON.stringify(payloadData)
+            })
+
+            let json = await response.json();
+            alert(json.message);
+        }
+
+        saveBtn.style.backgroundColor = '#c3c7ca';
+
+    }
 
     function reorderChapters(event) {
-        console.log(event.target.value);
+        let selecTedSubjectUid = event.target.value;
+        titleData.innerHTML = '<h3>Reorder Chapters</h3>';
+        let chaptersArray = [];
     };
 
 
@@ -400,11 +546,7 @@
     function draggableTree() {  
         let saveBtn = document.getElementById('saveBtn');
 
-
-        const draggable_list = document.getElementById('draggable-list');
-
         let uid = '{{course_package_obj.uid}}'
-        console.log(uid);
         
         fetch('/api/courses/course-package-info/?uid='+ uid, {
         method: 'GET',
@@ -413,10 +555,10 @@
         .then(data => {
             
             allSubjects = data.data;
-            let subjectsArray = [];
+            subjectsArray = [];
             allSubjects.subjects.forEach(e => {
                 console.log(e);
-                subjectsArray.push(e.subject_title);
+                subjectsArray.push([e.subject_title, e.subject_uid]);
                 // adding all subjects to options in dropdown
                 let opt = document.createElement('option');
                 opt.innerHTML = e.subject_title;
@@ -427,15 +569,15 @@
             createList(subjectsArray);
 
             selectedSubject.addEventListener('change', function () {
-                console.log('onchange');
                 subjectUid = selectedSubject.value;
                 let allChapters;
+                chaptersArray=[];
                 allSubjects.subjects.forEach((e, i) => {
                     if (e.subject_uid === subjectUid) {
-                        console.log(e.chapters);
+                        chaptergroupuid = e.uid;
                         allChapters = e.chapters;
                         allChapters.forEach(e => {
-                            chaptersArray.push(e.chapter_title);
+                            chaptersArray.push([e.chapter_title, e.chapter_uid]);
                             // adding all chapters to options in dropdown
                             let opt = document.createElement('option');
                             opt.innerHTML = e.chapter_title;
@@ -448,18 +590,23 @@
 
            
             }) ///
+            let lessonsArray = [];
+            let temp;
 
             selectedChapter.addEventListener('change', function () {
                 chapterUid = selectedChapter.value;
                 // updating lessons array
                 allSubjects.subjects.forEach(e => {
+                    lessonsArray = [];
                     if (e.subject_uid === subjectUid) {
                         e.chapters.forEach(e => {
                             if (e.chapter_uid === chapterUid) {
+                                lessongroupuid = e.uid;
                                 e.lessons.forEach(e => {
-                                    lessonsArray.push(e.lesson_title);
-                                    console.log(lessonsArray);
-                                })
+                                    lessonsArray.push([e.lesson_title, e.lesson_uid]);
+                                });
+                                console.log('p', lessonsArray);
+                                temp = lessonsArray;
                             }
                         })
                     }
@@ -475,16 +622,22 @@
                 if (selectedSubject.value === "0") {
                     alert('Please select a subject');
                     return;
-                } else if (selectedSubject.value !== "0") {
-                    // code to send list of chapters to reorder
-                    console.log('send chapters array');
-
-                } else if (selectedChapter.value === "0" && selectedSubject.value !== "0") {
+                } else if (selectedChapter.value !== "0" && selectedSubject.value !== "0") {
                     let selectedSubjectUID = selectedSubject.value;
                     // code to send list of lessons to reorder
                     console.log('send lesson array');
+                    editingMode = 'lesson';
+                    console.log('a', temp);
+                    createList(temp);
 
-                }
+                } else if (selectedSubject.value !== "0") {
+                    // code to send list of chapters to reorder
+                    editingMode = 'chapter';
+                    console.log('send chapters array');
+                    console.log(chaptersArray);
+                    createList(chaptersArray);
+
+                } 
 
 
                 chooseChapterBtn.style.display = 'none';
@@ -496,13 +649,14 @@
         
 
        
-        const listItems = [];
+        
 
         let dragStartIndex;       
 
         // Insert list items into DOM
 
         function createList(array) {
+            draggable_list.innerHTML = '';
             array.forEach((person, index) => {
                 const listItem = document.createElement('li');
                 listItem.className = 'subject-li';
@@ -517,7 +671,7 @@
                 listItem.innerHTML = `
                     <span class="number">${index + 1}</span>
                     <div class="draggable" draggable="true">
-                    <p class="person-name">${person}</p>
+                    <p id="${person[1]}" class="p_tags">${person[0]}</p>
                     <i class="fas fa-arrow-right"></i>
                     </div>
                 `;
@@ -552,10 +706,9 @@
         }
 
         function dragDrop() {
-            console.log('Event: ', 'drop');
             const dragEndIndex = +this.getAttribute('data-index');
             swapItems(dragStartIndex, dragEndIndex);
-            saveSubject.style.backgroundColor = '#9fff83';
+            saveBtn.style.backgroundColor = '#9fff83';
             subjectsChanged = true;
 
             this.classList.remove('over');
@@ -565,9 +718,6 @@
         function swapItems(fromIndex, toIndex) {
             const itemOne = listItems[fromIndex].querySelector('.draggable');
             const itemTwo = listItems[toIndex].querySelector('.draggable');
-
-            console.log(itemOne, itemTwo);
-
             listItems[fromIndex].appendChild(itemTwo);
             listItems[toIndex].appendChild(itemOne);
         }
@@ -597,106 +747,6 @@ let two = document.querySelector('#container2')
 var course_package_uid = '{{course_package_uid}}'
 var CSRF_TOKEN = '{{csrf_token}}'
 
-
-function addLessonToChapter(subject_uid, chapter_uid, lesson_uid) {
-    var payload = {
-        'subject_uid': subject_uid,
-        'chapter_uid': chapter_uid,
-        'lesson_uid': lesson_uid,
-        'course_package_uid': course_package_uid
-    }
-
-    const headers = {
-        'X-CSRFToken': CSRF_TOKEN
-    }
-
-    axios.post('/api/courses/save-course-package/', payload, {
-            headers: headers
-        })
-        .then(function (response) {
-            console.log(response);
-        })
-        .catch(function (error) {
-            console.log(error);
-        });
-
-
-
-
-}
-
-function getUid() {
-    const urlParams = new URLSearchParams(window.location.search);
-    return urlParams.get('uid');
-}
-
-function getSubjectUid(){
-    const urlParams = new URLSearchParams(window.location.search);
-    return urlParams.get('subject_uid');
-}
-
-function getChapters(v = 1) {
-    
-    var subject_uid =  document.getElementById('subject').value
-    window.location.href = `?subject_uid=${subject_uid}`
-    
-    return
-    if (v == 0) {
-        clearTable()
-    }
-    var subject = document.getElementById('subject').value
-    axios.get(`/api/courses/get-chapters/?uid=${subject}`)
-        .then(response => {
-            console.log(response)
-
-            var chapters = response.data.data
-            $("#chapter").empty();
-            var opt = document.createElement('option');
-
-            opt.innerHTML = 'Choose';
-            document.getElementById('chapter').appendChild(opt);
-            console.log(chapters.length)
-            for (var i = 0; i < chapters.length; i++) {
-                var opt = document.createElement('option');
-                console.warn(chapters[i].uid)
-                opt.value = chapters[i].uid;
-                opt.innerHTML = chapters[i].chapter_title;
-
-                if (chapters[i].uid == getUid()) {
-                    opt.setAttribute('selected', true);
-                }
-
-                document.getElementById('chapter').appendChild(opt);
-                console.log('append')
-            }
-        })
-}
-
-function getLessons() {
-    var chapter = document.getElementById('chapter').value
-    window.location.href = `?uid=${chapter}&subject_uid=${getSubjectUid()}`
-    return;
-}
-
-function clearTable() {
-    document.getElementById('table').innerHTML = ''
-}
-
-
-
-
-
-function getSelectedValues() {
-    var selectedVal = $("#multiselect").val();
-    for (var i = 0; i < selectedVal.length; i++) {
-        function innerFunc(i) {
-            setTimeout(function () {
-                location.href = selectedVal[i];
-            }, i * 2000);
-        }
-        innerFunc(i);
-    }
-}
 </script>
 
 

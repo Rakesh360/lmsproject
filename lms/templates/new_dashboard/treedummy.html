@@ -482,4 +482,104 @@
 
 
 </script>
+
+
+
+<script>
+    function addLessonToChapter(subject_uid, chapter_uid, lesson_uid) {
+    var payload = {
+        'subject_uid': subject_uid,
+        'chapter_uid': chapter_uid,
+        'lesson_uid': lesson_uid,
+        'course_package_uid': course_package_uid
+    }
+
+    const headers = {
+        'X-CSRFToken': CSRF_TOKEN
+    }
+
+    axios.post('/api/courses/save-course-package/', payload, {
+            headers: headers
+        })
+        .then(function (response) {
+            console.log(response);
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+
+
+
+
+}
+
+function getUid() {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get('uid');
+}
+
+function getSubjectUid(){
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get('subject_uid');
+}
+
+function getChapters(v = 1) {
+    
+    var subject_uid =  document.getElementById('subject').value
+    window.location.href = `?subject_uid=${subject_uid}`
+    
+    return
+    if (v == 0) {
+        clearTable()
+    }
+    var subject = document.getElementById('subject').value
+    axios.get(`/api/courses/get-chapters/?uid=${subject}`)
+        .then(response => {
+            console.log(response)
+
+            var chapters = response.data.data
+            $("#chapter").empty();
+            var opt = document.createElement('option');
+
+            opt.innerHTML = 'Choose';
+            document.getElementById('chapter').appendChild(opt);
+            console.log(chapters.length)
+            for (var i = 0; i < chapters.length; i++) {
+                var opt = document.createElement('option');
+                console.warn(chapters[i].uid)
+                opt.value = chapters[i].uid;
+                opt.innerHTML = chapters[i].chapter_title;
+
+                if (chapters[i].uid == getUid()) {
+                    opt.setAttribute('selected', true);
+                }
+
+                document.getElementById('chapter').appendChild(opt);
+                console.log('append')
+            }
+        })
+}
+
+function getLessons() {
+    var chapter = document.getElementById('chapter').value
+    window.location.href = `?uid=${chapter}&subject_uid=${getSubjectUid()}`
+    return;
+}
+
+function clearTable() {
+    document.getElementById('table').innerHTML = ''
+}
+
+function getSelectedValues() {
+    var selectedVal = $("#multiselect").val();
+    for (var i = 0; i < selectedVal.length; i++) {
+        function innerFunc(i) {
+            setTimeout(function () {
+                location.href = selectedVal[i];
+            }, i * 2000);
+        }
+        innerFunc(i);
+    }
+}
+</script>
 </html>

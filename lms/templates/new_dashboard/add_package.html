@@ -92,7 +92,7 @@
             <div class="form-group md-4">
     
                 <div class="form-group col-md-6">
-                    <label for="sell_end_time">Set Selling End Time Price</label>
+                    <label for="sell_end_time">Set Selling End Time</label>
                     <input id="sell_end_time" type="date" name="sell_end_time" class="form-control" placeholder="Choose Date"> 
                 </div>
             </div>
@@ -134,7 +134,7 @@
     var description;
     editor.on( 'change', function( evt ) {
     // getData() returns CKEditor's HTML content.
-    description =  evt.editor.getData();
+    description =  evt.editor.getData();            
 });
 </script>
 
@@ -164,36 +164,20 @@
     let handleSubmit = document.getElementById('handleSubmit');
     handleSubmit.addEventListener('click', function (event) {
         event.preventDefault();
-        // let data = {
-        //     'package_title' : document.getElementById('inputEmail4').value,
-        //     'package_type' : document.getElementById('subjects').value,
-        //     'actual_price' : document.getElementById('actual_price').value,
-        //     'selling_price' : document.getElementById('selling_price').value,
-        //     'expiry_type' : document.getElementById('expiryType').value,
-        //     'sell_till' : document.getElementById('expiryDate').value,
-        //     'days' : document.getElementById('subscriptionDays').value,
-        //     'description' : description,
-        //     'web_image' : document.getElementById('image_for_web').value,
-        //     'mobile_image': document.getElementById('image_for_app').value,
-        //     'is_active' : document.getElementById('is_active').value,
-        //     'sell_start_time' : document.getElementById('sell_start_time').value,
-        //     'sell_end_time' : document.getElementById('sell_end_time').value,
-        // };
-
         let formData = new FormData();
         formData.append('package_title', document.getElementById('inputEmail4').value);
         formData.append('package_type', document.getElementById('subjects').value);
         formData.append('actual_price', document.getElementById('actual_price').value);
         formData.append('selling_price', document.getElementById('selling_price').value);
         formData.append('expiry_type', document.getElementById('expiryType').value);
-        formData.append('sell_till', document.getElementById('expiryDate').value);
+        formData.append('sell_till_date', document.getElementById('expiryDate').value);
         formData.append('days', document.getElementById('subscriptionDays').value);
         formData.append('package_description', description);
         formData.append('web_image', document.getElementById('image_for_web').files[0]);
         formData.append('mobile_image', document.getElementById('image_for_app').files[0]);
         formData.append('is_active', document.getElementById('is_active').value);
         formData.append('sell_end_time', document.getElementById('sell_end_time').value);
-        
+        console.log();
             
 
         if (document.getElementById('subjects').value === 'video') {
