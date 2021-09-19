@@ -115,7 +115,18 @@
 
                 <div class="form-group col-md-6">
                     <label for="document_link">Upload Document</label>
-                    <input class="form-control" id="document_link" type="file" name="document_link">
+                    <div>
+                        <input class="form-control" id="document_link" type="file" name="document_link">
+                        <!-- <div id="loader" class="spinner-border ml-2 mb-2" role="status" style="display: none;">
+                            <span class="sr-only">Loading...</span>
+                        </div> -->
+                        <br>
+                        <div id="loader">
+                            <progress id="progressBar" value="0" max="100" style="width:300px;"></progress>
+                            <h3 id="status"></h3>
+                            <p id="loaded_n_total"></p>
+                        </div>
+                    </div>
                 </div>
 
             </div>
@@ -186,6 +197,50 @@
     
     const csrfToken = getCookie('csrftoken');
 
+    function uploadoc() {
+        console.log('Uploading file...');
+        document.getElementById('loader').style.display = 'block';
+        const formData = new FormData();
+        formData.append('document_link', document.getElementById('document_link').files[0]);
+        fetch('/api/courses/go-live/', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': csrfToken
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('--', data);
+            // document.getElementById('loader').style.display = 'none';
+        })
+    }
+    let document_link = document.getElementById('document_link');
+    document_link.addEventListener('click', function (e) {
+        uploadoc();
+
+    });
+
+    function progressHandler(event) {
+    _("loaded_n_total").innerHTML = "Uploaded " + event.loaded + " bytes of " + event.total;
+    var percent = (event.loaded / event.total) * 100;
+    _("progressBar").value = Math.round(percent);
+    _("status").innerHTML = Math.round(percent) + "% uploaded... please wait";
+    }
+
+    function completeHandler(event) {
+    _("status").innerHTML = event.target.responseText;
+    _("progressBar").value = 0; //wil clear progress bar after successful upload
+    }
+
+    function errorHandler(event) {
+    _("status").innerHTML = "Upload Failed";
+    }
+
+    function abortHandler(event) {
+    _("status").innerHTML = "Upload Aborted";
+    }
+
     // let testBtn = document.getElementById('testBtn');
     // testBtn.addEventListener('click', function (e) {
     //     // getting data of all tags...
@@ -215,9 +270,6 @@
     let submitFormBtn = document.getElementById('submitFormBtn');
     submitFormBtn.addEventListener('click', function (e) {
         e.preventDefault();
-        console.log('Submitting form...');
-
-
         // let fileupload = document.getElementById('document_link');
         // async function uploadFile() {
         // let formData = new FormData(); 
@@ -232,38 +284,25 @@
         const formData = new FormData();
         
         let video_platform = document.getElementById('videoType').value;
-        // let data = {
-        //     'lesson_title' : document.getElementById('lesson_title').value,
-        //     'chapter' : document.getElementById('chooseChapters').value,
-        //     'lesson_type': document.getElementById('lesson_type').value,
-        //     'video_platform': document.getElementById('videoType').value,
-        //     'start_time': document.getElementById('startTime').value,
-        //     'video': {
-        //         'video_link': document.getElementById('video_link').value,
-        //     },
-        //     'document': {
-        //         'document_link': document.getElementById('document_link').value,
-        //     },
-        //     'live_image': document.getElementById('live_image').value,
-        //     'is_free': document.getElementById('is_free').value,
-        // };
-        
+        let data = {
+            'lesson_title' : document.getElementById('lesson_title').value,
+            'chapter' : document.getElementById('chooseChapters').value,
+            'lesson_type': document.getElementById('lesson_type').value,
+            'video_platform': document.getElementById('videoType').value,
+            'start_time': document.getElementById('startTime').value,
+            'video': {
+                'video_link': document.getElementById('video_link').value,
+            },
+            'live_image': document.getElementById('live_image').value,
+            'is_free': document.getElementById('is_free').value,
+        };
 
-        formData.append('lesson_title', document.getElementById('lesson_title').value);
-        formData.append('chapter', document.getElementById('chooseChapters').value);
-        formData.append('lesson_type', document.getElementById('lesson_type').value);
-        formData.append('video_platform', video_platform);
-        formData.append('start_time', document.getElementById('startTime').value);
-        formData.append('video', {
-            'video_link': document.getElementById('video_link').value,
-        });
-        formData.append('document', {
-            'document_link': document.getElementById('document_link').files[0],
-        });
-        formData.append('live_image', document.getElementById('live_image').value);
-        formData.append('is_free', document.getElementById('is_free').value);
-
-
+        // document upload
+        let docLink = uploadoc();
+        data['document'] = {
+            'document_link': docLink,
+        }
+    
         // getting data of all packages...
         let allTags = document.getElementsByClassName('tag');
         let allPackageDates = document.getElementsByClassName('packageDate');
@@ -285,7 +324,7 @@
                 headers: {
                     'X-CSRFToken': csrfToken
                 },
-                body: formData
+                body: JSON.stringify(data)
                 })
                 .then(response => response.json())
                 .then(data => {
@@ -300,7 +339,7 @@
                 headers: {
                     'X-CSRFToken': csrfToken
                 },
-                    body: formData
+                    body: JSON.stringify(data)
                 })
                 .then(response => response.json())
                 .then(data => {
@@ -312,8 +351,6 @@
         }
 
         // log all data of form data
-        console.log(formData.values);
-        console.log(formData.entries);
 
 
     });
