@@ -159,7 +159,7 @@
             </div>
 
             <button id="submitFormBtn" type="submit" class="btn btn-primary mt-3">Add Chapter</button>
-            <button id="testBtn" class="btn btn-primary mt-3">Test Code</button>
+            <!-- <button id="testBtn" class="btn btn-primary mt-3">Test Code</button> -->
         </form>
 
     </div>
@@ -171,18 +171,45 @@
     let tagsDropdown = document.getElementById('tagsDropdown');
     let chooseSubject = document.getElementById('chooseSubject');
     let chooseChapters = document.getElementById('chooseChapters');
-
-    let testBtn = document.getElementById('testBtn');
-    testBtn.addEventListener('click', function (e) {
-        // getting data of all tags...
-        let allTags = document.getElementsByClassName('tag');
-        let allPackageDates = document.getElementsByClassName('packageDate');
-        for (let i = 0; i < allTags.length; i++) {
-            console.log(allTags[i].id);
-            console.log(allPackageDates[i].value);
-            
+    function getCookie(name) {
+        if (!document.cookie) {
+            return null;
         }
-    });
+        const xsrfCookies = document.cookie.split(';')
+        .map(c => c.trim())
+        .filter(c => c.startsWith(name + '='));
+        if (xsrfCookies.length === 0) {
+            return null;
+        }
+            return decodeURIComponent(xsrfCookies[0].split('=')[1]);
+    }
+    
+    const csrfToken = getCookie('csrftoken');
+
+    // let testBtn = document.getElementById('testBtn');
+    // testBtn.addEventListener('click', function (e) {
+    //     // getting data of all tags...
+    //     let test = document.getElementById('document_link');
+    //     console.log(test.value);
+    //     const formData = new FormData();
+    //     formData.append('document_link', test.files[0]);
+    //     formData.append('csrfmiddlewaretoken', csrfToken);
+    //     fetch('/api/courses/go-live/', {
+    //         method: 'POST',
+    //         body: formData,
+    //         headers: {
+    //             'X-CSRFToken': csrfToken
+    //         }
+    //     })
+    //     .then(response => response.json())
+    //     .then(data => {
+    //         console.log('da', data)
+    //     })
+    //     .catch(error => {
+    //         console.error('err', error)
+    //     })
+        
+    // });
 
     // handling form submission using fetch POST method starts here
     let submitFormBtn = document.getElementById('submitFormBtn');
@@ -202,23 +229,40 @@
         // alert('The file has been uploaded successfully.');
         // }
 
-        let data = {
-            'lesson_title' : document.getElementById('lesson_title').value,
-            'chapter' : document.getElementById('chooseChapters').value,
-            'lesson_type': document.getElementById('lesson_type').value,
-            'video_platform': document.getElementById('videoType').value,
-            'start_time': document.getElementById('startTime').value,
-            'video': {
-                'video_link': document.getElementById('video_link').value,
-            },
-            'document': {
-                'document_link': document.getElementById('document_link').value,
-            },
-            'live_image': document.getElementById('live_image').value,
-            'is_free': document.getElementById('is_free').value,
+        const formData = new FormData();
+        
+        let video_platform = document.getElementById('videoType').value;
+        // let data = {
+        //     'lesson_title' : document.getElementById('lesson_title').value,
+        //     'chapter' : document.getElementById('chooseChapters').value,
+        //     'lesson_type': document.getElementById('lesson_type').value,
+        //     'video_platform': document.getElementById('videoType').value,
+        //     'start_time': document.getElementById('startTime').value,
+        //     'video': {
+        //         'video_link': document.getElementById('video_link').value,
+        //     },
+        //     'document': {
+        //         'document_link': document.getElementById('document_link').value,
+        //     },
+        //     'live_image': document.getElementById('live_image').value,
+        //     'is_free': document.getElementById('is_free').value,
+        // };
         
 
-        };
+        formData.append('lesson_title', document.getElementById('lesson_title').value);
+        formData.append('chapter', document.getElementById('chooseChapters').value);
+        formData.append('lesson_type', document.getElementById('lesson_type').value);
+        formData.append('video_platform', video_platform);
+        formData.append('start_time', document.getElementById('startTime').value);
+        formData.append('video', {
+            'video_link': document.getElementById('video_link').value,
+        });
+        formData.append('document', {
+            'document_link': document.getElementById('document_link').files[0],
+        });
+        formData.append('live_image', document.getElementById('live_image').value);
+        formData.append('is_free', document.getElementById('is_free').value);
+
 
         // getting data of all packages...
         let allTags = document.getElementsByClassName('tag');
@@ -231,32 +275,17 @@
             });
             
         };
+        // data['packages'] = packages;
 
-        function getCookie(name) {
-            if (!document.cookie) {
-            return null;
-            }
+        formData.append('packages', packages);
 
-            const xsrfCookies = document.cookie.split(';')
-            .map(c => c.trim())
-            .filter(c => c.startsWith(name + '='));
-
-            if (xsrfCookies.length === 0) {
-            return null;
-            }
-            return decodeURIComponent(xsrfCookies[0].split('=')[1]);
-            }
-        data['packages'] = packages;
-        const csrfToken = getCookie('csrftoken');
-
-        if (data['video_platform'] === 'Live') {
+        if (video_platform === 'Live') {
             fetch('/api/courses/go-live/', {
                 method: 'POST', // or 'PUT'
                 headers: {
-                    'Content-Type': 'application/json',
                     'X-CSRFToken': csrfToken
                 },
-                    body: JSON.stringify(data),
+                body: formData
                 })
                 .then(response => response.json())
                 .then(data => {
@@ -269,10 +298,9 @@
             fetch('/api/courses/lessons/', {
                 method: 'POST', // or 'PUT'
                 headers: {
-                    'Content-Type': 'application/json',
                     'X-CSRFToken': csrfToken
                 },
-                    body: JSON.stringify(data),
+                    body: formData
                 })
                 .then(response => response.json())
                 .then(data => {
@@ -283,7 +311,7 @@
             });
         }
 
-        console.log(data);
+        console.log(formData);
     });
 
     // handling form submissions ends here
