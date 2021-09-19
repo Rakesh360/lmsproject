@@ -1,7 +1,10 @@
 from django.urls import path , include
 from . import views_api as views
+from rest_framework.routers import DefaultRouter
 
+router = DefaultRouter()
 
+router.register('document', views.DocumentUpload, )
 
 urlpatterns = [
    path('', views.CoursesView.as_view()), 
@@ -13,3 +16,5 @@ urlpatterns = [
    path('course-package-info/' , views.CoursePackageSubjectsAPI.as_view()),
    path('go-live/' , views.GoLiveView.as_view()),
 ]
+
+urlpatterns += router.urls

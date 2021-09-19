@@ -257,6 +257,8 @@ class LessonsView(APIView):
     def post(self , request):
         try:
             data = request.data
+            print(data)
+
             serializer = LessonSerializer(data = request.data)
 
             if serializer.is_valid():
@@ -405,3 +407,8 @@ class GoLiveView(APIView):
                     'data' : str(e)
 
                 }) 
+
+from rest_framework import status, viewsets
+class DocumentUpload(viewsets.ModelViewSet):
+    queryset = Document.objects.all()
+    serializer_class = DocumentSerializer

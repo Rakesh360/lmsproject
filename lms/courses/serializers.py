@@ -32,7 +32,7 @@ class DocumentSerializer(serializers.ModelSerializer):
 
 
 class LessonSerializer(serializers.ModelSerializer):
-    document = DocumentSerializer(required = False)
+
     video = VideoSerializer(required = False)
     lesson_type = serializers.CharField(required = True)
     video_platform = serializers.CharField(required = True)
@@ -44,6 +44,7 @@ class LessonSerializer(serializers.ModelSerializer):
 
     def create(self , validated_data):
         try:
+            print(validated_data)
             lesson_title = validated_data['lesson_title']
             chapter = validated_data['chapter']
             lesson_type = validated_data['lesson_type']
@@ -52,11 +53,12 @@ class LessonSerializer(serializers.ModelSerializer):
             video_obj = None
             document_obj = None
             if 'document' in validated_data:
-                document = validated_data['document']
-                if not document is None: 
-                    document_obj = Document.objects.create(
-                        document = validated_data['document']['document_file']
-                    )
+                document_obj = validated_data['document']
+                # if not document is None: 
+                #     document_obj = Document.objects.get(
+                #         uid = validated_data['document']
+                #     )
+                #     print(document_obj)
             if 'video'  in validated_data:
                 video = validated_data['video']
                 video_obj = Video.objects.create(

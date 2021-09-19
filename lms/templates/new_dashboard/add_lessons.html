@@ -197,49 +197,51 @@
     
     const csrfToken = getCookie('csrftoken');
 
-    function uploadoc() {
+    async function uploadoc() {
         console.log('Uploading file...');
-        document.getElementById('loader').style.display = 'block';
+        // document.getElementById('loader').style.display = 'block';
         const formData = new FormData();
-        formData.append('document_link', document.getElementById('document_link').files[0]);
-        fetch('/api/courses/go-live/', {
+        formData.append('document_file', document.getElementById('document_link').files[0]);
+        let response = await fetch('/api/courses/document/', {
             method: 'POST',
             body: formData,
             headers: {
                 'X-CSRFToken': csrfToken
             }
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log('--', data);
-            // document.getElementById('loader').style.display = 'none';
-        })
+        });
+        const json = await response.json();
+        console.log(json);
+        return json.uid;
+
+        
+
     }
     let document_link = document.getElementById('document_link');
-    document_link.addEventListener('click', function (e) {
-        uploadoc();
 
-    });
+    // function _(el) {
+    //     return document.getElementById(el);
+    // }
 
-    function progressHandler(event) {
-    _("loaded_n_total").innerHTML = "Uploaded " + event.loaded + " bytes of " + event.total;
-    var percent = (event.loaded / event.total) * 100;
-    _("progressBar").value = Math.round(percent);
-    _("status").innerHTML = Math.round(percent) + "% uploaded... please wait";
-    }
+    // function progressHandler(event) {
+    // _("loaded_n_total").innerHTML = "Uploaded " + event.loaded + " bytes of " + event.total;
+    // var percent = (event.loaded / event.total) * 100;
+    // _("progressBar").value = Math.round(percent);
+    // _("status").innerHTML = Math.round(percent) + "% uploaded... please wait";
+    // }
 
-    function completeHandler(event) {
-    _("status").innerHTML = event.target.responseText;
-    _("progressBar").value = 0; //wil clear progress bar after successful upload
-    }
+    // function completeHandler(event) {
+    // _("status").innerHTML = event.target.responseText;
+    // _("progressBar").value = 0; //wil clear progress bar after successful upload
+    // return JSON.parse(event.target.responseText).uid;
+    // }
 
-    function errorHandler(event) {
-    _("status").innerHTML = "Upload Failed";
-    }
+    // function errorHandler(event) {
+    // _("status").innerHTML = "Upload Failed";
+    // }
 
-    function abortHandler(event) {
-    _("status").innerHTML = "Upload Aborted";
-    }
+    // function abortHandler(event) {
+    // _("status").innerHTML = "Upload Aborted";
+    // }
 
     // let testBtn = document.getElementById('testBtn');
     // testBtn.addEventListener('click', function (e) {
@@ -266,9 +268,9 @@
         
     // });
 
-    // handling form submission using fetch POST method starts here
-    let submitFormBtn = document.getElementById('submitFormBtn');
-    submitFormBtn.addEventListener('click', function (e) {
+    
+    
+    const submitForm = async (e) => {
         e.preventDefault();
         // let fileupload = document.getElementById('document_link');
         // async function uploadFile() {
@@ -281,27 +283,23 @@
         // alert('The file has been uploaded successfully.');
         // }
 
-        const formData = new FormData();
         
         let video_platform = document.getElementById('videoType').value;
         let data = {
             'lesson_title' : document.getElementById('lesson_title').value,
             'chapter' : document.getElementById('chooseChapters').value,
-            'lesson_type': document.getElementById('lesson_type').value,
-            'video_platform': document.getElementById('videoType').value,
-            'start_time': document.getElementById('startTime').value,
+            'video_platform' : video_platform,
+            'lesson_type' : document.getElementById('lesson_type').value,
+            'is_free' : document.getElementById('is_free').value,
             'video': {
                 'video_link': document.getElementById('video_link').value,
-            },
-            'live_image': document.getElementById('live_image').value,
-            'is_free': document.getElementById('is_free').value,
+            }
         };
 
         // document upload
-        let docLink = uploadoc();
-        data['document'] = {
-            'document_link': docLink,
-        }
+        let docLink = await uploadoc();
+        console.log('...', docLink);
+        data['document'] = docLink;
     
         // getting data of all packages...
         let allTags = document.getElementsByClassName('tag');
@@ -316,12 +314,13 @@
         };
         // data['packages'] = packages;
 
-        formData.append('packages', packages);
+        console.log(data);
 
         if (video_platform === 'Live') {
             fetch('/api/courses/go-live/', {
                 method: 'POST', // or 'PUT'
                 headers: {
+                    'Content-Type': 'application/json',
                     'X-CSRFToken': csrfToken
                 },
                 body: JSON.stringify(data)
@@ -337,6 +336,7 @@
             fetch('/api/courses/lessons/', {
                 method: 'POST', // or 'PUT'
                 headers: {
+                    'Content-Type': 'application/json',
                     'X-CSRFToken': csrfToken
                 },
                     body: JSON.stringify(data)
@@ -351,10 +351,16 @@
         }
 
         // log all data of form data
+        
 
 
-    });
+    };
 
+
+    // handling form submission using fetch POST method starts here
+    let submitFormBtn = document.getElementById('submitFormBtn');
+    submitFormBtn.addEventListener('click', submitForm)
+    
     // handling form submissions ends here
 
     // make a fetch call on 'http://13.232.227.45/api/courses/course-packages/' to get all packages using no-cors
