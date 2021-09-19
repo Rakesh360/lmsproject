@@ -104,6 +104,7 @@
     src="https://kit.fontawesome.com/3da1a747b2.js"
     crossorigin="anonymous"
 ></script>
+<script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/js/materialize.min.js"></script>
@@ -122,98 +123,117 @@
     <hr>
 
 <div class="collapse show" style="margin: 2%;" id="contentDiv">
-  <div class="card-body">
-
-    {% include "utils/alert.html" %}
-    <form method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        <div class="form-row mb-4">
-            <div class="form-group col-md-6">
-                <label for="lesson_title">Package Name</label>
-                <input type="text" value="{{course_package_obj.package_title}}" class="form-control" required name="lesson_title" id="inputEmail4"
-                    placeholder="Enter lesson title">
-            </div>
-            <div class="form-group col-md-6">
-                <label for="package_type"> Package Type</label>
-                <select required id="subjects" name="package_type" class="form-control basic tagging ">
-                    <option value="video">Video</option>
-                    <option value="text">Text</option>
-                </select>
-            </div>
-            <div class="form-group col-md-6">
-
-                <label for="actual_price">Actual Price</label>
-                <input type="number" value="course_package_obj.actual_price name="actual_price" class="form-control" placeholder="Enter Actual Price in Rupees"> 
-                
-            </div>
-
-            <div class="form-group col-md-6">
-                <label for="selling_price">Selling Price</label>
-                <input type="number" name="selling_price" value="course_package_obj.selling_price" class="form-control" placeholder="Enter Selling Price in Rupees"> 
-            </div>
-
-
-        </div>
-        <div class="form-row mb-4" id="video_upload">
-
-            <div class="form-group col-md-6">
-                <div id="expiryTypePicker">
-                    <label for="expiryType"> Enter Start Time Of Live </label>
-                    <select name="expiryType" class="form-control" onchange="changeExpiryType(event)">
-                        <option selected>Choose Expiry Type</option>
-                        <option value="fixed-date">Fixed Date</option>
-                        <option value="subscription">Subscription</option>
-                    </select>
+    <div class="card">
+        <div class="card-body">
+            {% include "utils/alert.html" %}
+            <form>
+                {% csrf_token %}
+                <div class="form-row mb-4">
+                    <div class="form-group col-md-6">
+                        <label for="lesson_title">Package Name</label>
+                        <input type="text" class="form-control" required name="lesson_title" id="inputEmail4"
+                            value="{{ course_package_obj.package_title }}" placeholder="Enter lesson title">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="package_type"> Package Type</label>
+                        <select required id="subjects" name="package_type" class="form-control basic tagging ">
+                            <option value="video">Video</option>
+                            <option value="test">Test</option>
+                        </select>
+                    </div>
+    
+                    <div class="form-group col-md-6">
+    
+                        <label for="actual_price">Actual Price</label>
+                        <input value="{{course_package_obj.actual_price}}" type="number" id="actual_price" name="actual_price" class="form-control" placeholder="Enter Actual Price in Rupees"> 
+                        
+                    </div>
+    
+                    <div class="form-group col-md-6">
+                        <label for="selling_price">Selling Price</label>
+                        <input value="{{course_package_obj.selling_price}}" id="selling_price" type="number" name="selling_price" class="form-control" placeholder="Enter Selling Price in Rupees"> 
+                    </div>
+    
+    
                 </div>
-
-
-                <div id="expiryDateContainer" style="display: none; margin-top: 3%;">
-                    <label for="expiryDate">Choose Expiry Date</label>
-                    <input type="date" name="expiryDate" class="form-control" id="expiryDate">
+                <div class="form-row mb-4" id="video_upload">
+    
+                    <div class="form-group col-md-6">
+                        <div id="expiryTypePicker">
+                            <label for="expiryType"> Expiry Type </label>
+                            <select required name="expiryType" id="expiryType" class="form-control" onchange="changeExpiryType(event)">
+                                <option disabled selected>Choose Expiry Type</option>
+                                <option value="fixed-date">Fixed Date</option>
+                                <option value="subscription">Subscription</option>
+                            </select>
+                        </div>
+    
+    
+                        <div id="expiryDateContainer" style="display: none; margin-top: 3%;">
+                            <label for="expiryDate">Choose Expiry Date</label>
+                            <input type="date" name="expiryDate" class="form-control" id="expiryDate">
+                        </div>
+    
+                        <div id="subscriptionContainer" style="display: none; margin-top: 3%;">
+                            <label for="subscriptionDays">Subscription Period</label>
+                            <input value="{{course_package_obj.days}}" type="number" id="subscriptionDays" class="form-control" placeholder="Enter Subscription Period (in Days)">
+                        </div>
+    
+                    </div>
+    
+                    <div class="form-group col-md-6">
+                        <div id="expiryTypePicker">
+                            <label for="is_active"> Is Active </label>
+                            <select required name="is_active" id="is_active" class="form-control">
+                                <option {% if course_package_obj.is_active == false %} selected {% endif %} value="inactive">Inactive</option>
+                                <option {% if course_package_obj.is_active == true %} selected {% endif %} value="active" >Active</option>
+                            </select>
+                        </div>
+    
+                    </div>
+    
                 </div>
-
-                <div id="subscriptionContainer" style="display: none; margin-top: 3%;">
-                    <label for="subscriptionDays">Subscription Period</label>
-                    <input type="number" class="form-control" placeholder="Enter Subscription Period (in Days)">
-                </div>
-
-            </div>
-
-           
-
-           
-        </div>
+    
+                <div class="form-group md-4">
         
-
-        <div class="form-row mb-4">
-            <div class="form-group col-md-12">
-                <label for="description">Description </label>
-                <textarea id="summernote" name="description" class="form-control" cols="30" rows="5"></textarea>
-            </div>
-        </div>
-
-        <div class="form-row mb-4" id="document_upload">
-
-            <div class="form-group mb-6">
-                <div class="custom-file">
-                    <input type="file" class="custom-file-input" name="image_for_web" id="inputGroupFile01">
-                    <label class="custom-file-label" for="image_for_web">Choose file For Web</label>
+                    <div class="form-group col-md-6">
+                        <label for="sell_end_time">Set Selling End Time Price</label>
+                        <input value="{{course_package_obj.sell_till}}" id="sell_end_time" type="date" name="sell_end_time" class="form-control" placeholder="Choose Date"> 
+                    </div>
                 </div>
-            </div>
-
-            <div class="form-group mb-6">
-                <div class="custom-file">
-                    <input type="file" class="custom-file-input" name="image_for_app" id="inputGroupFile01">
-                    <label class="custom-file-label" for="image_for_app">Choose file For App</label>
+                
+    
+                <div class="form-row mb-4">
+                    <div class="form-group col-md-12">
+                        <label for="description">Description </label>
+                        <textarea id="summernote" name="description" class="form-control" cols="30" rows="5"></textarea>
+                    </div>
                 </div>
-            </div>
-
+    
+                <div class="form-row mb-4" id="document_upload">
+    
+                    <div class="form-group mb-6">
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" name="image_for_web" id="image_for_web">
+                            <label class="custom-file-label" for="image_for_web">Choose file For Web</label>
+                        </div>
+                    </div>
+    
+                    <div class="form-group mb-6">
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" name="image_for_app" id="image_for_app">
+                            <label class="custom-file-label" for="image_for_app">Choose file For App</label>
+                        </div>
+                    </div>
+    
+                </div>
+    
+                <button type="submit" id="handleSubmit" class="btn btn-primary mt-3">Create Package</button>
+                <div id="testContent"></div>
+            </form>
+    
         </div>
-
-        <button type="submit" class="btn btn-primary mt-3">Create Package</button>
-    </form>
-
-</div>
+    </div>
 
 </div>
 
@@ -271,6 +291,22 @@
 
 
 <script>
+    let editor = CKEDITOR.replace( 'description' );
+    var description;
+    editor.on( 'change', function( evt ) {
+    // getData() returns CKEditor's HTML content.
+        description =  evt.editor.getData();
+    });
+
+    editor.on( 'instanceReady', function( evt ) {
+    // getData() returns CKEditor's HTML content.
+        console.log('{{course_package_obj.package_description}}');
+        evt.editor.setData('{{course_package_obj.package_description}}');
+    });    
+
+    document.getElementById('testContent').innerHTML = '{{course_package_obj.package_description}}';
+
+
     // script for nav btn start
     let flag = true;
     let contentBtn = document.getElementById('contentBtn');
@@ -298,6 +334,20 @@
         }
         
     });
+
+    function changeExpiryType() {
+        if (event.currentTarget.value === 'fixed-date') {
+            expiryDateContainer.style.display = 'block';
+            subscriptionContainer.style.display = 'none';
+        } else if (event.currentTarget.value === 'subscription') {
+            subscriptionContainer.style.display = 'block';
+            expiryDateContainer.style.display = 'none';
+        } else {
+            expiryDateContainer.style.display = 'none';
+            subscriptionContainer.style.display = 'none';
+        }
+    }
+    
 
     // script for nav btn ends
 

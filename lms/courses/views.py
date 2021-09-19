@@ -229,7 +229,6 @@ def add_subjects_courses(request,uid):
     context['course_package_add_subjects'] = course_package_add_subjects
 
 
-    #print(context)
     return render(request , 'new_dashboard/edit_subjects_courses.html' , context)
 
 @staff_member_required(login_url='/accounts/login/')
