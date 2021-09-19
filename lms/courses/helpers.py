@@ -1,7 +1,9 @@
 
+from django import contrib
 from .models import *
 from django.db.models import Q
-import datetime
+from datetime import datetime
+
 def course_to_json(course_objs):
     try:
         payload = []
@@ -65,16 +67,26 @@ def course_to_json(course_objs):
             course_package_dict['subjects'] = subjects
             live_class = []
             #from datetime import date
-            for live in course_obj.live.filter(Q(live_date_time=datetime.date.today(),live_date_time__gte=datetime.time()) |Q(live_date_time__gt=datetime.date.today())):
-                live_class.append({
-                    'live_name' : live.live_name,
-                    'live_url' : live.live_url,
-                    'image' : '/media/' +  str(live.image),
-                    'live_date' : str(live.live_date_time),
-                    'live_time' : str(live.live_date_time),
-                    'live_uid' : live.uid
-                    
-                })
+            print(course_obj.live.all())
+            print(datetime.now())
+            if len(course_obj.live.all()):
+                for live in course_obj.live.filter(
+                    Q(live_date_time__gte = datetime.now()) ,
+                    Q(live_date_time = datetime.now())
+                     ):
+
+                # for live in course_obj.live.filter(
+                #     Q(live_date_time=datetime.date.today(),live_date_time__gte=datetime.time())
+                #     |Q(live_date_time__gt=datetime.date.today())):
+                    live_class.append({
+                        'live_name' : live.live_name,
+                        'live_url' : live.live_url,
+                        'image' : '/media/' +  str(live.image),
+                        'live_date' : str(live.live_date_time),
+                        'live_time' : str(live.live_date_time),
+                        'live_uid' : live.uid
+                        
+                    })
             course_package_dict['live'] = live_class
 
             payload.append(course_package_dict)

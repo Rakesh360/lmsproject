@@ -6,11 +6,11 @@
         background: #ECECF8;
     }
 
-    a.active{
+    a.active {
         background-color: #FF8F16;
     }
 
-    .deleteBtn{
+    .deleteBtn {
         cursor: pointer;
     }
 </style>
@@ -39,7 +39,8 @@
 
                 <div class="form-group col-md-6">
                     <label for="subject">Choose Subject</label>
-                    <select required id="chooseSubject" name="subject" class="form-control basic tagging " onchange="updateChapters()">
+                    <select required id="chooseSubject" name="subject" class="form-control basic tagging "
+                        onchange="updateChapters()">
                         <option value="" selected disabled>Choose Subject</option>
                     </select>
 
@@ -56,7 +57,8 @@
 
                 <div class="form-group col-md-6">
                     <label for="lesson_type">Lesson Type</label>
-                    <select required class="form-control" id="lesson_type" name="lesson_type" id="lesson_type" onchange="changeLessonType()">
+                    <select required class="form-control" id="lesson_type" name="lesson_type" id="lesson_type"
+                        onchange="changeLessonType()">
                         <option selected value="Video">Video</option>
                         <option value="Document">Document</option>
                         <option value="Video + Document">Video + Document</option>
@@ -71,7 +73,8 @@
 
                 <div class="form-group col-md-6">
                     <label for="video_platform">Video Platform</label>
-                    <select required class="form-control" name="video_platform" id="videoType" onchange="changeVideoType()">
+                    <select required class="form-control" name="video_platform" id="videoType"
+                        onchange="changeVideoType()">
                         <option value="Live">YouTube Live</option>
                         <option value="Vimeo">Vimeo</option>
                         <option selected value="Youtube">YouTube</option>
@@ -93,9 +96,11 @@
                     <label for="video_link" id="videoLink">Link</label>
                     <input type="text" onchange="loadLesson()" required id="video_link" class="form-control"
                         name="video_link" id="inputEmail4" placeholder="Enter lesson link">
-                    <small>Paste Id only | preview appears here</small> 
+                    <small>Paste Id only | preview appears here</small>
                     <br>
-                    <iframe width="560" id="iframe" height="315" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="display: none;">
+                    <iframe width="560" id="iframe" height="315" src="" frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen style="display: none;">
                     </iframe>
                 </div>
             </div>
@@ -109,7 +114,7 @@
 
                 </select>
             </div>
-            
+
 
             <div class="form-row mb-4" id="document_upload" style="display: none;">
 
@@ -122,24 +127,25 @@
 
 
 
-            <br><hr><br>
+            <br>
+            <hr><br>
 
 
             <div class="form-row mb-4" id="video_upload">
                 <!-- tags selection part -->
 
 
-                
+
                 <div>
                     <label for="tags">Select Packages To Include</label>
                     <select id="tagsDropdown" name="tags" class="fstdropdown-select" onchange="includeTag(event)">
                         <option value="" selected disabled>Choose Package</option>
                         {% for course_package in  course_packages %}
-                            <option value="{{course_package.uid}}">{{course_package.package_title}}</option>
+                        <option value="{{course_package.uid}}">{{course_package.package_title}}</option>
                         {% endfor  %}
 
-                    </select>  
-                </div> 
+                    </select>
+                </div>
 
                 <div class="table table-striped" style="margin: 1%;">
                     <table class="display">
@@ -154,8 +160,8 @@
                             <tr><td class="tag">Tag2</td> <td><input type="datetime-local"></td> <td class="delBtn" onclick="deleteTag(event)">❌</td></tr>
                             <tr><td class="tag">Tag3</td> <td><input type="datetime-local"></td> <td class="delBtn" onclick="deleteTag(event)">❌</td></tr> -->
                         </tbody>
-                    </table>  
-                </div>               
+                    </table>
+                </div>
             </div>
 
             <button id="submitFormBtn" type="submit" class="btn btn-primary mt-3">Add Chapter</button>
@@ -171,20 +177,42 @@
     let tagsDropdown = document.getElementById('tagsDropdown');
     let chooseSubject = document.getElementById('chooseSubject');
     let chooseChapters = document.getElementById('chooseChapters');
+
     function getCookie(name) {
         if (!document.cookie) {
             return null;
         }
         const xsrfCookies = document.cookie.split(';')
-        .map(c => c.trim())
-        .filter(c => c.startsWith(name + '='));
+            .map(c => c.trim())
+            .filter(c => c.startsWith(name + '='));
         if (xsrfCookies.length === 0) {
             return null;
         }
-            return decodeURIComponent(xsrfCookies[0].split('=')[1]);
+        return decodeURIComponent(xsrfCookies[0].split('=')[1]);
     }
-    
+
     const csrfToken = getCookie('csrftoken');
+
+    function buildFormData(formData, data, parentKey) {
+        if (data && typeof data === 'object' && !(data instanceof Date) && !(data instanceof File)) {
+            Object.keys(data).forEach(key => {
+                buildFormData(formData, data[key], parentKey ? `${parentKey}[${key}]` : key);
+            });
+        } else {
+            const value = data == null ? '' : data;
+
+            formData.append(parentKey, value);
+        }
+    }
+
+    function jsonToFormData(data) {
+        const formData = new FormData();
+
+        buildFormData(formData, data);
+
+        return formData;
+    }
+
 
     // let testBtn = document.getElementById('testBtn');
     // testBtn.addEventListener('click', function (e) {
@@ -208,7 +236,7 @@
     //     .catch(error => {
     //         console.error('err', error)
     //     })
-        
+
     // });
 
     // handling form submission using fetch POST method starts here
@@ -230,7 +258,7 @@
         // }
 
         const formData = new FormData();
-        
+
         let video_platform = document.getElementById('videoType').value;
         // let data = {
         //     'lesson_title' : document.getElementById('lesson_title').value,
@@ -247,7 +275,29 @@
         //     'live_image': document.getElementById('live_image').value,
         //     'is_free': document.getElementById('is_free').value,
         // };
-        
+
+
+        var payload = {
+            'lesson_title' :  document.getElementById('lesson_title').value,
+            'chapter' : document.getElementById('chooseChapters').value,
+            'lesson_type' :    document.getElementById('lesson_type').value,
+            'video_platform' : video_platform,
+
+            'start_time' : document.getElementById('startTime').value,
+            'video' : {
+                'video_link': document.getElementById('video_link').value,
+            },
+            // 'document': {
+            // 'document_link': document.getElementById('document_link').files[0],
+            // },
+            'live_image': document.getElementById('live_image').value,
+            'is_free': document.getElementById('is_free').value
+
+        }
+        console.log(payload)
+
+        var data = jsonToFormData(payload)
+        console.log(data)
 
         formData.append('lesson_title', document.getElementById('lesson_title').value);
         formData.append('chapter', document.getElementById('chooseChapters').value);
@@ -270,22 +320,25 @@
         let packages = [];
         for (let i = 0; i < allTags.length; i++) {
             packages.push({
-                "uid" : allTags[i].id,
-                "created_at" : allPackageDates[i].value
+                "uid": allTags[i].id,
+                "created_at": allPackageDates[i].value
             });
-            
+
         };
+        console.log(packages)
         // data['packages'] = packages;
 
         formData.append('packages', packages);
 
+        console.log(formData)
+
         if (video_platform === 'Live') {
             fetch('/api/courses/go-live/', {
-                method: 'POST', // or 'PUT'
-                headers: {
-                    'X-CSRFToken': csrfToken
-                },
-                body: formData
+                    method: 'POST', // or 'PUT'
+                    headers: {
+                        'X-CSRFToken': csrfToken
+                    },
+                    body: data
                 })
                 .then(response => response.json())
                 .then(data => {
@@ -293,13 +346,13 @@
                 })
                 .catch((error) => {
                     console.error('Error:', error);
-            });
+                });
         } else {
             fetch('/api/courses/lessons/', {
-                method: 'POST', // or 'PUT'
-                headers: {
-                    'X-CSRFToken': csrfToken
-                },
+                    method: 'POST', // or 'PUT'
+                    headers: {
+                        'X-CSRFToken': csrfToken
+                    },
                     body: formData
                 })
                 .then(response => response.json())
@@ -308,7 +361,7 @@
                 })
                 .catch((error) => {
                     console.error('Error:', error);
-            });
+                });
         }
 
         // log all data of form data
@@ -322,7 +375,7 @@
 
     // make a fetch call on 'http://13.232.227.45/api/courses/course-packages/' to get all packages using no-cors
     fetch('/api/courses/subjects/', {
-        method: 'GET',
+            method: 'GET',
         })
         .then(response => response.json())
         .then(data => {
@@ -331,41 +384,41 @@
                 option.text = e.subject_title;
                 option.value = e.uid;
                 chooseSubject.appendChild(option);
-                
+
             });
-    });
+        });
 
     fetch('/api/courses/course-packages/', {
-        method: 'GET',
+            method: 'GET',
         })
         .then(response => response.json())
         .then(data => {
-            console.log('1',data.data);
+            console.log('1', data.data);
             data.data.forEach((e, i) => {
                 let option = document.createElement('option');
                 option.text = e.package_title;
                 option.value = e.uid;
                 tagsDropdown.appendChild(option);
-                
+
             });
-    });
-    
+        });
+
 
     // update options of chooseChapters
     function updateChapters() {
         let selectedSubject = chooseSubject.value;
         fetch('/api/courses/get-chapters/?uid=' + selectedSubject, {
-            method: 'GET',
-        })
-        .then(response => response.json())
-        .then(data => {
-            data.data.forEach((e, i) => {
-                let option = document.createElement('option');
-                option.text = e.chapter_title;
-                option.value = e.uid;
-                chooseChapters.appendChild(option);
-            });
-        })
+                method: 'GET',
+            })
+            .then(response => response.json())
+            .then(data => {
+                data.data.forEach((e, i) => {
+                    let option = document.createElement('option');
+                    option.text = e.chapter_title;
+                    option.value = e.uid;
+                    chooseChapters.appendChild(option);
+                });
+            })
     }
 
 
@@ -373,7 +426,7 @@
         event.currentTarget.parentNode.remove();
     };
 
-    
+
     function checkTag(tagName) {
         let allTags = document.getElementsByClassName('tag');
         let flag = false;
@@ -383,7 +436,7 @@
                 flag = true;
                 break;
             }
-            
+
         }
 
         return flag;
@@ -400,15 +453,16 @@
     }
 
     let tags = document.getElementById('tags');
+
     function includeTag(event, id) {
         let tagName = event.currentTarget.selectedOptions[0].innerText;
         let tagId = event.currentTarget.value;
         if (event.currentTarget.value === "") {
             console.log('nothing selected');
         } else {
-           if (checkTag(tagName) === true ) {
-               console.log('Tag already exists...');
-           } else {
+            if (checkTag(tagName) === true) {
+                console.log('Tag already exists...');
+            } else {
                 let tagElement = document.createElement('tr');
                 // tagElement.className = "badge badge-dark p-1 m-1 tag";
                 let td1 = document.createElement('td');
@@ -416,7 +470,9 @@
                 td1.innerHTML = tagName;
                 td1.id = tagId;
                 let td2 = document.createElement('td');
-                td2.innerHTML = '<input type="datetime-local" class="packageDate" onchange="handleChangePackageDateTime(event)" name='+id+'>';
+                td2.innerHTML =
+                    '<input type="datetime-local" class="packageDate" onchange="handleChangePackageDateTime(event)" name=' +
+                    id + '>';
                 let td3 = document.createElement('td');
                 td3.innerHTML = '❌';
                 td3.className = 'delBtn';
@@ -425,7 +481,7 @@
                 tagElement.appendChild(td2);
                 tagElement.appendChild(td3);
                 tags.appendChild(tagElement);
-           }
+            }
         }
     }
 
@@ -450,12 +506,12 @@
             document.getElementById('document_upload').style.display = 'none'
             document.getElementById('video_link').required = true
 
-        } else if(lesson_type.value == 'Document') {
+        } else if (lesson_type.value == 'Document') {
             document.getElementById('document_link').setAttribute('required', 'required')
             document.getElementById('document_upload').style.display = ''
             document.getElementById('video_upload').style.display = 'none'
             document.getElementById('video_link').required = false
-        }else if(lesson_type.value == 'Video + Document'){
+        } else if (lesson_type.value == 'Video + Document') {
             document.getElementById('document_link').setAttribute('required', 'required')
             document.getElementById('document_upload').style.display = ''
             document.getElementById('video_upload').style.display = ''
@@ -470,7 +526,7 @@
             var url = `https://www.youtube.com/embed/${element}`
             document.getElementById('iframe').style.display = ''
             document.getElementById('iframe').src = url
-        }else{
+        } else {
             document.getElementById('iframe').style.display = 'none'
             document.getElementById('iframe').src = ''
         }

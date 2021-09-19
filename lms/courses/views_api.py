@@ -257,6 +257,8 @@ class LessonsView(APIView):
     def post(self , request):
         try:
             data = request.data
+            print(data)
+            
             serializer = LessonSerializer(data = request.data)
 
             if serializer.is_valid():
