@@ -1,4 +1,5 @@
 
+from re import sub
 from django.db.models import manager
 from django.db.models.query import RawQuerySet
 from django.shortcuts import redirect, render
@@ -152,6 +153,7 @@ class CoursePackageSubjectsAPI(APIView):
             try:
                 course_obj = CoursePackage.objects.get(uid = uid)
             except Exception as e:
+                print(e)
                 return Response({
                     'status' : False,
                     'message' : 'invalid uid',
@@ -163,18 +165,26 @@ class CoursePackageSubjectsAPI(APIView):
             subjects = [] 
             for subject in course_obj.pacakge_subjects.all():
                 subject_dict = {}
+                subject_dict['uid'] = subject.uid
                 subject_dict['subject_title'] = subject.subject.subject_title
                 subject_dict['subject_uid'] = subject.subject.uid
+                subject_dict['s_no']  = subject.s_no
                 chapters = []
                 for chapter in subject.pacakge_subject_chapters.all():
                     chapter_dict = {}
+                    chapter_dict['uid'] = chapter.uid
                     chapter_dict['chapter_title'] = chapter.subject_chapter.chapter_title
                     chapter_dict['chapter_uid'] = chapter.subject_chapter.uid
+                    chapter_dict['s_no']  = chapter.s_no
+
                     lessons = []
                     for lesson in chapter.pacakge_subject_chapters_lessons.all():
                         lesson_dict = {}
+                        lesson_dict['uid'] = lesson.uid
                         lesson_dict['lesson_title'] = lesson.lesson.lesson_title
-                        lesson_dict['uid'] = lesson.lesson.uid
+                        lesson_dict['lesson_uid'] = lesson.lesson.uid
+                        lesson_dict['s_no']  = lesson.s_no
+
                        
 
                         lessons.append(lesson_dict)
@@ -187,6 +197,7 @@ class CoursePackageSubjectsAPI(APIView):
                 subject_dict = {}
 
             course_package_dict['subjects'] = subjects
+            course_package_dict['course_package_uid'] = course_obj.uid
             payload.append(course_package_dict)
 
             return Response({
@@ -412,3 +423,66 @@ from rest_framework import status, viewsets
 class DocumentUpload(viewsets.ModelViewSet):
     queryset = Document.objects.all()
     serializer_class = DocumentSerializer
+
+
+
+class CoursePackageSerial(APIView):
+    def post(self , request):
+        try:
+            data = request.data
+            course_package_obj = CoursePackage.objects.get(uid = data.get('coure_package_uid'))
+            sequence_for = data.get('sequence_for')
+
+            if sequence_for == 'subject':
+                if data.get('subjects'):
+                    for subject in data.get('subjects'):
+                        subject_uid = (subject['subject_uid'])
+                        package_subject_obj , _ = CoursePackageSubjects.objects.get_or_create(
+                            course_package = course_package_obj,
+                            subject = Subject.objects.get(uid = subject['subject_uid'])
+                        )
+                        package_subject_obj.s_no = subject['s_no']
+                        package_subject_obj.save()
+
+            elif sequence_for == 'chapter':
+                if data.get('chapters'):
+                    for chapter in data.get('chapters'):
+                        package_chapter_obj ,_ = CoursePackageChapters.objects.get_or_create(
+                        course_package_subject = CoursePackageSubjects.objects.get(uid = chapter['uid']),
+                        subject_chapter = SubjectChapters.objects.get(uid = chapter['subject_uid'])
+                        )
+                        package_chapter_obj.s_no = chapter['s_no']
+                        package_chapter_obj.save()
+                        
+            elif sequence_for == 'lesson':
+                if data.get('lessons'):
+                    for lesson in data.get('lessons'):
+                        package_lesson_obj , _ = CoursePackageLessons.objects.get_or_create(
+                            course_package_chapter =CoursePackageChapters.objects.get(uid = lesson['uid']) ,
+                            lesson = Lessons.objects.get(uid = lesson['lesson_uid']),
+                            
+                        )
+                        package_lesson_obj.s_no = lesson['s_no']
+                        package_lesson_obj.save()
+
+        
+            return Response({
+                'status' : True,
+                'message' : 'sequence updated',
+                'data' : {}
+            })
+
+               
+
+        except Exception as e:
+            import sys, os
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+
+            print(e)
+            return Response({
+                'status' : False,
+                'message' : f'something went wrong error {str(e)}',
+                'data' : {}
+            })

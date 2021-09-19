@@ -15,6 +15,7 @@ urlpatterns = [
    path('save-course-package/' , views.SaveCoursePackage.as_view()),
    path('course-package-info/' , views.CoursePackageSubjectsAPI.as_view()),
    path('go-live/' , views.GoLiveView.as_view()),
+   path('package-sequence/' , views.CoursePackageSerial.as_view())
 ]
 
 urlpatterns += router.urls
