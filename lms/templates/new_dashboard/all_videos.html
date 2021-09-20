@@ -68,12 +68,7 @@
                                       <a class="dropdown-item" href="#">Delete</a>
                                       <a class="dropdown-item" href="#">Start Live</a>
                                       <a class="dropdown-item" href="#">Ends Live</a>
-                                      {% if lesson.lesson_type  %}
-                                        <a href="{{lesson.video.video_link}}" class="dropdown-item" target="_blank">View</a>
-                                        {% else %}
-                                        <a href="{{lesson.document.document_file}}" class="dropdown-item" target="_blank">View</a>
-                                    
-                                    {% endif %}
+                                      <a href="{% url 'preview_video' lesson.uid%}" class="dropdown-item">View</a>
                                     </div>
                                   </div>
             

@@ -361,7 +361,9 @@ def create_live(request):
     }
     return render(request , 'live/create_live.html', context)
 
-
+def preview_video(request, uid):
+    
+    return render(request , 'new_dashboard/preview_video.html')
 
 def all_coupons(request ):
     context = {
@@ -375,5 +377,22 @@ def all_coupons(request ):
 def add_coupons(request):
 
     return render(request, 'new_dashboard/coupons/add_coupons.html' , )
-            
-                                                                                                    
+
+
+def all_test(request):
+    
+    return render(request , 'new_dashboard/tests/all_test.html' )
+
+def add_test(request):
+    return render(request , 'new_dashboard/tests/add_test.html' )
+
+
+def edit_test(request):
+    return render(request , 'new_dashboard/coupons/edit_coupons_detail.html')
+
+
+def all_question(request):
+    return render(request , 'new_dashboard/questions/all_questions.html')
+
+def add_question(request):
+    return render(request , 'new_dashboard/coupons/add_coupons_question.html')
