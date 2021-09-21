@@ -57,7 +57,7 @@
                     <div id="expiryTypePicker">
                         <label for="expiryType"> Expiry Type </label>
                         <select required name="expiryType" id="expiryType" class="form-control" onchange="changeExpiryType(event)">
-                            <option disabled selected>Choose Expiry Type</option>
+                            <option disabled selected value="">Choose Expiry Type</option>
                             <option value="fixed-date">Fixed Date</option>
                             <option value="subscription">Subscription</option>
                         </select>
@@ -109,15 +109,15 @@
 
                 <div class="form-group mb-6">
                     <div class="custom-file">
-                        <input type="file" class="custom-file-input" name="image_for_web" id="image_for_web">
-                        <label class="custom-file-label" for="image_for_web">Choose file For Web</label>
+                        <label for="image_for_web">Choose file For Web</label>
+                        <input type="file" class="form-control" name="image_for_web" id="image_for_web">
                     </div>
                 </div>
 
                 <div class="form-group mb-6">
                     <div class="custom-file">
-                        <input type="file" class="custom-file-input" name="image_for_app" id="image_for_app">
-                        <label class="custom-file-label" for="image_for_app">Choose file For App</label>
+                        <label for="image_for_app">Choose file For App</label>
+                        <input type="file" class="form-control" name="image_for_app" id="image_for_app">
                     </div>
                 </div>
 
@@ -160,51 +160,90 @@
     
     const csrfToken = getCookie('csrftoken');
 
+    let isFormValid = false;
+    function formValidation() {
+        if (document.getElementById('inputEmail4').value === '') {
+            alert('Please enter a pakage title');
+        } else if (document.getElementById('subjects').value === '') {
+            alert('Please select a subject');
+        } else if (document.getElementById('actual_price').value === '') {
+            alert('Please enter actual price');     
+        } else if (document.getElementById('selling_price').value === '') {
+            alert('Please enter selling price');     
+        } else if (document.getElementById('expiryType').value === '') {
+            alert('Please Choose Expiry Type');     
+        } else if (document.getElementById('expiryType').value === 'fixed-date') {
+            if (document.getElementById('expiryDate').value === '') {
+                alert('Please Enter Last Date of Expiry ');
+            }
+        } else if (document.getElementById('expiryType').value === 'subscription') { 
+            if (document.getElementById('subscriptionDays').value === '') {
+                alert('Please Enter no. of Expiry Days');
+            }
+
+        } else if (document.getElementById('image_for_web').value === '') {
+            alert('Please Choose Image For Web');
+        } else if (document.getElementById('image_for_app').value === '') {
+            alert('Please Choose Image For Mobile');
+        } else {
+            isFormValid = true;
+        };
+
+        return isFormValid;
+    };
+
     // handlesubmit starts
     let handleSubmit = document.getElementById('handleSubmit');
     handleSubmit.addEventListener('click', function (event) {
         event.preventDefault();
-        let formData = new FormData();
-        formData.append('package_title', document.getElementById('inputEmail4').value);
-        formData.append('package_type', document.getElementById('subjects').value);
-        formData.append('actual_price', document.getElementById('actual_price').value);
-        formData.append('selling_price', document.getElementById('selling_price').value);
-        formData.append('expiry_type', document.getElementById('expiryType').value);
-        formData.append('sell_till_date', document.getElementById('expiryDate').value);
-        formData.append('days', document.getElementById('subscriptionDays').value);
-        formData.append('package_description', description);
-        formData.append('web_image', document.getElementById('image_for_web').files[0]);
-        formData.append('mobile_image', document.getElementById('image_for_app').files[0]);
-        formData.append('is_active', document.getElementById('is_active').value);
-        formData.append('sell_end_time', document.getElementById('sell_end_time').value);
-        console.log();
-            
-
-        if (document.getElementById('subjects').value === 'video') {
-            
-            fetch('/api/courses/course-packages/', {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'X-CSRFToken': csrfToken
-                },
-            })
-            .then(function(response) {
-                return response.json();
-            })
-            .then(function(response) {
-                console.log(response);
-                if (response.status === true) {
-                    alert('Successfully created package');
-                } else {
-                    alert('Error while creating package');
-                }
-            });
+        isFormValid = false;
+        if (formValidation() === true) {
+            handleSubmit.disabled = true;
+            let formData = new FormData();
+            formData.append('package_title', document.getElementById('inputEmail4').value);
+            formData.append('package_type', document.getElementById('subjects').value);
+            formData.append('actual_price', document.getElementById('actual_price').value);
+            formData.append('selling_price', document.getElementById('selling_price').value);
+            formData.append('expiry_type', document.getElementById('expiryType').value);
+            formData.append('sell_till_date', document.getElementById('expiryDate').value);
+            formData.append('days', document.getElementById('subscriptionDays').value);
+            formData.append('package_description', description);
+            formData.append('web_image', document.getElementById('image_for_web').files[0]);
+            formData.append('mobile_image', document.getElementById('image_for_app').files[0]);
+            formData.append('is_active', document.getElementById('is_active').value);
+            formData.append('sell_end_time', document.getElementById('sell_end_time').value);
+            console.log();
                 
 
-        } else {
-            // fetch for test API
+            if (document.getElementById('subjects').value === 'video') {
+                
+                fetch('/api/courses/course-packages/', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRFToken': csrfToken
+                    },
+                })
+                .then(function(response) {
+                    return response.json();
+                })
+                .then(function(response) {
+                    console.log(response);
+                    if (response.status === true) {
+                        handleSubmit.disabled = false;
+                        alert('Successfully created package');
+                    } else {
+                        alert('Error while creating package');
+                    }
+                });
+                    
+
+            } else {
+                // fetch for test API
+            }
         }
+
+        
 
     });
     // handlesubmit ends
