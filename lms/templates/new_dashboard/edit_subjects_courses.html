@@ -221,7 +221,7 @@
                         </div>
                     </div>
                     <br>
-                    <a href="/{{course_package_obj.web_image}}">Open Here</a>
+                    <a href="/{{course_package_obj.web_image.url}}">Open Here</a>
     
                     <div class="form-group mb-6">
                         <div class="custom-file">
@@ -230,7 +230,7 @@
                         </div>
                     </div>
                     <br>
-                    <a href="/{{course_package_obj.mobile_image}}">Open Here</a>
+                    <a href="/{{course_package_obj.mobile_image.url}}">Open Here</a>
                 </div>
     
                 <button type="submit" id="handleSubmit" class="btn btn-primary mt-3">Create Package</button>
@@ -266,10 +266,6 @@
 
                     <button class="check-btn" id="chooseChapterBtn">
                             Choose Chapter 
-                    </button>
-
-                    <button class="check-btn" id="reorderBtn">
-                        Reorder 
                     </button>
 
                 </div>
@@ -570,7 +566,14 @@
             })
             createList(subjectsArray);
 
+            function reset () {
+                
+                selectChapterDiv.style.display = 'none';
+                chooseChapterBtn.style.display = 'block';
+            };
+
             selectedSubject.addEventListener('change', function () {
+                reset();
                 subjectUid = selectedSubject.value;
                 let allChapters;
                 chaptersArray=[];
@@ -578,6 +581,7 @@
                     if (e.subject_uid === subjectUid) {
                         chaptergroupuid = e.uid;
                         allChapters = e.chapters;
+                        selectedChapter.innerHTML = '<option value="0" selected disabled>Choose Chapter</option>';
                         allChapters.forEach(e => {
                             chaptersArray.push([e.chapter_title, e.chapter_uid]);
                             // adding all chapters to options in dropdown
@@ -586,7 +590,9 @@
                             opt.value = e.chapter_uid;
                             selectedChapter.appendChild(opt);
 
-                        })
+                        });
+                        editingMode = 'chapter';
+                        createList(chaptersArray);
                     }
                 })
 
@@ -610,7 +616,9 @@
                                 console.log('p', lessonsArray);
                                 temp = lessonsArray;
                             }
-                        })
+                        });
+                        editingMode = 'lesson';
+                        createList(lessonsArray);
                     }
                 })
             });
@@ -620,38 +628,8 @@
                 chooseChapterBtn.style.display = 'none';
             });
 
-            reorderBtn.addEventListener('click', function () {
-                if (selectedSubject.value === "0") {
-                    alert('Please select a subject');
-                    return;
-                } else if (selectedChapter.value !== "0" && selectedSubject.value !== "0") {
-                    let selectedSubjectUID = selectedSubject.value;
-                    // code to send list of lessons to reorder
-                    console.log('send lesson array');
-                    editingMode = 'lesson';
-                    console.log('a', temp);
-                    createList(temp);
+        });      
 
-                } else if (selectedSubject.value !== "0") {
-                    // code to send list of chapters to reorder
-                    editingMode = 'chapter';
-                    console.log('send chapters array');
-                    console.log(chaptersArray);
-                    createList(chaptersArray);
-
-                } 
-
-
-                chooseChapterBtn.style.display = 'none';
-
-
-            });
-        });
-
-        
-
-       
-        
 
         let dragStartIndex;       
 
