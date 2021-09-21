@@ -19,7 +19,7 @@
             {% csrf_token %}
             <div class="form-row mb-4">
                 <div class="form-group col-md-6">
-                    <label for="coupon_code">Coupon COde</label>
+                    <label for="coupon_code">Coupon Code</label>
                     <input type="text" class="form-control" required name="coupon_code" id="coupon_code"
                         placeholder="Enter Unique Coupon Code">
                 </div>
@@ -71,14 +71,28 @@
     
                         <div id="packageDiv" class="mt-4" style="display: none;">
                             <div>
-                                <label for="tags">Select Packages To Include</label>
-                                <select id="tagsDropdown" name="tags" class="fstdropdown-select" onchange="includeTag(event)">
-                                    <option value="" selected disabled>Choose Package</option>
-                                    {% for course_package in  course_packages %}
-                                        <option value="{{course_package.uid}}">{{course_package.package_title}}</option>
-                                    {% endfor  %}
-            
-                                </select>  
+                                <div>                    
+                                    <div class="select-box">
+                                        <div class="options-container">
+                                            {% for course_package in  course_packages %}
+                                                <div class="option" onclick="includeTag(event)">
+                                                    <input type="checkbox" name="category" id="{{course_package.uid}}">
+                                                    <label for="{{course_package.uid}}">{{course_package.package_title}}</label>
+                                                </div>
+                                            {% endfor  %}
+                                
+                                          
+                                        </div>
+                                
+                                        <div class="selected">
+                                          Choose Packages to include
+                                        </div>
+                                
+                                        <div class="search-box">
+                                            <input type="text" placeholder="Start Typing..." />
+                                        </div>
+                                    </div>
+                                </div> 
                             </div> 
             
                             <div class="table table-striped" style="margin: 1%;">
@@ -111,6 +125,160 @@
 
 
     var is_all_Package = true;
+
+    function parseDate(date) {
+        var date = new Date(date);
+        var year = date.getFullYear();
+        var month = date.getMonth() + 1;
+        var day = date.getDate();
+        var hour = date.getHours();
+        var min = date.getMinutes();
+        var sec = date.getSeconds();
+        var dateString = year + "-" + month + "-" + day + "T" + hour + ":" + min + ":" + sec + "Z";
+        return dateString;
+        
+    }
+    // script for package include dropdown starts
+
+    var selected = document.querySelector(".selected");
+    const optionsContainer = document.querySelector(".options-container");
+    const searchBox = document.querySelector(".search-box input");
+
+    const optionsList = document.querySelectorAll(".option");
+
+    selected.addEventListener("click", () => {
+    optionsContainer.classList.toggle("active");
+
+    searchBox.value = "";
+    filterList("");
+
+    if (optionsContainer.classList.contains("active")) {
+        searchBox.focus();
+    }
+    });
+
+    optionsList.forEach(o => {
+    o.addEventListener("click", (e) => {
+        // selected.innerHTML = o.querySelector("label").innerHTML;
+        // optionsContainer.classList.remove("active");
+        let checkbox = e.target.firstElementChild;
+        if (checkbox === null) {
+        return;
+        }
+
+        if (checkbox.checked === false) {
+        checkbox.checked = true;
+        } else {
+        checkbox.checked = false;
+        };
+
+        console.log(selectedItems());
+
+    });
+    });
+
+    searchBox.addEventListener("keyup", function(e) {
+    filterList(e.target.value);
+    });
+
+    const filterList = searchTerm => {
+    searchTerm = searchTerm.toLowerCase();
+    optionsList.forEach(option => {
+        let label = option.firstElementChild.nextElementSibling.innerText.toLowerCase();
+        if (label.indexOf(searchTerm) != -1) {
+        option.style.display = "block";
+        } else {
+        option.style.display = "none";
+        }
+    });
+    };
+
+    function selectedItems() {
+    var selectedArray = [];
+    var selectedCheckboxes = document.querySelectorAll(".option input[type='checkbox']"); 
+    var correspondingLabels = document.querySelectorAll(".option label");
+    for (var i = 0; i < selectedCheckboxes.length; i++) {
+        if (selectedCheckboxes[i].checked) {
+        selectedArray.push([selectedCheckboxes[i].id, correspondingLabels[i].innerText]);
+        }
+    };
+    return selectedArray;
+    };
+
+    function includeTag(event) {
+        const packageUid = event.target.firstElementChild.id;
+        const packageName = event.target.querySelector("label").innerText;
+
+        if (checkTag(packageName) === true ) {
+            console.log('Tag already exists...');
+            deleteTag(packageUid);
+        } else {
+            let tagElement = document.createElement('tr');
+            // tagElement.className = "badge badge-dark p-1 m-1 tag";
+            let td1 = document.createElement('td');
+            td1.className = "tag";
+            td1.innerHTML = packageName;
+            td1.id = packageUid;
+            let td2 = document.createElement('td');
+            td2.innerHTML = '<input type="datetime-local" class="packageDate" onchange="handleChangePackageDateTime(event)" name='+packageUid+'>';
+            tagElement.appendChild(td1);
+            tagElement.appendChild(td2);
+            tags.appendChild(tagElement);
+        }
+    
+
+    };
+
+    function deleteTag(packageUid) {
+        let allSelectedPackages = document.querySelectorAll(".tag");
+        for (var i = 0; i < allSelectedPackages.length; i++) {
+            if (allSelectedPackages[i].id === packageUid) {
+                allSelectedPackages[i].parentElement.remove();
+            }
+        }
+    };
+    
+    function checkTag(tagName) {
+        let allTags = document.getElementsByClassName('tag');
+        let flag = false;
+        for (let i = 0; i < allTags.length; i++) {
+            let singleTag = allTags[i];
+            if (singleTag.innerHTML === tagName) {
+                flag = true;
+                break;
+            }
+            
+        }
+
+        return flag;
+    }
+
+    function clickTag(event) {
+        let tagName = event.target.innerHTML;
+        let tagId = event.target.id;
+        console.log(tagName, tagId);
+    }
+
+    function handleChangePackageDateTime(event) {
+        console.log(event.target.value);
+    }
+
+    // script for package include dropdown ends
+    
+    function getCookie(name) {
+        if (!document.cookie) {
+            return null;
+        }
+        const xsrfCookies = document.cookie.split(';')
+        .map(c => c.trim())
+        .filter(c => c.startsWith(name + '='));
+        if (xsrfCookies.length === 0) {
+            return null;
+        }
+            return decodeURIComponent(xsrfCookies[0].split('=')[1]);
+    }
+    
+    const csrfToken = getCookie('csrftoken');
 
 
     function changeDiscountType() {
@@ -188,6 +356,60 @@
             }
         }
     }
+
+    const submitForm = async (e) => {
+        e.preventDefault();
+
+        
+        let data = {
+            'coupon_code': document.getElementById('coupon_code').value,
+            'coupon_validity': document.getElementById('coupon_validity').value,
+            'discount_type': document.getElementById('discount_type').value,
+            'discount': document.getElementById('discount_amount').value,
+            'total_usage_limit': document.getElementById('usage_limit').value,
+            'per_user_limit': document.getElementById('per_user_usase_limit').value,
+        };
+
+        // document upload
+        if (document.getElementById('apply_coupon_type') === 'all-packages') {
+            data['courses'] = ['all']
+        } else {
+            let allTags = document.getElementsByClassName('tag');
+            let allPackageDates = document.getElementsByClassName('packageDate');
+            let packages = [];
+            for (let i = 0; i < allTags.length; i++) {
+                if (allPackageDates[i].value === '') {
+                    packages.push({
+                        "uid" : allTags[i].id,
+                    });
+                } else {
+                    packages.push({
+                        "uid" : allTags[i].id,
+                    });
+                }
+                
+                
+            };
+            data['packages'] = packages;
+        }
+
+        console.log(data);
+
+        let res = await axios.post('/api/courses/coupon/', data, {
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrfToken
+            }
+        });
+
+        console.log(res);
+        
+    };
+
+    const updateBtn = document.getElementById('submitFormBtn');
+    updateBtn.addEventListener('click', submitForm)
+
+    
 </script>
 
 {%endblock %}
