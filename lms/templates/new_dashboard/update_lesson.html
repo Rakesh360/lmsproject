@@ -133,17 +133,32 @@
     
                     
                     <div>
-                        <label for="tags">Select Packages To Include</label>
-                        <select required id="tagsDropdown" name="tags" class="fstdropdown-select" onchange="includeTag(event)">
-                            <option value="" selected>Choose Package</option>
-                            {% for subject_chapter in  subject_chapters %}
-                            <option value="{{subject_chapter.uid}}">{{subject_chapter.chapter_title}}</option>
-                            {% endfor  %}
-                        </select>  
+                        <div>                    
+                            <div class="select-box">
+                                <div class="options-container">
+                                    {% for course_package in  course_packages %}
+                                        <div class="option" onclick="includeTag(event)">
+                                            <input type="checkbox" name="category" id="{{course_package.uid}}">
+                                            <label for="{{course_package.uid}}">{{course_package.package_title}}</label>
+                                        </div>
+                                    {% endfor  %}
+                        
+                                  
+                                </div>
+                        
+                                <div class="selected">
+                                  Choose Packages to include
+                                </div>
+                        
+                                <div class="search-box">
+                                    <input type="text" placeholder="Start Typing..." />
+                                </div>
+                            </div>
+                        </div> 
                     </div> 
     
                     <br>
-                    <p>{{lesson.packages}}</p>
+                    <!-- <p>{{lesson.packages}}</p> -->
                     <div class="table table-striped" style="margin: 1%;">
                         <table class="display">
                             <!-- <thead>
@@ -196,13 +211,105 @@
     let tagSection = document.getElementById('tagSection');
     let tagsDropdown = document.getElementById('tagsDropdown');
 
-    
+    // script for package include dropdown starts
 
+    var selected = document.querySelector(".selected");
+    const optionsContainer = document.querySelector(".options-container");
+    const searchBox = document.querySelector(".search-box input");
 
-    function deleteTag(event) {
-        event.currentTarget.parentNode.remove();
+    const optionsList = document.querySelectorAll(".option");
+
+    selected.addEventListener("click", () => {
+    optionsContainer.classList.toggle("active");
+
+    searchBox.value = "";
+    filterList("");
+
+    if (optionsContainer.classList.contains("active")) {
+        searchBox.focus();
+    }
+    });
+
+    optionsList.forEach(o => {
+    o.addEventListener("click", (e) => {
+        // selected.innerHTML = o.querySelector("label").innerHTML;
+        // optionsContainer.classList.remove("active");
+        let checkbox = e.target.firstElementChild;
+        if (checkbox === null) {
+        return;
+        }
+
+        if (checkbox.checked === false) {
+        checkbox.checked = true;
+        } else {
+        checkbox.checked = false;
+        };
+
+        console.log(selectedItems());
+
+    });
+    });
+
+    searchBox.addEventListener("keyup", function(e) {
+    filterList(e.target.value);
+    });
+
+    const filterList = searchTerm => {
+    searchTerm = searchTerm.toLowerCase();
+    optionsList.forEach(option => {
+        let label = option.firstElementChild.nextElementSibling.innerText.toLowerCase();
+        if (label.indexOf(searchTerm) != -1) {
+        option.style.display = "block";
+        } else {
+        option.style.display = "none";
+        }
+    });
     };
 
+    function selectedItems() {
+    var selectedArray = [];
+    var selectedCheckboxes = document.querySelectorAll(".option input[type='checkbox']"); 
+    var correspondingLabels = document.querySelectorAll(".option label");
+    for (var i = 0; i < selectedCheckboxes.length; i++) {
+        if (selectedCheckboxes[i].checked) {
+        selectedArray.push([selectedCheckboxes[i].id, correspondingLabels[i].innerText]);
+        }
+    };
+    return selectedArray;
+    };
+
+    function includeTag(event) {
+        const packageUid = event.target.firstElementChild.id;
+        const packageName = event.target.querySelector("label").innerText;
+
+        if (checkTag(packageName) === true ) {
+            console.log('Tag already exists...');
+            deleteTag(packageUid);
+        } else {
+            let tagElement = document.createElement('tr');
+            // tagElement.className = "badge badge-dark p-1 m-1 tag";
+            let td1 = document.createElement('td');
+            td1.className = "tag";
+            td1.innerHTML = packageName;
+            td1.id = packageUid;
+            let td2 = document.createElement('td');
+            td2.innerHTML = '<input type="datetime-local" class="packageDate" onchange="handleChangePackageDateTime(event)" name='+packageUid+'>';
+            tagElement.appendChild(td1);
+            tagElement.appendChild(td2);
+            tags.appendChild(tagElement);
+        }
+    
+
+    };
+
+    function deleteTag(packageUid) {
+        let allSelectedPackages = document.querySelectorAll(".tag");
+        for (var i = 0; i < allSelectedPackages.length; i++) {
+            if (allSelectedPackages[i].id === packageUid) {
+                allSelectedPackages[i].parentElement.remove();
+            }
+        }
+    };
     
     function checkTag(tagName) {
         let allTags = document.getElementsByClassName('tag');
@@ -225,36 +332,11 @@
         console.log(tagName, tagId);
     }
 
-
-    let tags = document.getElementById('tags');
-    function includeTag(event, id) {
-        let tagName = event.currentTarget.selectedOptions[0].innerText;
-        let tagId = event.currentTarget.value;
-        if (event.currentTarget.value === "") {
-            console.log('nothing selected');
-        } else {
-           if (checkTag(tagName) === true ) {
-               console.log('Tag already exists...');
-           } else {
-                let tagElement = document.createElement('tr');
-                // tagElement.className = "badge badge-dark p-1 m-1 tag";
-                let td1 = document.createElement('td');
-                td1.className = "tag";
-                td1.innerHTML = tagName;
-                td1.id = tagId;
-                let td2 = document.createElement('td');
-                td2.innerHTML = '<input class="packageDate" type="datetime-local" name='+id+'>';
-                let td3 = document.createElement('td');
-                td3.innerHTML = '❌';
-                td3.className = 'delBtn';
-                td3.addEventListener("click", deleteTag);
-                tagElement.appendChild(td1);
-                tagElement.appendChild(td2);
-                tagElement.appendChild(td3);
-                tags.appendChild(tagElement);
-           }
-        }
+    function handleChangePackageDateTime(event) {
+        console.log(event.target.value);
     }
+// script for package include dropdown ends
+    
 
     function changeVideoType() {
         let videoType = document.getElementById('videoType');
@@ -267,26 +349,28 @@
 
 
     function changeLessonType() {
-        var element = document.getElementById('element')
+        var element = document.getElementById('lesson_type')
         console.log(element.value)
         if (element.value == 'Video') {
             document.getElementById('video_upload').style.display = ''
             document.getElementById('document_upload').style.display = 'none'
-            document.getElementById('document').required = false
+            document.getElementById('document_link').required = false
             document.getElementById('lesson_link').required = true
 
         } else if(element.value == 'Document') {
             document.getElementById('document_upload').style.display = ''
             document.getElementById('video_upload').style.display = 'none'
-            document.getElementById('document').required = true
+            document.getElementById('document_link').required = true
             document.getElementById('lesson_link').required = false
         }else if(element.value == 'Video + Document'){
             document.getElementById('document_upload').style.display = ''
             document.getElementById('video_upload').style.display = ''
-            document.getElementById('document').required = true
+            document.getElementById('document_link').required = true
             document.getElementById('lesson_link').required = true
         }
     }
+
+    changeLessonType();
 
     function loadLesson() {
         var element = document.getElementById('lesson_link').value
@@ -367,7 +451,11 @@
             let docLink = await uploadoc();
             console.log('...', docLink);
             data['document'] = docLink;
+        } else {
+            data['document'] = '{{lesson.document}}'
         }
+
+        console.log('dobj', '{{lesson.document}}');
         
     
         // getting data of all packages...
@@ -394,40 +482,27 @@
         console.log(data);
 
         if (video_platform === 'Live') {
-            fetch('/api/courses/go-live/', {
-                method: 'POST', // or 'PUT'
+
+            let res = await axios.patch('/api/courses/go-live/', data, {
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRFToken': csrfToken
-                },
-                body: JSON.stringify(data)
-                })
-                .then(response => response.json())
-                .then(data => {
-                    console.log('Success:', data);
-                })
-                .catch((error) => {
-                    console.error('Error:', error);
+                }
             });
+            console.log(res);            
+
         } else {
-            fetch('/api/courses/lessons/', {
-                method: 'POST', // or 'PUT'
+            let res = await axios.patch('/api/courses/lessons/', data, {
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRFToken': csrfToken
-                },
-                    body: JSON.stringify(data)
-                })
-                .then(response => response.json())
-                .then(data => {
-                    console.log('Success:', data);
-                })
-                .catch((error) => {
-                    console.error('Error:', error);
+                }
             });
+            console.log(res);
         }
 
         // log all data of form data
+        
     };
 
     const updateBtn = document.getElementById('updateBtn');

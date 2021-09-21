@@ -289,7 +289,11 @@ def update_lesson(request , uid):
     except Exception as e:
         print(e)
     
-    context = {'lesson' : lesson_obj , 'subject_chapters' : SubjectChapters.objects.all()}
+    context = {
+        'lesson' : lesson_obj ,
+        'subject_chapters' : SubjectChapters.objects.all(),
+        'course_packages': CoursePackage.objects.all()
+        }
     return render(request , 'new_dashboard/update_lesson.html',context )
 
 
