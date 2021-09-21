@@ -5,6 +5,8 @@ from rest_framework.routers import DefaultRouter
 router = DefaultRouter()
 
 router.register('document', views.DocumentUpload, )
+router.register('coupon', views.CouponView, )
+
 
 urlpatterns = [
    path('', views.CoursesView.as_view()), 
@@ -15,7 +17,8 @@ urlpatterns = [
    path('save-course-package/' , views.SaveCoursePackage.as_view()),
    path('course-package-info/' , views.CoursePackageSubjectsAPI.as_view()),
    path('go-live/' , views.GoLiveView.as_view()),
-   path('package-sequence/' , views.CoursePackageSerial.as_view())
+   path('package-sequence/' , views.CoursePackageSerial.as_view()),
+
 ]
 
 urlpatterns += router.urls

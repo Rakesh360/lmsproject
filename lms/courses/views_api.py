@@ -1,4 +1,5 @@
 
+from functools import partial
 from re import sub
 from django.db.models import manager
 from django.db.models.query import RawQuerySet
@@ -268,8 +269,6 @@ class LessonsView(APIView):
     def post(self , request):
         try:
             data = request.data
-            print(data)
-
             serializer = LessonSerializer(data = request.data)
 
             if serializer.is_valid():
@@ -326,6 +325,76 @@ class LessonsView(APIView):
                 'data' : {},
                 'message' : 'something went wrong'
             })
+    
+    def patch(self , request):
+        try:
+            data = request.data
+            if data.get('uid') is None:
+                return Response({
+                    'status' : False,
+                    'message' : 'uid is required'
+                })
+            obj = Lessons.objects.get(uid = data.get('uid'))
+            serializer = LessonSerializer( obj,data = request.data , partial=True)
+
+            if serializer.is_valid():
+                serializer.save()
+                lesson_obj = Lessons.objects.get(uid = serializer.data['uid'])
+                chapter_obj = lesson_obj.chapter
+                subject_obj = lesson_obj.chapter.subject
+                packages = data.get('packages')
+                print(packages)
+                if packages:
+                    i = 0
+                    for package in packages:
+                        try:
+                            course_package_obj = CoursePackage.objects.get(uid = package['uid'])
+                        except Exception as e:
+                            return Response({
+                                'status' : False,
+                                'message' : f'lesson created but not added to packages invalid uid at index {i}'
+                            })
+                        i = i + 1
+                        try:
+                            course_package_subject_obj, _ = CoursePackageSubjects.objects.get_or_create(
+                                course_package = course_package_obj,
+                                subject = subject_obj
+                            )
+                            course_package_chapter_obj, _ = CoursePackageChapters.objects.get_or_create(
+                                course_package_subject = course_package_subject_obj,
+                                subject_chapter = chapter_obj
+                            )
+                            created_at = package['created_at']
+
+                            CoursePackageLessons.objects.get_or_create(
+                                course_package_chapter = course_package_chapter_obj,
+                                lesson = lesson_obj,
+                                added_at = created_at
+                            )
+                        except Exception as e:
+                            print(e)
+                        return Response({
+                            'status' : True,
+                            'data' : serializer.data,
+                            'message' : 'lesson updated'
+                        })
+
+            
+            return Response({
+                'status' : False,
+                'message' : 'lesson not updated',
+                'data' : serializer.errors
+            })
+        except Exception as e:
+            print(e)
+            return Response({
+                'status' : False,
+                'message' : 'lesson not updated',
+                'data' : f' error {str(e)}'
+            })
+
+
+
          
 
 from rest_framework.permissions import IsAuthenticated
@@ -423,6 +492,55 @@ from rest_framework import status, viewsets
 class DocumentUpload(viewsets.ModelViewSet):
     queryset = Document.objects.all()
     serializer_class = DocumentSerializer
+
+class CouponView(viewsets.ModelViewSet):
+    queryset = Coupoun.objects.all()
+    serializer_class = CoupounSerializer
+
+    def posta(self , request):
+        try:
+            data = request.data
+            serializer = CoupounSerializer(data = data)
+            if serializer.is_valid():
+                serializer.save()
+                coupon_obj = Coupoun.objects.get(uid = serializer['uid'])
+                if data.get('packages'):
+                    if len(data.get('packages')):
+                        for pac in data.get('packages'):
+                            try:
+                                course_obj = CoursePackage.objects.get(uid = pac)
+                                coupon_obj.courses.add(course_obj)
+
+                            except Exception as e:
+                                print(e)
+
+                    else:
+                        course_objs = CoursePackage.objects.all()
+                        for course_obj in course_objs:
+                            coupon_obj.courses.add(course_obj)
+
+
+                return Response({
+                    'status' : True,
+                    'message' : 'coupon created',
+                    'data' : serializer.data
+                })
+            
+            return Response({
+                    'status' : False,
+                    'message' : 'coupon not created',
+                    'data' : serializer.errors
+                })
+
+        except Exception as e:
+            print(e)
+            return Response({
+                    'status' : False,
+                    'message' : f'coupon not created {str(e)}',
+                    'data' : {}
+                })
+
+
 
 
 

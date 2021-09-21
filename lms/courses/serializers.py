@@ -83,6 +83,39 @@ class LessonSerializer(serializers.ModelSerializer):
         except Exception as e :
             print(e)
 
+    
+    def update(self , instance , validated_data):
+        instance.lesson_title = validated_data.get('lesson_title' , instance.lesson_title)
+        instance.chapter = validated_data.get('chapter' , instance.chapter)
+        instance.lesson_type = validated_data.get('lesson_type' , instance.lesson_type)
+        instance.video_platform = validated_data.get('video_platform' , instance.video_platform)
+        instance.is_free = validated_data.get('is_free' , instance.is_free)
+        video_obj = None
+        document_obj = None
+        if 'document' in validated_data:
+            document_obj = validated_data['document']
+            # if not document is None: 
+            #     document_obj = Document.objects.get(
+            #         uid = validated_data['document']
+            #     )
+            #     print(document_obj)
+        if 'video'  in validated_data:
+            video = validated_data['video']
+            video_obj = Video.objects.create(
+                #video_uploaded_on = validated_data['video']['video_uploaded_on'],
+                video_link = validated_data['video']['video_link']
+            )
+
+
+        instance.video = video_obj
+        instance.document = document_obj
+
+
+        instance.save()
+        return instance
+
+
+
 
 class SubjectChaptersSerializer(serializers.ModelSerializer):
     lessons = LessonSerializer(source ='subject_lessons' , many =True)
@@ -156,3 +189,10 @@ class GoLiveSerializer(serializers.ModelSerializer):
     class Meta:
         model = GoLive
         exclude = ['created_at' , 'updated_at']    
+
+
+
+class CoupounSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Coupoun
+        exclude = ['created_at' , 'updated_at']

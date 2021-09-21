@@ -35,7 +35,7 @@ urlpatterns = [
    path('all-test/' , views.all_test , name="all_test"),
    path('add-test/' , views.add_test , name="add_test"),
    path('edit-test/<uid>/' , views.edit_test , name="edit_test"),
-   path('delete-test/<uid>/' , views.delete_test , name="delete_test"),
+   #path('delete-test/<uid>/' , views.delete_test , name="delete_test"),
    path('all-question', views.all_question, name="all_question"),
    path('add-question/' , views.add_question , name="add_question"),
 
