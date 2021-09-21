@@ -222,12 +222,13 @@ def add_subjects_courses(request,uid):
         context['selected_subject'] = chapter_obj.subject.uid
         context['course_package_add_chapters'] = course_package_add_chapters
 
-    course_package_add_subjects = []
-    for subject in course_package_obj.pacakge_subjects.all():
-        course_package_add_subjects.append(subject.subject.uid)
+    # course_package_add_subjects = []
+    # for subject in course_package_obj.pacakge_subjects.all():
+    #     course_package_add_subjects.append(subject.subject.uid)
 
-    context['course_package_add_subjects'] = course_package_add_subjects
+    # context['course_package_add_subjects'] = course_package_add_subjects
 
+    # print(context)
 
     return render(request , 'new_dashboard/edit_subjects_courses.html' , context)
 
