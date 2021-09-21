@@ -111,6 +111,8 @@
 
 {% include "utils/alert.html" %}
 
+<script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
+
 <ul class="nav nav-pills nav-fill" style="margin-top: 8%;">
     <li class="nav-item">
         <a class="nav-link active" aria-current="page" id="contentBtn" href="#">Package Details</a>
@@ -206,7 +208,7 @@
                 <div class="form-row mb-4">
                     <div class="form-group col-md-12">
                         <label for="description">Description </label>
-                        <textarea id="summernote" name="description" class="form-control" cols="30" rows="5"></textarea>
+                        <textarea id="summernote" name="description" class="form-control" cols="30" rows="5">{{course_package_obj.package_description}}</textarea>
                     </div>
                 </div>
     
@@ -747,6 +749,15 @@ let two = document.querySelector('#container2')
 var course_package_uid = '{{course_package_uid}}'
 var CSRF_TOKEN = '{{csrf_token}}'
 
+</script>
+
+<script>
+    let editor = CKEDITOR.replace( 'description' );
+    var description;
+    editor.on( 'change', function( evt ) {
+    // getData() returns CKEditor's HTML content.
+    description =  evt.editor.getData();            
+});
 </script>
 
 
