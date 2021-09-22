@@ -247,55 +247,16 @@ def add_lessons(request):
 def update_lesson(request , uid):
     try:
         lesson_obj = Lessons.objects.get(uid = uid)
-        if request.method == 'POST':
-            chapters = request.POST.get('chapters')
-            lesson_title = request.POST.get('lesson_title')
-            video_uploaded_on = request.POST.get('video_uploaded_on')
-            video_link = request.POST.get('video_link')
-            is_free = request.POST.get('is_free')
-            lesson_type = request.POST.get('lesson_type')
-    
-            lesson_obj.lesson_title =lesson_title
-            lesson_obj.is_free = is_free
-            lesson_obj.subject_chapters = SubjectChapters.objects.get(uid = chapters)
-            lesson_obj.lesson_type = lesson_type
-            if lesson_type == 'Video':
-                obj = Video.objects.create(
-                video_uploaded_on =video_uploaded_on,
-                video_link    =video_link,
-                )
-                lesson_obj.video = obj
-            elif lesson_type == 'Document':
-                obj = Document.objects.create(
-                    document_file =  request.FILES['document']
-                )
-                lesson_obj.document = obj
-            else:
-                obj = Video.objects.create(
-                video_uploaded_on =video_uploaded_on,
-                video_link    =video_link,
-                )
-                lesson_obj.video = obj
-                obj = Document.objects.create(
-                    document_file =  request.FILES['document']
-                )
-                lesson_obj.document = obj
-
-            lesson_obj.save()
-
-            messages.success(request, 'Lesson update Successfully')
-            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+        
+        context = {
+            'lesson' : lesson_obj ,
+            'subject_chapters' : SubjectChapters.objects.all(),
+            'course_packages': CoursePackageLessons.objects.all()
+            }
+        return render(request , 'new_dashboard/update_lesson.html',context )
 
     except Exception as e:
-        print(e)
-    
-    context = {
-        'lesson' : lesson_obj ,
-        'subject_chapters' : SubjectChapters.objects.all(),
-        'course_packages': CoursePackage.objects.all()
-        }
-    return render(request , 'new_dashboard/update_lesson.html',context )
-
+        return redirect('/')
 
 
 
