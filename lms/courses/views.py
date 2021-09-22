@@ -380,8 +380,11 @@ def all_coupons(request ):
 
 
 def add_coupons(request):
+    context = {
+        'course_packages' : CoursePackage.objects.all(),
+    }
 
-    return render(request, 'new_dashboard/coupons/add_coupons.html' , )
+    return render(request, 'new_dashboard/coupons/add_coupons.html' , context)
 
 
 def all_test(request):

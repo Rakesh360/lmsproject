@@ -49,8 +49,8 @@
                     <label for="discount_type">Discount Type</label>
                     <select required class="form-control" name="discount_type" id="discount_type" onchange="changeDiscountType()">
                         <option selected disabled>Select Discount Type</option>
-                        <option value="percentage">Percentage Discount</option>
-                        <option value="fixed">Fixed Discount</option>
+                        <option value="Percentage Discount">Percentage Discount</option>
+                        <option value="Fixed Discount">Fixed Discount</option>
                     </select>
 
                     <div id="discountDiv" style="display: none;">
@@ -83,7 +83,10 @@
                                 
                                           
                                         </div>
-                                
+         
+                                        
+
+
                                         <div class="selected">
                                           Choose Packages to include
                                         </div>
@@ -219,10 +222,7 @@
             td1.className = "tag";
             td1.innerHTML = packageName;
             td1.id = packageUid;
-            let td2 = document.createElement('td');
-            td2.innerHTML = '<input type="datetime-local" class="packageDate" onchange="handleChangePackageDateTime(event)" name='+packageUid+'>';
             tagElement.appendChild(td1);
-            tagElement.appendChild(td2);
             tags.appendChild(tagElement);
         }
     
@@ -306,56 +306,7 @@
     }
 
 
-    function deleteTag(event) {
-        event.currentTarget.parentNode.remove();
-    };
 
-
-    function checkTag(tagName) {
-        let allTags = document.getElementsByClassName('tag');
-        let flag = false;
-        for (let i = 0; i < allTags.length; i++) {
-            let singleTag = allTags[i];
-            if (singleTag.innerHTML === tagName) {
-                flag = true;
-                break;
-            }
-            
-        }
-
-        return flag;
-    }
-
-
-
-    function includeTag(event, id) {
-        let tagName = event.currentTarget.selectedOptions[0].innerText;
-        let tagId = event.currentTarget.value;
-        if (event.currentTarget.value === "") {
-            console.log('nothing selected');
-        } else {
-            if (checkTag(tagName) === true ) {
-                console.log('Tag already exists...');
-            } else {
-                let tagElement = document.createElement('tr');
-                // tagElement.className = "badge badge-dark p-1 m-1 tag";
-                let td1 = document.createElement('td');
-                td1.className = "tag";
-                td1.innerHTML = tagName;
-                td1.id = tagId;
-                let td2 = document.createElement('td');
-                td2.innerHTML = '<input type="datetime-local" class="packageDate" onchange="handleChangePackageDateTime(event)" name='+id+'>';
-                let td3 = document.createElement('td');
-                td3.innerHTML = '❌';
-                td3.className = 'delBtn';
-                td3.addEventListener("click", deleteTag);
-                tagElement.appendChild(td1);
-                tagElement.appendChild(td2);
-                tagElement.appendChild(td3);
-                tags.appendChild(tagElement);
-            }
-        }
-    }
 
     const submitForm = async (e) => {
         e.preventDefault();
@@ -378,29 +329,25 @@
             let allPackageDates = document.getElementsByClassName('packageDate');
             let packages = [];
             for (let i = 0; i < allTags.length; i++) {
-                if (allPackageDates[i].value === '') {
-                    packages.push({
-                        "uid" : allTags[i].id,
-                    });
-                } else {
-                    packages.push({
-                        "uid" : allTags[i].id,
-                    });
-                }
+                packages.push(allTags[i].id);
                 
                 
             };
-            data['packages'] = packages;
+            data['courses'] = packages;
         }
 
         console.log(data);
 
-        let res = await axios.post('/api/courses/coupon/', data, {
+        let res = await fetch('/api/courses/coupon/', {
+            method: 'POST',
             headers: {
+                'X-CSRFToken': csrfToken,
                 'Content-Type': 'application/json',
-                'X-CSRFToken': csrfToken
-            }
+            },
+            body: JSON.stringify(data),
         });
+
+        res = await res.json();
 
         console.log(res);
         
