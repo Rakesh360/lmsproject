@@ -170,10 +170,17 @@
                                 <tr><td>Action</td></tr>
                             </thead> -->
                             <tbody id="tags">
-                                <!-- use for loop to show already selected pacages... -->
-                                <!-- <tr><td class="tag">Tag1</td> <td><input type="datetime-local"></td> <td class="delBtn" onclick="deleteTag(event)">❌</td></tr>
-                                <tr><td class="tag">Tag2</td> <td><input type="datetime-local"></td> <td class="delBtn" onclick="deleteTag(event)">❌</td></tr>
-                                <tr><td class="tag">Tag3</td> <td><input type="datetime-local"></td> <td class="delBtn" onclick="deleteTag(event)">❌</td></tr> -->
+                            
+                                {% for course_package in course_packages %}
+                                {% if lesson.uid == course_package.lesson.uid  %}
+                            <tr><td class="tag">
+                                 {{course_package.lesson.lesson_title}}
+                            </td><td>
+                            <input type="datetime-local" {% if course_package.added_at  %} value="{{course_package.added_at}}" {% else %} value="{{course_package.created_at}}" {% endif %}>
+                            </td>
+                            <td class="delBtn" onclick="deleteTag(event)">❌</td></tr>
+                            {% endif %}
+                                {% endfor  %}
                             </tbody>
                         </table>  
                     </div>               
