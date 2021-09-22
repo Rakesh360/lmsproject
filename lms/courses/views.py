@@ -348,6 +348,24 @@ def add_coupons(request):
     return render(request, 'new_dashboard/coupons/add_coupons.html' , context)
 
 
+def edit_coupon(request, uid):
+    context = {
+        'course_packages' : CoursePackage.objects.all(),
+        'coupon' : Coupoun.objects.get(uid = uid)
+    }
+
+    return render(request, 'new_dashboard/coupons/edit_coupon.html' , context)
+
+
+def delete_coupon(request):
+    try:
+        Coupoun.objects.get(uid = request.GET.get('uid')).delete()
+    except Exception as e:
+        print(e)
+    messages.success(request, 'Subject Deleted')
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+
 def all_test(request):
     
     return render(request , 'new_dashboard/tests/all_test.html' )

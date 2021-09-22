@@ -1,0 +1,431 @@
+{%extends 'base.html'%}
+
+{%block start%}
+
+<div style="margin-top: 6%; ">
+    <div style="margin-top: 6%; display: flex;">
+    <div style="margin: 0 auto; font-size: xxx-large;">
+        Edit Coupon
+    </div>
+
+</div>
+
+<hr>
+
+<div class="card">
+    <div class="card-body">
+        {% include "utils/alert.html" %}
+        <form>
+            {% csrf_token %}
+            <div class="form-row mb-4">
+                <div class="form-group col-md-6">
+                    <label for="coupon_code">Coupon Code</label>
+                    <input value="{{coupon.coupon_code}}" type="text" class="form-control" required name="coupon_code" id="coupon_code"
+                        placeholder="Enter Unique Coupon Code">
+                </div>
+
+
+
+                <div class="form-group col-md-6">
+                    <label for="coupon_validity">Coupon Validity</label>
+                    <input value="{{coupon.coupon_validity}}" type="datetime-local" class="form-control" name="coupon_validity" id="coupon_validity">
+                </div>
+                <div class="form-group col-md-6">
+
+                    <label for="usage_limit">Total Usase Limits</label>
+                    <input value="{{coupon.total_usage_limit}}" type="number" name="usage_limit" class="form-control" id="usage_limit" placeholder="Total Usase alowed for this coupon">
+                </div>
+
+                <div class="form-group col-md-6">
+                    <label for="per_user_usase_limit">Per User Limit</label>
+                    <input value="{{coupon.per_user_limit}}" type="number" name="per_user_usase_limit" class="form-control" id="per_user_usase_limit" placeholder="Usase allowed per user">
+                </div>
+
+
+            </div>
+            <div class="form-row mb-4" id="video_upload">
+
+                <div class="form-group col-md-6">
+                    <label for="discount_type">Discount Type</label>
+                    <select required class="form-control" name="discount_type" id="discount_type" onchange="changeDiscountType()">
+                        <option {% if coupon.discount_type == 'Percentage Discount' %} selected {% endif %} value="Percentage Discount">Percentage Discount</option>
+                        <option {% if coupon.discount_type == 'Fixed Discount' %} selected {% endif %} value="Fixed Discount">Fixed Discount</option>
+                    </select>
+
+                    <div id="discountDiv" style="display: none;">
+                        <label for="discount_amount" class="mt-4"> How Much Discount? </label>
+                        <input value="{{coupon.discount}}" type="number" name="discount_amount" id="discount_amount" class="form-control">
+                    </div>
+
+                </div>
+
+
+                <div class="form-group col-md-6">
+                        <label for="apply_coupon_type">Where you want to apply this coupon?</label>
+                        <select required class="form-control" name="apply_coupon_type" id="apply_coupon_type" onchange="changeApplyPackage()">
+                            <option {% if coupon.courses == 'all' %} selected {% endif %} value="all-packages">All Packages</option>
+                            <option {% if coupon.courses != 'all' %} selected {% endif %} value="selected-packages">Selected Packages</option>
+                        </select>
+    
+                        <div id="packageDiv" class="mt-4" style="display: none;">
+                            <div>
+                                <div>                    
+                                    <div class="select-box">
+                                        <div class="options-container">
+                                            {% for course_package in  course_packages %}
+                                                <div class="option" onclick="includeTag(event)">
+                                                    <input type="checkbox" name="category" id="{{course_package.uid}}">
+                                                    <label for="{{course_package.uid}}">{{course_package.package_title}}</label>
+                                                </div>
+                                            {% endfor  %}
+                                
+                                          
+                                        </div>
+         
+                                        
+
+
+                                        <div class="selected">
+                                          Choose Packages to include
+                                        </div>
+                                
+                                        <div class="search-box">
+                                            <input type="text" placeholder="Start Typing..." />
+                                        </div>
+                                    </div>
+                                </div> 
+                            </div> 
+            
+                            <div class="table table-striped" style="margin: 1%;">
+                                <table class="display">
+                                    <tbody id="tags">
+                            
+                                        {% for course_package in course_packages %}
+                                        {% if lesson.uid == course_package.lesson.uid  %}
+                                    <tr><td class="tag">
+                                         {{course_package.lesson.lesson_title}}
+                                    </td><td>
+                                    <input type="datetime-local" {% if course_package.added_at  %} value="{{course_package.added_at}}" {% else %} value="{{course_package.created_at}}" {% endif %}>
+                                    </td>
+                                    <td class="delBtn" onclick="deleteTag2(event)">❌</td></tr>
+                                    {% endif %}
+                                        {% endfor  %}
+                                    </tbody>
+                                </table>  
+                            </div> 
+                        </div>
+            </div>
+
+            
+
+            <button id="submitFormBtn" type="submit" class="btn btn-primary mt-3">Update Coupon</button>
+            <button onclick="deleteSubject('{{coupon.uid}}')" class="btn btn-danger mt-3 ml-3">Delete <i class="la la-trash-o"></i></button>
+            <!-- <button id="testBtn" class="btn btn-primary mt-3">Test Code</button> -->
+        </form>
+
+    </div>
+</div>
+
+
+<script>
+    const tags = document.getElementById('tags');
+    const discountDiv = document.getElementById('discountDiv');
+    const packageDiv = document.getElementById('packageDiv');
+    const discount_type = document.getElementById('discount_type');
+    const discount_amount = document.getElementById('discount_amount');
+    const apply_coupon_type = document.getElementById('apply_coupon_type');
+
+
+    var is_all_Package = true;
+
+    
+
+    function parseDate(date) {
+        var date = new Date(date);
+        var year = date.getFullYear();
+        var month = date.getMonth() + 1;
+        var day = date.getDate();
+        var hour = date.getHours();
+        var min = date.getMinutes();
+        var sec = date.getSeconds();
+        var dateString = year + "-" + month + "-" + day + "T" + hour + ":" + min + ":" + sec + "Z";
+        return dateString;
+        
+    }
+    // script for package include dropdown starts
+
+    var selected = document.querySelector(".selected");
+    const optionsContainer = document.querySelector(".options-container");
+    const searchBox = document.querySelector(".search-box input");
+
+    const optionsList = document.querySelectorAll(".option");
+
+    selected.addEventListener("click", () => {
+    optionsContainer.classList.toggle("active");
+
+    searchBox.value = "";
+    filterList("");
+
+    if (optionsContainer.classList.contains("active")) {
+        searchBox.focus();
+    }
+    });
+
+    optionsList.forEach(o => {
+    o.addEventListener("click", (e) => {
+        // selected.innerHTML = o.querySelector("label").innerHTML;
+        // optionsContainer.classList.remove("active");
+        let checkbox = e.target.firstElementChild;
+        if (checkbox === null) {
+        return;
+        }
+
+        if (checkbox.checked === false) {
+        checkbox.checked = true;
+        } else {
+        checkbox.checked = false;
+        };
+
+        console.log(selectedItems());
+
+    });
+    });
+
+    searchBox.addEventListener("keyup", function(e) {
+    filterList(e.target.value);
+    });
+
+    const filterList = searchTerm => {
+    searchTerm = searchTerm.toLowerCase();
+    optionsList.forEach(option => {
+        let label = option.firstElementChild.nextElementSibling.innerText.toLowerCase();
+        if (label.indexOf(searchTerm) != -1) {
+        option.style.display = "block";
+        } else {
+        option.style.display = "none";
+        }
+    });
+    };
+
+    function selectedItems() {
+    var selectedArray = [];
+    var selectedCheckboxes = document.querySelectorAll(".option input[type='checkbox']"); 
+    var correspondingLabels = document.querySelectorAll(".option label");
+    for (var i = 0; i < selectedCheckboxes.length; i++) {
+        if (selectedCheckboxes[i].checked) {
+        selectedArray.push([selectedCheckboxes[i].id, correspondingLabels[i].innerText]);
+        }
+    };
+    return selectedArray;
+    };
+
+    function includeTag(event) {
+        const packageUid = event.target.firstElementChild.id;
+        const packageName = event.target.querySelector("label").innerText;
+
+        if (checkTag(packageName) === true ) {
+            console.log('Tag already exists...');
+            deleteTag(packageUid);
+        } else {
+            let tagElement = document.createElement('tr');
+            // tagElement.className = "badge badge-dark p-1 m-1 tag";
+            let td1 = document.createElement('td');
+            td1.className = "tag";
+            td1.innerHTML = packageName;
+            td1.id = packageUid;
+            tagElement.appendChild(td1);
+            tags.appendChild(tagElement);
+        }
+    
+
+    };
+
+    function deleteTag(packageUid) {
+        let allSelectedPackages = document.querySelectorAll(".tag");
+        for (var i = 0; i < allSelectedPackages.length; i++) {
+            if (allSelectedPackages[i].id === packageUid) {
+                allSelectedPackages[i].parentElement.remove();
+            }
+        }
+    };
+
+    function deleteTag2(event){
+        event.target.parentElement.remove();
+    };
+    
+    function checkTag(tagName) {
+        let allTags = document.getElementsByClassName('tag');
+        let flag = false;
+        for (let i = 0; i < allTags.length; i++) {
+            let singleTag = allTags[i];
+            if (singleTag.innerHTML === tagName) {
+                flag = true;
+                break;
+            }
+            
+        }
+
+        return flag;
+    }
+
+    function clickTag(event) {
+        let tagName = event.target.innerHTML;
+        let tagId = event.target.id;
+        console.log(tagName, tagId);
+    }
+
+    function handleChangePackageDateTime(event) {
+        console.log(event.target.value);
+    }
+
+    // script for package include dropdown ends
+    
+    function getCookie(name) {
+        if (!document.cookie) {
+            return null;
+        }
+        const xsrfCookies = document.cookie.split(';')
+        .map(c => c.trim())
+        .filter(c => c.startsWith(name + '='));
+        if (xsrfCookies.length === 0) {
+            return null;
+        }
+            return decodeURIComponent(xsrfCookies[0].split('=')[1]);
+    }
+    
+    const csrfToken = getCookie('csrftoken');
+
+
+    function changeDiscountType() {
+        var discount_type_value = discount_type.value;
+        discountDiv.style.display = 'block';
+        if (discount_type_value == 'percentage') {
+            discount_amount.placeholder = 'Enter Percentage';
+            
+        } else if (discount_type_value == 'fixed') {
+            discount_amount.placeholder = 'Enter Fixed Amount';
+        }
+    };
+
+    changeDiscountType();
+
+    
+    function changeApplyPackage() {
+        var apply_coupon_type_value = apply_coupon_type.value;
+        if (apply_coupon_type_value == 'selected-packages') {
+            is_all_Package = false;
+            packageDiv.style.display = 'block';
+        } else {
+            packageDiv.style.display = 'none';
+            is_all_Package = true;
+        }
+
+    };
+
+    changeApplyPackage();
+
+
+    let isFormValid = false;
+    function formValidation() {
+        if (document.getElementById('coupon_code').value === '') {
+            alert('Please enter unique coupon code');
+        } else if (document.getElementById('coupon_validity').value === '') {
+            alert('Please specify coupon validity');
+        } else if (document.getElementById('usage_limit').value === '') {
+            alert('Please enter total allowed usage for this coupon');     
+        } else if (document.getElementById('per_user_usase_limit').value === '') {
+            alert('Please enter allowed usage per user');     
+        } else if (document.getElementById('discount_type').value === '') {
+            alert('Please choose discount type');     
+        } else if (document.getElementById('discount_type').value === 'Fixed Discount') {
+            if (document.getElementById('discount_amount').value === '') {
+                alert('Please Enter fixed amount discount (in Rupees) ');
+            } else {
+                isFormValid = true;
+            }
+        } else if (document.getElementById('discount_type').value === 'Percentage Discount') {
+            if (document.getElementById('discount_amount').value === '') {
+                alert('Please Enter percentage discount (in %) ');
+            } else {
+                isFormValid = true;
+            }
+
+        } else {
+            isFormValid = true;
+        };
+
+        return isFormValid;
+    };
+
+    const submitForm = async (e) => {
+        e.preventDefault();
+        isFormValid = false;
+        let bool = formValidation();
+        if (bool === true) {
+            let data = {
+            'coupon_code': document.getElementById('coupon_code').value,
+            'coupon_validity': document.getElementById('coupon_validity').value,
+            'discount_type': document.getElementById('discount_type').value,
+            'discount': document.getElementById('discount_amount').value,
+            'total_usage_limit': document.getElementById('usage_limit').value,
+            'per_user_limit': document.getElementById('per_user_usase_limit').value,
+        };
+
+        // document upload
+        if (document.getElementById('apply_coupon_type') === 'all-packages') {
+            data['courses'] = ['all']
+        } else {
+            let allTags = document.getElementsByClassName('tag');
+            let allPackageDates = document.getElementsByClassName('packageDate');
+            let packages = [];
+            for (let i = 0; i < allTags.length; i++) {
+                packages.push(allTags[i].id);
+                
+                
+            };
+            data['courses'] = packages;
+        }
+
+        console.log(data);
+
+        let res = await axios.patch('/api/courses/coupon/', data, {
+            headers: {
+                'X-CSRFToken': csrfToken,
+                'Content-Type': 'application/json',
+            }
+        })
+
+        // res = await res.json();
+
+        console.log(res);
+
+    }
+        
+    };
+
+    const updateBtn = document.getElementById('submitFormBtn');
+    updateBtn.addEventListener('click', submitForm);
+
+
+    function deleteSubject(uid){
+        swal({
+                title: "Are you sure?",
+                text: "You want to delete?",
+                icon: "success",
+                buttons: true,
+                dangerMode: true,
+            })
+            .then((willDelete) => {
+                if (willDelete) {
+            window.location.href = `{% url 'delete_coupon' %}?uid=${uid}`
+
+                } else {
+                    swal("No deleted");
+                }
+            });
+      };
+
+    
+</script>
+
+{%endblock %}
