@@ -129,6 +129,8 @@
 
     var is_all_Package = true;
 
+    
+
     function parseDate(date) {
         var date = new Date(date);
         var year = date.getFullYear();
@@ -306,13 +308,39 @@
     }
 
 
+    let isFormValid = false;
+    function formValidation() {
+        if (document.getElementById('coupon_code').value === '') {
+            alert('Please enter unique coupon code');
+        } else if (document.getElementById('coupon_validity').value === '') {
+            alert('Please specify coupon validity');
+        } else if (document.getElementById('usage_limit').value === '') {
+            alert('Please enter total allowed usage for this coupon');     
+        } else if (document.getElementById('per_user_usase_limit').value === '') {
+            alert('Please enter allowed usage per user');     
+        } else if (document.getElementById('discount_type').value === '') {
+            alert('Please choose discount type');     
+        } else if (document.getElementById('discount_type').value === 'Fixed Discount') {
+            if (document.getElementById('discount_amount').value === '') {
+                alert('Please Enter fixed amount discount (in Rupees) ');
+            }
+        } else if (document.getElementById('discount_type').value === 'Percentage Discount') {
+            if (document.getElementById('discount_amount').value === '') {
+                alert('Please Enter percentage discount (in %) ');
+            }
+        } else {
+            isFormValid = true;
+        };
 
+        return isFormValid;
+    };
 
     const submitForm = async (e) => {
         e.preventDefault();
 
         
-        let data = {
+        if (formValidation() === true) {
+            let data = {
             'coupon_code': document.getElementById('coupon_code').value,
             'coupon_validity': document.getElementById('coupon_validity').value,
             'discount_type': document.getElementById('discount_type').value,
@@ -350,6 +378,8 @@
         res = await res.json();
 
         console.log(res);
+
+    }
         
     };
 
