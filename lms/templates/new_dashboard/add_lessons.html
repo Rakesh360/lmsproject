@@ -213,7 +213,6 @@
     var selected = document.querySelector(".selected");
     const optionsContainer = document.querySelector(".options-container");
     const searchBox = document.querySelector(".search-box input");
-
     const optionsList = document.querySelectorAll(".option");
 
     selected.addEventListener("click", () => {
@@ -355,45 +354,19 @@
     }
     let document_link = document.getElementById('document_link');    
     
-    let isFormValid = false;
-    function formValidation() {
-        if (document.getElementById('lesson_title').value === '') {
-            alert('Please enter a title for the lesson');
-        } else if (document.getElementById('chooseSubject').value === '') {
-            alert('Please select a subject');
-        } else if (document.getElementById('chooseChapters').value === '') {
-            alert('Please select at least one chapter');     
-        } else if (document.getElementById('lesson_type').value === 'Video') {
-            if (document.getElementById('video_link').value === '') {
-                alert('Please Enter Video Link ');
-            }
-        } else if (document.getElementById('lesson_type').value === 'Document') { 
-            if (document.getElementById('document_link').value === '') {
-                alert('Please select a document to upload');
-            }
-
-        } else if (document.getElementById('lesson_type').value === 'Video + Document') {
-            if (document.getElementById('video_link').value === '') {
-                alert('Please Enter Video Link ');
-            }
-
-            if (document.getElementById('document_link').value === '') {
-                alert('Please select a document to upload');
-            }
-        } else {
-            isFormValid = true;
-        };
-
-        return isFormValid;
-    };
-
-
     const submitForm = async (e) => {
         e.preventDefault();
+        // let fileupload = document.getElementById('document_link');
+        // async function uploadFile() {
+        // let formData = new FormData(); 
+        // formData.append("file", fileupload.files[0]);
+        // await fetch('/', {
+        //     method: "POST", 
+        //     body: formData
+        // }); 
+        // alert('The file has been uploaded successfully.');
+        // }
 
-        if (formValidation() !== false) {
-            return;
-        }
         
         let video_platform = document.getElementById('videoType').value;
         let data = {
@@ -408,7 +381,6 @@
         };
 
         // document upload
-        submitFormBtn.disabled = true;
         let docLink = await uploadoc();
         console.log('...', docLink);
         data['document'] = docLink;
@@ -448,11 +420,9 @@
                 .then(response => response.json())
                 .then(data => {
                     console.log('Success:', data);
-                    submitFormBtn.disabled = false;
                 })
                 .catch((error) => {
                     console.error('Error:', error);
-                    alert(error);
             });
         } else {
             fetch('/api/courses/lessons/', {
@@ -466,16 +436,13 @@
                 .then(response => response.json())
                 .then(data => {
                     console.log('Success:', data);
-                    submitFormBtn.disabled = false;
                 })
                 .catch((error) => {
                     console.error('Error:', error);
-                    alert(error);
             });
         }
 
         // log all data of form data
-        
         
 
 
@@ -577,5 +544,6 @@
 
     }
 </script>
+
 
 {% endblock %}
