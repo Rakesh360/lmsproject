@@ -275,7 +275,7 @@
 
 
             <div class="col-md-6">
-                <h3 id="titleData">Subject</h3>
+                <h3 id="titleData">Reorder Subjects</h3>
                 <ul class="draggable-list" id="draggable-list" style="height: 610px; overflow-y: scroll;"></ul>
                 <button class="check-btn" id="saveBtn" onclick="updateOrder(editingMode)">
                     Save 
@@ -400,7 +400,6 @@
 
     editor.on( 'instanceReady', function( evt ) {
     // getData() returns CKEditor's HTML content.
-        console.log('{{course_package_obj.package_description}}');
         evt.editor.setData('{{course_package_obj.package_description}}');
     });    
 
@@ -613,6 +612,7 @@
                 subjectUid = selectedSubject.value;
                 let allChapters;
                 chaptersArray=[];
+                titleData.innerHTML = '<h3>Reorder Chapters</h3>';
                 allSubjects.subjects.forEach((e, i) => {
                     if (e.subject_uid === subjectUid) {
                         chaptergroupuid = e.uid;
@@ -638,6 +638,7 @@
             let temp;
 
             selectedChapter.addEventListener('change', function () {
+                titleData.innerHTML = '<h3>Reorder Lessons</h3>';
                 chapterUid = selectedChapter.value;
                 // updating lessons array
                 allSubjects.subjects.forEach(e => {

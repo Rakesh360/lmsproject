@@ -389,6 +389,7 @@
 
 
     }
+    
 
     function getCookie(name) {
         if (!document.cookie) {
@@ -431,114 +432,117 @@
 
     }
 
-
+    
     let isFormValid = false;
     function formValidation() {
         if (document.getElementById('lesson_title').value === '') {
             alert('Please enter a title for the lesson');
-        } else if (document.getElementById('chooseSubject').value === '') {
-            alert('Please select a subject');
-        } else if (document.getElementById('chooseChapters').value === '') {
+        }  else if (document.getElementById('chooseChapters').value === '') {
             alert('Please select at least one chapter');     
         } else if (document.getElementById('lesson_type').value === 'Video') {
-            if (document.getElementById('video_link').value === '') {
+            if (document.getElementById('lesson_link').value === '') {
                 alert('Please Enter Video Link ');
             }
         } else if (document.getElementById('lesson_type').value === 'Document') { 
-            if (document.getElementById('document_link').value === '') {
+            if (document.getElementById('document_link').files.length === 0 && docReUploaded === true) {
                 alert('Please select a document to upload');
+            } else{
+                isFormValid = true;
             }
 
         } else if (document.getElementById('lesson_type').value === 'Video + Document') {
-            if (document.getElementById('video_link').value === '') {
+            if (document.getElementById('lesson_link').value === '') {
                 alert('Please Enter Video Link ');
             }
 
-            if (document.getElementById('document_link').value === '') {
+            else if (document.getElementById('document_link').files.length === 0  && docReUploaded === true) {
                 alert('Please select a document to upload');
+            } else {
+                isFormValid = true;
             }
+
         } else {
             isFormValid = true;
+            console.log('form validated');
         };
 
         return isFormValid;
     };
-
     
     const submitForm = async (e) => {
         e.preventDefault();
 
-        if (formValidation() !== false) {
-            return;
-        }
+        if (formValidation() === true) {
+            let video_platform = document.getElementById('videoType').value;
+            let data = {
+                'uid': '{{lesson.uid}}',
+                'lesson_title' : document.getElementById('lesson_title').value,
+                // 'chapter' : document.getElementById('chooseChapters').value,
+                // 'video_platform' : video_platform,
+                // 'lesson_type' : document.getElementById('lesson_type').value,
+                // 'is_free' : document.getElementById('is_free').value,
+                'video': {
+                    'video_link': document.getElementById('lesson_link').value,
+                }
+            };
 
-        let video_platform = document.getElementById('videoType').value;
-        let data = {
-            'uid': '{{lesson.uid}}',
-            'lesson_title' : document.getElementById('lesson_title').value,
-            'chapter' : document.getElementById('chooseChapters').value,
-            'video_platform' : video_platform,
-            'lesson_type' : document.getElementById('lesson_type').value,
-            'is_free' : document.getElementById('is_free').value,
-            'video': {
-                'video_link': document.getElementById('lesson_link').value,
-            }
-        };
-
-        // document upload
-        if (docReUploaded === true) {
-            let docLink = await uploadoc();
-            console.log('...', docLink);
-            data['document'] = docLink;
-        } else {
-            data['document'] = '{{lesson.document}}'
-        }
-
-        console.log('dobj', '{{lesson.document}}');
-        
-    
-        // getting data of all packages...
-        let allTags = document.getElementsByClassName('tag');
-        let allPackageDates = document.getElementsByClassName('packageDate');
-        let packages = [];
-        for (let i = 0; i < allTags.length; i++) {
-            if (allPackageDates[i].value === '') {
-                packages.push({
-                    "uid" : allTags[i].id,
-                    "created_at" : parseDate(Date.now()),
-                });
+            // document upload
+            if (docReUploaded === true) {
+                let docLink = await uploadoc();
+                console.log('...', docLink);
+                data['document'] = docLink;
             } else {
-                packages.push({
-                    "uid" : allTags[i].id,
-                    "created_at" : allPackageDates[i].value
-                });
+                data['document'] = '{{lesson.document.uid}}'
             }
+
             
             
-        };
-        data['packages'] = packages;
-
-        console.log(data);
-
-        if (video_platform === 'Live') {
-
-            let res = await axios.patch('/api/courses/go-live/', data, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': csrfToken
+        
+            // getting data of all packages...
+            let allTags = document.getElementsByClassName('tag');
+            let allPackageDates = document.getElementsByClassName('packageDate');
+            let packages = [];
+            for (let i = 0; i < allTags.length; i++) {
+                if (allPackageDates[i].value === '') {
+                    packages.push({
+                        "uid" : allTags[i].id,
+                        "created_at" : parseDate(Date.now()),
+                    });
+                } else {
+                    packages.push({
+                        "uid" : allTags[i].id,
+                        "created_at" : allPackageDates[i].value
+                    });
                 }
-            });
-            console.log(res);            
+                
+                
+            };
+            data['packages'] = packages;
 
-        } else {
-            let res = await axios.patch('/api/courses/lessons/', data, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': csrfToken
-                }
-            });
-            console.log(res);
+            console.log(data);
+
+            if (video_platform === 'Live') {
+
+                let res = await axios.patch('/api/courses/go-live/', data, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrfToken
+                    }
+                });
+                console.log(res);            
+
+            } else {
+                let res = await axios.patch('/api/courses/lessons/', data, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrfToken
+                    }
+                });
+                console.log(res);
+            }
         }
+
+        
 
         // log all data of form data
         
