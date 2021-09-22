@@ -178,7 +178,7 @@
                             </td><td>
                             <input type="datetime-local" {% if course_package.added_at  %} value="{{course_package.added_at}}" {% else %} value="{{course_package.created_at}}" {% endif %}>
                             </td>
-                            <td class="delBtn" onclick="deleteTag(event)">❌</td></tr>
+                            <td class="delBtn" onclick="deleteTag2(event)">❌</td></tr>
                             {% endif %}
                                 {% endfor  %}
                             </tbody>
@@ -311,6 +311,11 @@
     
 
     };
+
+    function deleteTag2(event){
+        event.target.parentElement.remove();
+    }
+
 
     function deleteTag(packageUid) {
         let allSelectedPackages = document.querySelectorAll(".tag");
