@@ -251,7 +251,8 @@ def update_lesson(request , uid):
         context = {
             'lesson' : lesson_obj ,
             'subject_chapters' : SubjectChapters.objects.all(),
-            'course_packages': CoursePackageLessons.objects.all()
+            'course_packages': CoursePackageLessons.objects.all(),
+            'all_course_packages' : CoursePackage.objects.all()
             }
         return render(request , 'new_dashboard/update_lesson.html',context )
 

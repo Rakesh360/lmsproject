@@ -65,7 +65,7 @@
                                   
                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                                       <a class="dropdown-item" href="{% url 'update_lesson' lesson.uid%}">Edit</a>
-                                      <a class="dropdown-item" href="#">Delete</a>
+                                      <a class="dropdown-item" href="{% url 'delete_lesson' %}?uid={{lesson.uid}}">Delete</a>
                                       <a class="dropdown-item" href="#">Start Live</a>
                                       <a class="dropdown-item" href="#">Ends Live</a>
                                       <a href="{% url 'preview_video' lesson.uid%}" class="dropdown-item">View</a>

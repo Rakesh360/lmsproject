@@ -216,21 +216,22 @@
     
                     <div class="form-group mb-6">
                         <div class="custom-file">
-                            <input type="file" class="custom-file-input" name="image_for_web" id="image_for_web">
-                            <label class="custom-file-label" for="image_for_web">Choose file For Web</label>
-                        </div>
-                    </div>
-                    <br>
-                    <a href="/{{course_package_obj.web_image.url}}">Open Here</a>
+                            <label for="image_for_web">Choose file For Web</label>
+                            <input type="file" class="form-control" name="image_for_web" id="image_for_web">
+                            <a class="ml-2 mt-4" href="/{{course_package_obj.web_image.url}}">Open Here</a>
     
-                    <div class="form-group mb-6">
-                        <div class="custom-file">
-                            <input type="file" class="custom-file-input" name="image_for_app" id="image_for_app">
-                            <label class="custom-file-label" for="image_for_app">Choose file For App</label>
                         </div>
                     </div>
                     <br>
-                    <a href="/{{course_package_obj.mobile_image.url}}">Open Here</a>
+                    
+                    <div class="form-group mb-6 ml-4">
+                        <div class="custom-file">
+                            <label for="image_for_app">Choose file For App</label>
+                            <input type="file" class="form-control" name="image_for_app" id="image_for_app">
+                            <a class="ml-2 mt-4" href="/{{course_package_obj.mobile_image.url}}">Open Here</a>
+                        </div>
+                    </div>
+                    
                 </div>
     
                 <button type="submit" id="handleSubmit" class="btn btn-primary mt-3">Create Package</button>

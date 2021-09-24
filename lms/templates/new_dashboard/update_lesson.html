@@ -139,7 +139,7 @@
                         <div>                    
                             <div class="select-box">
                                 <div class="options-container">
-                                    {% for course_package in  course_packages %}
+                                    {% for course_package in  all_course_packages %}
                                         <div class="option" onclick="includeTag(event)">
                                             <input type="checkbox" name="category" id="{{course_package.uid}}">
                                             <label for="{{course_package.uid}}">{{course_package.package_title}}</label>
