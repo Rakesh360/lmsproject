@@ -250,7 +250,8 @@ def update_lesson(request , uid):
         context = {
             'lesson' : lesson_obj ,
             'subject_chapters' : SubjectChapters.objects.all(),
-            'course_packages': CoursePackageLessons.objects.all()
+            'course_packages': CoursePackageLessons.objects.all(),
+            'all_course_packages' : CoursePackage.objects.all()
             }
         return render(request , 'new_dashboard/update_lesson.html',context )
 
@@ -345,6 +346,29 @@ def add_coupons(request):
     }
 
     return render(request, 'new_dashboard/coupons/add_coupons.html' , context)
+
+
+def edit_coupon(request, uid):
+    context = {
+        'course_packages' : CoursePackage.objects.all(),
+        'coupon' : Coupoun.objects.get(uid = uid)
+    }
+
+    return render(request, 'new_dashboard/coupons/edit_coupon.html' , context)
+
+
+def delete_coupon(request):
+    context = {
+        'allcoupons' : Coupoun.objects.all(),
+        'subjects' : Subject.objects.all(),
+        'chapters' : SubjectChapters.objects.all(),
+    }
+    try:
+        Coupoun.objects.get(uid = request.GET.get('uid')).delete()
+    except Exception as e:
+        print(e)
+    messages.success(request, 'Subject Deleted')
+    return render(request, 'new_dashboard/coupons/all_coupons.html' , context)
 
 
 def all_test(request):

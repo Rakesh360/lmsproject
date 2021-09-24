@@ -216,21 +216,22 @@
     
                     <div class="form-group mb-6">
                         <div class="custom-file">
-                            <input type="file" class="custom-file-input" name="image_for_web" id="image_for_web">
-                            <label class="custom-file-label" for="image_for_web">Choose file For Web</label>
-                        </div>
-                    </div>
-                    <br>
-                    <a href="/{{course_package_obj.web_image.url}}">Open Here</a>
+                            <label for="image_for_web">Choose file For Web</label>
+                            <input type="file" class="form-control" name="image_for_web" id="image_for_web">
+                            <a class="ml-2 mt-4" href="/{{course_package_obj.web_image.url}}">Open Here</a>
     
-                    <div class="form-group mb-6">
-                        <div class="custom-file">
-                            <input type="file" class="custom-file-input" name="image_for_app" id="image_for_app">
-                            <label class="custom-file-label" for="image_for_app">Choose file For App</label>
                         </div>
                     </div>
                     <br>
-                    <a href="/{{course_package_obj.mobile_image.url}}">Open Here</a>
+                    
+                    <div class="form-group mb-6 ml-4">
+                        <div class="custom-file">
+                            <label for="image_for_app">Choose file For App</label>
+                            <input type="file" class="form-control" name="image_for_app" id="image_for_app">
+                            <a class="ml-2 mt-4" href="/{{course_package_obj.mobile_image.url}}">Open Here</a>
+                        </div>
+                    </div>
+                    
                 </div>
     
                 <button type="submit" id="handleSubmit" class="btn btn-primary mt-3">Create Package</button>
@@ -275,7 +276,7 @@
 
 
             <div class="col-md-6">
-                <h3 id="titleData">Subject</h3>
+                <h3 id="titleData">Reorder Subjects</h3>
                 <ul class="draggable-list" id="draggable-list" style="height: 610px; overflow-y: scroll;"></ul>
                 <button class="check-btn" id="saveBtn" onclick="updateOrder(editingMode)">
                     Save 
@@ -400,7 +401,6 @@
 
     editor.on( 'instanceReady', function( evt ) {
     // getData() returns CKEditor's HTML content.
-        console.log('{{course_package_obj.package_description}}');
         evt.editor.setData('{{course_package_obj.package_description}}');
     });    
 
@@ -613,6 +613,7 @@
                 subjectUid = selectedSubject.value;
                 let allChapters;
                 chaptersArray=[];
+                titleData.innerHTML = '<h3>Reorder Chapters</h3>';
                 allSubjects.subjects.forEach((e, i) => {
                     if (e.subject_uid === subjectUid) {
                         chaptergroupuid = e.uid;
@@ -638,6 +639,7 @@
             let temp;
 
             selectedChapter.addEventListener('change', function () {
+                titleData.innerHTML = '<h3>Reorder Lessons</h3>';
                 chapterUid = selectedChapter.value;
                 // updating lessons array
                 allSubjects.subjects.forEach(e => {

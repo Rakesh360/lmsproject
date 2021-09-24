@@ -5,7 +5,7 @@
 <div style="margin-top: 6%; ">
     <div style="margin-top: 6%; display: flex;">
     <div style="margin: 0 auto; font-size: xxx-large;">
-        Add Coupon
+        Edit Coupon
     </div>
 
 </div>
@@ -20,7 +20,7 @@
             <div class="form-row mb-4">
                 <div class="form-group col-md-6">
                     <label for="coupon_code">Coupon Code</label>
-                    <input type="text" class="form-control" required name="coupon_code" id="coupon_code"
+                    <input value="{{coupon.coupon_code}}" type="text" class="form-control" required name="coupon_code" id="coupon_code"
                         placeholder="Enter Unique Coupon Code">
                 </div>
 
@@ -28,17 +28,17 @@
 
                 <div class="form-group col-md-6">
                     <label for="coupon_validity">Coupon Validity</label>
-                    <input type="datetime-local" class="form-control" name="coupon_validity" id="coupon_validity">
+                    <input value="{{coupon.coupon_validity}}" type="datetime-local" class="form-control" name="coupon_validity" id="coupon_validity">
                 </div>
                 <div class="form-group col-md-6">
 
                     <label for="usage_limit">Total Usase Limits</label>
-                    <input type="number" name="usage_limit" class="form-control" id="usage_limit" placeholder="Total Usase alowed for this coupon">
+                    <input value="{{coupon.total_usage_limit}}" type="number" name="usage_limit" class="form-control" id="usage_limit" placeholder="Total Usase alowed for this coupon">
                 </div>
 
                 <div class="form-group col-md-6">
                     <label for="per_user_usase_limit">Per User Limit</label>
-                    <input type="number" name="per_user_usase_limit" class="form-control" id="per_user_usase_limit" placeholder="Usase allowed per user">
+                    <input value="{{coupon.per_user_limit}}" type="number" name="per_user_usase_limit" class="form-control" id="per_user_usase_limit" placeholder="Usase allowed per user">
                 </div>
 
 
@@ -48,14 +48,13 @@
                 <div class="form-group col-md-6">
                     <label for="discount_type">Discount Type</label>
                     <select required class="form-control" name="discount_type" id="discount_type" onchange="changeDiscountType()">
-                        <option selected disabled>Select Discount Type</option>
-                        <option value="Percentage Discount">Percentage Discount</option>
-                        <option value="Fixed Discount">Fixed Discount</option>
+                        <option {% if coupon.discount_type == 'Percentage Discount' %} selected {% endif %} value="Percentage Discount">Percentage Discount</option>
+                        <option {% if coupon.discount_type == 'Fixed Discount' %} selected {% endif %} value="Fixed Discount">Fixed Discount</option>
                     </select>
 
                     <div id="discountDiv" style="display: none;">
                         <label for="discount_amount" class="mt-4"> How Much Discount? </label>
-                        <input type="number" name="discount_amount" id="discount_amount" class="form-control">
+                        <input value="{{coupon.discount}}" type="number" name="discount_amount" id="discount_amount" class="form-control">
                     </div>
 
                 </div>
@@ -64,9 +63,8 @@
                 <div class="form-group col-md-6">
                         <label for="apply_coupon_type">Where you want to apply this coupon?</label>
                         <select required class="form-control" name="apply_coupon_type" id="apply_coupon_type" onchange="changeApplyPackage()">
-                            <option selected disabled>None</option>
-                            <option value="all-packages">All Packages</option>
-                            <option value="selected-packages">Selected Packages</option>
+                            <option {% if coupon.courses == 'all' %} selected {% endif %} value="all-packages">All Packages</option>
+                            <option {% if coupon.courses != 'all' %} selected {% endif %} value="selected-packages">Selected Packages</option>
                         </select>
     
                         <div id="packageDiv" class="mt-4" style="display: none;">
@@ -101,7 +99,15 @@
                             <div class="table table-striped" style="margin: 1%;">
                                 <table class="display">
                                     <tbody id="tags">
-                                    
+                            
+                                        {% for course_package in course_packages %}
+                                        {% if lesson.uid == course_package.lesson.uid  %}
+                                    <tr><td class="tag">
+                                         {{course_package.lesson.lesson_title}}
+                                    </td>
+                                    <td class="delBtn" onclick="deleteTag2(event)">❌</td></tr>
+                                    {% endif %}
+                                        {% endfor  %}
                                     </tbody>
                                 </table>  
                             </div> 
@@ -110,7 +116,8 @@
 
             
 
-            <button id="submitFormBtn" type="submit" class="btn btn-primary mt-3">Create Coupon</button>
+            <button id="submitFormBtn" type="submit" class="btn btn-primary mt-3">Update Coupon</button>
+            <button id="deleteCouponBtn" onclick="deleteSubject('{{coupon.uid}}')" class="btn btn-danger mt-3 ml-3">Delete <i class="la la-trash-o"></i></button>
             <!-- <button id="testBtn" class="btn btn-primary mt-3">Test Code</button> -->
         </form>
 
@@ -239,6 +246,10 @@
             }
         }
     };
+
+    function deleteTag2(event){
+        event.target.parentElement.remove();
+    };
     
     function checkTag(tagName) {
         let allTags = document.getElementsByClassName('tag');
@@ -292,7 +303,9 @@
         } else if (discount_type_value == 'fixed') {
             discount_amount.placeholder = 'Enter Fixed Amount';
         }
-    }
+    };
+
+    changeDiscountType();
 
     
     function changeApplyPackage() {
@@ -305,7 +318,9 @@
             is_all_Package = true;
         }
 
-    }
+    };
+
+    changeApplyPackage();
 
 
     let isFormValid = false;
@@ -329,7 +344,10 @@
         } else if (document.getElementById('discount_type').value === 'Percentage Discount') {
             if (document.getElementById('discount_amount').value === '') {
                 alert('Please Enter percentage discount (in %) ');
+            } else {
+                isFormValid = true;
             }
+
         } else {
             isFormValid = true;
         };
@@ -339,10 +357,11 @@
 
     const submitForm = async (e) => {
         e.preventDefault();
-
-        
-        if (formValidation() === true) {
+        isFormValid = false;
+        let bool = formValidation();
+        if (bool === true) {
             let data = {
+            'uid': '{{coupon.uid}}',
             'coupon_code': document.getElementById('coupon_code').value,
             'coupon_validity': document.getElementById('coupon_validity').value,
             'discount_type': document.getElementById('discount_type').value,
@@ -368,16 +387,14 @@
 
         console.log(data);
 
-        let res = await fetch('/api/courses/coupon/', {
-            method: 'POST',
+        let res = await axios.patch('/api/courses/coupon/', data, {
             headers: {
                 'X-CSRFToken': csrfToken,
                 'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data),
-        });
+            }
+        })
 
-        res = await res.json();
+        // res = await res.json();
 
         console.log(res);
 
@@ -386,7 +403,29 @@
     };
 
     const updateBtn = document.getElementById('submitFormBtn');
-    updateBtn.addEventListener('click', submitForm)
+    updateBtn.addEventListener('click', submitForm);
+
+    document.getElementById('deleteCouponBtn').addEventListener('click', (e) => {
+        e.preventDefault();
+    });
+
+    function deleteSubject(uid){
+        swal({
+                title: "Are you sure?",
+                text: "You want to delete?",
+                icon: "success",
+                buttons: true,
+                dangerMode: true,
+            })
+            .then((willDelete) => {
+                if (willDelete) {
+            window.location.href = `{% url 'delete_coupon' %}?uid=${uid}`
+
+                } else {
+                    swal("No deleted");
+                }
+            });
+      };
 
     
 </script>
