@@ -358,12 +358,17 @@ def edit_coupon(request, uid):
 
 
 def delete_coupon(request):
+    context = {
+        'allcoupons' : Coupoun.objects.all(),
+        'subjects' : Subject.objects.all(),
+        'chapters' : SubjectChapters.objects.all(),
+    }
     try:
         Coupoun.objects.get(uid = request.GET.get('uid')).delete()
     except Exception as e:
         print(e)
     messages.success(request, 'Subject Deleted')
-    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+    return render(request, 'new_dashboard/coupons/all_coupons.html' , context)
 
 
 def all_test(request):

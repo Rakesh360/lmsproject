@@ -323,6 +323,8 @@
         } else if (document.getElementById('discount_type').value === 'Fixed Discount') {
             if (document.getElementById('discount_amount').value === '') {
                 alert('Please Enter fixed amount discount (in Rupees) ');
+            } else {
+                isFormValid = true;
             }
         } else if (document.getElementById('discount_type').value === 'Percentage Discount') {
             if (document.getElementById('discount_amount').value === '') {
