@@ -164,9 +164,8 @@
                         <div id="expiryTypePicker">
                             <label for="expiryType"> Expiry Type </label>
                             <select required name="expiryType" id="expiryType" class="form-control" onchange="changeExpiryType(event)">
-                                <option disabled selected>Choose Expiry Type</option>
-                                <option value="fixed-date">Fixed Date</option>
-                                <option value="subscription">Subscription</option>
+                                <option {% if course_package_obj.subscription_type == 'Fixed Date' %} selected {% endif %} value="Fixed Date">Fixed Date</option>
+                                <option {% if course_package_obj.subscription_type == 'Subscription' %} selected {% endif %} value="subscription">Subscription</option>
                             </select>
                         </div>
     
@@ -187,8 +186,8 @@
                         <div id="expiryTypePicker">
                             <label for="is_active"> Is Active </label>
                             <select required name="is_active" id="is_active" class="form-control">
-                                <option {% if course_package_obj.is_active == false %} selected {% endif %} value=false>Inactive</option>
-                                <option {% if course_package_obj.is_active == true %} selected {% endif %} value=true >Active</option>
+                                <option {% if course_package_obj.is_active == 'false' %} selected {% endif %} value=false>Inactive</option>
+                                <option {% if course_package_obj.is_active == 'true' %} selected {% endif %} value=true >Active</option>
                             </select>
                         </div>
     
@@ -199,8 +198,8 @@
                 <div class="form-group md-4">
         
                     <div class="form-group col-md-6">
-                        <label for="sell_end_time">Set Selling End Time Price</label>
-                        <input value="{{course_package_obj.sell_till}}" id="sell_end_time" type="date" name="sell_end_time" class="form-control" placeholder="Choose Date"> 
+                        <label for="sell_end_time">Set Selling End Date</label>
+                        <input value="{{course_package_obj.sell_till_date}}" id="sell_end_time" type="date" name="sell_end_time" class="form-control" placeholder="Choose Date"> 
                     </div>
                 </div>
                 
@@ -292,13 +291,14 @@
 
 
 <script>
+    console.log('{{course_package_obj.sell_till_date}}');
     const handleSubmit = document.getElementById('handleSubmit');
     let isFormValid = false;
     function formValidation() {
-        if (document.getElementById('inputEmail4').value === '') {
+        if (document.getElementById('lesson_title').value === '') {
             alert('Please enter a pakage title');
         } else if (document.getElementById('subjects').value === '') {
-            alert('Please select a subject');
+            alert('Please select package type');
         } else if (document.getElementById('actual_price').value === '') {
             alert('Please enter actual price');     
         } else if (document.getElementById('selling_price').value === '') {
@@ -314,11 +314,7 @@
                 alert('Please Enter no. of Expiry Days');
             }
 
-        } else if (document.getElementById('image_for_web').value === '') {
-            alert('Please Choose Image For Web');
-        } else if (document.getElementById('image_for_app').value === '') {
-            alert('Please Choose Image For Mobile');
-        } else {
+        }  else {
             isFormValid = true;
         };
 
@@ -401,7 +397,7 @@
 
     editor.on( 'instanceReady', function( evt ) {
     // getData() returns CKEditor's HTML content.
-        evt.editor.setData('{{course_package_obj.package_description}}');
+        evt.editor.setData(`{{course_package_obj.package_description}}`);
     });    
 
 
@@ -768,12 +764,12 @@ var CSRF_TOKEN = '{{csrf_token}}'
 </script>
 
 <script>
-    let editor = CKEDITOR.replace( 'description' );
-    var description;
-    editor.on( 'change', function( evt ) {
-    // getData() returns CKEditor's HTML content.
-    description =  evt.editor.getData();            
-});
+//     editor = CKEDITOR.replace( 'description' );
+//     var description;
+//     editor.on( 'change', function( evt ) {
+//     // getData() returns CKEditor's HTML content.
+//     description =  evt.editor.getData();            
+// });
 </script>
 
 

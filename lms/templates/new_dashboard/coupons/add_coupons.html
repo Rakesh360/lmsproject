@@ -329,6 +329,8 @@
         } else if (document.getElementById('discount_type').value === 'Percentage Discount') {
             if (document.getElementById('discount_amount').value === '') {
                 alert('Please Enter percentage discount (in %) ');
+            } else {
+                isFormValid = true;
             }
         } else {
             isFormValid = true;
@@ -366,7 +368,7 @@
             data['courses'] = packages;
         }
 
-        console.log(data);
+        // console.log(data);
 
         let res = await fetch('/api/courses/coupon/', {
             method: 'POST',
@@ -377,9 +379,13 @@
             body: JSON.stringify(data),
         });
 
-        res = await res.json();
-
         console.log(res);
+        
+        alert(res.statusText);
+        res = await res.json();
+        console.log(res);
+        window.location.href = '/courses/allcoupons/';
+        
 
     }
         

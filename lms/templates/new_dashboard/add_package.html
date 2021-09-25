@@ -175,10 +175,14 @@
         } else if (document.getElementById('expiryType').value === 'fixed-date') {
             if (document.getElementById('expiryDate').value === '') {
                 alert('Please Enter Last Date of Expiry ');
+            } else {
+                isFormValid = true;
             }
         } else if (document.getElementById('expiryType').value === 'subscription') { 
             if (document.getElementById('subscriptionDays').value === '') {
                 alert('Please Enter no. of Expiry Days');
+            } else {
+                isFormValid = true;
             }
 
         } else if (document.getElementById('image_for_web').value === '') {
@@ -232,6 +236,7 @@
                     if (response.status === true) {
                         handleSubmit.disabled = false;
                         alert('Successfully created package');
+                        window.location.href = '/admin/courses/packages/';
                     } else {
                         alert('Error while creating package');
                     }
