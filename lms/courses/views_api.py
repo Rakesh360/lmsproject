@@ -497,48 +497,53 @@ class CouponView(viewsets.ModelViewSet):
     queryset = Coupoun.objects.all()
     serializer_class = CoupounSerializer
 
-    def posta(self , request):
+    def patch(self , request):
         try:
-            data = request.data
-            serializer = CoupounSerializer(data = data)
+            data =  request.data
+            
+            if data.get('uid') is None:
+                return Response({'status' : 400 , 'message' : 'uid is required'})
+            try:
+                obj = Coupoun.objects.get(uid = data.get('uid'))
+            except Exception as e:
+                return Response({'status' : 400 , 'message' : ' invalid uid'})
+            
+            serializer = CoupounSerializer(obj , data = data ,partial=True)
             if serializer.is_valid():
                 serializer.save()
-                coupon_obj = Coupoun.objects.get(uid = serializer['uid'])
-                if data.get('packages'):
-                    if len(data.get('packages')):
-                        for pac in data.get('packages'):
-                            try:
-                                course_obj = CoursePackage.objects.get(uid = pac)
-                                coupon_obj.courses.add(course_obj)
+                return Response({'status' : 200 , 'message' : 'coupon updated' , 'data' : serializer.data})
 
-                            except Exception as e:
-                                print(e)
-
-                    else:
-                        course_objs = CoursePackage.objects.all()
-                        for course_obj in course_objs:
-                            coupon_obj.courses.add(course_obj)
-
-
-                return Response({
-                    'status' : True,
-                    'message' : 'coupon created',
-                    'data' : serializer.data
-                })
-            
-            return Response({
-                    'status' : False,
-                    'message' : 'coupon not created',
-                    'data' : serializer.errors
-                })
-
+            return Response({'status' : 200 , 'message' : 'error' , 'data' : serializer.errors})
+        
         except Exception as e:
             print(e)
-            return Response({
-                    'status' : False,
-                    'message' : f'coupon not created {str(e)}',
-                    'data' : {}
-                })
+            return Response({'status' : 400 , 'message' : ' something went wrong'})
+
+    
+    def delete(self , request):
+        try:
+            data =  request.data
+            
+            if data.get('uid') is None:
+                return Response({'status' : 400 , 'message' : 'uid is required'})
+            try:
+                obj = Coupoun.objects.get(uid = data.get('uid')).delete()
+            except Exception as e:
+                return Response({'status' : 400 , 'message' : ' invalid uid'})
+            return Response({'status' : 200 , 'message' : 'deleted' })
+        
+        except Exception as e:
+            print(e)
+            return Response({'status' : 400 , 'message' : ' something went wrong'})
+
+    
+                
+            
+
+
+
+
+ 
 
 
 

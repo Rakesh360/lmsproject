@@ -1,3 +1,4 @@
+from re import T
 import courses
 from django.db import models
 from base_rest.models import BaseModel
@@ -88,7 +89,8 @@ class CoursePackage(BaseModel):
     days = models.IntegerField(default=0)
     is_active = models.BooleanField(default=True)
     
-    sell_till_date  = models.DateField(null=True , blank=True ,  max_length=100)
+    sell_till_date  = models.DateField(null=True , blank=True ,  )
+    end_purchase = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     web_image = models.ImageField(upload_to = "course_package",)
     mobile_image = models.ImageField(upload_to = "course_package")
@@ -132,6 +134,8 @@ class GoLive(BaseModel):
     chapter = models.ForeignKey(SubjectChapters , on_delete=models.CASCADE)
     live_name = models.CharField(max_length=100)
     live_url = models.CharField(max_length=10000)
+    is_live_started = models.BooleanField(default=False)
+    is_live_ended = models.BooleanField(default=False)
     image = models.ImageField(upload_to = 'live' , null=True , blank = True)
     live_date_time = models.DateTimeField(default=datetime.now)
     live_date = models.CharField(max_length=100 , null = True , blank=True)

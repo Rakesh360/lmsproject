@@ -171,6 +171,19 @@ def course_packages(request):
     return render(request , 'new_dashboard/all_packages.html' , context)
 
 
+def package_end_purchase(request , uid):
+    try:
+        obj = CoursePackage.objects.get(uid = uid)
+        obj.end_purchase = not obj.end_purchase
+        obj.save()
+        messages.success(request, 'Purchase Updated')
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+    
+    except Exception as e:
+        return redirect('/')
+
+
 @staff_member_required(login_url='/accounts/login/')
 def add_subjects_courses(request,uid):
     course_package_obj = CoursePackage.objects.get(uid = uid)
@@ -259,6 +272,29 @@ def update_lesson(request , uid):
         return redirect('/')
 
 
+def go_live(request):
+    objs = GoLive.objects.all()
+    context = {'objs' : objs}
+    return render(request , 'new_dashboard/go_live.html' , context)
+
+def change_live_status(request , uid):
+    try:
+        obj = GoLive.objects.get(uid = uid)
+        if request.GET.get('status') == 'start':
+            obj.is_live_started = True
+            obj.save()
+        elif request.GET.get('status') == 'end':
+            obj.is_live_ended = True
+            obj.save()
+        elif request.GET.get('status') == 'cancel':
+            print('cancel')
+        
+        messages.success(request, 'Live updated')
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+
+    except Exception as e:
+        return redirect('/')
 
 def live_stream_view(request , id):
     context = {'live' : LiveStream.objects.get(uid = id)}

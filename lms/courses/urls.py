@@ -41,5 +41,7 @@ urlpatterns = [
    path('all-question', views.all_question, name="all_question"),
    path('add-question/' , views.add_question , name="add_question"),
 
-   
+   path('go-live/' , views.go_live  , name="go_live"),
+   path('change_live_status/<uid>/' , views.change_live_status , name="change_live_status"),
+   path('package_end_purchase/<uid>/' , views.package_end_purchase , name="package_end_purchase")  
 ]

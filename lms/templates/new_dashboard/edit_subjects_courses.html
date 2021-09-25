@@ -218,7 +218,7 @@
                         <div class="custom-file">
                             <label for="image_for_web">Choose file For Web</label>
                             <input type="file" class="form-control" name="image_for_web" id="image_for_web">
-                            <a class="ml-2 mt-4" href="/{{course_package_obj.web_image.url}}">Open Here</a>
+                            <a class="ml-2 mt-4" target="_blank" href="/media/{{course_package_obj.web_image}}">Open Here</a>
     
                         </div>
                     </div>
@@ -228,7 +228,7 @@
                         <div class="custom-file">
                             <label for="image_for_app">Choose file For App</label>
                             <input type="file" class="form-control" name="image_for_app" id="image_for_app">
-                            <a class="ml-2 mt-4" href="/{{course_package_obj.mobile_image.url}}">Open Here</a>
+                            <a class="ml-2 mt-4" target="_blank"  href="/media/{{course_package_obj.mobile_image}}">Open Here</a>
                         </div>
                     </div>
                     
@@ -394,18 +394,7 @@
     const csrfToken = getCookie('csrftoken');
     let editor = CKEDITOR.replace( 'description' );
     var description;
-    editor.on( 'change', function( evt ) {
-    // getData() returns CKEditor's HTML content.
-        description =  evt.editor.getData();
-    });
-
-    editor.on( 'instanceReady', function( evt ) {
-    // getData() returns CKEditor's HTML content.
-        evt.editor.setData('{{course_package_obj.package_description}}');
-    });    
-
-
-    // script for nav btn start
+    
     let flag = true;
     const contentBtn = document.getElementById('contentBtn');
     const treeBtn = document.getElementById('treeBtn');

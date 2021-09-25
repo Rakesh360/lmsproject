@@ -41,3 +41,5 @@ admin.site.register(CoursePackageSubjects)
 admin.site.register(Video)
 admin.site.register(Document)
 admin.site.register(GoLive)
+admin.site.register(Coupoun)
+
