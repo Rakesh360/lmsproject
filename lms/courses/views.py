@@ -388,3 +388,15 @@ def all_question(request):
 
 def add_question(request):
     return render(request , 'new_dashboard/coupons/add_coupons_question.html')
+
+
+
+def send_notification(request):
+    context = {
+        'course_packages' : CoursePackage.objects.all(),
+    }
+    return render(request , 'new_dashboard/manage_app/send_notification.html', context)
+
+
+def all_slider(request):
+    return render(request , 'new_dashboard/manage_app/all_slider.html')

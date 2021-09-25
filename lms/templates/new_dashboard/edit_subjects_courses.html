@@ -164,8 +164,8 @@
                         <div id="expiryTypePicker">
                             <label for="expiryType"> Expiry Type </label>
                             <select required name="expiryType" id="expiryType" class="form-control" onchange="changeExpiryType(event)">
+                                <option {% if course_package_obj.subscription_type == 'Subscription' %} selected {% endif %} value="Subscription">Subscription</option>
                                 <option {% if course_package_obj.subscription_type == 'Fixed Date' %} selected {% endif %} value="Fixed Date">Fixed Date</option>
-                                <option {% if course_package_obj.subscription_type == 'Subscription' %} selected {% endif %} value="subscription">Subscription</option>
                             </select>
                         </div>
     
@@ -186,8 +186,8 @@
                         <div id="expiryTypePicker">
                             <label for="is_active"> Is Active </label>
                             <select required name="is_active" id="is_active" class="form-control">
-                                <option {% if course_package_obj.is_active == 'false' %} selected {% endif %} value=false>Inactive</option>
-                                <option {% if course_package_obj.is_active == 'true' %} selected {% endif %} value=true >Active</option>
+                                <option {% if course_package_obj.is_active == false %} selected {% endif %} value=false>Inactive</option>
+                                <option {% if course_package_obj.is_active == true %} selected {% endif %} value=true >Active</option>
                             </select>
                         </div>
     
@@ -291,7 +291,6 @@
 
 
 <script>
-    console.log('{{course_package_obj.sell_till_date}}');
     const handleSubmit = document.getElementById('handleSubmit');
     let isFormValid = false;
     function formValidation() {
@@ -451,18 +450,50 @@
         
     });
 
-    function changeExpiryType() {
-        if (event.currentTarget.value === 'fixed-date') {
+    function changeExpiryType(event) {
+        if (event.currentTarget.value === 'Fixed Date') {
             expiryDateContainer.style.display = 'block';
             subscriptionContainer.style.display = 'none';
-        } else if (event.currentTarget.value === 'subscription') {
+        } else if (event.currentTarget.value === 'Subscription') {
             subscriptionContainer.style.display = 'block';
             expiryDateContainer.style.display = 'none';
         } else {
             expiryDateContainer.style.display = 'none';
             subscriptionContainer.style.display = 'none';
         }
-    }
+    };
+    if (document.getElementById('expiryType').value === 'Fixed Date') {
+        expiryDateContainer.style.display = 'block';
+        subscriptionContainer.style.display = 'none';
+    } else if (event.currentTarget.value === 'Subscription') {
+        subscriptionContainer.style.display = 'block';
+        expiryDateContainer.style.display = 'none';
+    };
+
+    // code for parsing date from Sept. 9, 2021 to 09-09-2021
+    function parseDate(date) {
+        let dt = new Date(date);
+        let month = dt.getMonth() + 1;
+        if (month < 10) {
+            month = '0' + String(month);
+        } 
+        let day = dt.getDate();
+
+        if (day < 10) {
+            day = '0' + String(day);
+        }
+        let year = dt.getFullYear();
+        return `${year}-${month}-${day}`;
+    };
+    document.getElementById('sell_end_time').value = parseDate('{{course_package_obj.sell_till_date}}');
+
+
+
+
+
+
+
+    
     
   
 

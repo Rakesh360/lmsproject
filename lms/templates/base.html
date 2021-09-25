@@ -193,7 +193,7 @@
                         <ul aria-expanded="false">
                             <li><a href="{% url 'all_test' %}">All Tests</a></li>
                             <li><a href="{% url 'add_test' %}">Add Test</a></li>
-                            <li><a href="{% url 'all_question' %}}">All Questions</a></li>
+                            <li><a href="{% url 'all_question' %}">All Questions</a></li>
                         </ul>
                     </li>
 
@@ -202,7 +202,8 @@
                             <span class="nav-text">Manage App</span>
                         </a>
                         <ul aria-expanded="false">
-                            <li><a href="app-profile.html">Add Sliders</a></li>
+                            <li><a href="{% url 'all_slider' %}">Add Sliders</a></li>
+                            <li><a href="{% url 'send_notification' %}">Send Notification</a></li>
                         </ul>
                     </li>
 

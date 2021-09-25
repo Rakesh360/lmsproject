@@ -41,5 +41,10 @@ urlpatterns = [
    path('all-question', views.all_question, name="all_question"),
    path('add-question/' , views.add_question , name="add_question"),
 
+
+   # for manage app
+   path('send_notification', views.send_notification, name="send_notification"),
+   path('all_slider', views.all_slider, name="all_slider"),
+
    
 ]
