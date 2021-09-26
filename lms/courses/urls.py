@@ -43,5 +43,11 @@ urlpatterns = [
 
    path('go-live/' , views.go_live  , name="go_live"),
    path('change_live_status/<uid>/' , views.change_live_status , name="change_live_status"),
-   path('package_end_purchase/<uid>/' , views.package_end_purchase , name="package_end_purchase")  
+   path('package_end_purchase/<uid>/' , views.package_end_purchase , name="package_end_purchase")  ,
+
+   # for manage app
+   path('send_notification', views.send_notification, name="send_notification"),
+   path('all_slider', views.all_slider, name="all_slider"),
+
+   
 ]

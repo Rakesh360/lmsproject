@@ -164,9 +164,8 @@
                         <div id="expiryTypePicker">
                             <label for="expiryType"> Expiry Type </label>
                             <select required name="expiryType" id="expiryType" class="form-control" onchange="changeExpiryType(event)">
-                                <option disabled selected>Choose Expiry Type</option>
-                                <option value="fixed-date">Fixed Date</option>
-                                <option value="subscription">Subscription</option>
+                                <option {% if course_package_obj.subscription_type == 'Subscription' %} selected {% endif %} value="Subscription">Subscription</option>
+                                <option {% if course_package_obj.subscription_type == 'Fixed Date' %} selected {% endif %} value="Fixed Date">Fixed Date</option>
                             </select>
                         </div>
     
@@ -199,8 +198,8 @@
                 <div class="form-group md-4">
         
                     <div class="form-group col-md-6">
-                        <label for="sell_end_time">Set Selling End Time Price</label>
-                        <input value="{{course_package_obj.sell_till}}" id="sell_end_time" type="date" name="sell_end_time" class="form-control" placeholder="Choose Date"> 
+                        <label for="sell_end_time">Set Selling End Date</label>
+                        <input value="{{course_package_obj.sell_till_date}}" id="sell_end_time" type="date" name="sell_end_time" class="form-control" placeholder="Choose Date"> 
                     </div>
                 </div>
                 
@@ -295,10 +294,10 @@
     const handleSubmit = document.getElementById('handleSubmit');
     let isFormValid = false;
     function formValidation() {
-        if (document.getElementById('inputEmail4').value === '') {
+        if (document.getElementById('lesson_title').value === '') {
             alert('Please enter a pakage title');
         } else if (document.getElementById('subjects').value === '') {
-            alert('Please select a subject');
+            alert('Please select package type');
         } else if (document.getElementById('actual_price').value === '') {
             alert('Please enter actual price');     
         } else if (document.getElementById('selling_price').value === '') {
@@ -314,11 +313,7 @@
                 alert('Please Enter no. of Expiry Days');
             }
 
-        } else if (document.getElementById('image_for_web').value === '') {
-            alert('Please Choose Image For Web');
-        } else if (document.getElementById('image_for_app').value === '') {
-            alert('Please Choose Image For Mobile');
-        } else {
+        }  else {
             isFormValid = true;
         };
 
@@ -394,7 +389,22 @@
     const csrfToken = getCookie('csrftoken');
     let editor = CKEDITOR.replace( 'description' );
     var description;
+<<<<<<< HEAD
     
+=======
+    editor.on( 'change', function( evt ) {
+    // getData() returns CKEditor's HTML content.
+        description =  evt.editor.getData();
+    });
+
+    editor.on( 'instanceReady', function( evt ) {
+    // getData() returns CKEditor's HTML content.
+        evt.editor.setData(`{{course_package_obj.package_description}}`);
+    });    
+
+
+    // script for nav btn start
+>>>>>>> 0dded16d67a790548de5514d725efeba98131bdc
     let flag = true;
     const contentBtn = document.getElementById('contentBtn');
     const treeBtn = document.getElementById('treeBtn');
@@ -444,18 +454,50 @@
         
     });
 
-    function changeExpiryType() {
-        if (event.currentTarget.value === 'fixed-date') {
+    function changeExpiryType(event) {
+        if (event.currentTarget.value === 'Fixed Date') {
             expiryDateContainer.style.display = 'block';
             subscriptionContainer.style.display = 'none';
-        } else if (event.currentTarget.value === 'subscription') {
+        } else if (event.currentTarget.value === 'Subscription') {
             subscriptionContainer.style.display = 'block';
             expiryDateContainer.style.display = 'none';
         } else {
             expiryDateContainer.style.display = 'none';
             subscriptionContainer.style.display = 'none';
         }
-    }
+    };
+    if (document.getElementById('expiryType').value === 'Fixed Date') {
+        expiryDateContainer.style.display = 'block';
+        subscriptionContainer.style.display = 'none';
+    } else if (event.currentTarget.value === 'Subscription') {
+        subscriptionContainer.style.display = 'block';
+        expiryDateContainer.style.display = 'none';
+    };
+
+    // code for parsing date from Sept. 9, 2021 to 09-09-2021
+    function parseDate(date) {
+        let dt = new Date(date);
+        let month = dt.getMonth() + 1;
+        if (month < 10) {
+            month = '0' + String(month);
+        } 
+        let day = dt.getDate();
+
+        if (day < 10) {
+            day = '0' + String(day);
+        }
+        let year = dt.getFullYear();
+        return `${year}-${month}-${day}`;
+    };
+    document.getElementById('sell_end_time').value = parseDate('{{course_package_obj.sell_till_date}}');
+
+
+
+
+
+
+
+    
     
   
 
@@ -757,12 +799,12 @@ var CSRF_TOKEN = '{{csrf_token}}'
 </script>
 
 <script>
-    let editor = CKEDITOR.replace( 'description' );
-    var description;
-    editor.on( 'change', function( evt ) {
-    // getData() returns CKEditor's HTML content.
-    description =  evt.editor.getData();            
-});
+//     editor = CKEDITOR.replace( 'description' );
+//     var description;
+//     editor.on( 'change', function( evt ) {
+//     // getData() returns CKEditor's HTML content.
+//     description =  evt.editor.getData();            
+// });
 </script>
 
 
