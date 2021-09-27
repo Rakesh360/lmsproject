@@ -169,7 +169,10 @@ class Coupoun(BaseModel):
     coupon_validity = models.CharField(max_length=100)
 
     total_usage_limit = models.IntegerField(default=-1)
+    applied_total_limit = models.IntegerField(default=0)
     per_user_limit = models.IntegerField(default=-1)
+    applied_user_limit = models.IntegerField(default=0)
+
     discount_type = models.CharField( max_length=1000, choices = (('Fixed Discount' , 'Fixed Discount' ) , ('Percentage Discount' , 'Percentage Discount')))
     discount =  models.IntegerField(default=0)
     courses = models.ManyToManyField(CoursePackage)

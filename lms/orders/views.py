@@ -11,6 +11,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
 from base_rest.viewsets import BaseAPIViewSet
 from instamojo_wrapper import Instamojo
+from courses.models import *
 import json
 
 API_KEY = "test_9f0cd6e73f16fc3b984db1a8d42"
@@ -112,4 +113,107 @@ class OrderAPI(BaseAPIViewSet):
             print(e)
         
         return Response({'status' : 200 , 'data' : [] , 'message' : 'Someting went wrong'})
+
+from datetime import date
+
+class ApplyCoupon(APIView):
+    def post(self , request):
+        try:
+            data = request.data
+
+            if data.get('order_id') is None or data.get('coupon_code') is None:
+                return Response({
+                    'status' : 400,
+                    'message' : 'both order id and coupon code are required'
+                })
+            order_obj = None
+            coupon_obj = None
+            try:
+                order_obj = Order.objects.get(uid = data.get('order_id'))
+            except Exception as e:
+                return Response({
+                    'status' : 400,
+                    'message' : 'invalid order_id'
+                })
+
+            try:
+                coupon_obj = Coupoun.objects.get(coupon_code = data.get('coupon_code'))
+            except Exception as e:
+                return Response({
+                    'status' : 400,
+                    'message' : 'invalid coupon code'
+                })
+
+            if order_obj.coupon.uid = coupon_obj.uid:
+                return Response({
+                    'status' : 400,
+                    'message' : 'coupon is already applied'
+                })
+
+
+            if not coupon_obj.is_active:
+                return Response({
+                    'status':400,
+                    'message' : 'invalid coupon code'
+                })
+            
+            if coupon_obj.coupon_validity is not None and  date.today() > coupon_obj.coupon_validity:
+                return Response({
+                    'status':400,
+                    'message' : ' coupon code expired'
+                })
+                
+            if coupon_obj.per_user_limit != -1:
+                if coupon_obj.applied_user_limit == coupon_obj.per_user_limit:
+                    return Response({
+                        'status':400,
+                        'message' : 'coupon code expired'
+                    })
+                else:
+                    coupon_obj.applied_user_limit = coupon_obj.applied_user_limit + 1
+                    coupon_obj.save()
+            
+
+            if coupon_obj.total_usage_limit != -1:
+                if coupon_obj.applied_total_limit == coupon_obj.total_usage_limit:
+                    return Response({
+                        'status':400,
+                        'message' : 'coupon code expired'
+                    })
+                else:
+                    coupon_obj.applied_total_limit = coupon_obj.applied_total_limit + 1
+                    coupon_obj.save()
+
+
+            if not coupon_obj.filter(courses__in = [order_obj.course.uid]).exists():
+                return Response({
+                        'status':400,
+                        'message' : "coupon can't be applied to this course "
+                    })
+            
+
+            order_obj.coupon = coupon_obj
+            
+            if coupon_obj.discount_type == 'Fixed Discount':
+                order_obj.amount =  order_obj.amount - coupon_obj.discount
+                order_obj.save()
+            else:
+                amount_to_be_less = 100.0 * order_obj.amount / coupon_obj.discount
+                order_obj.amount =  order_obj.amount - amount_to_be_less
+                order_obj.save()
+
+            serializer = OrderSerializer(order_obj)
+            return Response({
+                'status' : 200,
+                'message' : 'coupon applied successfully',
+                'data' : serializer.data
+            })
+        except Exception as e:
+            print(e)
+            return Response({
+                'status' : 400,
+                'message' : 'something went wrong'
+            })
+
+
 
