@@ -131,6 +131,8 @@ class ApplyCoupon(APIView):
             try:
                 order_obj = Order.objects.get(uid = data.get('order_id'))
             except Exception as e:
+                print(e)
+
                 return Response({
                     'status' : 400,
                     'message' : 'invalid order_id'
@@ -144,7 +146,8 @@ class ApplyCoupon(APIView):
                     'message' : 'invalid coupon code'
                 })
 
-            if order_obj.coupon.uid = coupon_obj.uid:
+            print(coupon_obj)
+            if order_obj.coupon and  order_obj.coupon.uid == coupon_obj.uid:
                 return Response({
                     'status' : 400,
                     'message' : 'coupon is already applied'
@@ -157,7 +160,7 @@ class ApplyCoupon(APIView):
                     'message' : 'invalid coupon code'
                 })
             
-            if coupon_obj.coupon_validity is not None and  date.today() > coupon_obj.coupon_validity:
+            if coupon_obj.coupon_validity is not None and  str(date.today()) > coupon_obj.coupon_validity:
                 return Response({
                     'status':400,
                     'message' : ' coupon code expired'
@@ -185,7 +188,7 @@ class ApplyCoupon(APIView):
                     coupon_obj.save()
 
 
-            if not coupon_obj.filter(courses__in = [order_obj.course.uid]).exists():
+            if not coupon_obj.courses.filter(uid__in = [order_obj.course.uid]).exists():
                 return Response({
                         'status':400,
                         'message' : "coupon can't be applied to this course "
@@ -198,7 +201,8 @@ class ApplyCoupon(APIView):
                 order_obj.amount =  order_obj.amount - coupon_obj.discount
                 order_obj.save()
             else:
-                amount_to_be_less = 100.0 * order_obj.amount / coupon_obj.discount
+                amount_to_be_less = 100 #(order_obj.amount / coupon_obj.discount) * 100
+                print(amount_to_be_less)
                 order_obj.amount =  order_obj.amount - amount_to_be_less
                 order_obj.save()
 
@@ -209,7 +213,11 @@ class ApplyCoupon(APIView):
                 'data' : serializer.data
             })
         except Exception as e:
+            import sys, os
             print(e)
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
             return Response({
                 'status' : 400,
                 'message' : 'something went wrong'

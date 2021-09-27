@@ -10,7 +10,8 @@ from .views import *
 
 urlpatterns = [
    path('' , OrderCourse.as_view()),
-   path('success/' , OrderSuccess.as_view())
+   path('success/' , OrderSuccess.as_view()),
+   path('apply-coupon/' , ApplyCoupon.as_view()),
    #path('', include(router.urls)), 
 ]
 
