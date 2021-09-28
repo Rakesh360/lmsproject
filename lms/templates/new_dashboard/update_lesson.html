@@ -162,12 +162,15 @@
                                 
                                     {% for course_package in course_packages %}
                                     {% if lesson.uid == course_package.lesson.uid  %}
-                                <tr><td class="tag">
+                                <tr><td class="tag" id="{{course_package.lesson.uid}}">
                                      {{course_package.lesson.lesson_title}}
                                 </td><td>
-                                <input type="datetime-local" {% if course_package.added_at  %} value="{{course_package.added_at}}" {% else %} value="{{course_package.created_at}}" {% endif %}>
+                                <input type="datetime-local" class="packageDate" {% if course_package.added_at  %} value="{{course_package.added_at}}" {% else %} value="{{course_package.created_at}}" {% endif %}>
                                 </td>
-                                <td class="delBtn" onclick="deleteTag2(event)">❌</td></tr>
+                                <td>
+                                <button class="btn btn-danger" onclick="deleteTag2(event)">❌</button>
+                                </td>
+                                </tr>
                                 {% endif %}
                                     {% endfor  %}
                                 </tbody>
@@ -501,6 +504,40 @@
         let isProceed = false;
         if ('{{lesson.video_platform}}' == 'Live') {
             // patch for live
+            let liveData = new FormData();
+            liveData.append('chapter', document.getElementById('chooseChapters').value);
+            liveData.append('live_name', document.getElementById('live_name').value);
+            liveData.append('live_url', document.getElementById('video_link').value);
+            liveData.append('subject', document.getElementById('chooseSubject').value);
+            if (document.getElementById('live_image').files.length > 0) {
+                liveData.append('image', document.getElementById('live_image').files[0])
+                    
+            } else {
+                console.log('no image');
+            };
+
+            liveData.append('course_package', packagesUid[0]);
+
+            console.log(liveData);
+            if (allTags.length > 0) {
+                let res = await axios.patch('/api/courses/go-live/', liveData, {
+                    headers: {
+                        'X-CSRFToken': csrfToken
+                    }
+                });
+                console.log(res.data);
+                if (res.data.status === true) {
+                    alert('Lesson updated successfully');
+
+                } else {
+                    alert('Something went wrong');
+                }
+                
+            } else {
+                alert("Packages Can't Be empty! Please select at least one package.");
+            }
+
+
         } else {
             // patch for video
             let data = {
