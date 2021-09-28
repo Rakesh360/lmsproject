@@ -128,7 +128,7 @@
     <div class="card">
         <div class="card-body">
             {% include "utils/alert.html" %}
-            <form>
+            <form id="addPackageForm">
                 {% csrf_token %}
                 <div class="form-row mb-4">
                     <div class="form-group col-md-6">
@@ -160,25 +160,17 @@
                 </div>
                 <div class="form-row mb-4" id="video_upload">
     
-                    <div class="form-group col-md-6">
+                    <div class="form-group col-md-6" id="belowTypePicker">
                         <div id="expiryTypePicker">
                             <label for="expiryType"> Expiry Type </label>
-                            <select required name="expiryType" id="expiryType" class="form-control" onchange="changeExpiryType(event)">
+                            <select required name="expiryType" id="expiryType" class="form-control" onchange="changeExpiryType()">
                                 <option {% if course_package_obj.subscription_type == 'Subscription' %} selected {% endif %} value="Subscription">Subscription</option>
                                 <option {% if course_package_obj.subscription_type == 'Fixed Date' %} selected {% endif %} value="Fixed Date">Fixed Date</option>
                             </select>
                         </div>
     
     
-                        <div id="expiryDateContainer" style="display: none; margin-top: 3%;">
-                            <label for="expiryDate">Choose Expiry Date</label>
-                            <input type="date" name="expiryDate" class="form-control" id="expiryDate">
-                        </div>
-    
-                        <div id="subscriptionContainer" style="display: none; margin-top: 3%;">
-                            <label for="subscriptionDays">Subscription Period</label>
-                            <input value="{{course_package_obj.days}}" type="number" id="subscriptionDays" class="form-control" placeholder="Enter Subscription Period (in Days)">
-                        </div>
+                    
     
                     </div>
     
@@ -194,14 +186,6 @@
                     </div>
     
                 </div>
-    
-                <div class="form-group md-4">
-        
-                    <div class="form-group col-md-6">
-                        <label for="sell_end_time">Set Selling End Date</label>
-                        <input value="{{course_package_obj.sell_till_date}}" id="sell_end_time" type="date" name="sell_end_time" class="form-control" placeholder="Choose Date"> 
-                    </div>
-                </div>
                 
     
                 <div class="form-row mb-4">
@@ -216,7 +200,7 @@
                     <div class="form-group mb-6">
                         <div class="custom-file">
                             <label for="image_for_web">Choose file For Web</label>
-                            <input type="file" class="form-control" name="image_for_web" id="image_for_web">
+                            <input type="file" class="form-control" onchange="webImgReUpload()" name="image_for_web" id="image_for_web">
                             <a class="ml-2 mt-4" target="_blank" href="/media/{{course_package_obj.web_image}}">Open Here</a>
     
                         </div>
@@ -226,7 +210,7 @@
                     <div class="form-group mb-6 ml-4">
                         <div class="custom-file">
                             <label for="image_for_app">Choose file For App</label>
-                            <input type="file" class="form-control" name="image_for_app" id="image_for_app">
+                            <input type="file" class="form-control" onchange="appImgReUpload()" name="image_for_app" id="image_for_app">
                             <a class="ml-2 mt-4" target="_blank"  href="/media/{{course_package_obj.mobile_image}}">Open Here</a>
                         </div>
                     </div>
@@ -280,99 +264,17 @@
                 <button class="check-btn" id="saveBtn" onclick="updateOrder(editingMode)">
                     Save 
                 <i class="fas fa-save"></i>
-                </button>
-            </div>
-
+            </button>
         </div>
-
+        
     </div>
+    
+</div>
 </div>
 
 
 
-<script>
-    const handleSubmit = document.getElementById('handleSubmit');
-    let isFormValid = false;
-    function formValidation() {
-        if (document.getElementById('lesson_title').value === '') {
-            alert('Please enter a pakage title');
-        } else if (document.getElementById('subjects').value === '') {
-            alert('Please select package type');
-        } else if (document.getElementById('actual_price').value === '') {
-            alert('Please enter actual price');     
-        } else if (document.getElementById('selling_price').value === '') {
-            alert('Please enter selling price');     
-        } else if (document.getElementById('expiryType').value === '') {
-            alert('Please Choose Expiry Type');     
-        } else if (document.getElementById('expiryType').value === 'fixed-date') {
-            if (document.getElementById('expiryDate').value === '') {
-                alert('Please Enter Last Date of Expiry ');
-            }
-        } else if (document.getElementById('expiryType').value === 'subscription') { 
-            if (document.getElementById('subscriptionDays').value === '') {
-                alert('Please Enter no. of Expiry Days');
-            }
-
-        }  else {
-            isFormValid = true;
-        };
-
-        return isFormValid;
-    };
-
-
-    handleSubmit.addEventListener('click', function (event) {
-        event.preventDefault();
-
-            if (formValidation() === true) {
-            let formData = new FormData();
-            formData.append('uid', '{{course_package_obj.uid}}');
-            formData.append('package_title', document.getElementById('lesson_title').value);
-            formData.append('package_type', document.getElementById('subjects').value);
-            formData.append('actual_price', document.getElementById('actual_price').value);
-            formData.append('selling_price', document.getElementById('selling_price').value);
-            formData.append('expiry_type', document.getElementById('expiryType').value);
-            formData.append('sell_till_date', document.getElementById('expiryDate').value);
-            formData.append('days', document.getElementById('subscriptionDays').value);
-            formData.append('package_description', description);
-            formData.append('web_image', '{{course_package_obj.web_image}}');
-            formData.append('mobile_image', '{{course_package_obj.mobile_image}}');
-            formData.append('is_active', document.getElementById('is_active').value);
-            formData.append('sell_end_time', document.getElementById('sell_end_time').value);
-            console.log();
-                
-
-            if (document.getElementById('subjects').value === 'video') {
-                
-                fetch('/api/courses/course-packages/', {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'X-CSRFToken': csrfToken
-                    },
-                })
-                .then(function(response) {
-                    return response.json();
-                })
-                .then(function(response) {
-                    console.log(response);
-                    if (response.status === true) {
-                        alert('Successfully created package');
-                    } else {
-                        alert('Error while creating package');
-                    }
-                });
-                    
-
-            } else {
-                // fetch for test API
-            }
-        };
-
-    });
-
-
-
+<script>  
     function getCookie(name) {
         if (!document.cookie) {
             return null;
@@ -387,11 +289,80 @@
     }
     
     const csrfToken = getCookie('csrftoken');
+
+    let webImgReUploaded = false;
+    let appImgReUploaded = false;
+
+    function webImgReUpload() {
+        webImgReUploaded = true;
+    }
+
+    function appImgReUpload() {
+        appImgReUploaded = true;
+    }
+
+    
+    const addPackageForm = document.getElementById('addPackageForm');
+    addPackageForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        let formData = new FormData();
+
+        formData.append('package_title', document.getElementById('lesson_title').value);
+        formData.append('package_description', description);
+        formData.append('actual_price', document.getElementById('actual_price').value);
+        formData.append('selling_price', document.getElementById('selling_price').value);
+        formData.append('package_type', document.getElementById('subjects').value);
+        formData.append('subscription_type', document.getElementById('expiryType').value);
+        formData.append('is_active', document.getElementById('is_active').value);
+        
+
+        if (document.getElementById('expiryType').value === 'Fixed Date') {
+            formData.append('sell_till_date', document.getElementById('expiryDate').value);
+            
+        } else if (document.getElementById('expiryType').value === 'Subscription') {
+            formData.append('days', document.getElementById('subscriptionDays').value);
+            
+        }
+
+        if (webImgReUploaded) {
+            formData.append('web_image', document.getElementById('image_for_web').files[0]);
+        };
+        
+        if (appImgReUploaded) {
+            formData.append('mobile_image', document.getElementById('image_for_app').files[0]);
+        };
+
+                
+
+        if (document.getElementById('subjects').value === 'video') {
+            let res = await axios.patch('/api/courses/course-packages/', formData, {
+                headers: {
+                    'X-CSRFToken' : csrfToken,
+                }
+            }); 
+            console.log(res.data);
+            if (res.data.status === true) {
+                alert('Lesson updated successfully');
+
+            } else {    
+                alert('Something went wrong');
+            }
+            
+            
+        } else {
+            // fetch for test API
+        }
+        
+        
+        
+    });
+    
+    
+    
     let editor = CKEDITOR.replace( 'description' );
     var description;
-<<<<<<< HEAD
     
-=======
     editor.on( 'change', function( evt ) {
     // getData() returns CKEditor's HTML content.
         description =  evt.editor.getData();
@@ -404,7 +375,6 @@
 
 
     // script for nav btn start
->>>>>>> 0dded16d67a790548de5514d725efeba98131bdc
     let flag = true;
     const contentBtn = document.getElementById('contentBtn');
     const treeBtn = document.getElementById('treeBtn');
@@ -454,25 +424,49 @@
         
     });
 
-    function changeExpiryType(event) {
-        if (event.currentTarget.value === 'Fixed Date') {
-            expiryDateContainer.style.display = 'block';
-            subscriptionContainer.style.display = 'none';
-        } else if (event.currentTarget.value === 'Subscription') {
-            subscriptionContainer.style.display = 'block';
-            expiryDateContainer.style.display = 'none';
+    const belowTypePicker = document.getElementById('belowTypePicker');
+    
+    let expiryDateDiv = document.createElement('div');
+    expiryDateDiv.classList.add('form-group');
+    expiryDateDiv.classList.add('mt-4');
+    expiryDateDiv.innerHTML = `
+    <label for="expiryDate">Choose Expiry Date</label>
+    <input type="date" required name="expiryDate" class="form-control" id="expiryDate">
+    `;
+
+    let subscriptionDiv = document.createElement('div');
+    subscriptionDiv.classList.add('form-group');
+    subscriptionDiv.classList.add('mt-4');
+    subscriptionDiv.innerHTML = `
+    <label for="subscriptionDays">Subscription Period</label>
+    <input type="number" value={{course_package_obj.days}} required id="subscriptionDays" class="form-control" placeholder="Enter Subscription Period (in Days)">
+    `;
+
+    function changeExpiryType() {
+        if (document.getElementById('expiryType').value === 'Fixed Date') {
+            belowTypePicker.appendChild(expiryDateDiv);
+            try {
+                subscriptionDiv.remove();
+            } catch (error) {
+                console.log(error);
+            }
+        } else if (document.getElementById('expiryType').value === 'Subscription') {
+            belowTypePicker.appendChild(subscriptionDiv);
+            try {
+                expiryDateDiv.remove();
+            } catch (error) {
+                console.log(error);
+            }
         } else {
-            expiryDateContainer.style.display = 'none';
-            subscriptionContainer.style.display = 'none';
+            try {
+                subscriptionDiv.remove();
+                expiryDateDiv.remove();
+            } catch (error) {
+                console.log(error);
+            }
         }
     };
-    if (document.getElementById('expiryType').value === 'Fixed Date') {
-        expiryDateContainer.style.display = 'block';
-        subscriptionContainer.style.display = 'none';
-    } else if (event.currentTarget.value === 'Subscription') {
-        subscriptionContainer.style.display = 'block';
-        expiryDateContainer.style.display = 'none';
-    };
+    changeExpiryType();
 
     // code for parsing date from Sept. 9, 2021 to 09-09-2021
     function parseDate(date) {
@@ -489,7 +483,7 @@
         let year = dt.getFullYear();
         return `${year}-${month}-${day}`;
     };
-    document.getElementById('sell_end_time').value = parseDate('{{course_package_obj.sell_till_date}}');
+    document.getElementById('expiryDate').value = parseDate('{{course_package_obj.sell_till_date}}');
 
 
 

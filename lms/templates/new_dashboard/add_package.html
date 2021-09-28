@@ -2,8 +2,6 @@
 {% block start %}
 
 
-
-
 <style type="text/css">
     .bg-1 {
         background: #ECECF8;
@@ -21,14 +19,14 @@
 <div class="card">
     <div class="card-body">
         {% include "utils/alert.html" %}
-        <form>
+        <form id="addPackageForm">
             {% csrf_token %}
             <div class="form-row mb-4">
                 <div class="form-group col-md-6">
                     <label for="lesson_title">Package Name</label>
                     <input type="text" class="form-control" required name="lesson_title" id="lesson_title" 
-                        placeholder="Enter lesson title">
-                </div>`
+                        placeholder="Enter Package Name">
+                </div>
                 <div class="form-group col-md-6">
                     <label for="package_type"> Package Type</label>
                     <select required id="subjects" name="package_type" class="form-control basic tagging ">
@@ -36,52 +34,47 @@
                         <option value="test">Test</option>
                     </select>
                 </div>
+            </div>
+
+
+            <div class="form-row mb-4">
 
                 <div class="form-group col-md-6">
 
                     <label for="actual_price">Actual Price</label>
-                    <input type="number" id="actual_price" name="actual_price" class="form-control" placeholder="Enter Actual Price in Rupees"> 
+                    <input required type="number" id="actual_price" name="actual_price" class="form-control" placeholder="Enter Actual Price in Rupees"> 
                     
                 </div>
 
                 <div class="form-group col-md-6">
                     <label for="selling_price">Selling Price</label>
-                    <input id="selling_price" type="number" name="selling_price" class="form-control" placeholder="Enter Selling Price in Rupees"> 
+                    <input required id="selling_price" type="number" name="selling_price" class="form-control" placeholder="Enter Selling Price in Rupees"> 
                 </div>
 
 
             </div>
             <div class="form-row mb-4" id="video_upload">
 
-                <div class="form-group col-md-6">
+                <div class="form-group col-md-6" id="belowTypePicker">
                     <div id="expiryTypePicker">
-                        <label for="expiryType"> Expiry Type </label>
-                        <select required name="expiryType" id="expiryType" class="form-control" onchange="changeExpiryType(event)">
+                        <label for="subscriptionType"> Expiry Type </label>
+                        <select required name="subscriptionType" id="subscriptionType" class="form-control" onchange="changeExpiryType(event)">
                             <option disabled selected value="">Choose Expiry Type</option>
-                            <option value="fixed-date">Fixed Date</option>
-                            <option value="subscription">Subscription</option>
+                            <option value="Fixed Date">Fixed Date</option>
+                            <option value="Subscription">Subscription</option>
                         </select>
                     </div>
 
 
-                    <div id="expiryDateContainer" style="display: none; margin-top: 3%;">
-                        <label for="expiryDate">Choose Expiry Date</label>
-                        <input type="date" name="expiryDate" class="form-control" id="expiryDate">
-                    </div>
-
-                    <div id="subscriptionContainer" style="display: none; margin-top: 3%;">
-                        <label for="subscriptionDays">Subscription Period</label>
-                        <input type="number" id="subscriptionDays" class="form-control" placeholder="Enter Subscription Period (in Days)">
-                    </div>
-
+                  
                 </div>
 
                 <div class="form-group col-md-6">
                     <div id="expiryTypePicker">
                         <label for="is_active"> Is Active </label>
                         <select required name="is_active" id="is_active" class="form-control">
-                            <option value="false">No</option>
-                            <option value="true" selected>Yes</option>
+                            <option value=false>No</option>
+                            <option value=true selected>Yes</option>
                         </select>
                     </div>
 
@@ -89,19 +82,12 @@
 
             </div>
 
-            <div class="form-group md-4">
-    
-                <div class="form-group col-md-6">
-                    <label for="sell_end_time">Set Selling End Time</label>
-                    <input id="sell_end_time" type="date" name="sell_end_time" class="form-control" placeholder="Choose Date"> 
-                </div>
-            </div>
-            
+           
 
             <div class="form-row mb-4">
                 <div class="form-group col-md-12">
                     <label for="description">Description </label>
-                    <textarea id="summernote" name="description" class="form-control" cols="30" rows="5"></textarea>
+                    <textarea id="summernote" required name="description" class="form-control" cols="30" rows="5"></textarea>
                 </div>
             </div>
 
@@ -110,14 +96,14 @@
                 <div class="form-group mb-6">
                     <div class="custom-file">
                         <label for="image_for_web">Choose file For Web</label>
-                        <input type="file" class="form-control" name="image_for_web" id="image_for_web">
+                        <input type="file" required class="form-control" name="image_for_web" id="image_for_web">
                     </div>
                 </div>
 
                 <div class="form-group mb-6">
                     <div class="custom-file">
                         <label for="image_for_app">Choose file For App</label>
-                        <input type="file" class="form-control" name="image_for_app" id="image_for_app">
+                        <input type="file" required class="form-control" name="image_for_app" id="image_for_app">
                     </div>
                 </div>
 
@@ -196,27 +182,32 @@
         return isFormValid;
     };
 
-    // handlesubmit starts
-    let handleSubmit = document.getElementById('handleSubmit');
-    handleSubmit.addEventListener('click', function (event) {
-        event.preventDefault();
+    // submitting form
+    const addPackageForm = document.getElementById('addPackageForm');
+    addPackageForm.addEventListener('submit', (e) => {
+        e.preventDefault();
         isFormValid = false;
-        if (formValidation() === true) {
-            handleSubmit.disabled = true;
-            let formData = new FormData();
-            formData.append('package_title', document.getElementById('lesson_title').value);
-            formData.append('package_type', document.getElementById('subjects').value);
-            formData.append('actual_price', document.getElementById('actual_price').value);
-            formData.append('selling_price', document.getElementById('selling_price').value);
-            formData.append('expiry_type', document.getElementById('expiryType').value);
+
+        let formData = new FormData();
+
+        formData.append('package_title', document.getElementById('lesson_title').value);
+        formData.append('package_description', description);
+        formData.append('actual_price', document.getElementById('actual_price').value);
+        formData.append('selling_price', document.getElementById('selling_price').value);
+        formData.append('package_type', document.getElementById('subjects').value);
+        formData.append('subscription_type', document.getElementById('subscriptionType').value);
+        formData.append('is_active', document.getElementById('is_active').value);
+        formData.append('web_image', document.getElementById('image_for_web').files[0]);
+        formData.append('mobile_image', document.getElementById('image_for_app').files[0]);
+
+        if (document.getElementById('subscriptionType').value === 'Fixed Date') {
             formData.append('sell_till_date', document.getElementById('expiryDate').value);
+            
+        } else if (document.getElementById('subscriptionType').value === 'Subscription') {
             formData.append('days', document.getElementById('subscriptionDays').value);
-            formData.append('package_description', description);
-            formData.append('web_image', document.getElementById('image_for_web').files[0]);
-            formData.append('mobile_image', document.getElementById('image_for_app').files[0]);
-            formData.append('is_active', document.getElementById('is_active').value);
-            formData.append('sell_end_time', document.getElementById('sell_end_time').value);
-            console.log();
+            
+        }
+
                 
 
             if (document.getElementById('subjects').value === 'video') {
@@ -234,9 +225,8 @@
                 .then(function(response) {
                     console.log(response);
                     if (response.status === true) {
-                        handleSubmit.disabled = false;
                         alert('Successfully created package');
-                        window.location.href = '/admin/courses/packages/';
+                        window.location.href = '/courses/packages/';
                     } else {
                         alert('Error while creating package');
                     }
@@ -246,24 +236,49 @@
             } else {
                 // fetch for test API
             }
-        }
+        });
 
-        
 
-    });
-    // handlesubmit ends
+    const belowTypePicker = document.getElementById('belowTypePicker');
+    
+    let expiryDateDiv = document.createElement('div');
+    expiryDateDiv.classList.add('form-group');
+    expiryDateDiv.classList.add('mt-4');
+    expiryDateDiv.innerHTML = `
+    <label for="expiryDate">Choose Expiry Date</label>
+    <input type="date" required name="expiryDate" class="form-control" id="expiryDate">
+    `;
 
+    let subscriptionDiv = document.createElement('div');
+    subscriptionDiv.classList.add('form-group');
+    subscriptionDiv.classList.add('mt-4');
+    subscriptionDiv.innerHTML = `
+    <label for="subscriptionDays">Subscription Period</label>
+    <input type="number" required id="subscriptionDays" class="form-control" placeholder="Enter Subscription Period (in Days)">
+    `;
 
     function changeExpiryType() {
-        if (event.currentTarget.value === 'fixed-date') {
-            expiryDateContainer.style.display = 'block';
-            subscriptionContainer.style.display = 'none';
-        } else if (event.currentTarget.value === 'subscription') {
-            subscriptionContainer.style.display = 'block';
-            expiryDateContainer.style.display = 'none';
+        if (event.currentTarget.value === 'Fixed Date') {
+            belowTypePicker.appendChild(expiryDateDiv);
+            try {
+                subscriptionDiv.remove();
+            } catch (error) {
+                console.log(error);
+            }
+        } else if (event.currentTarget.value === 'Subscription') {
+            belowTypePicker.appendChild(subscriptionDiv);
+            try {
+                expiryDateDiv.remove();
+            } catch (error) {
+                console.log(error);
+            }
         } else {
-            expiryDateContainer.style.display = 'none';
-            subscriptionContainer.style.display = 'none';
+            try {
+                subscriptionDiv.remove();
+                expiryDateDiv.remove();
+            } catch (error) {
+                console.log(error);
+            }
         }
     }
 </script>

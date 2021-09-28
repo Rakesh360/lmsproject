@@ -91,8 +91,8 @@
 
                 <label for="inputEmail4">Is free</label>
                 <select class="form-control" name="is_free" id="is_free">
-                    <option selected value='True'>No</option>
-                    <option value='False'>Yes</option>
+                    <option selected value=true>No</option>
+                    <option value=false>Yes</option>
 
                 </select>
             </div>
@@ -322,25 +322,7 @@
         const json = await response.json();
         console.log('doc',json.uid);
         return json.uid;
-    }
-
-    async function uploadLiveImage() {
-        console.log('Uploading file...');
-        // document.getElementById('loader').style.display = 'block';
-        const formData = new FormData();
-        formData.append('document_file', document.getElementById('live_image').files[0]);
-        let response = await fetch('/api/courses/document/', {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'X-CSRFToken': csrfToken
-            }
-        });
-        const json = await response.json();
-        console.log('liveimg',json.uid);
-        return json.uid;
-    }
-    
+    }   
     
     form.addEventListener('submit', async function(e) {   
         e.preventDefault();
@@ -375,7 +357,7 @@
             
         };
 
-        let liveData;
+        let liveData = new FormData();
         // resolving video type
         if (document.getElementById('lesson_type').value === 'Document') {
             let docLink = await uploadoc();
@@ -414,31 +396,33 @@
             }
         };
 
-        
         data['packages'] = packages;
-        
-        
-
 
         if (isLive === true) {
             if (allTags.length !== 1) {
                 alert('Please select only one package for live lessons');
             } else {
-                liveData = {
-                    'chapter': document.getElementById('chooseChapters').value,
-                    'live_name': document.getElementById('live_name').value,
-                    'live_url': document.getElementById('video_link').value,
-                    'subject': document.getElementById('chooseSubject').value,
-                };
+
+                // liveData = {
+                //     'chapter': document.getElementById('chooseChapters').value,
+                //     'live_name': document.getElementById('live_name').value,
+                //     'live_url': document.getElementById('video_link').value,
+                //     'subject': document.getElementById('chooseSubject').value,
+                // };
+                liveData.append('chapter', document.getElementById('chooseChapters').value);
+                liveData.append('live_name', document.getElementById('live_name').value);
+                liveData.append('live_url', document.getElementById('video_link').value);
+                liveData.append('subject', document.getElementById('chooseSubject').value);
+
 
                 if (document.getElementById('live_image').files.length > 0) {
-                    let imgLink = await uploadLiveImage();
-                    liveData['image'] = imgLink;
+                    liveData.append('image', document.getElementById('live_image').files[0])
+                     
                 } else {
-                    liveData['image'] = '';
+                    console.log('no image');
                 };
 
-                liveData['course_package'] = packagesUid[0];
+                liveData.append('course_package', packagesUid[0]);
 
                 console.log(liveData);
                 
@@ -446,14 +430,13 @@
                 fetch('/api/courses/go-live/', {
                     method: 'POST', // or 'PUT'
                     headers: {
-                        'Content-Type': 'application/json',
                         'X-CSRFToken': csrfToken
                     },
-                    body: JSON.stringify(liveData)
+                    body: liveData
                     })
                     .then(response => response.json())
                     .then(data => {
-                        console.log('Success:', data);
+                        console.log(data);
                         if (data.status === false) {
                             alert(data.message);
                         } else {
