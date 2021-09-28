@@ -259,17 +259,21 @@ def add_lessons(request):
 def update_lesson(request , uid):
     try:
         lesson_obj = Lessons.objects.get(uid = uid)
-        
+        course_package_lessons = CoursePackageLessons.objects.filter(lesson = lesson_obj)
+        #print(course_package_lesson)
+
         context = {
             'lesson' : lesson_obj ,
             'subject_chapters' : SubjectChapters.objects.all(),
             'course_packages': CoursePackageLessons.objects.all(),
-            'all_course_packages' : CoursePackage.objects.all()
+            'all_course_packages' : CoursePackage.objects.all(),
+            "course_package_lessons" : course_package_lessons
             }
         return render(request , 'new_dashboard/update_lesson.html',context )
 
     except Exception as e:
-        return redirect('/')
+        print(e)
+        #return redirect('/')
 
 
 def go_live(request):
@@ -286,6 +290,27 @@ def change_live_status(request , uid):
         elif request.GET.get('status') == 'end':
             obj.is_live_ended = True
             obj.save()
+            lesson_obj = Lessons.objects.create(
+                lesson_title = obj.live_name ,
+                chapter = obj.chapter,
+                lesson_type ='Video',
+                video = Video.objects.create(
+                    video_uploaded_on = 'Youtube',
+                    video_link = obj.live_url
+                )
+            )
+            package_subject_obj , _ = CoursePackageSubjects.objects.get_or_create(
+                    course_package = obj.course_package,
+                    subject = obj.subject
+            )
+            package_chapter_obj , _ = CoursePackageChapters.objects.get_or_create(
+                course_package_subject = package_subject_obj,
+                subject_chapter = obj.chapter
+            )
+            package_lesson_obj = CoursePackageLessons.objects.get_or_create(
+                course_package_chapter = package_chapter_obj,
+                lesson = lesson_obj,
+            )
         elif request.GET.get('status') == 'cancel':
             print('cancel')
         

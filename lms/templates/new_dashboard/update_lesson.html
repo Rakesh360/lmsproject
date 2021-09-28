@@ -171,15 +171,15 @@
                             </thead> -->
                             <tbody id="tags">
                             
-                                {% for course_package in course_packages %}
-                                {% if lesson.uid == course_package.lesson.uid  %}
+                                {% for course_package_lesson in course_package_lessons %}
+                                
                             <tr><td class="tag">
-                                 {{course_package.lesson.lesson_title}}
+                                 {{course_package_lesson.course_package_chapter.course_package_subject.course_package.package_title}}
                             </td><td>
-                            <input type="datetime-local" {% if course_package.added_at  %} value="{{course_package.added_at}}" {% else %} value="{{course_package.created_at}}" {% endif %}>
+                            <input type="datetime-local" {% if course_package_lesson.added_at  %} value="{{course_package_lesson.added_at}}" {% else %} value="{{course_package_lesson.created_at}}" {% endif %}>
                             </td>
                             <td class="delBtn" onclick="deleteTag2(event)">❌</td></tr>
-                            {% endif %}
+                          
                                 {% endfor  %}
                             </tbody>
                         </table>  

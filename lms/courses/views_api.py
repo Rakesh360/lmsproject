@@ -378,8 +378,14 @@ class LessonsView(APIView):
                             'data' : serializer.data,
                             'message' : 'lesson updated'
                         })
+                return Response({
+                        'status' : True,
+                        'data' : serializer.data,
+                        'message' : 'lesson updated'
+                    })
 
-            
+           
+
             return Response({
                 'status' : False,
                 'message' : 'lesson not updated',
@@ -496,6 +502,8 @@ class DocumentUpload(viewsets.ModelViewSet):
 class CouponView(viewsets.ModelViewSet):
     queryset = Coupoun.objects.all()
     serializer_class = CoupounSerializer
+
+
 
     def patch(self , request):
         try:
