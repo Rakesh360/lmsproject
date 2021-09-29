@@ -140,6 +140,46 @@ class CoursePackageAPI(APIView):
                 'data' : {}
             })
 
+    def patch(self , request):
+        try:
+            data = request.data
+            if data.get('course_package_uid') is None:
+                return Response({
+                'status' : False,
+                'message' : f'course package uid is required ',
+                'data' : {}
+
+            })
+        
+
+            obj = CoursePackage.objects.get(uid = data.get('course_package_uid'))
+
+            serializer = CoursePackageSaveSerializer(obj , data = data , partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response({
+                'status' : True,
+                'message' : f'course package updated',
+                'data' : serializer.data
+                })
+            
+            return Response({
+                'status' : False,
+                'message' : f'course package not updated',
+                'data' : serializer.errors
+
+            })
+        except Exception as e:
+            print(e)
+            return Response({
+                    'status' : False,
+                    'message' : f'{str(e)}',
+                    'data' : {}
+                })
+            
+
+
+
 class CoursePackageSubjectsAPI(APIView):
     def get(self , request):
         try:
@@ -244,6 +284,54 @@ class ChaptersView(APIView):
             print(e)        
         return Response({'status' : 400 , 'message' : 'Something went wrong'})
 
+
+
+class RemoveCoursePackageLesson(APIView):
+    def post(self , request):
+        try:
+            data = request.data
+            if data.get('lesson_uid') is None and data.get('course_package_uid') is None:
+                return Response({
+                    'status' : 400,
+                    'message' : 'lesson_uid and course_package_uid both are required',
+                    'data' : {}
+                })
+        
+            lessob_obj = None
+            course_package_obj = None
+            try:
+                lessob_obj = Lessons.objects.get(uid = data.get('lesson_uid'))
+            except Exception as e:
+                return Response({
+                        'status' : 400,
+                        'message' : 'invalid lesson_uid',
+                        'data' : {}
+                    })
+        
+            try:
+                course_package_obj = CoursePackage.objects.get(uid = data.get('course_package_uid'))
+            except Exception as e:
+                return Response({
+                        'status' : 400,
+                        'message' : 'invalid course_package_uid',
+                        'data' : {}
+                    })
+            
+            CoursePackageLessons.objects.get(
+                course_package_chapter__course_package_subject__course_package = course_package_obj,
+                lesson = lessob_obj
+            ).delete()
+
+            return Response({
+                'satus' : 200,
+                'message' : 'Lesson removed'
+            })
+        
+        except Exception as e:
+            return Response({
+                'status' : 400,
+                'message' : 'lesson does not exists in package'
+            })
 
 
 
@@ -502,6 +590,21 @@ class DocumentUpload(viewsets.ModelViewSet):
 class CouponView(viewsets.ModelViewSet):
     queryset = Coupoun.objects.all()
     serializer_class = CoupounSerializer
+
+    def list(self , request):
+        courpon_code = request.GET.get('coupon_code')
+        if courpon_code:
+            obj = Coupoun.objects.filter(coupon_code = courpon_code).exists()
+
+            return Response({
+                'status' : 200,
+                'message' : obj
+            })
+        return Response({
+                'status' : 400,
+                'message' : 'coupon_code is required'
+            })
+
 
 
 

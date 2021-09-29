@@ -37,7 +37,7 @@ class OrderCourse(APIView):
                 print(e)
                 return Response({'status' : 400 , 'message' : 'phone_number is invalid' })
             
-            course = None
+            course = Nones
             try:
                 course = CoursePackage.objects.get(uid = data.get('course_uid'))
             except Exception as e:

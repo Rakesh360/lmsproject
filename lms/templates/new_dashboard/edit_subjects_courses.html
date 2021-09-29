@@ -104,7 +104,6 @@
     src="https://kit.fontawesome.com/3da1a747b2.js"
     crossorigin="anonymous"
 ></script>
-<script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/js/materialize.min.js"></script>
@@ -361,17 +360,7 @@
     
     
     let editor = CKEDITOR.replace( 'description' );
-    var description;
     
-    editor.on( 'change', function( evt ) {
-    // getData() returns CKEditor's HTML content.
-        description =  evt.editor.getData();
-    });
-
-    editor.on( 'instanceReady', function( evt ) {
-    // getData() returns CKEditor's HTML content.
-        evt.editor.setData(`{{course_package_obj.package_description}}`);
-    });    
 
 
     // script for nav btn start
@@ -792,14 +781,7 @@ var CSRF_TOKEN = '{{csrf_token}}'
 
 </script>
 
-<script>
-//     editor = CKEDITOR.replace( 'description' );
-//     var description;
-//     editor.on( 'change', function( evt ) {
-//     // getData() returns CKEditor's HTML content.
-//     description =  evt.editor.getData();            
-// });
-</script>
+
 
 
 {% endblock %}
