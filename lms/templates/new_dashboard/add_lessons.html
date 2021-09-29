@@ -410,7 +410,7 @@
                 //     'subject': document.getElementById('chooseSubject').value,
                 // };
                 liveData.append('chapter', document.getElementById('chooseChapters').value);
-                liveData.append('live_name', document.getElementById('live_name').value);
+                liveData.append('live_name', document.getElementById('lesson_title').value);
                 liveData.append('live_url', document.getElementById('video_link').value);
                 liveData.append('subject', document.getElementById('chooseSubject').value);
 
@@ -474,10 +474,7 @@
                     alert('Error:', error);
                     console.error('Error:', error);
             });
-        }
-
-        // log all data of form data
-        
+        }      
 
 
     });
@@ -529,9 +526,6 @@
     
     let timePicker = document.createElement('div');
     timePicker.innerHTML = `
-        <label for="live_name" class="mt-4"> Enter Live Name </label>
-        <input class="form-control" required type="text" name="live_name" id="live_name">
-        <br>
         <label for="startTime" class="mt-4"> Enter Start Time Of Live </label>
         <input class="form-control" required type="datetime-local" name="startTime" id="startTime">
         <br>
