@@ -305,7 +305,7 @@
     };
 
     function deleteTag2(event){
-        event.target.parentElement.remove();
+        console.log(event.target.parentElement);
     }
 
 
@@ -406,17 +406,23 @@
             documentUploadDiv.innerHTML = '';
             videoDiv.innerHTML = lessonInnerHTML;
             loadLesson();
+            document.getElementById('lesson_type').children[1].disabled = true;
+            document.getElementById('lesson_type').children[2].disabled = false;
 
         } else if(element.value == 'Document') {
             videoDiv.innerHTML = '';
             documentUploadDiv.innerHTML = '';
             documentUploadDiv.innerHTML = documentInnerHtml;
+            document.getElementById('lesson_type').children[0].disabled = true;
+            document.getElementById('lesson_type').children[2].disabled = false;
         }else if(element.value == 'Video + Document'){
             videoDiv.innerHTML = '';
             documentUploadDiv.innerHTML = '';
             videoDiv.innerHTML = lessonInnerHTML;
             documentUploadDiv.innerHTML = documentInnerHtml;
             loadLesson();
+            document.getElementById('lesson_type').children[0].disabled = true;
+            document.getElementById('lesson_type').children[1].disabled = true;
         }
     }
 

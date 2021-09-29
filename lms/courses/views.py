@@ -281,6 +281,21 @@ def go_live(request):
     context = {'objs' : objs}
     return render(request , 'new_dashboard/go_live.html' , context)
 
+
+
+def edit_live(request, uid):
+    try:
+        obj = GoLive.objects.get(uid = uid)
+        context = {
+            'live' : obj,
+            'subject_chapters' : SubjectChapters.objects.all(),
+            'all_course_packages' : CoursePackage.objects.all(),
+        }
+        return render(request , 'new_dashboard/edit_live.html' , context)
+    except Exception as e:
+        print(e)
+        return redirect('/')
+
 def change_live_status(request , uid):
     try:
         obj = GoLive.objects.get(uid = uid)
