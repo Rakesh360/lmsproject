@@ -16,7 +16,7 @@
 </style>
 <div class="section-header" style="margin-top: 6%;">
     <div style="margin: 0 auto; font-size: xxx-large; text-align: center;">
-        Add Lessons
+        Add Live Class
     </div>
 </div>
 
@@ -31,7 +31,7 @@
             <!-- {% csrf_token %} -->
             <div class="form-row mb-4">
                 <div class="form-group col-md-6">
-                    <label for="lesson_title">Lesson title(max 100)</label>
+                    <label for="lesson_title">Lesson title (max 100)</label>
                     <input type="text" class="form-control" required minlength="4" maxlength="100" name="lesson_title" id="lesson_title"
                         placeholder="Enter lesson title">
                 </div>
@@ -59,10 +59,7 @@
                     <label for="lesson_type">Lesson Type</label>
                     <select required class="form-control" id="lesson_type" name="lesson_type" id="lesson_type" onchange="changeLessonType()">
                         <option selected value="Video">Video</option>
-                        <option value="Document">Document</option>
-                        <option value="Video + Document">Video + Document</option>
-
-
+                        <option disabled value="Video + Document">Video + Document</option>
                     </select>
                 </div>
 
@@ -73,14 +70,34 @@
                 <div class="form-group col-md-6" id="videoContainer">
                     <label for="video_platform">Video Platform</label>
                     <select required class="form-control" name="video_platform" id="videoType" onchange="changeVideoType()">
-                        <option value="Live">YouTube Live</option>
-                        <option value="Vimeo">Vimeo</option>
-                        <option selected value="Youtube">YouTube</option>
+                        <option selected value="Live">YouTube Live</option>
                     </select>
+                    
+                </div>    
+            </div>
+                
+            <div class="form-row mb-4">
+
+                <div class="form-group col-md-6">
+                    <label for="startTime" class="mt-4"> Enter Start Time Of Live </label>
+                    <input class="form-control" required type="datetime-local" name="startTime" id="startTime">
+
                 </div>
 
+                
+            </div>
+            
+            <div class="form-row mb-4">
+                <div class="form-group col-md-6">
+                    <label for="live_image">Upload Live Image Here</label>
+                    <input type="file" name="live_image" class="form-control" id="live_image">
+                    
+                </div>
+                
 
             </div>
+
+
 
             <div class="form-row mb-4" id="document_upload">
 
@@ -125,7 +142,7 @@
                         </div>
                 
                         <div class="selected">
-                          Choose Packages to include
+                          Choose One Package to include
                         </div>
                 
                         <div class="search-box">
@@ -518,23 +535,6 @@
         })
     }
 
-    function renderDocumentName(event) {
-        console.log(event.target.parentElement);
-        console.log(event.target.files[0].name);
-        let p = document.getElementById('docNameDiv');
-        p.innerHTML = '';
-        
-        p.innerHTML = event.target.files[0].name + `<i class="fa fa-trash ml-4"  onclick="deleteDocument(event)" aria-hidden="true"></i>`;
-        event.target.parentElement.appendChild(p);
-        document.getElementById('docDiv').appendChild(p);
-    }
-
-    function deleteDocument(event) {
-        console.log('clicked');
-        event.target.parentElement.innerHTML = '';
-        document.getElementById('document_link').value = '';
-
-    }
 
     
     // handleChangePackageDateTime 
@@ -583,10 +583,9 @@
     let document_upload_HTML = `
         <div class="form-group col-md-6">
             <label for="document_link">Upload Document</label>
-            <div id="docDiv">
-                <input class="form-control" onchange="renderDocumentName(event)" id="document_link" type="file" name="document_link">
+            <div>
+                <input class="form-control" id="document_link" type="file" required name="document_link">
                 <br>
-                <div id="docNameDiv"> </div>
                 
             </div>
         </div>
@@ -595,9 +594,7 @@
     let video_container_innerHtml = `
         <label for="video_platform">Video Platform</label>
         <select required class="form-control" name="video_platform" id="videoType" onchange="changeVideoType()">
-            <option value="Live">YouTube Live</option>
-            <option value="Vimeo">Vimeo</option>
-            <option selected value="Youtube">YouTube</option>
+            <option selected value="Live">YouTube Live</option>
         </select>
     `;
 

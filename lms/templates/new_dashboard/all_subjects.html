@@ -27,8 +27,8 @@
                             action="{% url 'subjects' %}">
                             {% csrf_token %}
                             <div class="form-group">
-                                <label for="exampleFormControlInput1">New Subject Name (max 15)</label>
-                                <input type="text" required name="subject" minlength="3" maxlength="15" class="form-control"
+                                <label for="exampleFormControlInput1">New Subject Name (max 50)</label>
+                                <input type="text" required name="subject" minlength="3" maxlength="50" class="form-control"
                                     id="subjectName" placeholder="">
                             </div>
 
@@ -92,9 +92,9 @@
                                                     action="{% url 'edit_subject' subject.uid %}">
                                                     {% csrf_token %}
                                                     <div class="form-group">
-                                                        <label for="exampleFormControlInput1">Edit Subject Name (max 15)</label>
+                                                        <label for="exampleFormControlInput1">Edit Subject Name (max 50)</label>
                                                         <input type="text" name="subject"
-                                                            value="{{subject.subject_title}}" class="form-control" minlength="3" maxlength="15"
+                                                            value="{{subject.subject_title}}" class="form-control" minlength="3" maxlength="50"
                                                             id="subjectName" placeholder="">
                                                     </div>
 

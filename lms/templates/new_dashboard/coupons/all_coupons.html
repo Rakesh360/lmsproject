@@ -62,7 +62,11 @@
                                   
                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                                       <a class="dropdown-item" href="{% url 'editcoupon' coupon.uid %}">Edit</a>
-                                      <a class="dropdown-item" href="#">Other</a>
+                                      {% if coupon.is_active == True %}
+                                        <a class="dropdown-item" href="">De-activate</a>
+                                        {% else %}
+                                        <I>Deactivated</I>
+                                        {% endif %}
                                     </div>
                                   </div>
                             </td>

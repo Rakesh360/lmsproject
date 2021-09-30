@@ -17,6 +17,7 @@ urlpatterns = [
    path('add-package/' , views.add_package , name="add_package"),
    path('add-subjects-package/<uid>/' , views.add_subjects_courses,name="add_subjects_courses"),
    path('preview-video/<uid>/' , views.preview_video, name="preview_video"),
+   path('preview-live/<uid>/' , views.preview_video_live, name="preview_video_live"),
    
    path('course-tree/<course_package_uid>/' , views.course_tree , name="course_tree"),
    path('update-lesson/<uid>/' , views.update_lesson ,name="update_lesson"),
@@ -42,6 +43,7 @@ urlpatterns = [
    path('add-question/' , views.add_question , name="add_question"),
 
    path('go-live/' , views.go_live  , name="go_live"),
+   path('add-live/' , views.add_live , name="add_live"),
    path('edit-live/<uid>/' , views.edit_live  , name="edit_live"),
    path('change_live_status/<uid>/' , views.change_live_status , name="change_live_status"),
    path('package_end_purchase/<uid>/' , views.package_end_purchase , name="package_end_purchase")  ,

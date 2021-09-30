@@ -19,8 +19,8 @@
             {% csrf_token %}
             <div class="form-row mb-4">
                 <div class="form-group col-md-6">
-                    <label for="coupon_code">Coupon Code</label>
-                    <input type="text" class="form-control" required name="coupon_code" id="coupon_code"
+                    <label for="coupon_code">Coupon Code (max 30)</label>
+                    <input type="text" class="form-control" required minlength="4" maxlength="30" name="coupon_code" id="coupon_code"
                         placeholder="Enter Unique Coupon Code">
                 </div>
 
@@ -33,12 +33,12 @@
                 <div class="form-group col-md-6">
 
                     <label for="usage_limit">Total Usase Limits</label>
-                    <input type="number" name="usage_limit" required class="form-control" id="usage_limit" placeholder="Total Usase alowed for this coupon">
+                    <input type="number" name="usage_limit" max="9999999" required class="form-control" id="usage_limit" placeholder="Total Usase alowed for this coupon">
                 </div>
 
                 <div class="form-group col-md-6">
                     <label for="per_user_usase_limit">Per User Limit</label>
-                    <input type="number" name="per_user_usase_limit" required class="form-control" id="per_user_usase_limit" placeholder="Usase allowed per user">
+                    <input type="number" name="per_user_usase_limit" max="9999999" required class="form-control" id="per_user_usase_limit" placeholder="Usase allowed per user">
                 </div>
 
 
@@ -284,12 +284,12 @@
     const discountDiv = document.getElementById('discountDiv');
     let fixedInnerHtml = `
         <label for="discount_amount" class="mt-4"> How Much Discount? </label>
-        <input type="number" required placeholder="Enter amount in Rs" name="discount_amount" id="discount_amount" class="form-control">
+        <input type="number" required placeholder="Enter amount in Rs" max="9999999" name="discount_amount" id="discount_amount" class="form-control">
     `;
 
     let percentageInnerHtml = `
         <label for="discount_amount" class="mt-4"> How Much Discount? </label>
-        <input type="number" required placeholder="Enter in percentage" name="discount_amount" id="discount_amount" class="form-control">
+        <input type="number" required placeholder="Enter in percentage" max="100" name="discount_amount" id="discount_amount" class="form-control">
     `;
 
     function changeDiscountType() {
@@ -353,7 +353,7 @@
 
         // document upload
         if (document.getElementById('apply_coupon_type') === 'all-packages') {
-            data['courses'] = ['all']
+            data['courses'] = "all"
         } else {
             data['courses'] = packages;
         }
@@ -362,7 +362,7 @@
             alert('Coupon already exists. Please change the coupon code.');
             
         } else{
-            if (allTags.length === 0) {
+            if (document.getElementById('apply_coupon_type') === 'selected-packages' && allTags.length === 0) {
                 alert('Please select atleast one package');
             } else {
                 let res = await fetch('/api/courses/coupon/', {

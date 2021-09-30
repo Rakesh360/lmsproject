@@ -11,8 +11,10 @@
     }
 </style>
 
-<div class="section-header" style="margin-top: 5%;">
-    <h1>Edit Lesson</h1>
+<div class="section-header" style="margin-top: 6%;">
+    <div style="margin: 0 auto; font-size: xxx-large; text-align: center;">
+        Edit Live Class
+    </div>
 
 </div>
 
@@ -27,8 +29,8 @@
                 {% csrf_token %}
                 <div class="form-row mb-4">
                     <div class="form-group col-md-6">
-                        <label for="lesson_title">Lesson title</label>
-                        <input type="text" class="form-control" required name="lesson_title" value="{{live.live_name}}"
+                        <label for="lesson_title">Lesson title (max 100)</label>
+                        <input type="text" class="form-control" minlength="4" maxlength="100" required name="lesson_title" value="{{live.live_name}}"
                             id="lesson_title" placeholder="Enter lesson title">
                     </div>
                     <div class="form-group col-md-6">
@@ -54,7 +56,7 @@
 
                         <div class="form-group col-md-6" id="lessonLinkDiv">
                             <label for="video_link">Lesson Link</label>
-                            <input value="{{live.live_url}}" type="text" onchange="loadLesson()" required id="lesson_link" class="form-control"
+                            <input value="{{live.live_url}}" minlength="4" maxlength="100" type="text" onchange="loadLesson()" required id="lesson_link" class="form-control"
                                 name="video_link" id="video_link" placeholder="Enter lesson title">
                             <small>Paste Id only</small>
                             <br>
@@ -339,7 +341,6 @@
 
         // patch for live
         let liveData = new FormData();
-        liveData.append('chapter', document.getElementById('chooseChapters').value);
         liveData.append('live_name', document.getElementById('lesson_title').value);
         liveData.append('live_url', document.getElementById('lesson_link').value);
         if (document.getElementById('image').files.length > 0) {
@@ -351,7 +352,10 @@
 
         liveData.append('course_package', packagesUid[0]);
 
-        console.log(liveData);
+        liveData.forEach((value, key) => {
+            console.log(key, value);
+        });
+
         if (allTags.length > 0) {
             let res = await axios.patch('/api/courses/go-live/', liveData, {
                 headers: {

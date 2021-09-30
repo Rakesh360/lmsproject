@@ -282,6 +282,11 @@ def go_live(request):
     return render(request , 'new_dashboard/go_live.html' , context)
 
 
+@staff_member_required(login_url='/accounts/login/')
+def add_live(request):
+    context = {'subject_chapters' : SubjectChapters.objects.all(), 'course_packages' : CoursePackage.objects.all()}
+
+    return render(request , 'new_dashboard/add_live.html' , context)
 
 def edit_live(request, uid):
     try:
@@ -404,8 +409,24 @@ def create_live(request):
     return render(request , 'live/create_live.html', context)
 
 def preview_video(request, uid):
+    lesson_obj = Lessons.objects.get(uid = uid)
+    live_obj = GoLive.objects.get(uid = uid)
+    context = {
+        'lesson' : lesson_obj,
+        'live' : live_obj,
+    }
     
-    return render(request , 'new_dashboard/preview_video.html')
+    return render(request , 'new_dashboard/preview_video.html', context)
+
+
+def preview_video_live(request, uid):
+    lesson_obj = GoLive.objects.get(uid = uid)
+    context = {
+        'lesson' : lesson_obj,
+    }
+    
+    return render(request , 'new_dashboard/preview_video_live.html', context)
+
 
 def all_coupons(request ):
     context = {

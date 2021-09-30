@@ -306,10 +306,18 @@
 
     };
 
-    function deleteTag2(event){
-        event.target.parentElement.parentElement.remove()
-    }
+    async function deleteTag2(event){
+        event.target.parentElement.parentElement.remove();
 
+        // delete request on /api/courses/remove-lessons/
+        // const url = '/api/courses/remove-lessons/';
+        // const data = {
+        //     course_package_uid: event.target.parentElement.parentElement.firstElementChild.id,
+        //     lesson_uid: '{{lesson.uid}}',
+        // };
+        // const response = await axios.post(url, data);
+        // console.log(response);
+    };
 
     function deleteTag(packageUid) {
         let allSelectedPackages = document.querySelectorAll(".tag");
@@ -344,6 +352,28 @@
     function handleChangePackageDateTime(event) {
         console.log(event.target.value);
     }
+
+    let docReUploaded = false;
+
+    function renderDocumentName(event) {
+        console.log(event.target.parentElement);
+        console.log(event.target.files[0].name);
+        let p = document.getElementById('docNameDiv');
+        p.innerHTML = '';
+        
+        p.innerHTML = event.target.files[0].name + `<i class="fa fa-trash ml-4"  onclick="deleteDocument(event)" aria-hidden="true"></i>`;
+        event.target.parentElement.appendChild(p);
+        docReUploaded = true;
+    }
+
+    function deleteDocument(event) {
+        console.log('clicked');
+        event.target.parentElement.innerHTML = '';
+        document.getElementById('document_link').value = '';
+        docReUploaded = false;
+
+    }
+
 // script for package include dropdown ends
     const videoDiv = document.getElementById('videoDiv');
     const documentUploadDiv = document.getElementById('documentUploadDiv');
@@ -390,13 +420,14 @@
     let documentInnerHtml = `
         <div class="form-group col-md-6">
             <label>Upload New Document</label>
-            <input class="form-control" id="document_link" type="file" onchange="docReUpload()" name="document">
+            <input class="form-control" id="document_link" onchange="renderDocumentName(event)"  type="file" onchange="docReUpload()" name="document">
             <br>
-            <a href="/{{lesson.document.uid}}">View Uploaded Document</a>
+            
+            <div id="docNameDiv"> <a href="/{{lesson.document.uid}}">View Uploaded Document</a> </div>
         </div>
     `;
 
-    let docReUploaded = false;
+    
     function docReUpload() {
         docReUploaded = true;
         console.log('doc uploaded changed');
@@ -561,9 +592,7 @@
                 };
                 
             } else if (document.getElementById('lesson_type').value == 'Video + Document') {
-                if ('{{lesson.document.uid}}' === '' && docReUploaded) {
-                    alert('Please upload document first');
-                } else {
+                if ('{{lesson.document.uid}}' !== '' || docReUploaded === true) {
                     isProceed = true;
                     data['video_platform'] = document.getElementById('videoType').value;
                     data['video'] = {
@@ -576,13 +605,13 @@
                     } else {
                         data['document'] = '{{lesson.document.uid}}';
                     }
+                } else {
+                    alert('Please upload document first');
 
                 }
                 
             } else if (document.getElementById('lesson_type').value == 'Document') {
-                if ('{{lesson.document.uid}}' === '' && docReUploaded) {
-                    alert('Please upload document first');
-                } else {
+                if ('{{lesson.document.uid}}' !== '' || docReUploaded === true) {
                     isProceed = true;
                     data['video_platform'] = document.getElementById('videoType').value;
                     if (docReUploaded === true) {
@@ -592,6 +621,8 @@
                     } else {
                         data['document'] = '{{lesson.document.uid}}';
                     }
+                } else {
+                    alert('Please upload document first');
 
                 }
 
@@ -609,12 +640,14 @@
                 console.log(res.data);
                 if (res.data.status === true) {
                     alert('Lesson updated successfully');
+                    window.location.href = '/courses/lessons/';
 
                 } else {
                     alert('Something went wrong');
                 }
                 
             } else {
+                console.log(allTags.length, isProceed);
                 alert("Packages Can't Be empty! Please select at least one package.");
             }
 

@@ -105,7 +105,7 @@
                                     <tr><td class="tag">
                                          {{course_package.lesson.lesson_title}}
                                     </td>
-                                    <td class="delBtn" onclick="deleteTag2(event)">❌</td></tr>
+                                    <td><button class="btn btn-danger" onclick="deleteTag2(event)">❌</button></td></tr>
                                     {% endif %}
                                         {% endfor  %}
                                     </tbody>
@@ -117,7 +117,6 @@
             
 
             <button id="submitFormBtn" type="submit" class="btn btn-primary mt-3">Update Coupon</button>
-            <button id="deleteCouponBtn" onclick="deleteSubject('{{coupon.uid}}')" class="btn btn-danger mt-3 ml-3">Delete <i class="la la-trash-o"></i></button>
             <!-- <button id="testBtn" class="btn btn-primary mt-3">Test Code</button> -->
         </form>
 
@@ -231,6 +230,7 @@
             td1.className = "tag";
             td1.innerHTML = packageName;
             td1.id = packageUid;
+            let td2 = document.createElement('td');
             tagElement.appendChild(td1);
             tags.appendChild(tagElement);
         }
@@ -248,7 +248,15 @@
     };
 
     function deleteTag2(event){
-        event.target.parentElement.remove();
+        event.target.parentElement.parentElement.remove();
+        // delete request on /api/courses/remove-lessons/
+        // const url = '/api/courses/remove-lessons/';
+        // const data = {
+        //     course_package_uid: event.target.parentElement.parentElement.firstElementChild.id,
+        //     lesson_uid: '{{lesson.uid}}',
+        // };
+        // const response = await axios.post(url, data);
+        // console.log(response);
     };
     
     function checkTag(tagName) {
@@ -404,10 +412,6 @@
 
     const updateBtn = document.getElementById('submitFormBtn');
     updateBtn.addEventListener('click', submitForm);
-
-    document.getElementById('deleteCouponBtn').addEventListener('click', (e) => {
-        e.preventDefault();
-    });
 
     function deleteSubject(uid){
         swal({
