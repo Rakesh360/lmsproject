@@ -11,8 +11,10 @@
     }
 </style>
 
-<div class="section-header" style="margin-top: 5%;">
-    <h1>Edit Lesson</h1>
+<div class="section-header" style="margin-top: 6%; text-align: center;">
+    <div style="margin: 0 auto; font-size: xxx-large;">
+       Edit Lesson
+    </div>
 
 </div>
 
@@ -27,8 +29,8 @@
                 {% csrf_token %}
                 <div class="form-row mb-4">
                     <div class="form-group col-md-6">
-                        <label for="lesson_title">Lesson title</label>
-                        <input type="text" class="form-control" required name="lesson_title" value="{{lesson.lesson_title}}"
+                        <label for="lesson_title">Lesson title (max 100)</label>
+                        <input type="text" minlength="4" maxlength="100" class="form-control" required name="lesson_title" value="{{lesson.lesson_title}}"
                             id="lesson_title" placeholder="Enter lesson title">
                     </div>
                     <div class="form-group col-md-6">
@@ -168,7 +170,7 @@
                                 <input type="datetime-local" class="packageDate" {% if course_package.added_at  %} value="{{course_package.added_at}}" {% else %} value="{{course_package.created_at}}" {% endif %}>
                                 </td>
                                 <td>
-                                <button class="btn btn-danger" onclick="deleteTag2(event)">❌</button>
+                                <a class="btn btn-danger" onclick="deleteTag2(event)">❌</a>
                                 </td>
                                 </tr>
                                 {% endif %}
@@ -181,7 +183,7 @@
 
 
                 </div>
-                <button id="submitFormBtn" type="submit" class="btn btn-primary mt-3">Update Chapter</button>
+                <button type="submit" class="btn btn-primary mt-3">Update Chapter</button>
             </form>
 
     </div>
@@ -305,7 +307,7 @@
     };
 
     function deleteTag2(event){
-        console.log(event.target.parentElement);
+        event.target.parentElement.parentElement.remove()
     }
 
 
@@ -376,7 +378,7 @@
         
         <div class="form-group col-md-6" id="lessonLinkDiv">
             <label for="video_link">Lesson Link</label>
-            <input value="{{lesson.video.video_link}}" type="text" onchange="loadLesson()" required id="lesson_link" class="form-control"
+            <input value="{{lesson.video.video_link}}" type="text" onchange="loadLesson()" minlength="4" maxlength="100" required id="lesson_link" class="form-control"
                 name="video_link" id="video_link" placeholder="Enter lesson title">
             <small>Paste Id only</small>
             <br>

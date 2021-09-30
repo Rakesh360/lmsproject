@@ -341,10 +341,9 @@
         let liveData = new FormData();
         liveData.append('chapter', document.getElementById('chooseChapters').value);
         liveData.append('live_name', document.getElementById('lesson_title').value);
-        liveData.append('live_url', document.getElementById('video_link').value);
-        liveData.append('subject', document.getElementById('chooseSubject').value);
-        if (document.getElementById('live_image').files.length > 0) {
-            liveData.append('image', document.getElementById('live_image').files[0])
+        liveData.append('live_url', document.getElementById('lesson_link').value);
+        if (document.getElementById('image').files.length > 0) {
+            liveData.append('image', document.getElementById('image').files[0])
                 
         } else {
             console.log('no image');

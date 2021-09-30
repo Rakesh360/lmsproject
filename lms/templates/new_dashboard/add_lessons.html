@@ -14,9 +14,10 @@
         cursor: pointer;
     }
 </style>
-<div class="section-header" style="margin-top: 5%;">
-    <h1>Add Lesson</h1>
-
+<div class="section-header" style="margin-top: 6%;">
+    <div style="margin: 0 auto; font-size: xxx-large; text-align: center;">
+        Add Lessons
+    </div>
 </div>
 
 
@@ -30,8 +31,8 @@
             <!-- {% csrf_token %} -->
             <div class="form-row mb-4">
                 <div class="form-group col-md-6">
-                    <label for="lesson_title">Lesson title</label>
-                    <input type="text" class="form-control" required name="lesson_title" id="lesson_title"
+                    <label for="lesson_title">Lesson title(max 100)</label>
+                    <input type="text" class="form-control" required minlength="4" maxlength="100" name="lesson_title" id="lesson_title"
                         placeholder="Enter lesson title">
                 </div>
 
@@ -91,8 +92,8 @@
 
                 <label for="inputEmail4">Is free</label>
                 <select class="form-control" name="is_free" id="is_free">
-                    <option selected value=true>No</option>
-                    <option value=false>Yes</option>
+                    <option selected value=false>No</option>
+                    <option value=true>Yes</option>
 
                 </select>
             </div>
@@ -507,6 +508,7 @@
         })
         .then(response => response.json())
         .then(data => {
+            chooseChapters.innerHTML = '<option value="" selected disabled>Choose Chapter</option>';
             data.data.forEach((e, i) => {
                 let option = document.createElement('option');
                 option.text = e.chapter_title;
@@ -553,7 +555,7 @@
     videoLinkDiv.innerHTML = `
         <label for="video_link" id="videoLink">Link</label>
         <input type="text" onchange="loadLesson()" required id="video_link" class="form-control"
-            name="video_link" id="inputEmail4" placeholder="Enter lesson link">
+            name="video_link" minlength="4" maxlength="100" id="inputEmail4" placeholder="Enter lesson link">
         <small>Paste Id only | preview appears here</small> 
         <br>
         <iframe width="560" id="iframe" height="315" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="display: none;">

@@ -4,8 +4,8 @@
 
 
 <div style="margin-top: 6%; display: flex;">
-    <div style="margin: 0 auto;">
-        <h2>All Subjects</h2>
+    <div style="margin: 0 auto; font-size: xxx-large;">
+        All Subjects
     </div>
 
     <div style="margin-right: 5px;">
@@ -27,9 +27,8 @@
                             action="{% url 'subjects' %}">
                             {% csrf_token %}
                             <div class="form-group">
-                                <label for="exampleFormControlInput1">New Subject Name</label>
-                                <input type="text" name="subject"
-                                    value="{{subject.subject_title}}" class="form-control"
+                                <label for="exampleFormControlInput1">New Subject Name (max 15)</label>
+                                <input type="text" required name="subject" minlength="3" maxlength="15" class="form-control"
                                     id="subjectName" placeholder="">
                             </div>
 
@@ -49,9 +48,6 @@
 
 <div class="col-12" style="margin-top: 2%;">
     <div class="card">
-        <div class="card-header">
-            <h4 class="card-title">Profile Datatable</h4>
-        </div>
         <div class="card-body">
             <div class="table-responsive">
                 <table id="example3" class="display" style="min-width: 845px">
@@ -96,9 +92,9 @@
                                                     action="{% url 'edit_subject' subject.uid %}">
                                                     {% csrf_token %}
                                                     <div class="form-group">
-                                                        <label for="exampleFormControlInput1">New Subject Name</label>
+                                                        <label for="exampleFormControlInput1">Edit Subject Name (max 15)</label>
                                                         <input type="text" name="subject"
-                                                            value="{{subject.subject_title}}" class="form-control"
+                                                            value="{{subject.subject_title}}" class="form-control" minlength="3" maxlength="15"
                                                             id="subjectName" placeholder="">
                                                     </div>
 
