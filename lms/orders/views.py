@@ -72,6 +72,47 @@ class OrderCourse(APIView):
         
         return Response({'status': 400 , 'message' : 'something went wrong'})
 
+    def patch(self , request):
+        try:
+            data = request.data
+            if data.get('order_id') is None or data.get('coupon_code') is None:
+                return Response({
+                    'status' : 400,
+                    'message' : 'both order id and coupon code are required'
+                })
+            order_obj = None
+            coupon_obj = None
+            try:
+                order_obj = Order.objects.get(uid = data.get('order_id'))
+            except Exception as e:
+                print(e)
+
+                return Response({
+                    'status' : 400,
+                    'message' : 'invalid order_id'
+                })
+
+            try:
+                coupon_obj = Coupoun.objects.get(coupon_code = data.get('coupon_code'))
+            except Exception as e:
+                return Response({
+                    'status' : 400,
+                    'message' : 'invalid coupon code'
+                })
+
+            actual_amount  = order_obj.course.selling_price
+            order_obj.amount = actual_amount
+            order_obj.coupon = None
+            order_obj.save()
+
+            serializer = OrderSerializer(order_obj)
+            return Response({
+                'status' : 200,
+                'message' : 'coupon removed',
+                'data' : serializer.data
+            })
+        except Exception as e:
+            print(e)
 
 class OrderSuccess(APIView):
     def get(self,request):
@@ -98,21 +139,24 @@ class OrderSuccess(APIView):
 
 
 
-class OrderAPI(BaseAPIViewSet):
+class OrderAPI(APIView):
     serializer_class = OrderSerializer
     queryset = Order.objects.all()
-    permission_classes = [IsAuthenticated]
-    authentication_classes = [TokenAuthentication]
+
 
     def get(self , request):
         try:
-            print(request.user.student)
-            orders = Order.objects.filter(student = request.user.student)
+            phone_number = request.GET.get('phone_number')
+            orders = Order.objects.filter(student__phone_number = phone_number , is_paid =False).first()
+            serializer = OrderSerializer(orders)
+            return Response({'status' : 200 , 'data' : serializer.data , 'message' : 'active order'})
+
+
             
         except Exception as e:
             print(e)
         
-        return Response({'status' : 200 , 'data' : [] , 'message' : 'Someting went wrong'})
+        return Response({'status' : 400 , 'data' : [] , 'message' : 'Someting went wrong add phone_number key'})
 
 from datetime import date
 

@@ -607,6 +607,11 @@ class CouponView(viewsets.ModelViewSet):
 
 
 
+class SliderView(viewsets.ModelViewSet):
+    queryset = Slider.objects.all()
+    serializer_class = SliderSerializer
+
+
 
     def patch(self , request):
         try:

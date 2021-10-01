@@ -201,3 +201,9 @@ class CoupounSerializer(serializers.ModelSerializer):
     class Meta:
         model = Coupoun
         exclude = ['created_at' , 'updated_at']
+
+
+class SliderSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Slider
+        exclude = ['created_at' , 'updated_at']

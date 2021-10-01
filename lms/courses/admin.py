@@ -49,3 +49,4 @@ admin.site.register(Document)
 admin.site.register(GoLive)
 admin.site.register(Coupoun)
 
+admin.site.register(Slider)

@@ -141,6 +141,9 @@ class GoLive(BaseModel):
     live_date = models.CharField(max_length=100 , null = True , blank=True)
 
 
+class Slider(BaseModel):
+    slider_image = models.ImageField(upload_to="sliders")
+    is_active = models.BooleanField(default = True)
 
 
 

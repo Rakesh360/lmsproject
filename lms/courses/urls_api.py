@@ -6,6 +6,9 @@ router = DefaultRouter()
 
 router.register('document', views.DocumentUpload, )
 router.register('coupon', views.CouponView, )
+router.register('slider', views.SliderView, )
+
+
 
 
 urlpatterns = [
