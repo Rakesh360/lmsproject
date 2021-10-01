@@ -139,6 +139,8 @@ class GoLive(BaseModel):
     image = models.ImageField(upload_to = 'live' , null=True , blank = True)
     live_date_time = models.DateTimeField(default=datetime.now)
     live_date = models.CharField(max_length=100 , null = True , blank=True)
+    courses = models.ManyToManyField(CoursePackage)
+
 
 
 class Slider(BaseModel):
@@ -146,20 +148,6 @@ class Slider(BaseModel):
     is_active = models.BooleanField(default = True)
 
 
-
-# [
-# {
-#     'subject' : 'Subject name',
-#     'subject_chapters' : [
-#         {
-#             'chaper_name' : 'Chapter name',
-#             'lessons' : [
-
-#             ]
-#         }
-#     ]
-# }
-# ]
 
 class LiveStream(BaseModel):
     live_stream_link = models.TextField()

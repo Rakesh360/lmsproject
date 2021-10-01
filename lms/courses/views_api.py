@@ -365,7 +365,38 @@ class LessonsView(APIView):
                 chapter_obj = lesson_obj.chapter
                 subject_obj = lesson_obj.chapter.subject
                 packages = data.get('packages')
-                print(packages)
+                if packages == 'all':
+                    i = 0
+                    for package in CoursePackage.objects.all():
+                        try:
+                            course_package_obj = package
+                        except Exception as e:
+                            return Response({
+                                'status' : False,
+                                'message' : f'lesson created but not added to packages invalid uid at index {i}'
+                            })
+                        i = i + 1
+                        course_package_subject_obj, _ = CoursePackageSubjects.objects.get_or_create(
+                            course_package = course_package_obj,
+                            subject = subject_obj
+                        )
+                        course_package_chapter_obj, _ = CoursePackageChapters.objects.get_or_create(
+                            course_package_subject = course_package_subject_obj,
+                            subject_chapter = chapter_obj
+                        )
+                        created_at = package['created_at']
+
+                        CoursePackageLessons.objects.get_or_create(
+                            course_package_chapter = course_package_chapter_obj,
+                            lesson = lesson_obj,
+                            added_at = created_at
+                        )
+                        return Response({
+                            'status' : True,
+                            'data' : serializer.data,
+                            'message' : 'lesson created'
+                        })
+
                 if packages:
                     i = 0
                     for package in packages:
