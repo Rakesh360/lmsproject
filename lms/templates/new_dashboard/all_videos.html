@@ -27,9 +27,6 @@
 
 <div class="col-12" style="margin-top: 2%;">
     <div class="card">
-        <div class="card-header">
-            <h4 class="card-title">Profile Datatable</h4>
-        </div>
         <div class="card-body">
             <div class="table-responsive">
                 <table id="example3" class="display" style="min-width: 845px" >
@@ -65,8 +62,6 @@
                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                                       <a class="dropdown-item" href="{% url 'update_lesson' lesson.uid%}">Edit</a>
                                       <a class="dropdown-item" href="{% url 'delete_lesson' %}?uid={{lesson.uid}}">Delete</a>
-                                      <a class="dropdown-item" href="#">Start Live</a>
-                                      <a class="dropdown-item" href="#">Ends Live</a>
                                       <a href="{% url 'preview_video' lesson.uid%}" class="dropdown-item">View</a>
                                     </div>
                                   </div>

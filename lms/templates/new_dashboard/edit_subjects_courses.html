@@ -131,9 +131,9 @@
                 {% csrf_token %}
                 <div class="form-row mb-4">
                     <div class="form-group col-md-6">
-                        <label for="lesson_title">Package Name</label>
+                        <label for="lesson_title">Package Name (max 100)</label>
                         <input type="text" class="form-control" required name="lesson_title" id="lesson_title"
-                            value="{{ course_package_obj.package_title }}" placeholder="Enter lesson title">
+                            value="{{ course_package_obj.package_title }}" min="4" max="100" placeholder="Enter lesson title">
                     </div>
                     <div class="form-group col-md-6">
                         <label for="package_type"> Package Type</label>
@@ -146,20 +146,20 @@
                     <div class="form-group col-md-6">
     
                         <label for="actual_price">Actual Price</label>
-                        <input value="{{course_package_obj.actual_price}}" type="number" id="actual_price" name="actual_price" class="form-control" placeholder="Enter Actual Price in Rupees"> 
+                        <input value="{{course_package_obj.actual_price}}" max="10000" type="number" id="actual_price" name="actual_price" class="form-control" placeholder="Enter Actual Price in Rupees"> 
                         
                     </div>
     
                     <div class="form-group col-md-6">
                         <label for="selling_price">Selling Price</label>
-                        <input value="{{course_package_obj.selling_price}}" id="selling_price" type="number" name="selling_price" class="form-control" placeholder="Enter Selling Price in Rupees"> 
+                        <input value="{{course_package_obj.selling_price}}" max="10000" id="selling_price" type="number" name="selling_price" class="form-control" placeholder="Enter Selling Price in Rupees"> 
                     </div>
     
     
                 </div>
                 <div class="form-row mb-4" id="video_upload">
     
-                    <div class="form-group col-md-6" id="belowTypePicker">
+                    <div class="form-group col-md-6">
                         <div id="expiryTypePicker">
                             <label for="expiryType"> Expiry Type </label>
                             <select required name="expiryType" id="expiryType" class="form-control" onchange="changeExpiryType()">
@@ -167,24 +167,31 @@
                                 <option {% if course_package_obj.subscription_type == 'Fixed Date' %} selected {% endif %} value="Fixed Date">Fixed Date</option>
                             </select>
                         </div>
-    
+                    </div>
     
                     
-    
+                    <div class="form-group col-md-6"  id="belowTypePicker">
+                        
+                        
                     </div>
-    
-                    <div class="form-group col-md-6">
-                        <div id="expiryTypePicker">
-                            <label for="is_active"> Is Active </label>
-                            <select required name="is_active" id="is_active" class="form-control">
-                                <option {% if course_package_obj.is_active == false %} selected {% endif %} value=false>Inactive</option>
-                                <option {% if course_package_obj.is_active == true %} selected {% endif %} value=true >Active</option>
-                            </select>
-                        </div>
-    
-                    </div>
-    
                 </div>
+
+
+                <div class="form-row mb-4">
+                        <div class="form-group col-md-6">
+                            <div id="expiryTypePicker">
+                                <label for="is_active"> Enable Purchase </label>
+                                <select required name="is_active" id="is_active" class="form-control">
+                                    <option {% if course_package_obj.is_active == False %} selected {% endif %} value=false>No</option>
+                                    <option {% if course_package_obj.is_active == True %} selected {% endif %} value=true selected>Yes</option>
+                                </select>
+                            </div>
+        
+                        </div>
+                </div>
+
+
+    
                 
     
                 <div class="form-row mb-4">
@@ -256,24 +263,32 @@
 
             </div>
 
-
+            
             <div class="col-md-6">
                 <h3 id="titleData">Reorder Subjects</h3>
                 <ul class="draggable-list" id="draggable-list" style="height: 610px; overflow-y: scroll;"></ul>
                 <button class="check-btn" id="saveBtn" onclick="updateOrder(editingMode)">
                     Save 
-                <i class="fas fa-save"></i>
-            </button>
+                    <i class="fas fa-save"></i>
+                </button>
+            </div>
+            
         </div>
         
     </div>
-    
-</div>
 </div>
 
 
 
 <script>  
+    let editor = CKEDITOR.replace( 'description' );
+    var description;
+    editor.on( 'change', function( evt ) {
+        description =  evt.editor.getData();
+        console.log(description);
+        console.log('{{course_package_obj.uid}}');
+    });
+
     function getCookie(name) {
         if (!document.cookie) {
             return null;
@@ -306,14 +321,17 @@
         e.preventDefault();
 
         let formData = new FormData();
-
+        formData.append('uid', '{{course_package_obj.uid}}');
         formData.append('package_title', document.getElementById('lesson_title').value);
         formData.append('package_description', description);
         formData.append('actual_price', document.getElementById('actual_price').value);
         formData.append('selling_price', document.getElementById('selling_price').value);
         formData.append('package_type', document.getElementById('subjects').value);
         formData.append('subscription_type', document.getElementById('expiryType').value);
-        formData.append('is_active', document.getElementById('is_active').value);
+
+        formData.forEach((value, key) => {
+            console.log(key, value);
+        });
         
 
         if (document.getElementById('expiryType').value === 'Fixed Date') {
@@ -359,7 +377,6 @@
     
     
     
-    let editor = CKEDITOR.replace( 'description' );
     
 
 
@@ -388,7 +405,7 @@
     var allSubjects; // all subjects array
     let subjectUid;
     let chapterUid;
-    const listItems = [];
+    let listItems = [];
     let subjectsArray = [];
     let chaptersArray = [];
     // let lessonsArray = [];
@@ -416,16 +433,12 @@
     const belowTypePicker = document.getElementById('belowTypePicker');
     
     let expiryDateDiv = document.createElement('div');
-    expiryDateDiv.classList.add('form-group');
-    expiryDateDiv.classList.add('mt-4');
     expiryDateDiv.innerHTML = `
     <label for="expiryDate">Choose Expiry Date</label>
     <input type="date" required name="expiryDate" class="form-control" id="expiryDate">
     `;
 
     let subscriptionDiv = document.createElement('div');
-    subscriptionDiv.classList.add('form-group');
-    subscriptionDiv.classList.add('mt-4');
     subscriptionDiv.innerHTML = `
     <label for="subscriptionDays">Subscription Period</label>
     <input type="number" value={{course_package_obj.days}} required id="subscriptionDays" class="form-control" placeholder="Enter Subscription Period (in Days)">
@@ -473,18 +486,6 @@
         return `${year}-${month}-${day}`;
     };
     document.getElementById('expiryDate').value = parseDate('{{course_package_obj.sell_till_date}}');
-
-
-
-
-
-
-
-    
-    
-  
-
-
 
     async function updateOrder(editingMode) {
         if (editingMode === 'subject') {
@@ -689,6 +690,7 @@
 
         function createList(array) {
             draggable_list.innerHTML = '';
+            listItems = [];
             array.forEach((person, index) => {
                 const listItem = document.createElement('li');
                 listItem.className = 'subject-li';
@@ -740,6 +742,7 @@
         function dragDrop() {
             const dragEndIndex = +this.getAttribute('data-index');
             swapItems(dragStartIndex, dragEndIndex);
+            // console.log('dragDrop', dragStartIndex, dragEndIndex);
             saveBtn.style.backgroundColor = '#9fff83';
             subjectsChanged = true;
 
@@ -748,8 +751,10 @@
 
         // Swap list items that are drag and drop
         function swapItems(fromIndex, toIndex) {
+            console.log(listItems);
             const itemOne = listItems[fromIndex].querySelector('.draggable');
             const itemTwo = listItems[toIndex].querySelector('.draggable');
+            // console.log(itemOne, itemTwo);
             listItems[fromIndex].appendChild(itemTwo);
             listItems[toIndex].appendChild(itemOne);
         }

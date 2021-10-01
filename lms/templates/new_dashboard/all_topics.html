@@ -3,7 +3,7 @@
 {%block start%}
 
 <div style="margin-top: 6%; display: flex;">
-    <div style="margin: 0 auto;">
+    <div style="margin: 0 auto; font-size: xxx-large;">
         All Chapters
     </div>
     
@@ -24,18 +24,17 @@
                         {% csrf_token %}
                         <div class="form-group">
             
-                        <select class="custom-select" aria-label="Default select example" name="subject" id="selectSublect"> 
-                            <option selected>Choose Subject</option>
+                        <select class="custom-select" required aria-label="Default select example" name="subject" id="selectSublect"> 
+                            <option selected disabled>Choose Subject</option>
                             {% for subject in subjects %}
-                            <option value="{{subject.uid}}"> {{subject.subject_title}}</option>
+                            <option> {{subject.subject_title}}</option>
                             {% endfor %}
                             
                         </select>
                         <br>
                         <br>
-            
-                        <label for="chapter_title">Subject Chapter Name</label>
-                        <input type="text" name="chapter_title" class="form-control" id="subjectName" placeholder="">
+                            <label for="chapter_title">Subject Chapter Name (max 200)</label>
+                            <input type="text" required name="chapter_title" minlength="4" maxlength="200" class="form-control" id="subjectName" placeholder="">
                         </div>
                         
                         <button id="submitAddTopic" class="btn btn-primary">Add Topic</button>
@@ -51,9 +50,6 @@
 
 <div class="col-12" style="margin-top: 2%;">
     <div class="card">
-        <div class="card-header">
-            <h4 class="card-title">Profile Datatable</h4>
-        </div>
         <div class="card-body">
             <div class="table-responsive">
                 <table id="example3" class="display" style="min-width: 845px">
@@ -93,7 +89,7 @@
                                                 {% csrf_token %}
                                                 <div class="form-group">
                                     
-                                                <select class="custom-select" aria-label="Default select example" name="subject" id="selectSublect"> 
+                                                <select class="custom-select" required aria-label="Default select example" name="subject" id="selectSublect"> 
                                                 
                                                     {% for subject in subjects %}
                                                     <option value="{{subject.uid}}" {{subject_chapter.subject.uid}} {% if subject_chapter.subject.uid == subject.uid %} selected {% endif %} > {{subject.subject_title}}</option>
@@ -103,8 +99,8 @@
                                                 <br>
                                                 <br>
                                     
-                                                <label for="chapter_title">Subject Chapter Name</label>
-                                                <input type="text" name="chapter_title" value="{{subject_chapter.chapter_title}}" class="form-control" id="subjectName" placeholder="">
+                                                <label for="chapter_title">Edit Subject Chapter Name (max 200)</label>
+                                                <input type="text" required name="chapter_title" minlength="4" maxlength="200" value="{{subject_chapter.chapter_title}}" class="form-control" id="subjectName" placeholder="">
                                                 </div>
                                                 
                                                 <button id="submit" class="btn btn-primary">Submit</button>

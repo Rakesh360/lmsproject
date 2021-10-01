@@ -23,8 +23,8 @@
             {% csrf_token %}
             <div class="form-row mb-4">
                 <div class="form-group col-md-6">
-                    <label for="lesson_title">Package Name</label>
-                    <input type="text" class="form-control" required name="lesson_title" id="lesson_title" 
+                    <label for="lesson_title">Package Name (max 100)</label>
+                    <input type="text" class="form-control" min="4" max="100" required name="lesson_title" id="lesson_title" 
                         placeholder="Enter Package Name">
                 </div>
                 <div class="form-group col-md-6">
@@ -42,13 +42,13 @@
                 <div class="form-group col-md-6">
 
                     <label for="actual_price">Actual Price</label>
-                    <input required type="number" id="actual_price" name="actual_price" class="form-control" placeholder="Enter Actual Price in Rupees"> 
+                    <input required type="number" id="actual_price" max="10000" name="actual_price" class="form-control" placeholder="Enter Actual Price in Rupees"> 
                     
                 </div>
 
                 <div class="form-group col-md-6">
                     <label for="selling_price">Selling Price</label>
-                    <input required id="selling_price" type="number" name="selling_price" class="form-control" placeholder="Enter Selling Price in Rupees"> 
+                    <input required id="selling_price" type="number" max="10000" name="selling_price" class="form-control" placeholder="Enter Selling Price in Rupees"> 
                 </div>
 
 
@@ -71,7 +71,7 @@
 
                 <div class="form-group col-md-6">
                     <div id="expiryTypePicker">
-                        <label for="is_active"> Is Active </label>
+                        <label for="is_active"> Enable Purchase </label>
                         <select required name="is_active" id="is_active" class="form-control">
                             <option value=false>No</option>
                             <option value=true selected>Yes</option>
