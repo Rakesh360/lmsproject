@@ -37,7 +37,7 @@ class OrderCourse(APIView):
                 print(e)
                 return Response({'status' : 400 , 'message' : 'phone_number is invalid' })
             
-            course = Nones
+            course = None
             try:
                 course = CoursePackage.objects.get(uid = data.get('course_uid'))
             except Exception as e:
@@ -57,7 +57,7 @@ class OrderCourse(APIView):
             email=student.email,
             redirect_url="http://13.232.227.45/api/order/success/",
             )
-            order_obj = Order.objects.get_or_create(
+            order_obj ,_ = Order.objects.get_or_create(
                 student= student,
                 course = course,
                 is_paid = False,
@@ -65,8 +65,13 @@ class OrderCourse(APIView):
                 amount = course.selling_price,
                 response = json.dumps(response)
                 )
+            serializer = OrderSerializer(order_obj)
+            data = serializer.data
+            data.pop('response')
+            payload = response
+            payload['order'] = data
             print(response)
-            return Response(response)
+            return Response(payload)
         except Exception as e:
             print(e)
         
