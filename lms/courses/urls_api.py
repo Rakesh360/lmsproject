@@ -6,6 +6,9 @@ router = DefaultRouter()
 
 router.register('document', views.DocumentUpload, )
 router.register('coupon', views.CouponView, )
+router.register('slider', views.SliderView, )
+
+
 
 
 urlpatterns = [
@@ -18,6 +21,7 @@ urlpatterns = [
    path('course-package-info/' , views.CoursePackageSubjectsAPI.as_view()),
    path('go-live/' , views.GoLiveView.as_view()),
    path('package-sequence/' , views.CoursePackageSerial.as_view()),
+   path('remove-lessons/' , views.RemoveCoursePackageLesson.as_view()),
 
 ]
 

@@ -1,0 +1,185 @@
+{%extends 'base.html'%}
+
+{%block start%}
+
+<style>
+    #chats{
+        overflow-y: scroll;
+    }
+
+    .left-msg{
+        margin: 2px;
+        display: flex;
+        flex-direction: row;
+    }
+
+    .right-msg{
+        margin: 2px;
+        display: flex;
+        flex-direction: row-reverse;
+    }
+
+    .left-msg .name:nth-child(odd){
+        margin: 2px;
+        color: #ff8f16;
+        font-weight: bold;
+    }
+
+    .left-msg .name:nth-child(even){
+        margin: 2px;
+        color: #c9c9c9;
+        font-weight: bold;
+    }
+
+    .left-msg .message{
+        margin: 2px;
+
+    }
+
+    .right-msg .name{
+        margin: 2px;
+        color: #c9c9c900;
+    }
+
+    .right-msg .message{
+        margin: 2px;
+    }   
+</style>
+
+<div style="margin-top: 6%; ">
+    <div style="margin-top: 6%; display: flex;">
+    <div style="margin: 0 auto; font-size: xxx-large;">
+        Watch Video
+    </div>
+
+</div>
+
+
+<div class="row">
+    <div class="col-md-7">
+        <div class="card">
+            <div class="card-header">
+                <h4>{{lesson.lesson_title}}</h4>
+            </div>
+            <div class="card-body">
+                <iframe  height=500 width="100%" src="https://www.youtube.com/embed/{{lesson.live_url}}" style="border: 1px solid black;"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-5">
+        <div class="card">
+            <div class="card-header">
+                <h4>Chats</h4>
+            </div>
+            <div class="card-body">
+                <div class="chats" id="chats" style="height: 440px; border: 1px solid #eaeaea;">
+                    <div class="left-msg">
+                        <div class="name">Aman</div>
+                        <div class="message">Hi!</div>
+                    </div>
+                    <div class="left-msg">
+                        <div class="name">Rakesh</div>
+                        <div class="message">Hello There!</div>
+                    </div>
+                    <div class="left-msg">
+                        <div class="name">Aman</div>
+                        <div class="message">Hi!</div>
+                    </div>
+                    <div class="left-msg">
+                        <div class="name">Rakesh</div>
+                        <div class="message">Hello There!</div>
+                    </div>
+                    <div class="left-msg">
+                        <div class="name">Aman</div>
+                        <div class="message">Hi!</div>
+                    </div>
+                    <div class="left-msg">
+                        <div class="name">Rakesh</div>
+                        <div class="message">Hello There!</div>
+                    </div>
+                    <div class="right-msg">
+                        <div class="name">Me</div>
+                        <div class="message">This is Me!!!</div>
+                    </div>
+                    <div class="left-msg">
+                        <div class="name">Aman</div>
+                        <div class="message">Hi!</div>
+                    </div>
+                    <div class="left-msg">
+                        <div class="name">Rakesh</div>
+                        <div class="message">Hello There!</div>
+                    </div>
+                    <div class="left-msg">
+                        <div class="name">Aman</div>
+                        <div class="message">Hi!</div>
+                    </div>
+                    <div class="left-msg">
+                        <div class="name">Rakesh</div>
+                        <div class="message">Hello There!</div>
+                    </div>
+                    <div class="left-msg">
+                        <div class="name">Aman</div>
+                        <div class="message">Hi!</div>
+                    </div>
+                    <div class="left-msg">
+                        <div class="name">Rakesh</div>
+                        <div class="message">Hello There!</div>
+                    </div>
+                    <div class="right-msg">
+                        <div class="name">Me</div>
+                        <div class="message">This is Me!!!</div>
+                    </div>
+                    <div class="left-msg">
+                        <div class="name">Aman</div>
+                        <div class="message">Hi!</div>
+                    </div>
+                    <div class="left-msg">
+                        <div class="name">Rakesh</div>
+                        <div class="message">Hello There!</div>
+                    </div>
+                    <div class="left-msg">
+                        <div class="name">Aman</div>
+                        <div class="message">Hi!</div>
+                    </div>
+                    <div class="left-msg">
+                        <div class="name">Rakesh</div>
+                        <div class="message">Hello There!</div>
+                    </div>
+                    <div class="left-msg">
+                        <div class="name">Aman</div>
+                        <div class="message">Hi!</div>
+                    </div>
+                    <div class="left-msg">
+                        <div class="name">Rakesh</div>
+                        <div class="message">Hello There!</div>
+                    </div>
+                    <div class="right-msg">
+                        <div class="name">Me</div>
+                        <div class="message">This is Me!!!</div>
+                    </div>
+
+                </div>
+                <div class="send-chat mt-4" style="height: 10%; display: flex;">
+                    <input type="text" class="form-control mt-1" placeholder="Recipient's username" aria-label="Recipient's username" aria-describedby="button-addon2">
+                    <button class="btn btn-outline-primary btn-lg" style="height: fit-content;" type="button" id="button-addon2">Send</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+{%endblock %}

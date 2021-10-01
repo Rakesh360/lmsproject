@@ -34,6 +34,7 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
+    #'channels',
     'jet',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -88,6 +89,9 @@ TEMPLATES = [
 ]
 
 #WSGI_APPLICATION = 'lms.wsgi.application'
+
+WSGI_APPLICATION = 'lms.wsgi.application'
+#ASGI_APPLICATION = 'lms.asgi.application'
 
 
 # Database
@@ -175,3 +179,13 @@ MEDIA_ROOT =  os.path.join(BASE_DIR, 'public/static')
 MEDIA_URL = '/media/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("127.0.0.1", 6379)],
+        },
+    },
+}

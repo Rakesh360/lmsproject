@@ -1,3 +1,4 @@
+from django.http.response import JsonResponse
 from orders.models import Order
 from django.shortcuts import redirect, render
 from accounts.models import *
@@ -13,6 +14,9 @@ from django.contrib.admin.views.decorators import staff_member_required
 def dashboard(request):
     return render(request , 'dashboard/dashboard.html')
 
+def send_noti(request):
+    send_notify_by_order("Hello" , 'Helo')
+    return JsonResponse({'status' : 200})
 
 def students(request):
     student_objs = Student.objects.all()

@@ -25,7 +25,13 @@ class LessonAdmin(admin.ModelAdmin):
 
 @admin.register(CoursePackageLessons)
 class LessonAdmin(admin.ModelAdmin):
-    list_display = ['lesson' ,'get_package_name','get_subject_chapter','added_at', 'updated_at' , 'created_at']
+    list_display = ['lesson','get_course_package', 'get_lesson' ,'get_package_name','get_subject_chapter','added_at', 'updated_at' , 'created_at']
+
+    def get_lesson(self  , obj):
+        return obj.lesson.uid
+        
+    def get_course_package(self , obj):
+        return obj.course_package_chapter.course_package_subject.course_package.uid
 
     def get_subject_chapter(self , obj):
         return obj.course_package_chapter.subject_chapter
@@ -41,3 +47,6 @@ admin.site.register(CoursePackageSubjects)
 admin.site.register(Video)
 admin.site.register(Document)
 admin.site.register(GoLive)
+admin.site.register(Coupoun)
+
+admin.site.register(Slider)

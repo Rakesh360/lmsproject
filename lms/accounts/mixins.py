@@ -14,7 +14,7 @@ from .serializers import ( ChangePasswordSerializer, LoginSerializer,
                             PasswordSerializer,
                             StudentSerializer,RegisterStudentSerializer , ForgetPasswordSerializer)
 from django.contrib.auth import get_user_model
-
+from base_rest.utils import *
 
 class AccountMixin:
     
@@ -120,3 +120,80 @@ class AccountMixin:
             
         response = {'staus' : 200 , 'message' : 'Password changed'}
         return Response(response , status.HTTP_200_OK)
+    
+      
+    @action(detail=False , methods=['post']  ,url_name="forget-password")
+    def forget_password(self,request):
+        data = request.data
+        phone_number = data.get('phone_number')
+        if phone_number is None:
+            return Response({'status' : 400 , 'message' : 'phone_number is required'})
+
+        try:
+            student_obj = Student.objects.get(phone_number = phone_number)
+            student_obj.otp = get_random_otp()
+            student_obj.save()
+            response = {'staus' : 200 , 'message' : 'otp sent'}
+            return Response(response , status.HTTP_200_OK)
+
+        except Exception as e:
+            print(e)
+            return Response({'status' : 400 , 'message' : 'invalid phone number'})
+
+    @action(detail=False , methods=['post']  ,url_name="forget-password")
+    def verify_password_otp(self, request):
+        data = request.data
+        try:
+            phone_number = data.get('phone_number')
+            otp = data.get('otp')
+
+            if phone_number is None or otp is None:
+                return Response({'status' : 400 , 'message' : 'phone_number & otp both are required'})
+            
+            try:
+                obj = Student.objects.get(phone_number = phone_number)
+            
+            except Exception as e:
+                return Response({'status' : 400 , 'message' : 'invalid phone number'})
+            
+            if obj.otp == otp:
+                return Response({'status' : 200 , 'message' : 'otp matched'})
+
+            return Response({'status' : 400 , 'message' : 'invalid otp'})
+        
+        except Exception as e:
+            return Response({'status' : 400 , 'message' : 'somethign went wrong'})
+    
+    @action(detail=False , methods=['post']  ,url_name="forget-password")
+    def forget_change_password(self, request):
+        data = request.data
+        try:
+            password = data.get('password')
+            phone_number = data.get('phone_number')
+
+
+            if phone_number is None or password is None:
+                return Response({'status' : 400 , 'message' : 'phone_number & password both are required'})
+            
+            try:
+                obj = Student.objects.get(phone_number = phone_number)
+            
+            except Exception as e:
+                return Response({'status' : 400 , 'message' : 'invalid phone number'})
+            
+            
+            obj.set_password(password)
+            obj.save()
+            return Response({'status' : 200 , 'message' : 'password changed'})
+        
+        except Exception as e:
+            return Response({'status' : 400 , 'message' : 'somethign went wrong'})
+    
+    
+
+
+            
+
+
+
+

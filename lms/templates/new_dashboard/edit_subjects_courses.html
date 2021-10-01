@@ -104,7 +104,6 @@
     src="https://kit.fontawesome.com/3da1a747b2.js"
     crossorigin="anonymous"
 ></script>
-<script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/js/materialize.min.js"></script>
@@ -128,13 +127,13 @@
     <div class="card">
         <div class="card-body">
             {% include "utils/alert.html" %}
-            <form>
+            <form id="addPackageForm">
                 {% csrf_token %}
                 <div class="form-row mb-4">
                     <div class="form-group col-md-6">
-                        <label for="lesson_title">Package Name</label>
+                        <label for="lesson_title">Package Name (max 100)</label>
                         <input type="text" class="form-control" required name="lesson_title" id="lesson_title"
-                            value="{{ course_package_obj.package_title }}" placeholder="Enter lesson title">
+                            value="{{ course_package_obj.package_title }}" min="4" max="100" placeholder="Enter lesson title">
                     </div>
                     <div class="form-group col-md-6">
                         <label for="package_type"> Package Type</label>
@@ -147,13 +146,13 @@
                     <div class="form-group col-md-6">
     
                         <label for="actual_price">Actual Price</label>
-                        <input value="{{course_package_obj.actual_price}}" type="number" id="actual_price" name="actual_price" class="form-control" placeholder="Enter Actual Price in Rupees"> 
+                        <input value="{{course_package_obj.actual_price}}" max="10000" type="number" id="actual_price" name="actual_price" class="form-control" placeholder="Enter Actual Price in Rupees"> 
                         
                     </div>
     
                     <div class="form-group col-md-6">
                         <label for="selling_price">Selling Price</label>
-                        <input value="{{course_package_obj.selling_price}}" id="selling_price" type="number" name="selling_price" class="form-control" placeholder="Enter Selling Price in Rupees"> 
+                        <input value="{{course_package_obj.selling_price}}" max="10000" id="selling_price" type="number" name="selling_price" class="form-control" placeholder="Enter Selling Price in Rupees"> 
                     </div>
     
     
@@ -163,46 +162,36 @@
                     <div class="form-group col-md-6">
                         <div id="expiryTypePicker">
                             <label for="expiryType"> Expiry Type </label>
-                            <select required name="expiryType" id="expiryType" class="form-control" onchange="changeExpiryType(event)">
-                                <option disabled selected>Choose Expiry Type</option>
-                                <option value="fixed-date">Fixed Date</option>
-                                <option value="subscription">Subscription</option>
+                            <select required name="expiryType" id="expiryType" class="form-control" onchange="changeExpiryType()">
+                                <option {% if course_package_obj.subscription_type == 'Subscription' %} selected {% endif %} value="Subscription">Subscription</option>
+                                <option {% if course_package_obj.subscription_type == 'Fixed Date' %} selected {% endif %} value="Fixed Date">Fixed Date</option>
                             </select>
                         </div>
-    
-    
-                        <div id="expiryDateContainer" style="display: none; margin-top: 3%;">
-                            <label for="expiryDate">Choose Expiry Date</label>
-                            <input type="date" name="expiryDate" class="form-control" id="expiryDate">
-                        </div>
-    
-                        <div id="subscriptionContainer" style="display: none; margin-top: 3%;">
-                            <label for="subscriptionDays">Subscription Period</label>
-                            <input value="{{course_package_obj.days}}" type="number" id="subscriptionDays" class="form-control" placeholder="Enter Subscription Period (in Days)">
-                        </div>
-    
                     </div>
     
-                    <div class="form-group col-md-6">
-                        <div id="expiryTypePicker">
-                            <label for="is_active"> Is Active </label>
-                            <select required name="is_active" id="is_active" class="form-control">
-                                <option {% if course_package_obj.is_active == false %} selected {% endif %} value=false>Inactive</option>
-                                <option {% if course_package_obj.is_active == true %} selected {% endif %} value=true >Active</option>
-                            </select>
-                        </div>
-    
+                    
+                    <div class="form-group col-md-6"  id="belowTypePicker">
+                        
+                        
                     </div>
-    
                 </div>
-    
-                <div class="form-group md-4">
+
+
+                <div class="form-row mb-4">
+                        <div class="form-group col-md-6">
+                            <div id="expiryTypePicker">
+                                <label for="is_active"> Enable Purchase </label>
+                                <select required name="is_active" id="is_active" class="form-control">
+                                    <option {% if course_package_obj.is_active == False %} selected {% endif %} value=false>No</option>
+                                    <option {% if course_package_obj.is_active == True %} selected {% endif %} value=true selected>Yes</option>
+                                </select>
+                            </div>
         
-                    <div class="form-group col-md-6">
-                        <label for="sell_end_time">Set Selling End Time Price</label>
-                        <input value="{{course_package_obj.sell_till}}" id="sell_end_time" type="date" name="sell_end_time" class="form-control" placeholder="Choose Date"> 
-                    </div>
+                        </div>
                 </div>
+
+
+    
                 
     
                 <div class="form-row mb-4">
@@ -216,21 +205,22 @@
     
                     <div class="form-group mb-6">
                         <div class="custom-file">
-                            <input type="file" class="custom-file-input" name="image_for_web" id="image_for_web">
-                            <label class="custom-file-label" for="image_for_web">Choose file For Web</label>
-                        </div>
-                    </div>
-                    <br>
-                    <a href="/{{course_package_obj.web_image.url}}">Open Here</a>
+                            <label for="image_for_web">Choose file For Web</label>
+                            <input type="file" class="form-control" onchange="webImgReUpload()" name="image_for_web" id="image_for_web">
+                            <a class="ml-2 mt-4" target="_blank" href="/media/{{course_package_obj.web_image}}">Open Here</a>
     
-                    <div class="form-group mb-6">
-                        <div class="custom-file">
-                            <input type="file" class="custom-file-input" name="image_for_app" id="image_for_app">
-                            <label class="custom-file-label" for="image_for_app">Choose file For App</label>
                         </div>
                     </div>
                     <br>
-                    <a href="/{{course_package_obj.mobile_image.url}}">Open Here</a>
+                    
+                    <div class="form-group mb-6 ml-4">
+                        <div class="custom-file">
+                            <label for="image_for_app">Choose file For App</label>
+                            <input type="file" class="form-control" onchange="appImgReUpload()" name="image_for_app" id="image_for_app">
+                            <a class="ml-2 mt-4" target="_blank"  href="/media/{{course_package_obj.mobile_image}}">Open Here</a>
+                        </div>
+                    </div>
+                    
                 </div>
     
                 <button type="submit" id="handleSubmit" class="btn btn-primary mt-3">Create Package</button>
@@ -273,73 +263,31 @@
 
             </div>
 
-
+            
             <div class="col-md-6">
-                <h3 id="titleData">Subject</h3>
+                <h3 id="titleData">Reorder Subjects</h3>
                 <ul class="draggable-list" id="draggable-list" style="height: 610px; overflow-y: scroll;"></ul>
                 <button class="check-btn" id="saveBtn" onclick="updateOrder(editingMode)">
                     Save 
-                <i class="fas fa-save"></i>
+                    <i class="fas fa-save"></i>
                 </button>
             </div>
-
+            
         </div>
-
+        
     </div>
 </div>
 
 
 
-<script>
-    const handleSubmit = document.getElementById('handleSubmit');
-    handleSubmit.addEventListener('click', function (event) {
-        event.preventDefault();
-        let formData = new FormData();
-        formData.append('uid', '{{course_package_obj.uid}}');
-        formData.append('package_title', document.getElementById('lesson_title').value);
-        formData.append('package_type', document.getElementById('subjects').value);
-        formData.append('actual_price', document.getElementById('actual_price').value);
-        formData.append('selling_price', document.getElementById('selling_price').value);
-        formData.append('expiry_type', document.getElementById('expiryType').value);
-        formData.append('sell_till_date', document.getElementById('expiryDate').value);
-        formData.append('days', document.getElementById('subscriptionDays').value);
-        formData.append('package_description', description);
-        formData.append('web_image', '{{course_package_obj.web_image}}');
-        formData.append('mobile_image', '{{course_package_obj.mobile_image}}');
-        formData.append('is_active', document.getElementById('is_active').value);
-        formData.append('sell_end_time', document.getElementById('sell_end_time').value);
-        console.log();
-            
-
-        if (document.getElementById('subjects').value === 'video') {
-            
-            fetch('/api/courses/course-packages/', {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'X-CSRFToken': csrfToken
-                },
-            })
-            .then(function(response) {
-                return response.json();
-            })
-            .then(function(response) {
-                console.log(response);
-                if (response.status === true) {
-                    alert('Successfully created package');
-                } else {
-                    alert('Error while creating package');
-                }
-            });
-                
-
-        } else {
-            // fetch for test API
-        }
-
+<script>  
+    let editor = CKEDITOR.replace( 'description' );
+    var description;
+    editor.on( 'change', function( evt ) {
+        description =  evt.editor.getData();
+        console.log(description);
+        console.log('{{course_package_obj.uid}}');
     });
-
-
 
     function getCookie(name) {
         if (!document.cookie) {
@@ -355,18 +303,81 @@
     }
     
     const csrfToken = getCookie('csrftoken');
-    let editor = CKEDITOR.replace( 'description' );
-    var description;
-    editor.on( 'change', function( evt ) {
-    // getData() returns CKEditor's HTML content.
-        description =  evt.editor.getData();
-    });
 
-    editor.on( 'instanceReady', function( evt ) {
-    // getData() returns CKEditor's HTML content.
-        console.log('{{course_package_obj.package_description}}');
-        evt.editor.setData('{{course_package_obj.package_description}}');
-    });    
+    let webImgReUploaded = false;
+    let appImgReUploaded = false;
+
+    function webImgReUpload() {
+        webImgReUploaded = true;
+    }
+
+    function appImgReUpload() {
+        appImgReUploaded = true;
+    }
+
+    
+    const addPackageForm = document.getElementById('addPackageForm');
+    addPackageForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        let formData = new FormData();
+        formData.append('uid', '{{course_package_obj.uid}}');
+        formData.append('package_title', document.getElementById('lesson_title').value);
+        formData.append('package_description', description);
+        formData.append('actual_price', document.getElementById('actual_price').value);
+        formData.append('selling_price', document.getElementById('selling_price').value);
+        formData.append('package_type', document.getElementById('subjects').value);
+        formData.append('subscription_type', document.getElementById('expiryType').value);
+
+        formData.forEach((value, key) => {
+            console.log(key, value);
+        });
+        
+
+        if (document.getElementById('expiryType').value === 'Fixed Date') {
+            formData.append('sell_till_date', document.getElementById('expiryDate').value);
+            
+        } else if (document.getElementById('expiryType').value === 'Subscription') {
+            formData.append('days', document.getElementById('subscriptionDays').value);
+            
+        }
+
+        if (webImgReUploaded) {
+            formData.append('web_image', document.getElementById('image_for_web').files[0]);
+        };
+        
+        if (appImgReUploaded) {
+            formData.append('mobile_image', document.getElementById('image_for_app').files[0]);
+        };
+
+                
+
+        if (document.getElementById('subjects').value === 'video') {
+            let res = await axios.patch('/api/courses/course-packages/', formData, {
+                headers: {
+                    'X-CSRFToken' : csrfToken,
+                }
+            }); 
+            console.log(res.data);
+            if (res.data.status === true) {
+                alert('Lesson updated successfully');
+
+            } else {    
+                alert('Something went wrong');
+            }
+            
+            
+        } else {
+            // fetch for test API
+        }
+        
+        
+        
+    });
+    
+    
+    
+    
 
 
     // script for nav btn start
@@ -394,7 +405,7 @@
     var allSubjects; // all subjects array
     let subjectUid;
     let chapterUid;
-    const listItems = [];
+    let listItems = [];
     let subjectsArray = [];
     let chaptersArray = [];
     // let lessonsArray = [];
@@ -419,22 +430,62 @@
         
     });
 
-    function changeExpiryType() {
-        if (event.currentTarget.value === 'fixed-date') {
-            expiryDateContainer.style.display = 'block';
-            subscriptionContainer.style.display = 'none';
-        } else if (event.currentTarget.value === 'subscription') {
-            subscriptionContainer.style.display = 'block';
-            expiryDateContainer.style.display = 'none';
-        } else {
-            expiryDateContainer.style.display = 'none';
-            subscriptionContainer.style.display = 'none';
-        }
-    }
+    const belowTypePicker = document.getElementById('belowTypePicker');
     
-  
+    let expiryDateDiv = document.createElement('div');
+    expiryDateDiv.innerHTML = `
+    <label for="expiryDate">Choose Expiry Date</label>
+    <input type="date" required name="expiryDate" class="form-control" id="expiryDate">
+    `;
 
+    let subscriptionDiv = document.createElement('div');
+    subscriptionDiv.innerHTML = `
+    <label for="subscriptionDays">Subscription Period</label>
+    <input type="number" value={{course_package_obj.days}} required id="subscriptionDays" class="form-control" placeholder="Enter Subscription Period (in Days)">
+    `;
 
+    function changeExpiryType() {
+        if (document.getElementById('expiryType').value === 'Fixed Date') {
+            belowTypePicker.appendChild(expiryDateDiv);
+            try {
+                subscriptionDiv.remove();
+            } catch (error) {
+                console.log(error);
+            }
+        } else if (document.getElementById('expiryType').value === 'Subscription') {
+            belowTypePicker.appendChild(subscriptionDiv);
+            try {
+                expiryDateDiv.remove();
+            } catch (error) {
+                console.log(error);
+            }
+        } else {
+            try {
+                subscriptionDiv.remove();
+                expiryDateDiv.remove();
+            } catch (error) {
+                console.log(error);
+            }
+        }
+    };
+    changeExpiryType();
+
+    // code for parsing date from Sept. 9, 2021 to 09-09-2021
+    function parseDate(date) {
+        let dt = new Date(date);
+        let month = dt.getMonth() + 1;
+        if (month < 10) {
+            month = '0' + String(month);
+        } 
+        let day = dt.getDate();
+
+        if (day < 10) {
+            day = '0' + String(day);
+        }
+        let year = dt.getFullYear();
+        return `${year}-${month}-${day}`;
+    };
+    document.getElementById('expiryDate').value = parseDate('{{course_package_obj.sell_till_date}}');
 
     async function updateOrder(editingMode) {
         if (editingMode === 'subject') {
@@ -577,6 +628,7 @@
                 subjectUid = selectedSubject.value;
                 let allChapters;
                 chaptersArray=[];
+                titleData.innerHTML = '<h3>Reorder Chapters</h3>';
                 allSubjects.subjects.forEach((e, i) => {
                     if (e.subject_uid === subjectUid) {
                         chaptergroupuid = e.uid;
@@ -602,6 +654,7 @@
             let temp;
 
             selectedChapter.addEventListener('change', function () {
+                titleData.innerHTML = '<h3>Reorder Lessons</h3>';
                 chapterUid = selectedChapter.value;
                 // updating lessons array
                 allSubjects.subjects.forEach(e => {
@@ -637,6 +690,7 @@
 
         function createList(array) {
             draggable_list.innerHTML = '';
+            listItems = [];
             array.forEach((person, index) => {
                 const listItem = document.createElement('li');
                 listItem.className = 'subject-li';
@@ -688,6 +742,7 @@
         function dragDrop() {
             const dragEndIndex = +this.getAttribute('data-index');
             swapItems(dragStartIndex, dragEndIndex);
+            // console.log('dragDrop', dragStartIndex, dragEndIndex);
             saveBtn.style.backgroundColor = '#9fff83';
             subjectsChanged = true;
 
@@ -696,8 +751,10 @@
 
         // Swap list items that are drag and drop
         function swapItems(fromIndex, toIndex) {
+            console.log(listItems);
             const itemOne = listItems[fromIndex].querySelector('.draggable');
             const itemTwo = listItems[toIndex].querySelector('.draggable');
+            // console.log(itemOne, itemTwo);
             listItems[fromIndex].appendChild(itemTwo);
             listItems[toIndex].appendChild(itemOne);
         }
@@ -729,14 +786,7 @@ var CSRF_TOKEN = '{{csrf_token}}'
 
 </script>
 
-<script>
-    let editor = CKEDITOR.replace( 'description' );
-    var description;
-    editor.on( 'change', function( evt ) {
-    // getData() returns CKEditor's HTML content.
-    description =  evt.editor.getData();            
-});
-</script>
+
 
 
 {% endblock %}

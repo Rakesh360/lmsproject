@@ -1,0 +1,109 @@
+{%extends 'base.html'%}
+
+{%block start%}
+
+<!-- <div style="margin-top: 6%; display: flex;">
+    <div style="margin: 0 auto;">
+        <button class="btn btn-primary" style="font-size: xx-large;">Content</button>
+    </div>
+    
+    <div style="margin: 0 auto;">
+        <button class="btn btn-primary" style="font-size: xx-large;">Publish</button>
+    </div>
+</div> -->
+
+
+<div style="margin-top: 6%; display: flex;">
+    <div style="margin: 0 auto; font-size: xxx-large;">
+        All Live 
+    </div>
+
+    <div style="margin-right: 5px; margin-top: 2px;">
+        <a href="{% url 'add_live' %}" class="btn btn-primary">Add New</a href="">
+    </div>
+</div>
+
+<hr>
+
+<div class="col-12" style="margin-top: 2%;">
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table id="example3" class="display" style="min-width: 845px">
+                    <thead>
+                        <tr>
+                            <th>S. No.</th>
+                            <th>Course Package</th>
+                            <th>Subject</th>
+                            <th>Chapter</th>
+                            <th>Live name</th>
+                            <th>Live Url</th>
+                            <th> Is Live Started </th>
+                            <th> Is Live Ended </th>
+
+                            <th>live date time At</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        {% for obj in objs %}
+
+                        <tr>
+                            <td>{{forloop.counter}}</td>
+                            <td class="chapter">{{obj.course_package.package_title}}</td>
+                            <td class="chapter">{{obj.subject.subject_title}}</td>
+                            <td class="subject">{{obj.chapter.chapter_title}}</td>
+                            <td>{{obj.live_name}}</td>
+                            
+                            <td>
+                                <a class="btn btn-primary" href="{% url 'preview_video_live' obj.uid %}" target="_blank">Open</a>
+                            </td>
+                            <td>{{obj.is_live_started}}</td>
+                            <td>{{obj.is_live_ended}}</td>
+                            <td>{{obj.live_date_time}}</td>
+
+
+
+                            <td>
+                                <div class="dropdown show">
+                                    <a class="btn btn-primary dropdown-toggle" href="#" role="button"
+                                        id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true"
+                                        aria-expanded="false">
+                                        <i class="la la-pencil"></i>
+                                    </a>
+
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                        <a class="dropdown-item" href="{% url 'edit_live' obj.uid %}">Edit</a>
+                                        <a class="dropdown-item" href="{% url 'change_live_status' obj.uid%}?status=start">
+                                            Start Live {% if obj.is_live_started%} ✔️ {% endif %}
+                                        
+                                        </a>
+                                        <a class="dropdown-item"  href="{% url 'change_live_status' obj.uid%}?status=end">End Live
+                                            {% if obj.is_live_ended%} ✔️ {% endif %}
+                                        </a>
+                                        <a class="dropdown-item"  href="{% url 'change_live_status' obj.uid%}?status=cancel">Cancel Live</a>
+
+
+
+
+                                    </div>
+                                </div>
+
+                            </td>
+                        </tr>
+
+                        {% endfor %}
+
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+{%endblock%}

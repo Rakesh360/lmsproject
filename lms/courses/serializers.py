@@ -35,7 +35,7 @@ class LessonSerializer(serializers.ModelSerializer):
 
     video = VideoSerializer(required = False)
     lesson_type = serializers.CharField(required = True)
-    video_platform = serializers.CharField(required = True)
+    video_platform = serializers.CharField(required = False)
     is_free = serializers.BooleanField(required= True)
 
     class Meta:
@@ -48,10 +48,10 @@ class LessonSerializer(serializers.ModelSerializer):
             lesson_title = validated_data['lesson_title']
             chapter = validated_data['chapter']
             lesson_type = validated_data['lesson_type']
-            video_platform = validated_data['video_platform']
             is_free = validated_data['is_free']
             video_obj = None
             document_obj = None
+            video_platform = None
             if 'document' in validated_data:
                 document_obj = validated_data['document']
                 # if not document is None: 
@@ -65,14 +65,19 @@ class LessonSerializer(serializers.ModelSerializer):
                     #video_uploaded_on = validated_data['video']['video_uploaded_on'],
                     video_link = validated_data['video']['video_link']
                 )
+            
+            if 'video_platform' in validated_data:
+                video_platform = validated_data['video_platform']
+            else:
+                video_platform = 'Youtube'
 
             
             obj = Lessons.objects.create(
                 lesson_title = lesson_title,
                 chapter = chapter,
                 lesson_type = lesson_type,
-                video_platform = video_platform,
                 is_free = is_free,
+                video_platform = video_platform,
                 video = video_obj,
                 document = document_obj
             )
@@ -195,4 +200,10 @@ class GoLiveSerializer(serializers.ModelSerializer):
 class CoupounSerializer(serializers.ModelSerializer):
     class Meta:
         model = Coupoun
+        exclude = ['created_at' , 'updated_at']
+
+
+class SliderSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Slider
         exclude = ['created_at' , 'updated_at']

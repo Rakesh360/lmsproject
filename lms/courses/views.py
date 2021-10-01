@@ -1,4 +1,3 @@
-
 from django.shortcuts import redirect, render
 from .models import *
 from .serializers import *
@@ -172,6 +171,19 @@ def course_packages(request):
     return render(request , 'new_dashboard/all_packages.html' , context)
 
 
+def package_end_purchase(request , uid):
+    try:
+        obj = CoursePackage.objects.get(uid = uid)
+        obj.end_purchase = not obj.end_purchase
+        obj.save()
+        messages.success(request, 'Purchase Updated')
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+    
+    except Exception as e:
+        return redirect('/')
+
+
 @staff_member_required(login_url='/accounts/login/')
 def add_subjects_courses(request,uid):
     course_package_obj = CoursePackage.objects.get(uid = uid)
@@ -247,57 +259,87 @@ def add_lessons(request):
 def update_lesson(request , uid):
     try:
         lesson_obj = Lessons.objects.get(uid = uid)
-        if request.method == 'POST':
-            chapters = request.POST.get('chapters')
-            lesson_title = request.POST.get('lesson_title')
-            video_uploaded_on = request.POST.get('video_uploaded_on')
-            video_link = request.POST.get('video_link')
-            is_free = request.POST.get('is_free')
-            lesson_type = request.POST.get('lesson_type')
-    
-            lesson_obj.lesson_title =lesson_title
-            lesson_obj.is_free = is_free
-            lesson_obj.subject_chapters = SubjectChapters.objects.get(uid = chapters)
-            lesson_obj.lesson_type = lesson_type
-            if lesson_type == 'Video':
-                obj = Video.objects.create(
-                video_uploaded_on =video_uploaded_on,
-                video_link    =video_link,
-                )
-                lesson_obj.video = obj
-            elif lesson_type == 'Document':
-                obj = Document.objects.create(
-                    document_file =  request.FILES['document']
-                )
-                lesson_obj.document = obj
-            else:
-                obj = Video.objects.create(
-                video_uploaded_on =video_uploaded_on,
-                video_link    =video_link,
-                )
-                lesson_obj.video = obj
-                obj = Document.objects.create(
-                    document_file =  request.FILES['document']
-                )
-                lesson_obj.document = obj
+        course_package_lessons = CoursePackageLessons.objects.filter(lesson = lesson_obj)
+        #print(course_package_lesson)
 
-            lesson_obj.save()
-
-            messages.success(request, 'Lesson update Successfully')
-            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+        context = {
+            'lesson' : lesson_obj ,
+            'subject_chapters' : SubjectChapters.objects.all(),
+            'course_packages': CoursePackageLessons.objects.all(),
+            'all_course_packages' : CoursePackage.objects.all(),
+            "course_package_lessons" : course_package_lessons
+            }
+        return render(request , 'new_dashboard/update_lesson.html',context )
 
     except Exception as e:
         print(e)
-    
-    context = {
-        'lesson' : lesson_obj ,
-        'subject_chapters' : SubjectChapters.objects.all(),
-        'course_packages': CoursePackage.objects.all()
+        #return redirect('/')
+
+
+def go_live(request):
+    objs = GoLive.objects.all()
+    context = {'objs' : objs}
+    return render(request , 'new_dashboard/go_live.html' , context)
+
+
+@staff_member_required(login_url='/accounts/login/')
+def add_live(request):
+    context = {'subject_chapters' : SubjectChapters.objects.all(), 'course_packages' : CoursePackage.objects.all()}
+
+    return render(request , 'new_dashboard/add_live.html' , context)
+
+def edit_live(request, uid):
+    try:
+        obj = GoLive.objects.get(uid = uid)
+        context = {
+            'live' : obj,
+            'subject_chapters' : SubjectChapters.objects.all(),
+            'all_course_packages' : CoursePackage.objects.all(),
         }
-    return render(request , 'new_dashboard/update_lesson.html',context )
+        return render(request , 'new_dashboard/edit_live.html' , context)
+    except Exception as e:
+        print(e)
+        return redirect('/')
+
+def change_live_status(request , uid):
+    try:
+        obj = GoLive.objects.get(uid = uid)
+        if request.GET.get('status') == 'start':
+            obj.is_live_started = True
+            obj.save()
+        elif request.GET.get('status') == 'end':
+            obj.is_live_ended = True
+            obj.save()
+            lesson_obj = Lessons.objects.create(
+                lesson_title = obj.live_name ,
+                chapter = obj.chapter,
+                lesson_type ='Video',
+                video = Video.objects.create(
+                    video_uploaded_on = 'Youtube',
+                    video_link = obj.live_url
+                )
+            )
+            package_subject_obj , _ = CoursePackageSubjects.objects.get_or_create(
+                    course_package = obj.course_package,
+                    subject = obj.subject
+            )
+            package_chapter_obj , _ = CoursePackageChapters.objects.get_or_create(
+                course_package_subject = package_subject_obj,
+                subject_chapter = obj.chapter
+            )
+            package_lesson_obj = CoursePackageLessons.objects.get_or_create(
+                course_package_chapter = package_chapter_obj,
+                lesson = lesson_obj,
+            )
+        elif request.GET.get('status') == 'cancel':
+            print('cancel')
+        
+        messages.success(request, 'Live updated')
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
-
+    except Exception as e:
+        return redirect('/')
 
 def live_stream_view(request , id):
     context = {'live' : LiveStream.objects.get(uid = id)}
@@ -367,8 +409,24 @@ def create_live(request):
     return render(request , 'live/create_live.html', context)
 
 def preview_video(request, uid):
+    lesson_obj = Lessons.objects.get(uid = uid)
+    live_obj = GoLive.objects.get(uid = uid)
+    context = {
+        'lesson' : lesson_obj,
+        'live' : live_obj,
+    }
     
-    return render(request , 'new_dashboard/preview_video.html')
+    return render(request , 'new_dashboard/preview_video.html', context)
+
+
+def preview_video_live(request, uid):
+    lesson_obj = GoLive.objects.get(uid = uid)
+    context = {
+        'lesson' : lesson_obj,
+    }
+    
+    return render(request , 'new_dashboard/preview_video_live.html', context)
+
 
 def all_coupons(request ):
     context = {
@@ -380,8 +438,34 @@ def all_coupons(request ):
 
 
 def add_coupons(request):
+    context = {
+        'course_packages' : CoursePackage.objects.all(),
+    }
 
-    return render(request, 'new_dashboard/coupons/add_coupons.html' , )
+    return render(request, 'new_dashboard/coupons/add_coupons.html' , context)
+
+
+def edit_coupon(request, uid):
+    context = {
+        'course_packages' : CoursePackage.objects.all(),
+        'coupon' : Coupoun.objects.get(uid = uid)
+    }
+
+    return render(request, 'new_dashboard/coupons/edit_coupon.html' , context)
+
+
+def delete_coupon(request):
+    context = {
+        'allcoupons' : Coupoun.objects.all(),
+        'subjects' : Subject.objects.all(),
+        'chapters' : SubjectChapters.objects.all(),
+    }
+    try:
+        Coupoun.objects.get(uid = request.GET.get('uid')).delete()
+    except Exception as e:
+        print(e)
+    messages.success(request, 'Subject Deleted')
+    return render(request, 'new_dashboard/coupons/all_coupons.html' , context)
 
 
 def all_test(request):
@@ -401,3 +485,15 @@ def all_question(request):
 
 def add_question(request):
     return render(request , 'new_dashboard/coupons/add_coupons_question.html')
+
+
+
+def send_notification(request):
+    context = {
+        'course_packages' : CoursePackage.objects.all(),
+    }
+    return render(request , 'new_dashboard/manage_app/send_notification.html', context)
+
+
+def all_slider(request):
+    return render(request , 'new_dashboard/manage_app/all_slider.html')

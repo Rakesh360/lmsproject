@@ -44,7 +44,7 @@
                             <td class="package">{{course_package.package_title}}</td>
                             <td class="type">{{course_package.package_type}}</td>
                             <td>{{course_package.is_active}}</td>
-                            <td>{{course_package.sell_till}}   </td>
+                            <td>{{course_package.sell_till_date}}</td>
                             <td>{{course_package.created_at}}</td>
 
                             <td>
@@ -53,6 +53,10 @@
                                 <a href="{% url 'delete_course_package' %}?uid={{course_package.uid}}"
                                 
                                 class="btn btn-sm btn-danger"><i class="la la-trash-o"></i></a>
+                                {% if not course_package.end_purchase  %}
+                                <a href="{% url 'package_end_purchase' course_package.uid%}"  class="btn btn-sm btn-primary ">End Purchase</a>
+                                {% endif %}
+                                
                             </td>
                         </tr>
 

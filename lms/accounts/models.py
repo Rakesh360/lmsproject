@@ -24,8 +24,8 @@ class Student(User):
     
     course = models.CharField(max_length=100 , default='')
     otp = models.CharField(max_length=8 , null=True , blank=True)
-    is_phone_verified = models.BooleanField(default=False)
-    is_email_verified = models.BooleanField(default=False)
+    is_phone_verified = models.BooleanField(default=True)
+    is_email_verified = models.BooleanField(default=True)
     email_verification_token = models.CharField(max_length=200 , null=True, blank=True)
     forget_password_token = models.CharField(max_length=200 ,null=True, blank=True)
     last_login_time = models.DateTimeField(null=True, blank=True)

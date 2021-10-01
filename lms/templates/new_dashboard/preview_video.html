@@ -56,16 +56,18 @@
 
 
 <div class="row">
+    {% if lesson.video_platform == 'Live' %}
     <div class="col-md-7">
         <div class="card">
             <div class="card-header">
-                <h4>Video</h4>
+                <h4>{{lesson.lesson_title}}</h4>
             </div>
             <div class="card-body">
-                <iframe  height=500 width="100%" src="https://www.youtube.com/embed/bC3WAxiLnDY" style="border: 1px solid black;"></iframe>
+                <iframe  height=500 width="100%" src="https://www.youtube.com/embed/{{lesson.video.video_link}}" style="border: 1px solid black;"></iframe>
             </div>
         </div>
     </div>
+
     <div class="col-md-5">
         <div class="card">
             <div class="card-header">
@@ -167,6 +169,20 @@
         </div>
 
     </div>
+
+    {% else %}
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h4>{{lesson.lesson_title}}</h4>
+            </div>
+            <div class="card-body">
+                <iframe  height=500 width="100%" src="https://www.youtube.com/embed/{{lesson.video.video_link}}" style="border: 1px solid black;"></iframe>
+            </div>
+        </div>
+    </div>
+
+    {% endif %}
 </div>
 
 

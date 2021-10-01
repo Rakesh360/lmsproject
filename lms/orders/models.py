@@ -10,6 +10,7 @@ class Order(BaseModel):
     amount = models.IntegerField(default=0)
     is_paid = models.BooleanField(default=False)
     response = models.TextField(default="{}")
+    coupon = models.ForeignKey(Coupoun , on_delete=models.SET_NULL , null=True , blank=True)
     payement_id = models.CharField(max_length=1000 , null = True , blank=True)
     order_id = models.CharField(max_length=1000,  null = True , blank=True)
     order_creation_date_time = models.DateTimeField(auto_now_add=True)

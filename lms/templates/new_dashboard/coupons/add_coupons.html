@@ -15,12 +15,12 @@
 <div class="card">
     <div class="card-body">
         {% include "utils/alert.html" %}
-        <form>
+        <form id="addCouponForm">
             {% csrf_token %}
             <div class="form-row mb-4">
                 <div class="form-group col-md-6">
-                    <label for="coupon_code">Coupon Code</label>
-                    <input type="text" class="form-control" required name="coupon_code" id="coupon_code"
+                    <label for="coupon_code">Coupon Code (max 30)</label>
+                    <input type="text" class="form-control" required minlength="4" maxlength="30" name="coupon_code" id="coupon_code"
                         placeholder="Enter Unique Coupon Code">
                 </div>
 
@@ -28,34 +28,33 @@
 
                 <div class="form-group col-md-6">
                     <label for="coupon_validity">Coupon Validity</label>
-                    <input type="datetime-local" class="form-control" name="coupon_validity" id="coupon_validity">
+                    <input type="datetime-local" required class="form-control" name="coupon_validity" id="coupon_validity">
                 </div>
                 <div class="form-group col-md-6">
 
                     <label for="usage_limit">Total Usase Limits</label>
-                    <input type="number" name="usage_limit" class="form-control" id="usage_limit" placeholder="Total Usase alowed for this coupon">
+                    <input type="number" name="usage_limit" max="9999999" required class="form-control" id="usage_limit" placeholder="Total Usase alowed for this coupon">
                 </div>
 
                 <div class="form-group col-md-6">
                     <label for="per_user_usase_limit">Per User Limit</label>
-                    <input type="number" name="per_user_usase_limit" class="form-control" id="per_user_usase_limit" placeholder="Usase allowed per user">
+                    <input type="number" name="per_user_usase_limit" max="9999999" required class="form-control" id="per_user_usase_limit" placeholder="Usase allowed per user">
                 </div>
 
 
             </div>
             <div class="form-row mb-4" id="video_upload">
 
-                <div class="form-group col-md-6">
+                <div class="form-group col-md-6" id="discountUpContainer">
                     <label for="discount_type">Discount Type</label>
                     <select required class="form-control" name="discount_type" id="discount_type" onchange="changeDiscountType()">
-                        <option selected disabled>Select Discount Type</option>
-                        <option value="percentage">Percentage Discount</option>
-                        <option value="fixed">Fixed Discount</option>
+                        <option selected disabled value="">Select Discount Type</option>
+                        <option value="Percentage Discount">Percentage Discount</option>
+                        <option value="Fixed Discount">Fixed Discount</option>
                     </select>
 
-                    <div id="discountDiv" style="display: none;">
-                        <label for="discount_amount" class="mt-4"> How Much Discount? </label>
-                        <input type="number" name="discount_amount" id="discount_amount" class="form-control">
+                    <div id="discountDiv">
+
                     </div>
 
                 </div>
@@ -64,7 +63,7 @@
                 <div class="form-group col-md-6">
                         <label for="apply_coupon_type">Where you want to apply this coupon?</label>
                         <select required class="form-control" name="apply_coupon_type" id="apply_coupon_type" onchange="changeApplyPackage()">
-                            <option selected disabled>None</option>
+                            <option selected disabled value="">None</option>
                             <option value="all-packages">All Packages</option>
                             <option value="selected-packages">Selected Packages</option>
                         </select>
@@ -83,7 +82,10 @@
                                 
                                           
                                         </div>
-                                
+         
+                                        
+
+
                                         <div class="selected">
                                           Choose Packages to include
                                         </div>
@@ -103,7 +105,7 @@
                                 </table>  
                             </div> 
                         </div>
-            </div>
+                </div>
 
             
 
@@ -117,7 +119,6 @@
 
 <script>
     const tags = document.getElementById('tags');
-    const discountDiv = document.getElementById('discountDiv');
     const packageDiv = document.getElementById('packageDiv');
     const discount_type = document.getElementById('discount_type');
     const discount_amount = document.getElementById('discount_amount');
@@ -125,6 +126,8 @@
 
 
     var is_all_Package = true;
+
+    
 
     function parseDate(date) {
         var date = new Date(date);
@@ -219,10 +222,7 @@
             td1.className = "tag";
             td1.innerHTML = packageName;
             td1.id = packageUid;
-            let td2 = document.createElement('td');
-            td2.innerHTML = '<input type="datetime-local" class="packageDate" onchange="handleChangePackageDateTime(event)" name='+packageUid+'>';
             tagElement.appendChild(td1);
-            tagElement.appendChild(td2);
             tags.appendChild(tagElement);
         }
     
@@ -251,7 +251,7 @@
         }
 
         return flag;
-    }
+    };
 
     function clickTag(event) {
         let tagName = event.target.innerHTML;
@@ -281,14 +281,26 @@
     const csrfToken = getCookie('csrftoken');
 
 
+    const discountDiv = document.getElementById('discountDiv');
+    let fixedInnerHtml = `
+        <label for="discount_amount" class="mt-4"> How Much Discount? </label>
+        <input type="number" required placeholder="Enter amount in Rs" max="9999999" name="discount_amount" id="discount_amount" class="form-control">
+    `;
+
+    let percentageInnerHtml = `
+        <label for="discount_amount" class="mt-4"> How Much Discount? </label>
+        <input type="number" required placeholder="Enter in percentage" max="100" name="discount_amount" id="discount_amount" class="form-control">
+    `;
+
     function changeDiscountType() {
         var discount_type_value = discount_type.value;
-        discountDiv.style.display = 'block';
-        if (discount_type_value == 'percentage') {
-            discount_amount.placeholder = 'Enter Percentage';
+        if (discount_type_value == 'Percentage Discount') {
+            discountDiv.innerHTML = ';'
+            discountDiv.innerHTML = percentageInnerHtml;
             
-        } else if (discount_type_value == 'fixed') {
-            discount_amount.placeholder = 'Enter Fixed Amount';
+        } else if (discount_type_value == 'Fixed Discount') {
+            discountDiv.innerHTML = ';'
+            discountDiv.innerHTML = fixedInnerHtml;
         }
     }
 
@@ -305,109 +317,77 @@
 
     }
 
-
-    function deleteTag(event) {
-        event.currentTarget.parentNode.remove();
-    };
-
-
-    function checkTag(tagName) {
-        let allTags = document.getElementsByClassName('tag');
-        let flag = false;
-        for (let i = 0; i < allTags.length; i++) {
-            let singleTag = allTags[i];
-            if (singleTag.innerHTML === tagName) {
-                flag = true;
-                break;
-            }
-            
-        }
-
-        return flag;
-    }
-
-
-
-    function includeTag(event, id) {
-        let tagName = event.currentTarget.selectedOptions[0].innerText;
-        let tagId = event.currentTarget.value;
-        if (event.currentTarget.value === "") {
-            console.log('nothing selected');
-        } else {
-            if (checkTag(tagName) === true ) {
-                console.log('Tag already exists...');
-            } else {
-                let tagElement = document.createElement('tr');
-                // tagElement.className = "badge badge-dark p-1 m-1 tag";
-                let td1 = document.createElement('td');
-                td1.className = "tag";
-                td1.innerHTML = tagName;
-                td1.id = tagId;
-                let td2 = document.createElement('td');
-                td2.innerHTML = '<input type="datetime-local" class="packageDate" onchange="handleChangePackageDateTime(event)" name='+id+'>';
-                let td3 = document.createElement('td');
-                td3.innerHTML = '❌';
-                td3.className = 'delBtn';
-                td3.addEventListener("click", deleteTag);
-                tagElement.appendChild(td1);
-                tagElement.appendChild(td2);
-                tagElement.appendChild(td3);
-                tags.appendChild(tagElement);
-            }
-        }
-    }
-
-    const submitForm = async (e) => {
+    const addCouponForm = document.getElementById('addCouponForm');
+    addCouponForm.addEventListener('submit', async function(e) {
         e.preventDefault();
 
-        
-        let data = {
-            'coupon_code': document.getElementById('coupon_code').value,
-            'coupon_validity': document.getElementById('coupon_validity').value,
-            'discount_type': document.getElementById('discount_type').value,
-            'discount': document.getElementById('discount_amount').value,
-            'total_usage_limit': document.getElementById('usage_limit').value,
-            'per_user_limit': document.getElementById('per_user_usase_limit').value,
+        let allTags = document.getElementsByClassName('tag');
+        let allPackageDates = document.getElementsByClassName('packageDate');
+        let packages = [];
+        for (let i = 0; i < allTags.length; i++) {
+            packages.push(allTags[i].id);
+            
+            
         };
 
-        // document upload
-        if (document.getElementById('apply_coupon_type') === 'all-packages') {
-            data['courses'] = ['all']
-        } else {
-            let allTags = document.getElementsByClassName('tag');
-            let allPackageDates = document.getElementsByClassName('packageDate');
-            let packages = [];
-            for (let i = 0; i < allTags.length; i++) {
-                if (allPackageDates[i].value === '') {
-                    packages.push({
-                        "uid" : allTags[i].id,
-                    });
-                } else {
-                    packages.push({
-                        "uid" : allTags[i].id,
-                    });
-                }
-                
-                
-            };
-            data['packages'] = packages;
-        }
+        let coupon_code = document.getElementById('coupon_code').value;
+        let data = {
+        'coupon_code': coupon_code,
+        'coupon_validity': document.getElementById('coupon_validity').value,
+        'discount_type': document.getElementById('discount_type').value,
+        'discount': document.getElementById('discount_amount').value,
+        'total_usage_limit': document.getElementById('usage_limit').value,
+        'per_user_limit': document.getElementById('per_user_usase_limit').value,
+        };
 
-        console.log(data);
-
-        let res = await axios.post('/api/courses/coupon/', data, {
+        let couponData = await fetch('/api/courses/coupon/?coupon_code='+ coupon_code, {
+            method: 'GET',
             headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': csrfToken
+                'X-CSRFToken': csrfToken,
             }
         });
 
-        console.log(res);
+        couponData = await couponData.json();
+        let alreadyExists = couponData.message;
         
-    };
 
-    const updateBtn = document.getElementById('submitFormBtn');
-    updateBtn.addEventListener('click', submitForm)
+        // document upload
+        if (document.getElementById('apply_coupon_type') === 'all-packages') {
+            data['courses'] = "all"
+        } else {
+            data['courses'] = packages;
+        }
+
+        if (alreadyExists === true){
+            alert('Coupon already exists. Please change the coupon code.');
+            
+        } else{
+            if (document.getElementById('apply_coupon_type') === 'selected-packages' && allTags.length === 0) {
+                alert('Please select atleast one package');
+            } else {
+                let res = await fetch('/api/courses/coupon/', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': csrfToken,
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                });
+    
+                console.log(res);
+                
+                alert(res.statusText);
+                res = await res.json();
+                console.log(res);
+                window.location.href = '/courses/allcoupons/';
+            }
+        }
+
+
+        
+    });
+
+
 
     
 </script>
