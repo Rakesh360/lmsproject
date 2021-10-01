@@ -22,19 +22,19 @@ class AccountMixin:
     def login(self , request):
        try:
             data = request.data
-            if data.get('email') is None or data.get('password') is None:
-                return Response( {'staus' :400 , 'message' : 'email and password both are requied' , 'errors' : []})
+            if data.get('phone_number') is None or data.get('password') is None:
+                return Response( {'staus' :400 , 'message' : 'phone_number and password both are requied' , 'errors' : []})
             
-            student = Student.objects.filter(email = data.get('email'))
+            student = Student.objects.filter(phone_number = data.get('phone_number'))
             if not student.exists():
                 return Response( {'staus' :400 , 'message' : 'account not found' , 'errors' : []})
             
-            if not student[0].is_phone_verified:
-                return Response( {'staus' :400 , 'message' : 'your phone is not verified' , 'errors' : []})
+            # if not student[0].is_phone_verified:
+            #     return Response( {'staus' :400 , 'message' : 'your phone is not verified' , 'errors' : []})
 
 
 
-            student_obj = authenticate(username = data.get('email') , password = data.get('password'))
+            student_obj = authenticate(username =student.email , password = data.get('password'))
 
             if not student_obj:
                 return Response( {'staus' :400 , 'message' : 'invalid password' , 'errors' : []})
