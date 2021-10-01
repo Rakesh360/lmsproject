@@ -34,7 +34,7 @@ class AccountMixin:
 
 
 
-            student_obj = authenticate(username =student.email , password = data.get('password'))
+            student_obj = authenticate(username =student[0].email , password = data.get('password'))
 
             if not student_obj:
                 return Response( {'staus' :400 , 'message' : 'invalid password' , 'errors' : []})
