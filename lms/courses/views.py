@@ -281,6 +281,9 @@ def go_live(request):
     context = {'objs' : objs}
     return render(request , 'new_dashboard/go_live.html' , context)
 
+def chat_live(request , room_id):
+
+    return render(request , 'new_dashboard/chat_live.html' , context = {'room_id' : room_id})
 
 @staff_member_required(login_url='/accounts/login/')
 def add_live(request):

@@ -34,7 +34,7 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
-    #'channels',
+    'channels',
     'jet',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -91,7 +91,7 @@ TEMPLATES = [
 #WSGI_APPLICATION = 'lms.wsgi.application'
 
 WSGI_APPLICATION = 'lms.wsgi.application'
-#ASGI_APPLICATION = 'lms.asgi.application'
+ASGI_APPLICATION = 'lms.asgi.application'
 
 
 # Database
