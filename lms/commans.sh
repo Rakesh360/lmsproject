@@ -21,3 +21,15 @@ sudo systemctl restart nginx
 # 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 
 
 
+
+
+
+ws://13.232.227.45:8000/ws/room/1e7ea60b-c770-4e08-a9b9-d8cc7ff76043/
+
+1. Landing page
+2. Course detail page
+3  Course learning page
+4. Login
+5. Registration
+6. Account Page  with order page
+
