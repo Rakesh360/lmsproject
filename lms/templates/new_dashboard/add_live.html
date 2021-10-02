@@ -90,8 +90,8 @@
             <div class="form-row mb-4">
                 <div class="form-group col-md-6">
                     <label for="live_image">Upload Live Image Here</label>
-                    <input type="file" name="live_image" class="form-control" id="live_image">
-                    
+                    <input type="file" name="live_image" onchange="renderDocumentName(event)" class="form-control" id="live_image">
+                    <div id="docNameDiv">  </div>
                 </div>
                 
 
@@ -280,10 +280,7 @@
             td1.className = "tag";
             td1.innerHTML = packageName;
             td1.id = packageUid;
-            let td2 = document.createElement('td');
-            td2.innerHTML = '<input type="datetime-local" class="packageDate" onchange="handleChangePackageDateTime(event)" name='+packageUid+'>';
             tagElement.appendChild(td1);
-            tagElement.appendChild(td2);
             tags.appendChild(tagElement);
         }
     
@@ -319,6 +316,26 @@
         let tagName = event.target.innerHTML;
         let tagId = event.target.id;
         console.log(tagName, tagId);
+    }
+
+
+    function renderDocumentName(event) {
+        console.log(event.target.parentElement);
+        console.log(event.target.files[0].name);
+        let p = document.getElementById('docNameDiv');
+        p.innerHTML = '';
+        
+        p.innerHTML = event.target.files[0].name + `<i class="fa fa-trash ml-4"  onclick="deleteDocument(event)" aria-hidden="true"></i>`;
+        event.target.parentElement.appendChild(p);
+        docReUploaded = true;
+    }
+
+    function deleteDocument(event) {
+        console.log('clicked');
+        event.target.parentElement.innerHTML = '';
+        document.getElementById('live_image').value = '';
+        docReUploaded = false;
+
     }
     // script for package include dropdown ends
 
@@ -360,19 +377,6 @@
         let packagesUid = [];
         for (let i = 0; i < allTags.length; i++) {
             packagesUid.push(allTags[i].id);
-            if (allPackageDates[i].value === '') {
-                packages.push({
-                    "uid" : allTags[i].id,
-                    "created_at" : parseDate(Date.now()),
-                });
-            } else {
-                packages.push({
-                    "uid" : allTags[i].id,
-                    "created_at" : allPackageDates[i].value
-                });
-            }
-            
-            
         };
 
         let liveData = new FormData();
@@ -417,8 +421,8 @@
         data['packages'] = packages;
 
         if (isLive === true) {
-            if (allTags.length !== 1) {
-                alert('Please select only one package for live lessons');
+            if (allTags.length === 0) {
+                alert('Please select at least one package for live class');
             } else {
 
                 // liveData = {
@@ -440,10 +444,11 @@
                     console.log('no image');
                 };
 
-                liveData.append('course_package', packagesUid[0]);
+                console.log(packagesUid);
+                liveData.append('courses', packagesUid);
+                liveData.append('course_package', packagesUid);
 
                 console.log(liveData);
-                
 
                 fetch('/api/courses/go-live/', {
                     method: 'POST', // or 'PUT'
