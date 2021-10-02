@@ -5,7 +5,7 @@ from rest_framework.routers import DefaultRouter
 router = DefaultRouter()
 
 router.register('document', views.DocumentUpload, )
-router.register('coupon', views.CouponView, )
+#router.register('coupon', views.CouponView, )
 router.register('slider', views.SliderView, )
 
 
@@ -13,6 +13,7 @@ router.register('slider', views.SliderView, )
 
 urlpatterns = [
    path('', views.CoursesView.as_view()), 
+   path('coupon/' , views.CouponView.as_view()),
    path('subjects/' , views.SubjectsView.as_view()),
    path('get-chapters/' , views.ChaptersView.as_view()),
    path('lessons/' , views.LessonsView.as_view()),

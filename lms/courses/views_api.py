@@ -618,7 +618,7 @@ class DocumentUpload(viewsets.ModelViewSet):
     queryset = Document.objects.all()
     serializer_class = DocumentSerializer
 
-class CouponView(viewsets.ModelViewSet):
+class CouponView(APIView):
     queryset = Coupoun.objects.all()
     serializer_class = CoupounSerializer
 
@@ -635,6 +635,40 @@ class CouponView(viewsets.ModelViewSet):
                 'status' : 400,
                 'message' : 'coupon_code is required'
             })
+
+    def post(self , request):
+        try:
+            data = request.data
+            print('SSSSS')
+            if data.get('courses') == 'all':
+                objs = CoursePackage.objects.all()
+                payload = []
+                for obj in objs:
+                    payload.append(obj.uid)
+                data['courses'] = payload
+
+            print(data)
+
+            serializer = CoupounSerializer(data = data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response({
+                    'status' : 200,
+                    'message' : 'coupon added',
+                    'data' : serializer.data
+                })
+            
+            return Response({
+                    'status' : 400,
+                    'message' : 'coupon not added',
+                    'data' : serializer.errors
+                })
+        except Exception as e:
+            return Response({
+                    'status' : 400,
+                    'message' : 'something went wrong',
+                    'data' :  {}
+                })
 
 
 

@@ -7,7 +7,7 @@ def send_notify_by_order( message_title , message_body , image = None):
     
     fcm_api = "AAAAKQWX0c8:APA91bGUh1n-W-_zEgychNe7YR8qOynpRIb07y5gY7xVSDRL7kWnpVEdkgS3dNM_TQ8BfPgxREMjHWqyTuDeyHM-Oec0g2ukZEvhHKTTKfp7jPtTZpOZzTKWxYXQsCUVol3hrE4C870F"
     token= "c8Zk8gcJS7qaUuPUAWt_is:APA91bGzTDgC6wfTlDSSigZimbHwUhPIej8l9Wz27O7YPjFxoITWV0KvI5tf1JjlnNwHoDuuSqjEslKmu-JcQ-kuAnQPy-C8zbmJvULTRSgiZ40wZgCU4_7eOv-qKXYG94BtrBhYcEIB"
-    registration_id = token
+    registration_id = "cfXU9TlvQIuzAEVF36GX_U:APA91bHKHfJi4XQousrzI1rxHxPMghbxRAZ6tF2SqAo51gyiXrsmbAONOqzFNJIb9y30daWeLwWysdQtJCu2Q_Qvg8PGfngva-3ypE5lcQUYdrJPGdjOu_6xsxYdCKtxgjZg8kb0-BUC"
     url = "https://fcm.googleapis.com/fcm/send"
             
     headers = {
