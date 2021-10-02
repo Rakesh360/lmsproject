@@ -639,7 +639,6 @@ class CouponView(APIView):
     def post(self , request):
         try:
             data = request.data
-            print('SSSSS')
             if data.get('courses') == 'all':
                 objs = CoursePackage.objects.all()
                 payload = []
@@ -669,6 +668,38 @@ class CouponView(APIView):
                     'message' : 'something went wrong',
                     'data' :  {}
                 })
+
+    def patch(self , request):
+        try:
+            data = request.data
+            if data.get('courses') == 'all':
+                objs = CoursePackage.objects.all()
+                payload = []
+                for obj in objs:
+                    payload.append(obj.uid)
+                data['courses'] = payload
+            obj = Coupoun.objects.get(uid = data.get('uid'))
+            serializer = CoupounSerializer(obj ,data = data , partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response({
+                    'status' : 200,
+                    'message' : 'coupon updated',
+                    'data' : serializer.data
+                })
+        
+            return Response({
+                    'status' : 400,
+                    'message' : 'coupon not added',
+                    'data' : serializer.errors
+                })
+        except Exception as e:
+            return Response({
+                    'status' : 400,
+                    'message' : 'something went wrong',
+                    'data' :  {}
+                })
+
 
 
 
