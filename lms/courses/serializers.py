@@ -1,4 +1,5 @@
 
+from django.db.models import fields
 from django.utils.translation import LANGUAGE_SESSION_KEY
 from rest_framework import exceptions, serializers
 from base_rest.utils import *
@@ -196,6 +197,10 @@ class GoLiveSerializer(serializers.ModelSerializer):
         exclude = ['created_at' , 'updated_at']    
 
 
+class CoursePackageUid(serializers.ModelSerializer):
+    class Meta:
+        model = CoursePackage
+        fields = ['uid' , ]
 
 class CoupounSerializer(serializers.ModelSerializer):
     class Meta:

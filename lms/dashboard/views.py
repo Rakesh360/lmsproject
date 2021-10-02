@@ -15,7 +15,7 @@ def dashboard(request):
     return render(request , 'dashboard/dashboard.html')
 
 def send_noti(request):
-    send_notify_by_order("Hello" , 'Helo')
+    send_notify_by_order("A new course has been added" , 'BA arts has been updated check the lastest videos.')
     return JsonResponse({'status' : 200})
 
 def students(request):
@@ -50,8 +50,10 @@ def send_notification(request):
         course_packages = request.POST.getlist('course_packages')
         notification_title = request.POST.get('notification_title')
         notification_content = request.POST.get('notification_content')
-        order_obj = Order.objects.filter(course__uid__in = course_packages , is_paid = True)
+        order_objs = Order.objects.filter(course__uid__in = course_packages , is_paid = True)
 
+        for order_obj in order_objs:
+            student_fcm = order_obj.student.fcm_token
 
         send_notify_by_order(order_obj,notification_title ,notification_content  )
         messages.success(request, 'Notification Sent')
