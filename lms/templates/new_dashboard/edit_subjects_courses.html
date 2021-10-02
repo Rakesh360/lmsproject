@@ -321,7 +321,7 @@
         e.preventDefault();
 
         let formData = new FormData();
-        formData.append('uid', '{{course_package_obj.uid}}');
+        formData.append('course_package_uid', '{{course_package_obj.uid}}');
         formData.append('package_title', document.getElementById('lesson_title').value);
         formData.append('package_description', description);
         formData.append('actual_price', document.getElementById('actual_price').value);

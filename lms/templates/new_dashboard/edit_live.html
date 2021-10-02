@@ -49,9 +49,9 @@
                                    
                         <div class="form-group col-md-6" id="lessonLinkDiv">
                             <label for="image">Image</label>
-                            <input type="file" class="form-control" name="image" id="image" placeholder="Choose image to upload">
+                            <input type="file" class="form-control" name="image" id="image" onchange="renderDocumentName(event)" placeholder="Choose image to upload">
                             <br>
-                            <a href="/{{live.live_url}}">View Image</a>
+                            <div id="docNameDiv"> <a href="/{{live.image.uid}}">View Uploaded Image</a> </div>
                         </div>
 
                         <div class="form-group col-md-6" id="lessonLinkDiv">
@@ -225,13 +225,10 @@
             td1.className = "tag";
             td1.innerHTML = packageName;
             td1.id = packageUid;
-            let td2 = document.createElement('td');
-            td2.innerHTML = '<input type="datetime-local" class="packageDate" onchange="handleChangePackageDateTime(event)" name='+packageUid+'>';
             let td3 = document.createElement('td');
             td3.innerHTML = '<button class="btn btn-danger" onclick="deleteTag2(event)">❌</button>';
             tagElement.appendChild(td1);
             tagElement.appendChild(td2);
-            tagElement.appendChild(td3);
             tags.appendChild(tagElement);
         }
     
@@ -275,6 +272,26 @@
 
     function handleChangePackageDateTime(event) {
         console.log(event.target.value);
+    }
+
+    let imgReUpload = false;
+    function renderDocumentName(event) {
+        console.log(event.target.parentElement);
+        console.log(event.target.files[0].name);
+        let p = document.getElementById('docNameDiv');
+        p.innerHTML = '';
+        
+        p.innerHTML = event.target.files[0].name + `<i class="fa fa-trash ml-4"  onclick="deleteDocument(event)" aria-hidden="true"></i>`;
+        event.target.parentElement.appendChild(p);
+        imgReUpload = true;
+    }
+
+    function deleteDocument(event) {
+        console.log('clicked');
+        event.target.parentElement.innerHTML = '';
+        document.getElementById('image').value = '';
+        imgReUpload = false;
+
     }
 
     // script for package include dropdown ends

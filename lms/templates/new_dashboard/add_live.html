@@ -90,8 +90,8 @@
             <div class="form-row mb-4">
                 <div class="form-group col-md-6">
                     <label for="live_image">Upload Live Image Here</label>
-                    <input type="file" name="live_image" class="form-control" id="live_image">
-                    
+                    <input type="file" name="live_image" onchange="renderDocumentName(event)" class="form-control" id="live_image">
+                    <div id="docNameDiv">  </div>
                 </div>
                 
 
@@ -317,6 +317,26 @@
         let tagId = event.target.id;
         console.log(tagName, tagId);
     }
+
+
+    function renderDocumentName(event) {
+        console.log(event.target.parentElement);
+        console.log(event.target.files[0].name);
+        let p = document.getElementById('docNameDiv');
+        p.innerHTML = '';
+        
+        p.innerHTML = event.target.files[0].name + `<i class="fa fa-trash ml-4"  onclick="deleteDocument(event)" aria-hidden="true"></i>`;
+        event.target.parentElement.appendChild(p);
+        docReUploaded = true;
+    }
+
+    function deleteDocument(event) {
+        console.log('clicked');
+        event.target.parentElement.innerHTML = '';
+        document.getElementById('live_image').value = '';
+        docReUploaded = false;
+
+    }
     // script for package include dropdown ends
 
 
@@ -401,8 +421,8 @@
         data['packages'] = packages;
 
         if (isLive === true) {
-            if (allTags.length !== 1) {
-                alert('Please select only one package for live lessons');
+            if (allTags.length === 0) {
+                alert('Please select at least one package for live class');
             } else {
 
                 // liveData = {
@@ -424,6 +444,8 @@
                     console.log('no image');
                 };
 
+                console.log(packagesUid);
+                liveData.append('courses', packagesUid);
                 liveData.append('course_package', packagesUid);
 
                 console.log(liveData);
