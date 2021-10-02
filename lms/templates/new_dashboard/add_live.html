@@ -280,10 +280,7 @@
             td1.className = "tag";
             td1.innerHTML = packageName;
             td1.id = packageUid;
-            let td2 = document.createElement('td');
-            td2.innerHTML = '<input type="datetime-local" class="packageDate" onchange="handleChangePackageDateTime(event)" name='+packageUid+'>';
             tagElement.appendChild(td1);
-            tagElement.appendChild(td2);
             tags.appendChild(tagElement);
         }
     
@@ -360,19 +357,6 @@
         let packagesUid = [];
         for (let i = 0; i < allTags.length; i++) {
             packagesUid.push(allTags[i].id);
-            if (allPackageDates[i].value === '') {
-                packages.push({
-                    "uid" : allTags[i].id,
-                    "created_at" : parseDate(Date.now()),
-                });
-            } else {
-                packages.push({
-                    "uid" : allTags[i].id,
-                    "created_at" : allPackageDates[i].value
-                });
-            }
-            
-            
         };
 
         let liveData = new FormData();
@@ -440,10 +424,9 @@
                     console.log('no image');
                 };
 
-                liveData.append('course_package', packagesUid[0]);
+                liveData.append('course_package', packagesUid);
 
                 console.log(liveData);
-                
 
                 fetch('/api/courses/go-live/', {
                     method: 'POST', // or 'PUT'
