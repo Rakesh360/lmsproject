@@ -223,7 +223,7 @@
                     
                 </div>
     
-                <button type="submit" id="handleSubmit" class="btn btn-primary mt-3">Create Package</button>
+                <button type="submit" id="handleSubmit" class="btn btn-primary mt-3">Update Package</button>
             </form>
     
         </div>
@@ -282,12 +282,12 @@
 
 <script>  
     let editor = CKEDITOR.replace( 'description' );
+    
     var description;
-    editor.on( 'change', function( evt ) {
-        description =  evt.editor.getData();
-        console.log(description);
-        console.log('{{course_package_obj.uid}}');
-    });
+    editor.on( 'instanceReady', function( evt ) {
+    // getData() returns CKEditor's HTML content.
+    description =  evt.editor.getData();            
+});
 
     function getCookie(name) {
         if (!document.cookie) {
@@ -329,11 +329,8 @@
         formData.append('package_type', document.getElementById('subjects').value);
         formData.append('subscription_type', document.getElementById('expiryType').value);
 
-        formData.forEach((value, key) => {
-            console.log(key, value);
-        });
         
-
+        
         if (document.getElementById('expiryType').value === 'Fixed Date') {
             formData.append('sell_till_date', document.getElementById('expiryDate').value);
             
@@ -341,16 +338,19 @@
             formData.append('days', document.getElementById('subscriptionDays').value);
             
         }
-
-        if (webImgReUploaded) {
+        
+        if (webImgReUploaded === true) {
             formData.append('web_image', document.getElementById('image_for_web').files[0]);
         };
         
-        if (appImgReUploaded) {
+        if (appImgReUploaded === true) {
             formData.append('mobile_image', document.getElementById('image_for_app').files[0]);
         };
-
-                
+        
+        
+        formData.forEach((value, key) => {
+            console.log(key, value);
+        });
 
         if (document.getElementById('subjects').value === 'video') {
             let res = await axios.patch('/api/courses/course-packages/', formData, {

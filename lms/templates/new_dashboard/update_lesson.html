@@ -47,8 +47,8 @@
 
                         <label for="is_free">Is free</label>
                         <select class="form-control" name="is_free">
-                            <option {% if lesson.is_free ==  'False' %} selected {% endif %} value='True'>No</option>
-                            <option {% if lesson.is_free ==  'True' %} selected {% endif %} value='False'>Yes</option>
+                            <option {% if lesson.is_free ==  False %} selected {% endif %} value=true>No</option>
+                            <option {% if lesson.is_free ==  True %} selected {% endif %} value=false>Yes</option>
 
                         </select>
                     </div>
