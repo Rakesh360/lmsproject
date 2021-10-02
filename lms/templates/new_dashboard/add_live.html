@@ -373,131 +373,61 @@
         // getting data of all packages...
         let allTags = document.getElementsByClassName('tag');
         let allPackageDates = document.getElementsByClassName('packageDate');
-        let packages = [];
         let packagesUid = [];
         for (let i = 0; i < allTags.length; i++) {
             packagesUid.push(allTags[i].id);
         };
 
         let liveData = new FormData();
-        // resolving video type
-        if (document.getElementById('lesson_type').value === 'Document') {
-            let docLink = await uploadoc();
-            console.log('The doc link is: ', docLink);
-            data['document'] = docLink;
-        } else if (document.getElementById('lesson_type').value === 'Video + Document') {
-            data['video_platform'] = document.getElementById('videoType').value;
-            data['video'] = {
-                'video_link': document.getElementById('video_link').value,
-            };
-            let docLink = await uploadoc();
-            console.log('The doc link is: ', docLink);
-            data['document'] = docLink;
-            // resolving platform
-            if (document.getElementById('videoType').value === 'Live') {
-                isLive = true;
-                
-            } else {
-                isLive = false;
-            }
-
+        if (allTags.length === 0) {
+            alert('Please select at least one package for live class');
         } else {
-            data['video_platform'] = document.getElementById('videoType').value;
-            data['video'] = {
-                'video_link': document.getElementById('video_link').value,
+
+            liveData.append('chapter', document.getElementById('chooseChapters').value);
+            liveData.append('live_name', document.getElementById('lesson_title').value);
+            liveData.append('live_url', document.getElementById('video_link').value);
+            liveData.append('subject', document.getElementById('chooseSubject').value);
+
+
+            if (document.getElementById('live_image').files.length > 0) {
+                liveData.append('image', document.getElementById('live_image').files[0])
+                    
+            } else {
+                console.log('no image');
             };
-            // resolving platform
-            if (document.getElementById('videoType').value === 'Live') {
-                isLive = true;
-                data['video'] = {
-                    'video_link': document.getElementById('video_link').value,
-                    'video_uploaded_on': document.getElementById('startTime').value,
-                };
-            } else {
-                isLive = false;
-            }
-        };
 
-        data['packages'] = packages;
+            liveData.append('courses', JSON.stringify(packagesUid));
 
-        if (isLive === true) {
-            if (allTags.length === 0) {
-                alert('Please select at least one package for live class');
-            } else {
-
-                // liveData = {
-                //     'chapter': document.getElementById('chooseChapters').value,
-                //     'live_name': document.getElementById('live_name').value,
-                //     'live_url': document.getElementById('video_link').value,
-                //     'subject': document.getElementById('chooseSubject').value,
-                // };
-                liveData.append('chapter', document.getElementById('chooseChapters').value);
-                liveData.append('live_name', document.getElementById('lesson_title').value);
-                liveData.append('live_url', document.getElementById('video_link').value);
-                liveData.append('subject', document.getElementById('chooseSubject').value);
-
-
-                if (document.getElementById('live_image').files.length > 0) {
-                    liveData.append('image', document.getElementById('live_image').files[0])
-                     
-                } else {
-                    console.log('no image');
-                };
-
-                console.log(packagesUid);
-                liveData.append('courses', packagesUid);
-                liveData.append('course_package', packagesUid);
-
-                console.log(liveData);
-
-                fetch('/api/courses/go-live/', {
-                    method: 'POST', // or 'PUT'
-                    headers: {
-                        'X-CSRFToken': csrfToken
-                    },
-                    body: liveData
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        console.log(data);
-                        if (data.status === false) {
-                            alert(data.message);
-                        } else {
-                            alert('Lesson added successfully');
-                            window.location.href = '/courses/go-live/';
-                        }
-                    })
-                    .catch((error) => {
-                        alert('Error:', error);
-                        console.error('Error:', error);
-                });
-            }
+            liveData.forEach((value, key) => {
+                console.log(key, value);
+            });
 
             
-        } else {
-            fetch('/api/courses/lessons/', {
+
+            fetch('/api/courses/go-live/', {
                 method: 'POST', // or 'PUT'
                 headers: {
-                    'Content-Type': 'application/json',
                     'X-CSRFToken': csrfToken
                 },
-                    body: JSON.stringify(data)
+                body: liveData
                 })
                 .then(response => response.json())
                 .then(data => {
-                    console.log('Success:', data);
+                    console.log(data);
                     if (data.status === false) {
                         alert(data.message);
                     } else {
-                        alert('Lesson added successfully');
-                        window.location.href = '/courses/lessons/';
+                        alert('Live created successfully');
+                        window.location.href = '/courses/go-live/';
                     }
                 })
                 .catch((error) => {
                     alert('Error:', error);
                     console.error('Error:', error);
             });
-        }      
+        }
+
+           
 
 
     });
