@@ -165,7 +165,7 @@
                                     {% for course_package in course_packages %}
                                     {% if lesson.uid == course_package.lesson.uid  %}
                                 <tr><td class="tag" id="{{course_package.lesson.uid}}">
-                                     {{course_package.lesson.lesson_title}}
+                                     {{course_package.get_course_package}}
                                 </td><td>
                                 <input type="datetime-local" class="packageDate" {% if course_package.added_at  %} value="{{course_package.added_at}}" {% else %} value="{{course_package.created_at}}" {% endif %}>
                                 </td>

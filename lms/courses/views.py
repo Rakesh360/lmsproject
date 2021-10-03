@@ -453,7 +453,7 @@ def edit_coupon(request, uid):
         'course_packages' : CoursePackage.objects.all(),
         'coupon' : Coupoun.objects.get(uid = uid)
     }
-
+    print(Coupoun.objects.get(uid = uid).courses)
     return render(request, 'new_dashboard/coupons/edit_coupon.html' , context)
 
 
