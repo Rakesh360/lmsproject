@@ -139,7 +139,7 @@
                         <label for="package_type"> Package Type</label>
                         <select required id="subjects" name="package_type" class="form-control basic tagging ">
                             <option value="video">Video</option>
-                            <option value="test">Test</option>
+                            <option disabled value="test">Test</option>
                         </select>
                     </div>
     
@@ -206,8 +206,8 @@
                     <div class="form-group mb-6">
                         <div class="custom-file">
                             <label for="image_for_web">Choose file For Web</label>
-                            <input type="file" class="form-control" onchange="webImgReUpload()" name="image_for_web" id="image_for_web">
-                            <a class="ml-2 mt-4" target="_blank" href="/media/{{course_package_obj.web_image}}">Open Here</a>
+                            <input type="file" class="form-control" onchange="renderDocumentName1(event)" onchange="webImgReUpload()" name="image_for_web" id="image_for_web">
+                            <div id="docNameDiv1"> <a class="ml-2 mt-4" target="_blank" href="/media/{{course_package_obj.web_image}}" href="/{{lesson.document.uid}}">View Web Image</a> </div>
     
                         </div>
                     </div>
@@ -216,14 +216,14 @@
                     <div class="form-group mb-6 ml-4">
                         <div class="custom-file">
                             <label for="image_for_app">Choose file For App</label>
-                            <input type="file" class="form-control" onchange="appImgReUpload()" name="image_for_app" id="image_for_app">
-                            <a class="ml-2 mt-4" target="_blank"  href="/media/{{course_package_obj.mobile_image}}">Open Here</a>
+                            <input type="file" class="form-control" onchange="renderDocumentName2(event)" onchange="appImgReUpload()" name="image_for_app" id="image_for_app">
+                            <div id="docNameDiv2"> <a class="ml-2 mt-4" target="_blank"  href="/media/{{course_package_obj.mobile_image}}" href="/{{lesson.document.uid}}">View App Image</a> </div>
                         </div>
                     </div>
                     
                 </div>
     
-                <button type="submit" id="handleSubmit" class="btn btn-primary mt-3">Create Package</button>
+                <button type="submit" id="handleSubmit" class="btn btn-primary mt-3">Update Package</button>
             </form>
     
         </div>
@@ -282,12 +282,12 @@
 
 <script>  
     let editor = CKEDITOR.replace( 'description' );
+    
     var description;
-    editor.on( 'change', function( evt ) {
-        description =  evt.editor.getData();
-        console.log(description);
-        console.log('{{course_package_obj.uid}}');
-    });
+    editor.on( 'instanceReady', function( evt ) {
+    // getData() returns CKEditor's HTML content.
+    description =  evt.editor.getData();            
+});
 
     function getCookie(name) {
         if (!document.cookie) {
@@ -315,13 +315,51 @@
         appImgReUploaded = true;
     }
 
+    function renderDocumentName1(event) {
+        console.log(event.target.parentElement);
+        console.log(event.target.files[0].name);
+        let p = document.getElementById('docNameDiv1');
+        p.innerHTML = '';
+        
+        p.innerHTML = event.target.files[0].name + `<i class="fa fa-trash ml-4"  onclick="deleteDocument1(event)" aria-hidden="true"></i>`;
+        event.target.parentElement.appendChild(p);
+        webImgReUploaded = true;
+    }
+
+    function deleteDocument1(event) {
+        console.log('clicked');
+        event.target.parentElement.innerHTML = '';
+        document.getElementById('image_for_web').value = '';
+        webImgReUploaded = false;
+
+    }
+
+    function renderDocumentName2(event) {
+        console.log(event.target.parentElement);
+        console.log(event.target.files[0].name);
+        let p = document.getElementById('docNameDiv2');
+        p.innerHTML = '';
+        
+        p.innerHTML = event.target.files[0].name + `<i class="fa fa-trash ml-4"  onclick="deleteDocument2(event)" aria-hidden="true"></i>`;
+        event.target.parentElement.appendChild(p);
+        appImgReUploaded = true;
+    }
+
+    function deleteDocument2(event) {
+        console.log('clicked');
+        event.target.parentElement.innerHTML = '';
+        document.getElementById('image_for_app').value = '';
+        appImgReUploaded = false;
+
+    }
+
     
     const addPackageForm = document.getElementById('addPackageForm');
     addPackageForm.addEventListener('submit', async (e) => {
         e.preventDefault();
 
         let formData = new FormData();
-        formData.append('uid', '{{course_package_obj.uid}}');
+        formData.append('course_package_uid', '{{course_package_obj.uid}}');
         formData.append('package_title', document.getElementById('lesson_title').value);
         formData.append('package_description', description);
         formData.append('actual_price', document.getElementById('actual_price').value);
@@ -329,11 +367,8 @@
         formData.append('package_type', document.getElementById('subjects').value);
         formData.append('subscription_type', document.getElementById('expiryType').value);
 
-        formData.forEach((value, key) => {
-            console.log(key, value);
-        });
         
-
+        
         if (document.getElementById('expiryType').value === 'Fixed Date') {
             formData.append('sell_till_date', document.getElementById('expiryDate').value);
             
@@ -341,16 +376,19 @@
             formData.append('days', document.getElementById('subscriptionDays').value);
             
         }
-
-        if (webImgReUploaded) {
+        
+        if (webImgReUploaded === true) {
             formData.append('web_image', document.getElementById('image_for_web').files[0]);
         };
         
-        if (appImgReUploaded) {
+        if (appImgReUploaded === true) {
             formData.append('mobile_image', document.getElementById('image_for_app').files[0]);
         };
-
-                
+        
+        
+        formData.forEach((value, key) => {
+            console.log(key, value);
+        });
 
         if (document.getElementById('subjects').value === 'video') {
             let res = await axios.patch('/api/courses/course-packages/', formData, {
@@ -361,6 +399,7 @@
             console.log(res.data);
             if (res.data.status === true) {
                 alert('Lesson updated successfully');
+                window.location.href = '/courses/packages/';
 
             } else {    
                 alert('Something went wrong');

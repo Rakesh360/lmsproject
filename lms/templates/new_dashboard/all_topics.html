@@ -27,7 +27,7 @@
                         <select class="custom-select" required aria-label="Default select example" name="subject" id="selectSublect"> 
                             <option selected disabled>Choose Subject</option>
                             {% for subject in subjects %}
-                            <option> {{subject.subject_title}}</option>
+                            <option value="{{subject.uid}}"> {{subject.subject_title}}</option>
                             {% endfor %}
                             
                         </select>

@@ -31,7 +31,7 @@
                     <label for="package_type"> Package Type</label>
                     <select required id="subjects" name="package_type" class="form-control basic tagging ">
                         <option value="video">Video</option>
-                        <option value="test">Test</option>
+                        <option disabled value="test">Test</option>
                     </select>
                 </div>
             </div>
@@ -96,14 +96,16 @@
                 <div class="form-group mb-6">
                     <div class="custom-file">
                         <label for="image_for_web">Choose file For Web</label>
-                        <input type="file" required class="form-control" name="image_for_web" id="image_for_web">
+                        <input type="file" required class="form-control" onchange="renderDocumentName1(event)" name="image_for_web" id="image_for_web">
+                        <div id="docNameDiv1"> </div>
                     </div>
                 </div>
 
                 <div class="form-group mb-6">
-                    <div class="custom-file">
+                    <div class="custom-file ml-4">
                         <label for="image_for_app">Choose file For App</label>
-                        <input type="file" required class="form-control" name="image_for_app" id="image_for_app">
+                        <input type="file" required class="form-control" onchange="renderDocumentName2(event)" name="image_for_app" id="image_for_app">
+                        <div id="docNameDiv2"> </div>
                     </div>
                 </div>
 
@@ -146,41 +148,40 @@
     
     const csrfToken = getCookie('csrftoken');
 
-    let isFormValid = false;
-    function formValidation() {
-        if (document.getElementById('inputEmail4').value === '') {
-            alert('Please enter a pakage title');
-        } else if (document.getElementById('subjects').value === '') {
-            alert('Please select a subject');
-        } else if (document.getElementById('actual_price').value === '') {
-            alert('Please enter actual price');     
-        } else if (document.getElementById('selling_price').value === '') {
-            alert('Please enter selling price');     
-        } else if (document.getElementById('expiryType').value === '') {
-            alert('Please Choose Expiry Type');     
-        } else if (document.getElementById('expiryType').value === 'fixed-date') {
-            if (document.getElementById('expiryDate').value === '') {
-                alert('Please Enter Last Date of Expiry ');
-            } else {
-                isFormValid = true;
-            }
-        } else if (document.getElementById('expiryType').value === 'subscription') { 
-            if (document.getElementById('subscriptionDays').value === '') {
-                alert('Please Enter no. of Expiry Days');
-            } else {
-                isFormValid = true;
-            }
 
-        } else if (document.getElementById('image_for_web').value === '') {
-            alert('Please Choose Image For Web');
-        } else if (document.getElementById('image_for_app').value === '') {
-            alert('Please Choose Image For Mobile');
-        } else {
-            isFormValid = true;
-        };
+    function renderDocumentName1(event) {
+        console.log(event.target.parentElement);
+        console.log(event.target.files[0].name);
+        let p = document.getElementById('docNameDiv1');
+        p.innerHTML = '';
+        
+        p.innerHTML = event.target.files[0].name + `<i class="fa fa-trash ml-4"  onclick="deleteDocument1(event)" aria-hidden="true"></i>`;
+        event.target.parentElement.appendChild(p);
+    }
 
-        return isFormValid;
-    };
+    function deleteDocument1(event) {
+        console.log('clicked');
+        event.target.parentElement.innerHTML = '';
+        document.getElementById('image_for_web').value = '';
+
+    }
+
+    function renderDocumentName2(event) {
+        console.log(event.target.parentElement);
+        console.log(event.target.files[0].name);
+        let p = document.getElementById('docNameDiv2');
+        p.innerHTML = '';
+        
+        p.innerHTML = event.target.files[0].name + `<i class="fa fa-trash ml-4"  onclick="deleteDocument2(event)" aria-hidden="true"></i>`;
+        event.target.parentElement.appendChild(p);
+    }
+
+    function deleteDocument2(event) {
+        console.log('clicked');
+        event.target.parentElement.innerHTML = '';
+        document.getElementById('image_for_app').value = '';
+
+    }
 
     // submitting form
     const addPackageForm = document.getElementById('addPackageForm');

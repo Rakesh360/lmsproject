@@ -365,7 +365,38 @@ class LessonsView(APIView):
                 chapter_obj = lesson_obj.chapter
                 subject_obj = lesson_obj.chapter.subject
                 packages = data.get('packages')
-                print(packages)
+                if packages == 'all':
+                    i = 0
+                    for package in CoursePackage.objects.all():
+                        try:
+                            course_package_obj = package
+                        except Exception as e:
+                            return Response({
+                                'status' : False,
+                                'message' : f'lesson created but not added to packages invalid uid at index {i}'
+                            })
+                        i = i + 1
+                        course_package_subject_obj, _ = CoursePackageSubjects.objects.get_or_create(
+                            course_package = course_package_obj,
+                            subject = subject_obj
+                        )
+                        course_package_chapter_obj, _ = CoursePackageChapters.objects.get_or_create(
+                            course_package_subject = course_package_subject_obj,
+                            subject_chapter = chapter_obj
+                        )
+                        created_at = package['created_at']
+
+                        CoursePackageLessons.objects.get_or_create(
+                            course_package_chapter = course_package_chapter_obj,
+                            lesson = lesson_obj,
+                            added_at = created_at
+                        )
+                        return Response({
+                            'status' : True,
+                            'data' : serializer.data,
+                            'message' : 'lesson created'
+                        })
+
                 if packages:
                     i = 0
                     for package in packages:
@@ -559,6 +590,12 @@ class GoLiveView(APIView):
     def post(self , request):
         try:
             data = request.data
+            courses = data.get('courses')
+            if courses:
+                courses = json.loads(courses)
+
+            data['courses'] = courses[0]
+            print(data)
             serializer = GoLiveSerializer(data=data)
             if serializer.is_valid():
                 serializer.save()
@@ -587,7 +624,7 @@ class DocumentUpload(viewsets.ModelViewSet):
     queryset = Document.objects.all()
     serializer_class = DocumentSerializer
 
-class CouponView(viewsets.ModelViewSet):
+class CouponView(APIView):
     queryset = Coupoun.objects.all()
     serializer_class = CoupounSerializer
 
@@ -604,6 +641,71 @@ class CouponView(viewsets.ModelViewSet):
                 'status' : 400,
                 'message' : 'coupon_code is required'
             })
+
+    def post(self , request):
+        try:
+            data = request.data
+            if data.get('courses') == 'all':
+                objs = CoursePackage.objects.all()
+                payload = []
+                for obj in objs:
+                    payload.append(obj.uid)
+                data['courses'] = payload
+
+            print(data)
+
+            serializer = CoupounSerializer(data = data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response({
+                    'status' : 200,
+                    'message' : 'coupon added',
+                    'data' : serializer.data
+                })
+            
+            return Response({
+                    'status' : 400,
+                    'message' : 'coupon not added',
+                    'data' : serializer.errors
+                })
+        except Exception as e:
+            return Response({
+                    'status' : 400,
+                    'message' : 'something went wrong',
+                    'data' :  {}
+                })
+
+    def patch(self , request):
+        try:
+            data = request.data
+            if data.get('courses') == 'all':
+                objs = CoursePackage.objects.all()
+                payload = []
+                for obj in objs:
+                    payload.append(obj.uid)
+                data['courses'] = payload
+            obj = Coupoun.objects.get(uid = data.get('uid'))
+            serializer = CoupounSerializer(obj ,data = data , partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response({
+                    'status' : 200,
+                    'message' : 'coupon updated',
+                    'data' : serializer.data
+                })
+        
+            return Response({
+                    'status' : 400,
+                    'message' : 'coupon not added',
+                    'data' : serializer.errors
+                })
+        except Exception as e:
+            return Response({
+                    'status' : 400,
+                    'message' : 'something went wrong',
+                    'data' :  {}
+                })
+
 
 
 
@@ -725,3 +827,6 @@ class CoursePackageSerial(APIView):
                 'message' : f'something went wrong error {str(e)}',
                 'data' : {}
             })
+
+
+
