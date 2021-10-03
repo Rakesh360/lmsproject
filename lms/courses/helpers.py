@@ -7,7 +7,7 @@ from datetime import datetime
 def course_to_json(course_objs):
     try:
         payload = []
-
+        print('AAAAAAAAAAA')
         for course_obj in course_objs:
             course_package_dict = {}
             course_package_dict['uid'] = course_obj.uid
@@ -66,18 +66,15 @@ def course_to_json(course_objs):
 
             course_package_dict['subjects'] = subjects
             live_class = []
-            #from datetime import date
-            print(course_obj.live.all())
-            print(datetime.now())
-            if len(course_obj.live.all()):
-                for live in course_obj.live.filter(
-                    Q(live_date_time__gte = datetime.now()) ,
-                    Q(live_date_time = datetime.now())
-                     ):
+            now = datetime.now()
+            print(now)
+            go_live_objs = GoLive.objects.filter(courses__in = [course_obj.uid] , live_date_time__gte = datetime.now())
+            print('@@@@@@@@@@@@@')
+            print(go_live_objs)
+            print('@@@@@@@@@@@@@')
 
-                # for live in course_obj.live.filter(
-                #     Q(live_date_time=datetime.date.today(),live_date_time__gte=datetime.time())
-                #     |Q(live_date_time__gt=datetime.date.today())):
+            if len(go_live_objs):
+                for live in go_live_objs:
                     live_class.append({
                         'live_name' : live.live_name,
                         'live_url' : live.live_url,

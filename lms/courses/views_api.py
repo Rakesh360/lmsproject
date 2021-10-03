@@ -590,6 +590,12 @@ class GoLiveView(APIView):
     def post(self , request):
         try:
             data = request.data
+            courses = data.get('courses')
+            if courses:
+                courses = json.loads(courses)
+
+            data['courses'] = courses[0]
+            print(data)
             serializer = GoLiveSerializer(data=data)
             if serializer.is_valid():
                 serializer.save()
@@ -821,3 +827,6 @@ class CoursePackageSerial(APIView):
                 'message' : f'something went wrong error {str(e)}',
                 'data' : {}
             })
+
+
+
