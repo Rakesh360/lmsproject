@@ -15,7 +15,7 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="addTopicModalLabel">Add Subject Chapter</h5>
+                    <h5 class="modal-title" id="addTopicModalLabel">Add slider</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                     </button>
@@ -26,7 +26,7 @@
                         <div class="form-group">
             
                         <label for="slider_image">Select Slider Image</label>
-                        <input type="file" name="slider_image" class="form-control" id="slider_image">
+                        <input required type="file" name="image" class="form-control" id="slider_image">
                         </div>
                         
                         <button id="submitAddTopic" class="btn btn-primary">Add Slider</button>
@@ -54,15 +54,15 @@
                     </thead>
                     <tbody>
 
-                        {% for subject in subjects %}
+                        {% for slider in sliders %}
 
                         <tr>
                             <td>{{forloop.counter}}</td>
-                            <td>{{subject.created_at}}</td>
+                            <td>{{slider.created_at}}</td>
                             <td>{{subject.updated_at}}</td>
                             <td>
-                                <button {% if subject.check_in_package %} disabled {% else %}
-                                    onclick="deleteSubject('{{subject.uid}}')" {% endif %}
+                              <button {% if subject.check_in_package %} disabled {% else %}
+                                 onclick="deleteSubject('{{subject.uid}}')" {% endif %}
                                     class="btn btn-sm btn-danger"><i class="la la-trash-o"></i></button>
                             </td>
                         </tr>

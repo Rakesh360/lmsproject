@@ -281,9 +281,6 @@ def go_live(request):
     context = {'objs' : objs}
     return render(request , 'new_dashboard/go_live.html' , context)
 
-def chat_live(request , room_id):
-
-    return render(request , 'new_dashboard/chat_live.html' , context = {'room_id' : room_id})
 
 @staff_member_required(login_url='/accounts/login/')
 def add_live(request):
@@ -453,7 +450,7 @@ def edit_coupon(request, uid):
         'course_packages' : CoursePackage.objects.all(),
         'coupon' : Coupoun.objects.get(uid = uid)
     }
-    print(Coupoun.objects.get(uid = uid).courses)
+
     return render(request, 'new_dashboard/coupons/edit_coupon.html' , context)
 
 
@@ -499,4 +496,13 @@ def send_notification(request):
 
 
 def all_slider(request):
-    return render(request , 'new_dashboard/manage_app/all_slider.html')
+    if request.method=="POST":
+        image = request.POST.get('image')
+        Slider.objects.create(
+            slider_image =image,
+            
+        )
+        messages.success(request, 'Slider created')
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+    context = {'sliders' : Slider.objects.all()}
+    return render(request , 'new_dashboard/manage_app/all_slider.html', context)
