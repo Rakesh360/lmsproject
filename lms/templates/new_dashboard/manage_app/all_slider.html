@@ -47,7 +47,7 @@
                     <thead>
                         <tr>
                             <th>S. No.</th>
-                            <th>View Link</th>
+                            <th>View Slider</th>
                             <th>Created At</th>
                             <th>Action</th>
                         </tr>
@@ -58,12 +58,13 @@
 
                         <tr>
                             <td>{{forloop.counter}}</td>
+                            <td><a class="btn btn-sm btn-primary" href="/media/{{slider.slider_image}}">View Image</a></td>
                             <td>{{slider.created_at}}</td>
-                            <td>{{subject.updated_at}}</td>
                             <td>
                               <button {% if subject.check_in_package %} disabled {% else %}
                                  onclick="deleteSubject('{{subject.uid}}')" {% endif %}
-                                    class="btn btn-sm btn-danger"><i class="la la-trash-o"></i></button>
+                                    class="btn btn-sm btn-danger"><i class="la la-trash-o"></i>
+                              </button>
                             </td>
                         </tr>
 

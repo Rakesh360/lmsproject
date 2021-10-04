@@ -75,7 +75,7 @@
                                         <div class="options-container">
                                             {% for course_package in  course_packages %}
                                                 <div class="option" onclick="includeTag(event)">
-                                                    <input type="checkbox" name="category" id="{{course_package.uid}}">
+                                                    <input style="pointer-events: none;" type="checkbox" name="category" id="{{course_package.uid}}">
                                                     <label for="{{course_package.uid}}">{{course_package.package_title}}</label>
                                                 </div>
                                             {% endfor  %}
