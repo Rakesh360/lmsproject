@@ -61,7 +61,7 @@
                                   
                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                                       <a class="dropdown-item" href="{% url 'update_lesson' lesson.uid%}">Edit</a>
-                                      <a class="dropdown-item" href="{% url 'delete_lesson' %}?uid={{lesson.uid}}">Delete</a>
+                                      <a class="dropdown-item" href="#" onclick="deleteChapter('{{lesson.uid}}')">Delete</a>
                                       <a href="{% url 'preview_video' lesson.uid%}" class="dropdown-item">View</a>
                                     </div>
                                   </div>
@@ -120,6 +120,23 @@
 
 
 <script>
+    function deleteChapter(uid){
+        swal({
+                title: "Are you sure?",
+                text: "You want to delete?",
+                icon: "success",
+                buttons: true,
+                dangerMode: true,
+            })
+            .then((willDelete) => {
+                if (willDelete) {
+            window.location.href = `{% url 'delete_lesson' %}?uid=${uid}`
+
+                } else {
+                    swal("No deleted");
+                }
+            });
+      }
     // let allSubjects = document.getElementsByClassName('editSubject');
     // for (let i = 0; i < allSubjects.length; i++) {
     //     let sub = allSubjects[i];
