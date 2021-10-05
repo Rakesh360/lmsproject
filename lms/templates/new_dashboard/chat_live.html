@@ -34,18 +34,14 @@
 
 
 
-
+    <script src="https://www.gstatic.com/firebasejs/7.19.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.19.1/firebase-database.js"></script>
     <script >
-        // Import the functions you need from the SDKs you need
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.1/firebase-app.js";
-    import { getDatabase , ref, set  } from "https://cdnjs.cloudflare.com/ajax/libs/firebase/9.1.1/firebase-database.min.js";
-    // TODO: Add SDKs for Firebase products that you want to use
-    // https://firebase.google.com/docs/web/setup#available-libraries
-  
-    // Your web app's Firebase configuration
+      
     const firebaseConfig = {
       apiKey: "AIzaSyBU9QQ8-tfQjWBewvOIIw9ruP-01NXaj2g",
       authDomain: "malaviya-acedemy.firebaseapp.com",
+      databaseURL : "https://malaviya-acedemy-default-rtdb.firebaseio.com/",
       projectId: "malaviya-acedemy",
       storageBucket: "malaviya-acedemy.appspot.com",
       messagingSenderId: "176187494863",
@@ -53,11 +49,11 @@
     };
   
     // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    console.log(app)
 
-    const db = getDatabase(app);
-    console.log(db)
+    firebase.initializeApp(firebaseConfig);
+    var db = firebase.database()
+
+
    
 
     function writeUserData( message) {
@@ -79,6 +75,9 @@
         // msgInput.value = "";
     }
 
+    
+const app = initializeApp(firebaseConfig);
+    console.log(app)
 
 
 
@@ -86,6 +85,8 @@
   </script>
 
 
+
+  
     <!-- 
     <script>
         var url = 'ws://13.232.227.45/ws/room/{{room_id}}/'
