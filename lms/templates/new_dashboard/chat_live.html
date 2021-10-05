@@ -56,19 +56,13 @@
     };
     // Initialize Firebase
 
+    console.log('Logged')
+
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
-  //  const usersRef = db.child('chatRoom');
-   // const msgRef = usersRef 
-    const room_id = "{{room_id}}"
-    console.log("/{{room_id}}")
-    //const msgRef = db.ref('/{{room_id}}');
 
-   // usersRef.on("child_added", snap => {
-//     let user = snap.val();
-//     let li = document.createElement("li");
-    
-// });
+    const room_id = "{{room_id}}"
+   
 
     function writeUserData( message) {
         const db = getDatabase();
@@ -77,24 +71,54 @@
         message: message,
     });
     }
+
+    // db.collection("chatRoom").doc(room_id).collection("chats").on("child_added", snap => {
+    //    console.log("ee")
+    // });
+    db.collection("chatRoom").doc(room_id).collection("chats")
+    .onSnapshot((snapshot) => {
+        console.log(snapshot)
+        snapshot.docChanges().forEach((change) => {
+            var data =change.doc.data();
+             console.log( change.doc.data());
+            const msg = `<li ><span class = "msg-span">
+            <i class = "name">${data.sendBy}: </i>${data.message}
+            </span>
+            </li>`
+            document.getElementById('chat_ui').innerHTML += msg;
+
+            document.getElementById('message').value = ''
+        });
+        
+    });
+
     //document.addEventListener('DOMContentLoaded', init);
 
 
     msgForm.addEventListener('submit', function sendMessage(e){
         console.log('ck')
         e.preventDefault();
-        const text = msgInput.value;
+        const text = document.getElementById('message').value;
 
         if(!text.trim()) return alert('Please type a message'); //no msg submitted
         const msg = {
-            name: 'Teacher',
-            text: text
-        };
+            sendBy: 'Teacher',
+            message: text,
+            isMale : false,
+            sendByPhone : ''
 
-        db.collection("chatRoom").doc(room_id).set({
-            name: 'Teacher',
-            text: "Hello"
+        };
+        db.collection("chatRoom").doc(room_id).collection("chats").add({
+            sendBy: 'Teacher',
+            message: text,
+            isMale : false,
+            sendByPhone : '',
+            time : 1633464552795
      })
+    //     db.collection("chatRoom").doc(room_id).set({
+    //         name: 'Teacher',
+    //         text: "Hello"
+    //  })
      .then(function() {
          console.log("Doc successful");
      })
@@ -109,10 +133,7 @@
         msgInput.value = "";
     });
 
-    
-    const app = initializeApp(firebaseConfig);
-    console.log(app)
-
+   
 
     
     const updateMsgs = data =>{
