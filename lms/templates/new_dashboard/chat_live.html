@@ -1,5 +1,10 @@
 {% extends "base.html" %}
 {% block start %}
+<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-database.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-firestore.js"></script>
+
+
 <div class="container py-5 px-4">
 
     <div style="margin: 0 auto; font-size: xxx-large;">
@@ -26,7 +31,7 @@
                 <div class="input-group">
                     <input type="text" id="message" placeholder="Type a message" aria-describedby="button-addon2"
                         class="form-control rounded-0 border-0 py-4 bg-light">
-                    <div class="input-group-append" onclick="sendMessage()">
+                    <div class="input-group-append" >
                         <button id="send-btn" type="submit" class="btn btn-link">
                             <img style="height:30px" src="https://img.icons8.com/ios/452/sent.png"></button>
                     </div>
@@ -41,18 +46,29 @@
 <script>
     const msgForm = document.getElementById('messageForm');
     const firebaseConfig = {
-      apiKey: "AIzaSyBU9QQ8-tfQjWBewvOIIw9ruP-01NXaj2g",
-      authDomain: "malaviya-acedemy.firebaseapp.com",
-      databaseURL : "https://malaviya-acedemy-default-rtdb.firebaseio.com/",
-      projectId: "malaviya-acedemy",
-      storageBucket: "malaviya-acedemy.appspot.com",
-      messagingSenderId: "176187494863",
-      appId: "1:176187494863:web:eba4d28c0683c7e96882ba"
+        apiKey: "AIzaSyBU9QQ8-tfQjWBewvOIIw9ruP-01NXaj2g",
+        authDomain: "malaviya-acedemy.firebaseapp.com",
+        projectId: "malaviya-acedemy",
+        databaseURL : "malaviya-acedemy.firebaseio.com",
+        storageBucket: "malaviya-acedemy.appspot.com",
+        messagingSenderId: "176187494863",
+        appId: "1:176187494863:web:eba4d28c0683c7e96882ba"
     };
     // Initialize Firebase
 
     firebase.initializeApp(firebaseConfig);
-    var db = firebase.database()
+    const db = firebase.firestore();
+  //  const usersRef = db.child('chatRoom');
+   // const msgRef = usersRef 
+    const room_id = "{{room_id}}"
+    console.log("/{{room_id}}")
+    //const msgRef = db.ref('/{{room_id}}');
+
+   // usersRef.on("child_added", snap => {
+//     let user = snap.val();
+//     let li = document.createElement("li");
+    
+// });
 
     function writeUserData( message) {
         const db = getDatabase();
@@ -61,17 +77,36 @@
         message: message,
     });
     }
+    //document.addEventListener('DOMContentLoaded', init);
 
 
     msgForm.addEventListener('submit', function sendMessage(e){
+        console.log('ck')
         e.preventDefault();
         const text = msgInput.value;
 
         if(!text.trim()) return alert('Please type a message'); //no msg submitted
         const msg = {
-            name: name,
+            name: 'Teacher',
             text: text
         };
+
+        db.collection("chatRoom").doc(room_id).set({
+            name: 'Teacher',
+            text: "Hello"
+     })
+     .then(function() {
+         console.log("Doc successful");
+     })
+     .catch(function(error) {
+        console.error("Error writing doc", error);
+     });
+
+
+        return
+        const usersRef = dbRef.child(`chatRoom/${room_id}`);
+        msgRef.push(msg);
+        msgInput.value = "";
     });
 
     
@@ -92,9 +127,9 @@
         msgScreen.innerHTML += msg; //add the <li> message to the chat window
             
             //auto scroll to bottom
-            document.getElementById("chat-window").scrollTop = document.getElementById("chat-window").scrollHeight;
+            //document.getElementById("chat-window").scrollTop = document.getElementById("chat-window").scrollHeight;
     }
-    msgRef.on('child_added', updateMsgs);
+    //usersRef.on('child_added', updateMsgs);
     // const app = initializeApp(firebaseConfig);
     // console.log(app)
 

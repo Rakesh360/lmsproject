@@ -537,6 +537,11 @@ def delete_slider(request):
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 def chat_live(request , room_id):
+    obj = GoLive.objects.get(uid = room_id)
+    print('@@@@@@@@@@@@@@')
+    print(obj.live_url)
+    print('@@@@@@@@@@@@@@')
+
     return render(request , 'new_dashboard/chat_live.html' , context = {
-        'room_id' : room_id
+        'room_id' : obj.live_url
     })
