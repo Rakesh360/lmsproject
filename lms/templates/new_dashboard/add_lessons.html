@@ -73,7 +73,7 @@
                 <div class="form-group col-md-6" id="videoContainer">
                     <label for="video_platform">Video Platform</label>
                     <select required class="form-control" name="video_platform" id="videoType" onchange="changeVideoType()">
-                        <option value="Live">YouTube Live</option>
+                        <option disabled value="Live">YouTube Live</option>
                         <option value="Vimeo">Vimeo</option>
                         <option selected value="Youtube">YouTube</option>
                     </select>
@@ -453,28 +453,32 @@
 
             
         } else {
-            fetch('/api/courses/lessons/', {
-                method: 'POST', // or 'PUT'
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': csrfToken
-                },
-                    body: JSON.stringify(data)
-                })
-                .then(response => response.json())
-                .then(data => {
-                    console.log('Success:', data);
-                    if (data.status === false) {
-                        alert(data.message);
-                    } else {
-                        alert('Lesson added successfully');
-                        window.location.href = '/courses/lessons/';
-                    }
-                })
-                .catch((error) => {
-                    alert('Error:', error);
-                    console.error('Error:', error);
-            });
+            if (allTags.length <= 0) {
+                alert('Please select only one package for live lessons');
+            } else {
+                fetch('/api/courses/lessons/', {
+                    method: 'POST', // or 'PUT'
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrfToken
+                    },
+                        body: JSON.stringify(data)
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('Success:', data);
+                        if (data.status === false) {
+                            alert(data.message);
+                        } else {
+                            alert('Lesson added successfully');
+                            window.location.href = '/courses/lessons/';
+                        }
+                    })
+                    .catch((error) => {
+                        alert('Error:', error);
+                        console.error('Error:', error);
+                });
+            }
         }      
 
 
@@ -595,9 +599,9 @@
     let video_container_innerHtml = `
         <label for="video_platform">Video Platform</label>
         <select required class="form-control" name="video_platform" id="videoType" onchange="changeVideoType()">
-            <option value="Live">YouTube Live</option>
-            <option value="Vimeo">Vimeo</option>
             <option selected value="Youtube">YouTube</option>
+            <option value="Vimeo">Vimeo</option>
+            <option value="Live" disabled>YouTube Live</option>
         </select>
     `;
 
