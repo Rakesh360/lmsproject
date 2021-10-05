@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block start %}
 <div class="container py-5 px-4">
-   
+
     <div class="row overflow-hidden" id="people_online">
 
     </div>
@@ -12,7 +12,7 @@
         <!-- Chat Box-->
         <div class="col-12 px-0">
             <div class="px-4 py-5 chat-box bg-white" id="chat_ui">
-              
+
 
             </div>
 
@@ -23,82 +23,135 @@
                         class="form-control rounded-0 border-0 py-4 bg-light">
                     <div class="input-group-append" onclick="sendMessage()">
                         <button id="button-addon2" type="submit" class="btn btn-link">
-                             <img style="height:30px" src="https://img.icons8.com/ios/452/sent.png"></button>
+                            <img style="height:30px" src="https://img.icons8.com/ios/452/sent.png"></button>
                     </div>
                 </div>
-            </dib>
+                </dib>
 
+            </div>
         </div>
     </div>
-</div>
 
 
-<script>
-    var url = 'ws://13.232.227.45/ws/room/{{room_id}}/'
-    var room_id = "{{room_id}}"
-    console.log(url)
-    var current_user_id = parseInt('{{request.user.id}}')
-    var socket = new WebSocket(url)
-
-    socket.onopen = function (e) {
-        console.log('Connected')
-    }
-
-    socket.onmessage = function (e) {
-        var data = JSON.parse(e.data)
-        console.log(data.payload)
 
 
-        if(data.payload.type){
-            if(data.payload.type == 'connected'){
-                
-            }
-            else if(data.payload.type == 'disconnected'){
-                remove_online(data.payload.user_id)
-            }else if(data.payload.type == 'message'){
-                addMessageToUi(data.payload)
-            }
+    <script >
+        // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.1/firebase-app.js";
+    import { getDatabase , ref, set  } from "https://cdnjs.cloudflare.com/ajax/libs/firebase/9.1.1/firebase-database.min.js";
+    // TODO: Add SDKs for Firebase products that you want to use
+    // https://firebase.google.com/docs/web/setup#available-libraries
+  
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyBU9QQ8-tfQjWBewvOIIw9ruP-01NXaj2g",
+      authDomain: "malaviya-acedemy.firebaseapp.com",
+      projectId: "malaviya-acedemy",
+      storageBucket: "malaviya-acedemy.appspot.com",
+      messagingSenderId: "176187494863",
+      appId: "1:176187494863:web:eba4d28c0683c7e96882ba"
+    };
+  
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    console.log(app)
 
+    const db = getDatabase(app);
+    console.log(db)
+   
+
+    function writeUserData( message) {
+            const db = getDatabase();
+            set(ref(db, '{{room_id}}/' + userId), {
+            username: 'teacher',
+            message: message,
+        });
         }
-
-        
-
-    }
-
-    socket.onclose = function (e) {
-        console.log('Disconnected')
-    }
 
     function sendMessage(){
-
         var text_message = document.getElementById('message').value
-
-        if(text_message.value == ''){
-            alert('message cant be null')
-            return;
-        }
-
-        socket.send(JSON.stringify({
-                'text_message': text_message,
-                'sender' : 'teacher'
-        }))
-
-        document.getElementById('message').value = ''
-
+        writeUserData(text_message)
+        const msg = {
+            name: 'teacher',
+            text: text_message
+        };
+        // msgRef.push(msg);
+        // msgInput.value = "";
     }
 
-    var flag = true
-
-    function addMessageToUi(data){
-
-        var chat_ui = document.getElementById('chat_ui')
-
-        var text_message = data.text_message
-        var sender = data.sender
 
 
-        if(flag){
-            chat_ui.innerHTML += `<div class="media w-100 mb-3">
+
+
+  </script>
+
+
+    <!-- 
+    <script>
+        var url = 'ws://13.232.227.45/ws/room/{{room_id}}/'
+        var room_id = "{{room_id}}"
+        console.log(url)
+        var current_user_id = parseInt('{{request.user.id}}')
+        var socket = new WebSocket(url)
+
+        socket.onopen = function (e) {
+            console.log('Connected')
+        }
+
+        socket.onmessage = function (e) {
+            var data = JSON.parse(e.data)
+            console.log(data.payload)
+
+
+            if (data.payload.type) {
+                if (data.payload.type == 'connected') {
+
+                } else if (data.payload.type == 'disconnected') {
+                    remove_online(data.payload.user_id)
+                } else if (data.payload.type == 'message') {
+                    addMessageToUi(data.payload)
+                }
+
+            }
+
+
+
+        }
+
+        socket.onclose = function (e) {
+            console.log('Disconnected')
+        }
+
+        function sendMessage() {
+
+            var text_message = document.getElementById('message').value
+
+            if (text_message.value == '') {
+                alert('message cant be null')
+                return;
+            }
+
+            socket.send(JSON.stringify({
+                'text_message': text_message,
+                'sender': 'teacher'
+            }))
+
+            document.getElementById('message').value = ''
+
+        }
+
+        var flag = true
+
+        function addMessageToUi(data) {
+
+            var chat_ui = document.getElementById('chat_ui')
+
+            var text_message = data.text_message
+            var sender = data.sender
+
+
+            if (flag) {
+                chat_ui.innerHTML += `<div class="media w-100 mb-3">
                     <div class="media-body ml-3">
                         <div class="bg-light rounded py-2 px-3 mb-2">
                             <p class="text-small mb-0 text-muted">
@@ -108,9 +161,9 @@
                     </div>
                 </div>`
 
-            flag = !flag
-        }else{
-            chat_ui.innerHTML += `<div class="media w-100 mb-3">
+                flag = !flag
+            } else {
+                chat_ui.innerHTML += `<div class="media w-100 mb-3">
                     <div class="media-body ml-3">
                         <div class="bg-primary rounded py-2 px-3 mb-2">
                             <p class="text-small mb-0 text-white">
@@ -120,41 +173,41 @@
                     </div>
                 </div>`
 
-            flag = !flag
+                flag = !flag
+            }
+
+
         }
 
 
-    }
 
 
+        function add_online(data) {
+            console.log("called")
+            var element = document.getElementById('people_online')
+            console.log(data)
+            var online_users = data.online_users
 
-
-    function add_online(data) {
-        console.log("called")
-        var element = document.getElementById('people_online')
-        console.log(data)
-        var online_users = data.online_users
-        
-        var html  = ''
-        for(var i = 0; i < online_users.length; i++){
-            var user = online_users[i].user
-            var user_id = online_users[i].user_id
-             html += `<div class="col-md-2" id="user_online_id_${user_id}">
+            var html = ''
+            for (var i = 0; i < online_users.length; i++) {
+                var user = online_users[i].user
+                var user_id = online_users[i].user_id
+                html += `<div class="col-md-2" id="user_online_id_${user_id}">
             <img src="https://i.pinimg.com/originals/51/f6/fb/51f6fb256629fc755b8870c801092942.png" alt="user" width="50" class="rounded-circle">
             <p>${user}</p>
             </div>`
-        }
-      
-            
+            }
+
+
 
             element.innerHTML = html
-        
-    }
 
-    function remove_online(user_id) {
-        var element = document.getElementById(`user_online_id_${user_id}`)
-        element.remove();
-    }
-</script>
+        }
 
-{% endblock %}
+        function remove_online(user_id) {
+            var element = document.getElementById(`user_online_id_${user_id}`)
+            element.remove();
+        }
+    </script> -->
+
+    {% endblock %}

@@ -50,7 +50,6 @@ INSTALLED_APPS = [
     'orders',
     'base_rest',
     'dashboard',
-    'EasyHireApp',
     'corsheaders',
     
 ]

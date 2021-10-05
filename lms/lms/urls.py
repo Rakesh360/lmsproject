@@ -23,7 +23,6 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 urlpatterns = [
     path('' , include('dashboard.urls')),
-    path('' , include('EasyHireApp.urls')),
 
     path('accounts/' , include('accounts.urls')),
     path('courses/' , include('courses.urls')),

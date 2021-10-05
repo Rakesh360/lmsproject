@@ -506,3 +506,9 @@ def all_slider(request):
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
     context = {'sliders' : Slider.objects.all()}
     return render(request , 'new_dashboard/manage_app/all_slider.html', context)
+
+
+def chat_live(request , room_id):
+    return render(request , 'new_dashboard/chat_live.html' , context = {
+        'room_id' : room_id
+    })

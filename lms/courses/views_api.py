@@ -590,21 +590,31 @@ class GoLiveView(APIView):
     def post(self , request):
         try:
             data = request.data
+            payload = request.data.copy()
             courses = data.get('courses')
             if courses:
                 courses = json.loads(courses)
+            
+            payload.pop('courses')
 
-            data['courses'] = courses[0]
-            print(data)
-            serializer = GoLiveSerializer(data=data)
+            serializer = GoLiveSerializer(data=payload)
             if serializer.is_valid():
                 serializer.save()
+                live_obj = GoLive.objects.get(uid = serializer.data['uid'])
+
+                for c in courses:
+                    try:
+                        obj = CoursePackage.objects.get(uid = c)
+                        live_obj.courses.add(obj)
+                    except Exception as e:
+                        print(e)
+
+
                 return Response({
                     'status' : True,
                     'message' : 'Live created Successfully',
                     'data' : serializer.data
                 })
-
             return Response({
                 'status' : False,
                     'message' : 'live not created',
@@ -618,6 +628,45 @@ class GoLiveView(APIView):
                     'data' : str(e)
 
                 }) 
+
+
+    def patch(self , request):
+        try:
+            data = request.data
+            obj = GoLive.objects.get(uid = data.get('uid'))
+
+            serializer = GoLiveSerializer(obj , data = data , partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                live_obj = GoLive.objects.get(uid = serializer.data['uid'])
+                for c in courses:
+                    try:
+                        obj = CoursePackage.objects.get(uid = c)
+                        live_obj.courses.add(obj)
+                    except Exception as e:
+                        print(e)
+                        return Response({
+                            'status' : True,
+                            'message' : 'Live created Successfully',
+                            'data' : serializer.data
+                        })
+            return Response({
+                'status' : False,
+                    'message' : 'live not created',
+                    'data' : serializer.errors
+                })
+            
+        except Exception as e:
+            print(e)
+            return Response({
+                'status' : False,
+                    'message' : 'something went wrong',
+                    'data' : str(e)
+
+                }) 
+
+
+
 
 from rest_framework import status, viewsets
 class DocumentUpload(viewsets.ModelViewSet):
