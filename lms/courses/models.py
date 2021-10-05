@@ -179,6 +179,8 @@ class Coupoun(BaseModel):
 
 
     
-    
+
+# class Notification(BaseModel):
+#     title = models.CharField()
 
 

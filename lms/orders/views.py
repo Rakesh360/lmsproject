@@ -279,7 +279,12 @@ class ApplyCoupon(APIView):
             else:
                 amount_to_be_less = 100 #(order_obj.amount / coupon_obj.discount) * 100
                 print(amount_to_be_less)
-                order_obj.amount =  order_obj.amount - amount_to_be_less
+                amount= 0
+                discount_amount= 0
+                pay_amount = 0
+                discount_amount =  order_obj.amount * coupon_obj.discount / 100   
+                pay_amount = order_obj.amount  - discount_amount
+                order_obj.amount =  pay_amount
                 order_obj.save()
 
             course = order_obj.course

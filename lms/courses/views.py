@@ -1,4 +1,6 @@
 from django.shortcuts import redirect, render
+
+from dashboard.models import NotificationLogs
 from .models import *
 from .serializers import *
 from django.contrib import messages
@@ -492,6 +494,23 @@ def send_notification(request):
     context = {
         'course_packages' : CoursePackage.objects.all(),
     }
+    if request.method == 'POST':
+        notfication_title = request.POST.get('title')
+        notification_content = request.POST.get('description')
+        notification_image = request.FILES.get('image')
+        courses_items = request.POST.getlist('packages')
+        obj = NotificationLogs.objects.create(
+        notfication_title = notfication_title,
+        notification_content = notification_content,
+        notification_image = notification_image,
+        )
+        for c in courses_items:
+            c_obj = CoursePackage.objects.get(uid = c)
+            obj.courses.add(c_obj)
+        messages.success(request, 'Notification created')
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+ 
+
     return render(request , 'new_dashboard/manage_app/send_notification.html', context)
 
 
