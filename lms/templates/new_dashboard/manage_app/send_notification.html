@@ -18,7 +18,7 @@
 <div class="card">
     <div class="card-body">
         {% include "utils/alert.html" %}
-        <form>
+        <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="form-row mb-4">
                 <div class="form-group col-md-12">
@@ -41,52 +41,22 @@
                 </div>
         
 
-            </div>
+         
 
             
             <div class="form-group col-md-12">
-                <label for="apply_coupon_type">Where you want to send this notification?</label>
-                <select required class="form-control" name="apply_coupon_type" id="apply_coupon_type" onchange="changeApplyPackage()">
-                    <option selected disabled>None</option>
-                    <option value="all-packages">All Packages</option>
-                    <option value="selected-packages">Selected Packages</option>
+                <label>Select Packages</label>
+                <select class="form-control" name="packages" multiple>
+                    {% for course_package in  course_packages %}
+                     <option  value="{{course_package.uid}}">{{course_package.package_title}}</option>
+                   
+                {% endfor  %}
                 </select>
 
-                <div id="packageDiv" class="mt-4" style="display: none;">
-                    <div>
-                        <div>                    
-                            <div class="select-box">
-                                <div class="options-container">
-                                    {% for course_package in  course_packages %}
-                                        <div class="option" onclick="includeTag(event)">
-                                            <input type="checkbox" name="category" id="{{course_package.uid}}">
-                                            <label for="{{course_package.uid}}">{{course_package.package_title}}</label>
-                                        </div>
-                                    {% endfor  %}
-                        
-                                  
-                                </div>
- 
-                                <div class="selected">
-                                  Choose Packages to include
-                                </div>
-                        
-                                <div class="search-box">
-                                    <input type="text" placeholder="Start Typing..." />
-                                </div>
-                            </div>
-                        </div> 
-                    </div> 
-    
-                    <div class="table table-striped" style="margin: 1%;">
-                        <table class="display">
-                            <tbody id="tags">
-                            
-                            </tbody>
-                        </table>  
-                    </div> 
-                </div>
+            
         </div>
+
+
 
             
 
