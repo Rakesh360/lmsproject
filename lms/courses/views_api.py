@@ -639,17 +639,12 @@ class GoLiveView(APIView):
             if serializer.is_valid():
                 serializer.save()
                 live_obj = GoLive.objects.get(uid = serializer.data['uid'])
-                for c in courses:
-                    try:
-                        obj = CoursePackage.objects.get(uid = c)
-                        live_obj.courses.add(obj)
-                    except Exception as e:
-                        print(e)
-                        return Response({
-                            'status' : True,
-                            'message' : 'Live created Successfully',
-                            'data' : serializer.data
-                        })
+               
+                return Response({
+                    'status' : True,
+                    'message' : 'Live created Successfully',
+                    'data' : serializer.data
+                })
             return Response({
                 'status' : False,
                     'message' : 'live not created',
