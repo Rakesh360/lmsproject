@@ -113,11 +113,11 @@ class OrderCourse(APIView):
 
             course = order_obj.course
             student = order_obj.student
-            order_obj ,_ = Order.objects.get_or_create(
+            order_obj = Order.objects.filter(
                 student= student,
                 course = course,
                 is_paid = False,
-                )
+                ).first()
 
             response = api.payment_request_create(
             amount=order_obj.amount,
@@ -145,6 +145,11 @@ class OrderCourse(APIView):
             })
         except Exception as e:
             print(e)
+        return Response({
+                'status' : 400,
+                'message' : 'coupon removed',
+                'data' : {}
+            })
 
 class OrderSuccess(APIView):
     def get(self,request):
@@ -290,11 +295,11 @@ class ApplyCoupon(APIView):
             course = order_obj.course
             student = order_obj.student
             
-            order_obj ,_ = Order.objects.get_or_create(
+            order_obj  = Order.objects.first(
                 student= student,
                 course = course,
                 is_paid = False,
-                )
+                ).first()
             response = api.payment_request_create(
             amount= order_obj.amount,
             purpose=f'{course.package_title}',
