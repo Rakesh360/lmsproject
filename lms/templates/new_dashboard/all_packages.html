@@ -50,7 +50,7 @@
                             <td>
             
                                 <a href="{% url 'add_subjects_courses' course_package.uid%}" id="{{course_package.uid}}" class="btn btn-sm btn-primary editSubject"><i class="la la-pencil"></i></a>
-                                <a href="{% url 'delete_course_package' %}?uid={{course_package.uid}}"
+                                <a href="#" onclick="deletePackage('{{course_package.uid}}')"
                                 
                                 class="btn btn-sm btn-danger"><i class="la la-trash-o"></i></a>
                                 {% if not course_package.end_purchase  %}
@@ -70,6 +70,24 @@
     </div>
 </div>
 
+<script>
+    function deletePackage(uid){
+        swal({
+                title: "Are you sure?",
+                text: "You want to delete?",
+                icon: "success",
+                buttons: true,
+                dangerMode: true,
+            })
+            .then((willDelete) => {
+                if (willDelete) {
+            window.location.href = `{% url 'delete_course_package' %}?uid=${uid}`
 
+                } else {
+                    swal("No deleted");
+                }
+            });
+      }
+</script>
 
 {%endblock%}
