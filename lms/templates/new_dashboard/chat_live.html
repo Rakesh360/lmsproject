@@ -1,5 +1,8 @@
 {% extends "base.html" %}
 {% block start %}
+<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-database.js"></script>
+
 <div class="container py-5 px-4">
 
     <div style="margin: 0 auto; font-size: xxx-large;">
@@ -22,73 +25,91 @@
             </div>
 
             <!-- Typing area -->
-            <div action="#" class="bg-light">
+            <form action="#" id="messageForm" class="bg-light">
                 <div class="input-group">
                     <input type="text" id="message" placeholder="Type a message" aria-describedby="button-addon2"
                         class="form-control rounded-0 border-0 py-4 bg-light">
                     <div class="input-group-append" onclick="sendMessage()">
-                        <button id="button-addon2" type="submit" class="btn btn-link">
+                        <button id="send-btn" type="submit" class="btn btn-link">
                             <img style="height:30px" src="https://img.icons8.com/ios/452/sent.png"></button>
                     </div>
                 </div>
-                </dib>
 
-            </div>
+            </form>
         </div>
     </div>
 
 
+<script>
+    // Import the functions you need from the SDKs you need
 
-    <script src="https://www.gstatic.com/firebasejs/7.19.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/7.19.1/firebase-database.js"></script>
-    <script >
-      
+    // TODO: Add SDKs for Firebase products that you want to use
+    // https://firebase.google.com/docs/web/setup#available-libraries
+    const msgScreen = document.getElementById('chat_ui');
+    const msgFrom = 'Sender'
+    const msgInput = document.getElementById('message');
+    const msgBtn = document.getElementById('send-btn');
+    const msgForm = document.getElementById('messageForm');
+    // Your web app's Firebase configuration
     const firebaseConfig = {
-      apiKey: "AIzaSyBU9QQ8-tfQjWBewvOIIw9ruP-01NXaj2g",
-      authDomain: "malaviya-acedemy.firebaseapp.com",
-      databaseURL : "https://malaviya-acedemy-default-rtdb.firebaseio.com/",
-      projectId: "malaviya-acedemy",
-      storageBucket: "malaviya-acedemy.appspot.com",
-      messagingSenderId: "176187494863",
-      appId: "1:176187494863:web:eba4d28c0683c7e96882ba"
+        apiKey: "AIzaSyBU9QQ8-tfQjWBewvOIIw9ruP-01NXaj2g",
+        authDomain: "malaviya-acedemy.firebaseapp.com",
+        projectId: "malaviya-acedemy",
+        storageBucket: "malaviya-acedemy.appspot.com",
+        messagingSenderId: "176187494863",
+        appId: "1:176187494863:web:eba4d28c0683c7e96882ba"
     };
-  
     // Initialize Firebase
-
     firebase.initializeApp(firebaseConfig);
-    var db = firebase.database()
+    const db = firebase.database();
+    const msgRef = db.ref('/msgs');
 
-
-   
-
-    function writeUserData( message) {
-            const db = getDatabase();
-            set(ref(db, '{{room_id}}/' + userId), {
-            username: 'teacher',
-            message: message,
-        });
-        }
-
-    function sendMessage(){
-        var text_message = document.getElementById('message').value
-        writeUserData(text_message)
-        const msg = {
-            name: 'teacher',
-            text: text_message
-        };
-        // msgRef.push(msg);
-        // msgInput.value = "";
+    let name="";
+    function init() {
+        name = prompt("Please enter your name");
     }
+    document.addEventListener('DOMContentLoaded', init);
+
+
+    msgForm.addEventListener('submit', function sendMessage(e){
+        e.preventDefault();
+        const text = msgInput.value;
+
+        if(!text.trim()) return alert('Please type a message'); //no msg submitted
+        const msg = {
+            name: name,
+            text: text
+        };
+
+        msgRef.push(msg);
+        msgInput.value = "";
+    });
+
 
     
-const app = initializeApp(firebaseConfig);
-    console.log(app)
+    const updateMsgs = data =>{
+        const {dataName, text} = data.val(); //get name and text
+        
+        //load messages, display on left if not the user's name. Display on right if it is the user.
+        const msg = `<li class="${dataName == name ? "msg my": "msg"}"><span class = "msg-span">
+            <i class = "name">${name}: </i>${text}
+            </span>
+            </li>`
+            
+        msgScreen.innerHTML += msg; //add the <li> message to the chat window
+            
+            //auto scroll to bottom
+            document.getElementById("chat-window").scrollTop = document.getElementById("chat-window").scrollHeight;
+    }
+    msgRef.on('child_added', updateMsgs);
+    // const app = initializeApp(firebaseConfig);
+    // console.log(app)
 
+    // const db = getDatabase(app);
 
+    console.log(db)
 
-
-  </script>
-
+</script>
 
 
   
