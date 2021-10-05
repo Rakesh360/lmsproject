@@ -527,6 +527,15 @@ def all_slider(request):
     return render(request , 'new_dashboard/manage_app/all_slider.html', context)
 
 
+@staff_member_required(login_url='/accounts/login/')
+def delete_slider(request):
+    try:
+        Slider.objects.get(uid = request.GET.get('uid')).delete()
+    except Exception as e:
+        print(e)
+    messages.success(request, 'Slider Deleted')
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
 def chat_live(request , room_id):
     obj = GoLive.objects.get(uid = room_id)
     print('@@@@@@@@@@@@@@')

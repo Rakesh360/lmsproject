@@ -61,9 +61,8 @@
                             <td><a class="btn btn-sm btn-primary" href="/media/{{slider.slider_image}}">View Image</a></td>
                             <td>{{slider.created_at}}</td>
                             <td>
-                              <button {% if subject.check_in_package %} disabled {% else %}
-                                 onclick="deleteSubject('{{subject.uid}}')" {% endif %}
-                                    class="btn btn-sm btn-danger"><i class="la la-trash-o"></i>
+                              <button onclick="deleteSlider('{{slider.uid}}')" class="btn btn-sm btn-danger">
+                                <i class="la la-trash-o"></i>
                               </button>
                             </td>
                         </tr>
@@ -77,5 +76,24 @@
     </div>
 </div>
 
+<script>
+    function deleteSlider(uid){
+        swal({
+                title: "Are you sure?",
+                text: "You want to delete?",
+                icon: "success",
+                buttons: true,
+                dangerMode: true,
+            })
+            .then((willDelete) => {
+                if (willDelete) {
+            window.location.href = `{% url 'delete_slider' %}?uid=${uid}`
+
+                } else {
+                    swal("No deleted");
+                }
+            });
+      };
+</script>
 
 {%endblock %}
