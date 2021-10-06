@@ -146,7 +146,7 @@ class OrderCourse(APIView):
         except Exception as e:
             print(e)
         return Response({
-                'status' : 400,
+                'status' : 200,
                 'message' : 'coupon removed',
                 'data' : {}
             })
