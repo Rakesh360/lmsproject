@@ -369,6 +369,18 @@ def change_live_status(request , uid):
 
         elif request.GET.get('status') == 'cancel':
             print('cancel')
+            objs = Order.objects.filter(course__in = obj.courses.all())
+            registration_ids = []
+            for o in objs:
+                try:
+                    registration_ids.append(
+                        o.student.fcm_token
+                    )
+                except Exception as e:
+                    print(e)
+            
+            send_notification_packages(registration_ids , f'{obj.live_name} has been canceled.'  , 'Live has been cancel. Due to some reason')
+            obj.delete()
 
         #send_notification_packages
         
@@ -389,6 +401,46 @@ def live_stream_view(request , id):
 
 
 ################ DELETE REQUEST ###########
+
+def delete_package_lesson(request ):
+    
+    if request.GET.get('lesson_uid') is None and request.GET.get('course_package_uid') is None:
+        print("AAAAAAA")
+        messages.success(request, 'Something went wrong')
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+
+    lessob_obj = None
+    course_package_obj = None
+    print( request.GET.get('lesson_uid') )
+    print(request.GET.get('course_package_uid'))
+    try:
+        lessob_obj = Lessons.objects.get(uid = request.GET.get('lesson_uid'))
+    except Exception as e:
+        print(e)
+        messages.success(request, 'Something went wrong')
+
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+
+    try:
+        course_package_obj = CoursePackage.objects.get(uid = request.GET.get('course_package_uid'))
+    except Exception as e:
+        print(e)
+        messages.success(request, 'Something went wrong')
+
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+    
+    CoursePackageLessons.objects.get(
+        course_package_chapter__course_package_subject__course_package = course_package_obj,
+        lesson = lessob_obj
+    ).delete()
+    messages.success(request, 'Lesson removed')
+
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+
 
 @staff_member_required(login_url='/accounts/login/')
 def delete_subject(request):

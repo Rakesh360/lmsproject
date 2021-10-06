@@ -74,13 +74,16 @@
                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                                         <a class="dropdown-item" href="{% url 'edit_live' obj.uid %}">Edit</a>
                                         <a  class="dropdown-item" href="{% url 'chat_live' obj.uid %}">Start Chat</a>
+                                        {% if not obj.is_live_started%}
                                         <a class="dropdown-item" href="{% url 'change_live_status' obj.uid%}?status=start">
-                                            Start Live {% if obj.is_live_started%} ✔️ {% endif %}
-                                        
+                                            Start Live  ✔️ 
                                         </a>
+                                        {% endif %}
+                                        {% if obj.is_live_started %}
                                         <a class="dropdown-item"  href="{% url 'change_live_status' obj.uid%}?status=end">End Live
-                                            {% if obj.is_live_ended%} ✔️ {% endif %}
+                                             ✔️
                                         </a>
+                                        {% endif %}
                                         <a class="dropdown-item"  href="{% url 'change_live_status' obj.uid%}?status=cancel">Cancel Live</a>
 
 

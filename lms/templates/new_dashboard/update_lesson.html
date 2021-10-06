@@ -162,18 +162,15 @@
                                 </thead> -->
                                 <tbody id="tags">
                                 
-                                    {% for course_package in course_packages %}
-                                    {% if lesson.uid == course_package.lesson.uid  %}
+                                    {% for course_package in course_package_lessons %}
+                                   
                                 <tr><td class="tag" id="{{course_package.lesson.uid}}">
-                                     {{course_package.get_course_package}}
-                                </td><td>
-                                <input type="datetime-local" class="packageDate" {% if course_package.added_at  %} value="{{course_package.added_at}}" {% else %} value="{{course_package.created_at}}" {% endif %}>
+                                     {{course_package.course_package_chapter.course_package_subject.course_package.package_title}}
                                 </td>
                                 <td>
-                                <a class="btn btn-danger" onclick="deleteTag2(event)">❌</a>
+                                <a class="btn btn-danger" href="{% url 'delete_package_lesson' %}?lesson_uid={{course_package.lesson.uid}}&course_package_uid={{course_package.course_package_chapter.course_package_subject.course_package.uid}}">❌</a>
                                 </td>
                                 </tr>
-                                {% endif %}
                                     {% endfor  %}
                                 </tbody>
                             </table>  

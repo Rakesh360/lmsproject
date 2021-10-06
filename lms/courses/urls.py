@@ -52,7 +52,9 @@ urlpatterns = [
    path('send_notification', views.send_notification, name="send_notification"),
    path('all_slider', views.all_slider, name="all_slider"),
    path('delete_slider/', views.delete_slider , name="delete_slider"),
-   path('chat-live/<room_id>/' , views.chat_live, name="chat_live")
+   path('chat-live/<room_id>/' , views.chat_live, name="chat_live"),
+
+   path('delete_package_lesson/' , views.delete_package_lesson , name="delete_package_lesson")
 
    
 ]
