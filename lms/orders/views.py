@@ -229,9 +229,15 @@ class ApplyCoupon(APIView):
 
             print(coupon_obj)
             if order_obj.coupon and  order_obj.coupon.uid == coupon_obj.uid:
+                serializer = OrderSerializer(order_obj)
+                data = serializer.data
+                # data.pop('response')
+                # payload = response
+                # payload['order'] = data
                 return Response({
                     'status' : 400,
-                    'message' : 'coupon is already applied'
+                    'message' : 'coupon is already applied',
+                    'data' :data
                 })
 
 
@@ -295,7 +301,7 @@ class ApplyCoupon(APIView):
             course = order_obj.course
             student = order_obj.student
             
-            order_obj  = Order.objects.first(
+            order_obj  = Order.objects.filter(
                 student= student,
                 course = course,
                 is_paid = False,
