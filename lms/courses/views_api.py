@@ -1,11 +1,13 @@
 
 from functools import partial
-from re import sub
+from re import I, sub
 from django.db.models import manager
 from django.db.models.query import RawQuerySet
 from django.shortcuts import redirect, render
 from rest_framework import exceptions, serializers
 from rest_framework.views import APIView
+
+from dashboard.models import NotificationLogs
 from .models import *
 from .serializers import *
 from rest_framework.response import Response
@@ -334,6 +336,8 @@ class RemoveCoursePackageLesson(APIView):
             })
 
 
+from dashboard.helpers import *
+from orders.models import *
 
 
 class LessonsView(APIView):
@@ -366,8 +370,13 @@ class LessonsView(APIView):
                 subject_obj = lesson_obj.chapter.subject
                 packages = data.get('packages')
                 if packages == 'all':
+                  
+
                     i = 0
                     for package in CoursePackage.objects.all():
+                        print('********')
+                        print(package)
+                        print('********')
                         try:
                             course_package_obj = package
                         except Exception as e:
@@ -391,6 +400,20 @@ class LessonsView(APIView):
                             lesson = lesson_obj,
                             added_at = created_at
                         )
+                        objs = Order.objects.filter(course__uid = package['uid'])
+                        print(objs)
+                        registration_ids = []
+                        for o in objs:
+                            try:
+                                registration_ids.append(
+                                    o.student.fcm_token
+                                )
+                            except Exception as e:
+                                print(e)
+                        
+                        send_notification_packages(registration_ids , f'{lesson_obj.lesson_title} has been ended.'  , f'New Lesson has been added to {course_package_obj.package_title}')
+                        
+
                         return Response({
                             'status' : True,
                             'data' : serializer.data,
@@ -400,6 +423,12 @@ class LessonsView(APIView):
                 if packages:
                     i = 0
                     for package in packages:
+                        print('********')
+                        print(type(package))
+                        print(package['uid'])
+                        print(package['created_at'])
+                        print('********')
+                        course_package_obj = None
                         try:
                             course_package_obj = CoursePackage.objects.get(uid = package['uid'])
                         except Exception as e:
@@ -423,6 +452,19 @@ class LessonsView(APIView):
                             lesson = lesson_obj,
                             added_at = created_at
                         )
+                        objs = Order.objects.filter(course__uid = package['uid'])
+                        print(objs)
+                        registration_ids = []
+                        for o in objs:
+                            try:
+                                registration_ids.append(
+                                    o.student.fcm_token
+                                )
+                            except Exception as e:
+                                print(e)
+                        
+                        send_notification_packages(registration_ids , f'{lesson_obj.lesson_title} has been ended.'  , f'New Lesson has been added to {course_package_obj.package_title}')
+                        
 
                 return Response({
                     'status' : True,
@@ -437,7 +479,11 @@ class LessonsView(APIView):
             })
         
         except Exception as e:
-            print(e)
+            import sys, os
+
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
         
         return Response({
                 'status' : False,
@@ -667,6 +713,10 @@ from rest_framework import status, viewsets
 class DocumentUpload(viewsets.ModelViewSet):
     queryset = Document.objects.all()
     serializer_class = DocumentSerializer
+
+class NotificationViewSet(viewsets.ModelViewSet):
+    queryset = NotificationLogs.objects.all()
+    serializer_class = NotificationLogsSerializer
 
 class CouponView(APIView):
     queryset = Coupoun.objects.all()

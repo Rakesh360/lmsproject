@@ -1,6 +1,8 @@
 from django.shortcuts import redirect, render
+from rest_framework.permissions import OR
 
 from dashboard.models import NotificationLogs
+from orders.models import Order
 from .models import *
 from .serializers import *
 from django.contrib import messages
@@ -303,12 +305,30 @@ def edit_live(request, uid):
         print(e)
         return redirect('/')
 
+from dashboard.helpers import *
+
 def change_live_status(request , uid):
     try:
         obj = GoLive.objects.get(uid = uid)
         if request.GET.get('status') == 'start':
             obj.is_live_started = True
             obj.save()
+            
+           
+            objs = Order.objects.filter(course__in = obj.courses.all())
+            registration_ids = []
+            for o in objs:
+                try:
+                    registration_ids.append(
+                        o.student.fcm_token
+                    )
+                except Exception as e:
+                    print(e)
+            
+            send_notification_packages(registration_ids , f'{obj.live_name} has been started.'  , 'Live has been started please join.')
+
+
+
         elif request.GET.get('status') == 'end':
             obj.is_live_ended = True
             obj.save()
@@ -321,26 +341,43 @@ def change_live_status(request , uid):
                     video_link = obj.live_url
                 )
             )
-            package_subject_obj , _ = CoursePackageSubjects.objects.get_or_create(
-                    course_package = obj.course_package,
-                    subject = obj.subject
-            )
-            package_chapter_obj , _ = CoursePackageChapters.objects.get_or_create(
-                course_package_subject = package_subject_obj,
-                subject_chapter = obj.chapter
-            )
-            package_lesson_obj = CoursePackageLessons.objects.get_or_create(
-                course_package_chapter = package_chapter_obj,
-                lesson = lesson_obj,
-            )
+            for course_package in obj.courses.all():
+                package_subject_obj , _ = CoursePackageSubjects.objects.get_or_create(
+                        course_package = course_package,
+                        subject = obj.subject
+                )
+                package_chapter_obj , _ = CoursePackageChapters.objects.get_or_create(
+                    course_package_subject = package_subject_obj,
+                    subject_chapter = obj.chapter
+                )
+                package_lesson_obj = CoursePackageLessons.objects.get_or_create(
+                    course_package_chapter = package_chapter_obj,
+                    lesson = lesson_obj,
+                )
+
+            objs = Order.objects.filter(course__in = obj.courses.all())
+            registration_ids = []
+            for o in objs:
+                try:
+                    registration_ids.append(
+                        o.student.fcm_token
+                    )
+                except Exception as e:
+                    print(e)
+            send_notification_packages(registration_ids , f'{obj.live_name} has been ended.'  , 'Live has been ended! Video has been added to lesson.')
+            
+
         elif request.GET.get('status') == 'cancel':
             print('cancel')
+
+        #send_notification_packages
         
         messages.success(request, 'Live updated')
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
     except Exception as e:
+        print(e)
         return redirect('/')
 
 def live_stream_view(request , id):

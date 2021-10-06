@@ -3,6 +3,7 @@ from django.db.models import fields
 from django.utils.translation import LANGUAGE_SESSION_KEY
 from rest_framework import exceptions, serializers
 from base_rest.utils import *
+from dashboard.models import NotificationLogs
 from .models import *
 
 class LessonsSerializers(serializers.ModelSerializer):
@@ -196,6 +197,11 @@ class GoLiveSerializer(serializers.ModelSerializer):
         model = GoLive
         exclude = ['created_at' , 'updated_at']    
 
+class NotificationLogsSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = NotificationLogs
+        exclude = ['created_at' , 'updated_at']    
 
 class CoursePackageUid(serializers.ModelSerializer):
     class Meta:
