@@ -131,8 +131,22 @@
                                 <div class="select-box">
                                     <div class="options-container">
                                         {% for course_package in  all_course_packages %}
-                                            <div class="option" onclick="includeTag(event)">
-                                                <input type="checkbox" name="category" id="{{course_package.uid}}">
+                                            <div class="option" onclick="includeTag(event)"
+                                            {% for course_package_included in course_package_lessons %}
+                                            {% if course_package_included.course_package_chapter.course_package_subject.course_package.package_title == course_package.package_title %}
+                                                style="pointer-events: none; color: red;"
+                                            {% endif %}
+                                            {% endfor %}
+                                                >
+                                                
+                                                <input type="checkbox" style="pointer-events: none;"
+                                                    {% for course_package_included in course_package_lessons %}
+                                                    {% if course_package_included.course_package_chapter.course_package_subject.course_package.package_title == course_package.package_title %}
+                                                    checked
+                                                    disabled
+                                                    {% endif %}
+                                                    {% endfor %}
+                                                    name="category" id="{{course_package.uid}}">
                                                 <label for="{{course_package.uid}}">{{course_package.package_title}}</label>
                                             </div>
                                         {% endfor  %}
@@ -164,12 +178,16 @@
                                 
                                     {% for course_package in course_package_lessons %}
                                    
-                                <tr><td class="tag" id="{{course_package.lesson.uid}}">
+                                <tr>
+                                    <td class="tag" id="{{course_package.lesson.uid}}">
                                      {{course_package.course_package_chapter.course_package_subject.course_package.package_title}}
-                                </td>
-                                <td>
-                                <a class="btn btn-danger" href="{% url 'delete_package_lesson' %}?lesson_uid={{course_package.lesson.uid}}&course_package_uid={{course_package.course_package_chapter.course_package_subject.course_package.uid}}">❌</a>
-                                </td>
+                                    </td>
+                                    <td>
+                                        {{course_package.course_package_chapter.course_package_subject.course_package.created_at}}
+                                    </td>
+                                    <td>
+                                    <a class="btn btn-danger" href="{% url 'delete_package_lesson' %}?lesson_uid={{course_package.lesson.uid}}&course_package_uid={{course_package.course_package_chapter.course_package_subject.course_package.uid}}">❌</a>
+                                    </td>
                                 </tr>
                                     {% endfor  %}
                                 </tbody>
@@ -212,6 +230,7 @@
     // script for package include dropdown starts
 
     var selected = document.querySelector(".selected");
+    var selectBox = document.querySelector(".select-box");
     const optionsContainer = document.querySelector(".options-container");
     const searchBox = document.querySelector(".search-box input");
 
@@ -226,6 +245,13 @@
     if (optionsContainer.classList.contains("active")) {
         searchBox.focus();
     }
+    });
+    document.addEventListener('click', function(event) {
+        var isClickInsideElement = selectBox.contains(event.target);
+        if (!isClickInsideElement) {
+            //Do something click is outside specified element
+            optionsContainer.classList.remove("active");
+        }
     });
 
     optionsList.forEach(o => {
@@ -430,6 +456,7 @@
         console.log('doc uploaded changed');
     }
     function changeLessonType() {
+        let hasDoc = "{{lesson.document}}";
         var element = document.getElementById('lesson_type')
         if (element.value == 'Video') {
             videoDiv.innerHTML = '';
@@ -451,6 +478,9 @@
             videoDiv.innerHTML = lessonInnerHTML;
             documentUploadDiv.innerHTML = documentInnerHtml;
             loadLesson();
+            if (hasDoc === "None") {
+                document.getElementById("docNameDiv").remove();
+            }
             document.getElementById('lesson_type').children[0].disabled = true;
             document.getElementById('lesson_type').children[1].disabled = true;
         }

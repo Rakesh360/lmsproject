@@ -153,6 +153,7 @@
     // script for package include dropdown starts
 
     var selected = document.querySelector(".selected");
+    var selectBox = document.querySelector(".select-box");
     const optionsContainer = document.querySelector(".options-container");
     const searchBox = document.querySelector(".search-box input");
 
@@ -167,6 +168,13 @@
     if (optionsContainer.classList.contains("active")) {
         searchBox.focus();
     }
+    });
+    document.addEventListener('click', function(event) {
+        var isClickInsideElement = selectBox.contains(event.target);
+        if (!isClickInsideElement) {
+            //Do something click is outside specified element
+            optionsContainer.classList.remove("active");
+        }
     });
 
     optionsList.forEach(o => {

@@ -127,7 +127,23 @@
 
     var is_all_Package = true;
 
-    
+    const dateTimeObj = document.getElementById('coupon_validity');
+    function parseDateTime(date) {
+        var dateTime = new Date(date);
+        var year = dateTime.getFullYear();
+        var month = dateTime.getMonth() + 1;
+        var day = dateTime.getDate();
+        var hour = dateTime.getHours();
+        var minute = dateTime.getMinutes();
+        hour = (hour < 10 ? "0" : "") + hour.toString();
+        minute = (minute < 10 ? "0" : "") + minute.toString();
+        var datetime = year + "-" + month + "-" + day + "T" + hour + ":" + minute;
+        return datetime;
+    }
+
+    let todaysDate = parseDateTime(Date.now());
+    dateTimeObj.setAttribute('min', todaysDate);
+    console.log(todaysDate);    
 
     function parseDate(date) {
         var date = new Date(date);
@@ -144,6 +160,7 @@
     // script for package include dropdown starts
 
     var selected = document.querySelector(".selected");
+    var selectBox = document.querySelector(".select-box");
     const optionsContainer = document.querySelector(".options-container");
     const searchBox = document.querySelector(".search-box input");
 
@@ -158,6 +175,13 @@
     if (optionsContainer.classList.contains("active")) {
         searchBox.focus();
     }
+    });
+    document.addEventListener('click', function(event) {
+        var isClickInsideElement = selectBox.contains(event.target);
+        if (!isClickInsideElement) {
+            //Do something click is outside specified element
+            optionsContainer.classList.remove("active");
+        }
     });
 
     optionsList.forEach(o => {

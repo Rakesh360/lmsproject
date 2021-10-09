@@ -5,39 +5,54 @@
 <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-firestore.js"></script>
 
 
-<div class="container py-5 px-4">
-
+<div style="margin-top: 5%; display: flex;">
     <div style="margin: 0 auto; font-size: xxx-large;">
-        Live Chat
+        Live Class
     </div>
-    
+ 
+</div>
 
-    <div class="row overflow-hidden" id="people_online">
-
-    </div>
-
-    <div class="row rounded-lg overflow-hidden shadow">
-        <!-- Users box-->
-
-        <!-- Chat Box-->
-        <div class="col-12 px-0">
-            <div class="px-4 py-5 chat-box bg-white" id="chat_ui">
-
-
+<div class="row mt-2">
+    <div class="col-md-7">
+        <div class="card">
+            <!-- <div class="card-header">
+                <h4>{{lesson.lesson_title}}</h4>
+            </div> -->
+            <div class="card-body">
+                <iframe  height=500 width="100%" src="https://www.youtube.com/embed/{{room_id}}" style="border: 1px solid black;"></iframe>
             </div>
+        </div>
+    </div>
 
-            <!-- Typing area -->
-            <form action="#" id="messageForm" class="bg-light">
-                <div class="input-group">
-                    <input type="text" id="message" placeholder="Type a message" aria-describedby="button-addon2"
-                        class="form-control rounded-0 border-0 py-4 bg-light">
-                    <div class="input-group-append" >
-                        <button id="send-btn" type="submit" class="btn btn-link">
-                            <img style="height:30px" src="https://img.icons8.com/ios/452/sent.png"></button>
-                    </div>
+    <div class="col-md-5">       
+    
+        <div class="row overflow-hidden" id="people_online">
+    
+        </div>
+    
+        <div class="row rounded-lg overflow-hidden shadow">
+            <!-- Users box-->
+    
+            <!-- Chat Box-->
+            <div class="col-12 px-0">
+                <div class="px-4 py-5 chat-box bg-white" id="chat_ui">
+    
+    
                 </div>
-
-            </form>
+    
+                <!-- Typing area -->
+                <form action="#" id="messageForm" class="bg-light">
+                    <div class="input-group">
+                        <input type="text" id="message" placeholder="Type a message" aria-describedby="button-addon2"
+                            class="form-control rounded-0 border-0 py-4 bg-light">
+                        <div class="input-group-append" >
+                            <button id="send-btn" type="submit" class="btn btn-link">
+                                <img style="height:30px" src="https://img.icons8.com/ios/452/sent.png"></button>
+                        </div>
+                    </div>
+    
+                </form>
+            </div>
         </div>
     </div>
 </div>
