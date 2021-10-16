@@ -282,7 +282,7 @@ class ApplyCoupon(APIView):
                 })
 
 
-            if CouponUsedBy.objects.filter(coupon = coupon_obj).count() :
+            if CouponUsedBy.objects.filter(coupon = coupon_obj).count() > coupon_obj.total_usage_limit :
                 return Response({
                     'status':400,
                     'message' : 'coupon limit expired'
