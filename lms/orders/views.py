@@ -40,6 +40,10 @@ class OrderCourse(APIView):
             course = None
             try:
                 course = CoursePackage.objects.get(uid = data.get('course_uid'))
+                if not course.is_active:
+                    return Response({'status' : 400 , 'message' : 'course expired cannot purchase' })
+
+
             except Exception as e:
                 print(e)
                 return Response({'status' : 400 , 'message' : 'course_uid is invalid' })
@@ -55,7 +59,7 @@ class OrderCourse(APIView):
             buyer_name=student.student_name,
             send_email=True,
             email=student.email,
-            redirect_url="http://13.232.227.45/api/order/success/",
+            redirect_url="http://127.0.0.1:8000/api/order/success/",
             )
             order_obj ,_ = Order.objects.get_or_create(
                 student= student,
@@ -153,6 +157,7 @@ class OrderCourse(APIView):
 
 class OrderSuccess(APIView):
     def get(self,request):
+        import datetime
         try:
             payment_id = request.GET.get('payment_id')
             payment_request_id = request.GET.get('payment_request_id')
@@ -161,6 +166,23 @@ class OrderSuccess(APIView):
             )
             order_obj.is_paid = True
             order_obj.payement_id = payment_id
+            count_days = None
+            if order_obj.course.subscription_type == 'Fixed Date':
+                to_date = datetime.date.today() + datetime.timedelta(days=order_obj.course.days)
+                order_obj.order_expiry = to_date
+            else:
+                order_obj.order_expiry  = order_obj.course.sell_till_date
+
+            if order_obj.coupon :
+                CouponUsedBy.objects.create(
+                    coupon = order_obj.coupon,
+                    student = order_obj.student,
+                    is_applied = True
+                )
+
+
+
+
             order_obj.save()
 
             return Response({'status' : 200 , 'message' : 'Payment successfull'})
@@ -195,7 +217,7 @@ class OrderAPI(APIView):
         
         return Response({'status' : 400 , 'data' : [] , 'message' : 'Someting went wrong add phone_number key'})
 
-from datetime import date
+from datetime import date, datetime
 
 class ApplyCoupon(APIView):
     def post(self , request):
@@ -253,26 +275,19 @@ class ApplyCoupon(APIView):
             #         'message' : ' coupon code expired'
             #     })
                 
-            if coupon_obj.per_user_limit != -1:
-                if coupon_obj.applied_user_limit == coupon_obj.per_user_limit:
-                    return Response({
-                        'status':400,
-                        'message' : 'coupon code expired'
-                    })
-                else:
-                    coupon_obj.applied_user_limit = coupon_obj.applied_user_limit + 1
-                    coupon_obj.save()
-            
+            if CouponUsedBy.objects.filter(student = order_obj.student,coupon = coupon_obj).count() > coupon_obj.per_user_limit:
+                return Response({
+                    'status':400,
+                    'message' : 'you have exhausted coupon limit'
+                })
 
-            if coupon_obj.total_usage_limit != -1:
-                if coupon_obj.applied_total_limit == coupon_obj.total_usage_limit:
-                    return Response({
-                        'status':400,
-                        'message' : 'coupon code expired'
-                    })
-                else:
-                    coupon_obj.applied_total_limit = coupon_obj.applied_total_limit + 1
-                    coupon_obj.save()
+
+            if CouponUsedBy.objects.filter(coupon = coupon_obj).count() :
+                return Response({
+                    'status':400,
+                    'message' : 'coupon limit expired'
+                })
+              
 
 
             if not coupon_obj.courses.filter(uid__in = [order_obj.course.uid]).exists():

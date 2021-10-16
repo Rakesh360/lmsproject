@@ -155,6 +155,7 @@ class LiveStream(BaseModel):
 
 
 
+
 class Coupoun(BaseModel):
     coupon_code = models.CharField(max_length=100 , unique=True)
     coupon_validity = models.CharField(max_length=100)
@@ -178,7 +179,12 @@ class Coupoun(BaseModel):
         ordering = ['-created_at']
 
 
-    
+
+class CouponUsedBy(BaseModel):
+    from accounts.models import Student
+    coupon = models.ForeignKey(Coupoun,on_delete=models.CASCADE )
+    student = models.ForeignKey(Student,on_delete=models.CASCADE ) 
+    is_applied = models.BooleanField(default= False)
 
 # class Notification(BaseModel):
 #     title = models.CharField()

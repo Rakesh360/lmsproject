@@ -365,6 +365,7 @@ def change_live_status(request , uid):
                 except Exception as e:
                     print(e)
             send_notification_packages(registration_ids , f'{obj.live_name} has been ended.'  , 'Live has been ended! Video has been added to lesson.')
+            obj.delete()
             
 
         elif request.GET.get('status') == 'cancel':

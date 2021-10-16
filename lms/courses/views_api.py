@@ -6,6 +6,7 @@ from django.db.models.query import RawQuerySet
 from django.shortcuts import redirect, render
 from rest_framework import exceptions, serializers
 from rest_framework.views import APIView
+from courses.views import course_packages
 
 from dashboard.models import NotificationLogs
 from .models import *
@@ -120,6 +121,10 @@ class CoursePackageAPI(APIView):
             serializer = CoursePackageSaveSerializer(data = data)
             if serializer.is_valid():
                 serializer.save()
+                # course_package_obj = CoursePackage.objects.get(uid = serializer.data['uid'])
+
+                # if 
+
                 return Response({
                 'status' : True,
                 'message' : f'course package created',
@@ -323,6 +328,10 @@ class RemoveCoursePackageLesson(APIView):
                 course_package_chapter__course_package_subject__course_package = course_package_obj,
                 lesson = lessob_obj
             ).delete()
+
+            # for obj in course_package_obj.pacakge_subjects.all():
+            #     if obj.pacakge_subject_chapters.
+
 
             return Response({
                 'satus' : 200,
@@ -654,6 +663,19 @@ class GoLiveView(APIView):
                         live_obj.courses.add(obj)
                     except Exception as e:
                         print(e)
+                
+                objs = Order.objects.filter(course__in = live_obj.courses.all())
+                registration_ids = []
+                for o in objs:
+                    try:
+                        registration_ids.append(
+                            o.student.fcm_token
+                        )
+                    except Exception as e:
+                        print(e)
+            
+                send_notification_packages(registration_ids , f'{live_obj.live_name} has been created.'  , f'Live has been schedule on {live_obj.live_date_time}')
+           
 
 
                 return Response({

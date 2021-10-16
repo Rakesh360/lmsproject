@@ -19,7 +19,8 @@ sudo systemctl restart nginx
 
 
 # ghp_u6gKNjKcARvvpDX5 ccOQdVpHBH1DHS0dsE0Z
-# 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 
+# ghp_Vti27z0G0kuvD4xkS ls; cd ..
+fWojRBCqitap53JBUOq 
 
 
 

@@ -1,12 +1,10 @@
-import uuid
-from django.db.models import manager, query
+
 from django.shortcuts import redirect, render
-from rest_framework.views import APIView
 from rest_framework.response import Response
 from .serializers import (  LoginSerializer,
                             RegisterStudentSerializer,StudentSerializer , ForgetPasswordSerializer)
 
-from rest_framework import serializers, status
+from rest_framework import status
 from base_rest.viewsets import BaseAPIViewSet
 from .models import *
 from .mixins import AccountMixin
@@ -14,6 +12,7 @@ from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.contrib.auth import authenticate, login
 from courses.helpers import *
+import datetime
 
 def login_view(request):
     try:
@@ -53,12 +52,15 @@ class AccountViewSet(BaseAPIViewSet , AccountMixin):
     def list(self , request):
         if request.GET.get('uid'):
             try:
+                
                 queryset = Student.objects.get(uid = request.GET.get('uid'))
                 data = {}
                 serializer = RegisterStudentSerializer(queryset)
                 data['student_info'] = serializer.data
                 courses = []
-                for order in queryset.orders.filter(is_paid = True):
+              
+
+                for order in queryset.orders.filter(is_paid = True , order_expiry__gte = datetime.date.today() ):
                     courses.append(course_to_json([order.course]))
                 data['courses'] = courses
 
@@ -75,7 +77,7 @@ class AccountViewSet(BaseAPIViewSet , AccountMixin):
                 serializer = RegisterStudentSerializer(queryset)
                 data['student_info'] = serializer.data
                 courses = []
-                for order in queryset.orders.filter(is_paid = True):
+                for order in queryset.orders.filter(is_paid = True, order_expiry__gte = datetime.date.today()):
                     courses.append(course_to_json([order.course]))
                 data['courses'] = courses
 
