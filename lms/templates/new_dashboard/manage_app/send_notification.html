@@ -44,17 +44,43 @@
          
 
             
-            <div class="form-group col-md-12">
-                <label>Select Packages</label>
-                <select class="form-control" name="packages" multiple>
-                    {% for course_package in  course_packages %}
-                     <option  value="{{course_package.uid}}">{{course_package.package_title}}</option>
-                   
-                {% endfor  %}
-                </select>
+                <div id="packageDiv" class="form-group col-md-12">
+                    <div>
+                        <div>                    
+                            <div class="select-box">
+                                <div class="options-container">
+                                    {% for course_package in  course_packages %}
+                                        <div class="option" onclick="includeTag(event)">
+                                            <input class="tagId" style="pointer-events: none;" type="checkbox" name="category" id="{{course_package.uid}}">
+                                            <label for="{{course_package.uid}}">{{course_package.package_title}}</label>
+                                        </div>
+                                    {% endfor  %}
+                        
+                                  
+                                </div>
+ 
+                                
 
-            
-        </div>
+
+                                <div class="selected">
+                                  Choose Packages to include
+                                </div>
+                        
+                                <div class="search-box">
+                                    <input type="text" placeholder="Start Typing..." />
+                                </div>
+                            </div>
+                        </div> 
+                    </div> 
+    
+                    <div class="table table-striped" style="margin: 1%;">
+                        <table class="display">
+                            <tbody id="tags">
+                            
+                            </tbody>
+                        </table>  
+                    </div> 
+                </div>
 
 
 
@@ -74,6 +100,7 @@
     // script for package include dropdown starts
 
     var selected = document.querySelector(".selected");
+    var selectBox = document.querySelector(".select-box");
     const optionsContainer = document.querySelector(".options-container");
     const searchBox = document.querySelector(".search-box input");
 
@@ -88,6 +115,13 @@
     if (optionsContainer.classList.contains("active")) {
         searchBox.focus();
     }
+    });
+    document.addEventListener('click', function(event) {
+        var isClickInsideElement = selectBox.contains(event.target);
+        if (!isClickInsideElement) {
+            //Do something click is outside specified element
+            optionsContainer.classList.remove("active");
+        }
     });
 
     optionsList.forEach(o => {
