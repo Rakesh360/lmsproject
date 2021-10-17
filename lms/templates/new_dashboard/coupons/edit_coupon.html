@@ -100,13 +100,14 @@
                                 <table class="display">
                                     <tbody id="tags">
                             
-                                        {% for course_package in course_packages %}
-                                        {% if lesson.uid == course_package.lesson.uid  %}
+                                        {% for c in coupon.courses.all %}
+                                        
                                     <tr><td class="tag">
-                                         {{course_package.lesson.lesson_title}}
+                                         {{c.package_title}}
                                     </td>
-                                    <td><button class="btn btn-danger" onclick="deleteTag2(event)">❌</button></td></tr>
-                                    {% endif %}
+                                    <td>
+                                        <a  class="btn btn-danger" href="{% url 'remove_coupon' %}?course_uid={{c.uid}}&coupon={{coupon.uid}}">❌</button></td></tr>
+                                   
                                         {% endfor  %}
                                     </tbody>
                                 </table>  

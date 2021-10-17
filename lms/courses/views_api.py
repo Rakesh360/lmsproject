@@ -50,8 +50,11 @@ class CoursesView(APIView):
             course_package_dict['package_description'] = course_obj.package_description
             course_package_dict['actual_price'] = course_obj.actual_price
             course_package_dict['selling_price'] = course_obj.selling_price
-            course_package_dict['sell_from'] = course_obj.selling_price
-            course_package_dict['sell_till'] = course_obj.selling_price
+
+            course_package_dict['sell_from'] = course_obj.created_at
+            course_package_dict['sell_till'] = course_obj.sell_till_date
+            course_package_dict['days'] = course_obj.days
+            course_package_dict['package_type'] = course_obj.package_type
             course_package_dict['web_image'] = '/media/' + str(course_obj.web_image)
             course_package_dict['mobile_image'] ='/media/' + str(course_obj.mobile_image)
 

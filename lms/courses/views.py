@@ -316,15 +316,15 @@ def change_live_status(request , uid):
             
            
             objs = Order.objects.filter(course__in = obj.courses.all())
-            registration_ids = []
+            registration_ids = set()
             for o in objs:
                 try:
-                    registration_ids.append(
+                    registration_ids.add(
                         o.student.fcm_token
                     )
                 except Exception as e:
                     print(e)
-            
+            registration_ids = list(registration_ids)
             send_notification_packages(registration_ids , f'{obj.live_name} has been started.'  , 'Live has been started please join.')
 
 
@@ -356,14 +356,15 @@ def change_live_status(request , uid):
                 )
 
             objs = Order.objects.filter(course__in = obj.courses.all())
-            registration_ids = []
+            registration_ids = set()
             for o in objs:
                 try:
-                    registration_ids.append(
+                    registration_ids.add(
                         o.student.fcm_token
                     )
                 except Exception as e:
                     print(e)
+            registration_ids = list(registration_ids)
             send_notification_packages(registration_ids , f'{obj.live_name} has been ended.'  , 'Live has been ended! Video has been added to lesson.')
             obj.delete()
             
@@ -371,14 +372,15 @@ def change_live_status(request , uid):
         elif request.GET.get('status') == 'cancel':
             print('cancel')
             objs = Order.objects.filter(course__in = obj.courses.all())
-            registration_ids = []
+            registration_ids = set()
             for o in objs:
                 try:
-                    registration_ids.append(
+                    registration_ids.add(
                         o.student.fcm_token
                     )
                 except Exception as e:
                     print(e)
+            registration_ids = list(registration_ids)
             
             send_notification_packages(registration_ids , f'{obj.live_name} has been canceled.'  , 'Live has been cancel. Due to some reason')
             obj.delete()
@@ -540,10 +542,24 @@ def add_coupons(request):
 def edit_coupon(request, uid):
     context = {
         'course_packages' : CoursePackage.objects.all(),
-        'coupon' : Coupoun.objects.get(uid = uid)
+    'coupon' : Coupoun.objects.get(uid = uid)
     }
 
     return render(request, 'new_dashboard/coupons/edit_coupon.html' , context)
+
+def remove_coupon(request):
+    try:
+        course_uid = CoursePackage.objects.get(uid = request.GET.get('course_uid'))
+        coupon = Coupoun.objects.get(uid = request.GET.get('coupon'))
+
+        coupon.courses.remove(course_uid)
+        messages.success(request, 'Coupon removed')
+
+
+    except Exception as e:
+        print(e)
+    
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
 def delete_coupon(request):
