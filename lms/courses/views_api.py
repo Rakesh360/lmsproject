@@ -327,13 +327,24 @@ class RemoveCoursePackageLesson(APIView):
                         'data' : {}
                     })
             
-            CoursePackageLessons.objects.get(
+            obj = CoursePackageLessons.objects.get(
                 course_package_chapter__course_package_subject__course_package = course_package_obj,
                 lesson = lessob_obj
             ).delete()
 
-            # for obj in course_package_obj.pacakge_subjects.all():
-            #     if obj.pacakge_subject_chapters.
+            for subject in course_package_obj.pacakge_subjects.all():
+                if len(subject.pacakge_subject_chapters.all()) == 0:
+                    subject.delete()
+                else:
+                    for chapter in subject.pacakge_subject_chapters.all():
+                        if len(chapter.pacakge_subject_chapters_lessons.all()) == 0:
+                            chapter.delete()
+    
+
+            
+
+
+
 
 
             return Response({

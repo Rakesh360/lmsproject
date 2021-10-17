@@ -18,8 +18,9 @@ sudo systemctl restart nginx
 # IP - http://13.232.227.45/
 
 
-# ghp_u6gKNjKcARvvpDX5 ccOQdVpHBH1DHS0dsE0Z
-# ghp_Vti27z0G0kuvD4xkS ls; cd ..
+# ghp_u6gKNjKcARvvpDX5 
+# ghp_Vti27z0G0kuvD4xkS 
+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
 fWojRBCqitap53JBUOq 
 
 
