@@ -94,14 +94,15 @@ class CoursesView(APIView):
 
                         lessons.append(lesson_dict)
                     chapter_dict['lessons'] = lessons
-                        
+                       
                     chapters.append(chapter_dict)
-            
-                subject_dict['chapters'] = chapters
+                if len(chapters):
+                    subject_dict['chapters'] = chapters
                 subjects.append(subject_dict)
                 subject_dict = {}
-
-            course_package_dict['subjects'] = subjects
+            
+            if len(subjects):
+                course_package_dict['subjects'] = subjects
             payload.append(course_package_dict)
 
 
