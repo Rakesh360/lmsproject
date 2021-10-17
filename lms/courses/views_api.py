@@ -93,12 +93,12 @@ class CoursesView(APIView):
                             print(e)
 
                         lessons.append(lesson_dict)
-                    chapter_dict['lessons'] = lessons
-                       
-                    chapters.append(chapter_dict)
+                    if len(lessons):
+                        chapter_dict['lessons'] = lessons
+                        chapters.append(chapter_dict)
                 if len(chapters):
                     subject_dict['chapters'] = chapters
-                subjects.append(subject_dict)
+                    subjects.append(subject_dict)
                 subject_dict = {}
             
             if len(subjects):

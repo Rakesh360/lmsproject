@@ -58,22 +58,21 @@ def course_to_json(course_objs):
                             print(e)
 
                         lessons.append(lesson_dict)
-                    chapter_dict['lessons'] = lessons
-                        
-                    chapters.append(chapter_dict)
-            
-                subject_dict['chapters'] = chapters
-                subjects.append(subject_dict)
+                    if len(lessons):
+                        chapter_dict['lessons'] = lessons
+                        chapters.append(chapter_dict)
+                if len(chapters):
+                    subject_dict['chapters'] = chapters
+                    subjects.append(subject_dict)
                 subject_dict = {}
-
-            course_package_dict['subjects'] = subjects
+            if len(subjects):
+                course_package_dict['subjects'] = subjects
+                
             live_class = []
             now = datetime.now()
-            print(now)
+
             go_live_objs = GoLive.objects.filter(courses__in = [course_obj.uid] , live_date_time__gte = datetime.now())
-            print('@@@@@@@@@@@@@')
-            print(go_live_objs)
-            print('@@@@@@@@@@@@@')
+
 
             if len(go_live_objs):
                 for live in go_live_objs:
