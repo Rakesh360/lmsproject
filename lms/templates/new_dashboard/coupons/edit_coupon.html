@@ -73,8 +73,28 @@
                                     <div class="select-box">
                                         <div class="options-container">
                                             {% for course_package in  course_packages %}
-                                                <div class="option" onclick="includeTag(event)">
+                                                <!-- <div class="option" onclick="includeTag(event)">
                                                     <input type="checkbox" name="category" id="{{course_package.uid}}">
+                                                    <label for="{{course_package.uid}}">{{course_package.package_title}}</label>
+                                                </div> -->
+
+
+                                                <div class="option" onclick="includeTag(event)"
+                                                {% for c in coupon.courses.all %}
+                                                {% if c.package_title == course_package.package_title %}
+                                                    style="pointer-events: none; color: red;"
+                                                {% endif %}
+                                                {% endfor %}
+                                                    >
+                                                    
+                                                    <input type="checkbox" style="pointer-events: none;"
+                                                        {% for c in coupon.courses.all %}
+                                                        {% if c.package_title == course_package.package_title %}
+                                                        checked
+                                                        disabled
+                                                        {% endif %}
+                                                        {% endfor %}
+                                                        name="category" id="{{course_package.uid}}">
                                                     <label for="{{course_package.uid}}">{{course_package.package_title}}</label>
                                                 </div>
                                             {% endfor  %}
@@ -102,11 +122,11 @@
                             
                                         {% for c in coupon.courses.all %}
                                         
-                                    <tr><td class="tag">
+                                    <tr><td class="tag" id="{{c.uid}}">
                                          {{c.package_title}}
                                     </td>
                                     <td>
-                                        <a  class="btn btn-danger" href="{% url 'remove_coupon' %}?course_uid={{c.uid}}&coupon={{coupon.uid}}">❌</button></td></tr>
+                                        <a  class="btn btn-danger" href="{% url 'remove_coupon' %}?course_uid={{c.uid}}&coupon={{coupon.uid}}" onclick="deleteTag2('{{c.uid}}')">❌</button></td></tr>
                                    
                                         {% endfor  %}
                                     </tbody>
@@ -134,10 +154,7 @@
     const discount_amount = document.getElementById('discount_amount');
     const apply_coupon_type = document.getElementById('apply_coupon_type');
 
-
     var is_all_Package = true;
-
-    
 
     function parseDate(date) {
         var date = new Date(date);
@@ -251,23 +268,38 @@
     function deleteTag(packageUid) {
         let allSelectedPackages = document.querySelectorAll(".tag");
         for (var i = 0; i < allSelectedPackages.length; i++) {
+            console.log(allSelectedPackages[i].id);
+            console.log(packageUid);
             if (allSelectedPackages[i].id === packageUid) {
                 allSelectedPackages[i].parentElement.remove();
             }
+        };
+    };
+
+    function deleteTag2(packageUid) {
+        let allSelectedPackages = document.querySelectorAll(".tag");
+        for (var i = 0; i < allSelectedPackages.length; i++) {
+            console.log(allSelectedPackages[i].id);
+            console.log(packageUid);
+            if (allSelectedPackages[i].id === packageUid) {
+                allSelectedPackages[i].parentElement.remove();
+            }
+        };
+
+        let allOptions = document.querySelectorAll('.option');
+        for (let j = 0; j < allOptions.length; j++) {
+            let option = allOptions[j].children[0];
+            if (option.id === packageUid) {
+                option.checked = false;
+                option.disabled = false;
+                console.log(option.parentElement);
+                option.parentElement.style.pointerEvents = 'auto';
+                option.parentElement.style.color = 'black';
+            }           
         }
     };
 
-    function deleteTag2(event){
-        event.target.parentElement.parentElement.remove();
-        // delete request on /api/courses/remove-lessons/
-        // const url = '/api/courses/remove-lessons/';
-        // const data = {
-        //     course_package_uid: event.target.parentElement.parentElement.firstElementChild.id,
-        //     lesson_uid: '{{lesson.uid}}',
-        // };
-        // const response = await axios.post(url, data);
-        // console.log(response);
-    };
+    
     
     function checkTag(tagName) {
         let allTags = document.getElementsByClassName('tag');
@@ -404,18 +436,25 @@
         }
 
         console.log(data);
-
+        updateBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i>';
         let res = await axios.patch('/api/courses/coupon/', data, {
             headers: {
                 'X-CSRFToken': csrfToken,
                 'Content-Type': 'application/json',
             }
         })
+        updateBtn.innerHTML = 'Update Coupon';
 
         // res = await res.json();
 
         console.log(res);
-
+        if (res.data.message === 'coupon updated') {
+            alert('Coupon Updated Successfully');
+            // window.location.href = '/courses/coupons/';
+        } else {
+            alert(res.data.message);
+            
+        }
     }
         
     };

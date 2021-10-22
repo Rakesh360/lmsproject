@@ -282,6 +282,7 @@
 
 <script>  
     let editor = CKEDITOR.replace( 'description' );
+    const handleSubmit = document.getElementById('handleSubmit');
     
     var description;
     editor.on( 'instanceReady', function( evt ) {
@@ -391,6 +392,7 @@
         });
 
         if (document.getElementById('subjects').value === 'video') {
+            handleSubmit.innerHTML = '<i class="fa fa-spinner fa-spin"></i>';
             let res = await axios.patch('/api/courses/course-packages/', formData, {
                 headers: {
                     'X-CSRFToken' : csrfToken,
@@ -403,7 +405,8 @@
 
             } else {    
                 alert('Something went wrong');
-            }
+            };
+            handleSubmit.innerHTML = 'Update Package';
             
             
         } else {

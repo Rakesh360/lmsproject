@@ -160,7 +160,7 @@
                 </div>               
             </div>
 
-            <button id="submitFormBtn" type="submit" class="btn btn-primary mt-3">Add Chapter</button>
+            <button id="submitFormBtn" type="submit" class="btn btn-primary mt-3">Add Live Lesson</button>
             <!-- <button id="testBtn" class="btn btn-primary mt-3">Test Code</button> -->
         </form>
 
@@ -366,6 +366,9 @@
         console.log('doc',json.uid);
         return json.uid;
     }   
+
+    let submitFormBtn = document.getElementById('submitFormBtn');
+    
     
     form.addEventListener('submit', async function(e) {   
         e.preventDefault();
@@ -411,7 +414,7 @@
             });
 
             
-
+            submitFormBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i>';
             fetch('/api/courses/go-live/', {
                 method: 'POST', // or 'PUT'
                 headers: {
@@ -427,7 +430,8 @@
                     } else {
                         alert('Live created successfully');
                         window.location.href = '/courses/go-live/';
-                    }
+                    };
+                    submitFormBtn.innerHTML = 'Add Live Lesson';
                 })
                 .catch((error) => {
                     alert('Error:', error);
@@ -439,6 +443,7 @@
 
 
     });
+
 
 
     // handling form submission using fetch POST method starts here

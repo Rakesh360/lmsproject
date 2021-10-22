@@ -123,6 +123,7 @@
     const discount_type = document.getElementById('discount_type');
     const discount_amount = document.getElementById('discount_amount');
     const apply_coupon_type = document.getElementById('apply_coupon_type');
+    const submitFormBtn = document.getElementById("submitFormBtn");
 
 
     var is_all_Package = true;
@@ -379,6 +380,7 @@
         });
 
         couponData = await couponData.json();
+        console.log(couponData);
         let alreadyExists = couponData.message;
         
 
@@ -397,6 +399,7 @@
             if (document.getElementById('apply_coupon_type').value   === 'selected-packages' && allTags.length === 0) {
                 alert('Please select atleast one package');
             } else {
+                submitFormBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i>';
                 let res = await fetch('/api/courses/coupon/', {
                     method: 'POST',
                     headers: {
@@ -412,12 +415,13 @@
                 res = await res.json();
                 console.log(res);
                 
-                if (res.statusText === 'OK') {
+                if (res.message === 'coupon added') {
                     alert('Coupon added successfully');
                     window.location.href = '/courses/allcoupons/';
                 } else {
                     alert('Something went wrong');
-                }
+                };
+                submitFormBtn.innerHTML = 'Create Coupon';
             }
         }
 

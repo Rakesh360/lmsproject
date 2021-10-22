@@ -133,6 +133,8 @@
 <script>
     let expiryDateContainer = document.getElementById('expiryDateContainer');
     let subscriptionContainer = document.getElementById('subscriptionContainer');
+    const handleSubmit = document.getElementById('handleSubmit');
+
     function getCookie(name) {
         if (!document.cookie) {
             return null;
@@ -212,7 +214,7 @@
                 
 
             if (document.getElementById('subjects').value === 'video') {
-                
+                handleSubmit.innerHTML = '<i class="fa fa-spinner fa-spin"></i>';
                 fetch('/api/courses/course-packages/', {
                     method: 'POST',
                     body: formData,
@@ -230,7 +232,8 @@
                         window.location.href = '/courses/packages/';
                     } else {
                         alert('Error while creating package');
-                    }
+                    };
+                    handleSubmit.innerHTML = 'Create Package';
                 });
                     
 

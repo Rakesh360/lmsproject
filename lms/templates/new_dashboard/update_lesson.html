@@ -186,7 +186,7 @@
                                         {{course_package.course_package_chapter.course_package_subject.course_package.created_at}}
                                     </td>
                                     <td>
-                                    <a class="btn btn-danger" href="{% url 'delete_package_lesson' %}?lesson_uid={{course_package.lesson.uid}}&course_package_uid={{course_package.course_package_chapter.course_package_subject.course_package.uid}}">❌</a>
+                                    <a class="btn btn-danger" href="{% url 'delete_package_lesson' %}?lesson_uid={{course_package.lesson.uid}}&course_package_uid={{course_package.course_package_chapter.course_package_subject.course_package.uid}}" onclick="deleteTag2('{{course_package.lesson.uid}}')">❌</a>
                                     </td>
                                 </tr>
                                     {% endfor  %}
@@ -198,7 +198,7 @@
 
 
                 </div>
-                <button type="submit" class="btn btn-primary mt-3">Update Chapter</button>
+                <button type="submit" id="submitFormBtn" class="btn btn-primary mt-3">Update Chapter</button>
             </form>
 
     </div>
@@ -208,6 +208,7 @@
 <script>
     console.log('is_free', '{{lesson.is_free}}');
     console.log('vidplatform', '{{lesson.video_platform}}');
+    const submitFormBtn = document.getElementById('submitFormBtn');
     // function to parse date from 1632058848038 to 2018-12-31T00:00:00.000Z
     function parseDate(date) {
         var date = new Date(date);
@@ -348,6 +349,29 @@
             if (allSelectedPackages[i].id === packageUid) {
                 allSelectedPackages[i].parentElement.remove();
             }
+        }
+    };
+
+    function deleteTag2(packageUid) {
+        let allSelectedPackages = document.querySelectorAll(".tag");
+        for (var i = 0; i < allSelectedPackages.length; i++) {
+            console.log(allSelectedPackages[i].id);
+            console.log(packageUid);
+            if (allSelectedPackages[i].id === packageUid) {
+                allSelectedPackages[i].parentElement.remove();
+            }
+        };
+
+        let allOptions = document.querySelectorAll('.option');
+        for (let j = 0; j < allOptions.length; j++) {
+            let option = allOptions[j].children[0];
+            if (option.id === packageUid) {
+                option.checked = false;
+                option.disabled = false;
+                console.log(option.parentElement);
+                option.parentElement.style.pointerEvents = 'auto';
+                option.parentElement.style.color = 'black';
+            }           
         }
     };
     
@@ -658,6 +682,7 @@
             console.log(data);
 
             if (isProceed === true && allTags.length > 0) {
+                submitFormBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i>';
                 let res = await axios.patch('/api/courses/lessons/', data, {
                     headers: {
                         'Content-Type': 'application/json',
@@ -672,6 +697,7 @@
                 } else {
                     alert('Something went wrong');
                 }
+                submitFormBtn.innerHTML = 'Update Chapter';
                 
             } else {
                 console.log(allTags.length, isProceed);

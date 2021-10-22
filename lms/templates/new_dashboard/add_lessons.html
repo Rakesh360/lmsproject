@@ -157,6 +157,8 @@
     const tagsDropdown = document.getElementById('tagsDropdown');
     const chooseSubject = document.getElementById('chooseSubject');
     const chooseChapters = document.getElementById('chooseChapters');
+    const submitFormBtn = document.getElementById('submitFormBtn');
+
     function getCookie(name) {
         if (!document.cookie) {
             return null;
@@ -435,7 +437,7 @@
 
                 console.log(liveData);
                 
-
+                submitFormBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i>';
                 fetch('/api/courses/go-live/', {
                     method: 'POST', // or 'PUT'
                     headers: {
@@ -452,6 +454,7 @@
                             alert('Lesson added successfully');
                             window.location.href = '/courses/lessons/';
                         }
+                        submitFormBtn.innerHTML = 'Add Chapter>';
                     })
                     .catch((error) => {
                         alert('Error:', error);
