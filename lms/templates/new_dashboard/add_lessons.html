@@ -99,19 +99,12 @@
             </div>
             
 
-            
-
-
-
             <br><hr><br>
 
 
             <div class="form-row mb-4" id="video_upload">
                 <!-- tags selection part -->
-
-
-                
-                <div>                    
+                 <div>                    
                     <div class="select-box">
                         <div class="options-container">
                             {% for course_package in  course_packages %}
@@ -321,6 +314,7 @@
     async function uploadoc() {
         console.log('Uploading file...');
         // document.getElementById('loader').style.display = 'block';
+        console.log(document.getElementById('document_link').files[0]);
         const formData = new FormData();
         formData.append('document_file', document.getElementById('document_link').files[0]);
         let response = await fetch('/api/courses/document/', {
@@ -338,7 +332,7 @@
     form.addEventListener('submit', async function(e) {   
         e.preventDefault();
         let isLive = false;
-                
+
         let data = {
             'lesson_title' : document.getElementById('lesson_title').value,
             'chapter' : document.getElementById('chooseChapters').value,
@@ -364,8 +358,6 @@
                     "created_at" : allPackageDates[i].value
                 });
             }
-            
-            
         };
 
         let liveData = new FormData();
@@ -454,7 +446,7 @@
                             alert('Lesson added successfully');
                             window.location.href = '/courses/lessons/';
                         }
-                        submitFormBtn.innerHTML = 'Add Chapter>';
+                        submitFormBtn.innerHTML = 'Add Chapter';
                     })
                     .catch((error) => {
                         alert('Error:', error);
@@ -467,6 +459,7 @@
             if (allTags.length <= 0) {
                 alert('Please select only one package for live lessons');
             } else {
+                submitFormBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i>';
                 fetch('/api/courses/lessons/', {
                     method: 'POST', // or 'PUT'
                     headers: {
@@ -484,6 +477,7 @@
                             alert('Lesson added successfully');
                             window.location.href = '/courses/lessons/';
                         }
+                        submitFormBtn.innerHTML = 'Add Chapter';
                     })
                     .catch((error) => {
                         alert('Error:', error);
