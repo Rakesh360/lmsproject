@@ -662,7 +662,7 @@
                 'lesson_type' : document.getElementById('lesson_type').value,
             };
             if (document.getElementById('lesson_type').value == 'Video') {
-                data['video_platform'] = document.getElementById('videoType').value;
+                data['video_platform'] = document.getElementById('lesson_type').value;
                 data['video'] = {
                     'video_link': document.getElementById('lesson_link').value
                 };
@@ -670,7 +670,7 @@
             } else if (document.getElementById('lesson_type').value == 'Video + Document') {
                 if ('{{lesson.document.uid}}' !== '' || docReUploaded === true) {
                     isProceed = true;
-                    data['video_platform'] = document.getElementById('videoType').value;
+                    data['video_platform'] = document.getElementById('lesson_type').value;
                     data['video'] = {
                         'video_link': document.getElementById('lesson_link').value
                     };
@@ -689,7 +689,7 @@
             } else if (document.getElementById('lesson_type').value == 'Document') {
                 if ('{{lesson.document.uid}}' !== '' || docReUploaded === true) {
                     isProceed = true;
-                    data['video_platform'] = document.getElementById('videoType').value;
+                    data['video_platform'] = document.getElementById('lesson_type').value;
                     if (docReUploaded === true) {
                         let docLink = await uploadoc();
                         console.log('The doc link is: ', docLink);
