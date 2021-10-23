@@ -150,15 +150,29 @@
     
     const csrfToken = getCookie('csrftoken');
 
-
     function renderDocumentName1(event) {
-        console.log(event.target.parentElement);
-        console.log(event.target.files[0].name);
+        let doc = event.target.files[0];
+        let docExtension = doc.name.split('.').pop();
+        let docSize = doc.size;
+
         let p = document.getElementById('docNameDiv1');
-        p.innerHTML = '';
-        
-        p.innerHTML = event.target.files[0].name + `<i class="fa fa-trash ml-4"  onclick="deleteDocument1(event)" aria-hidden="true"></i>`;
-        event.target.parentElement.appendChild(p);
+        if ((docExtension === 'jpg' || docExtension === 'jpeg' || docExtension === 'png') && docSize <= 2000000) {
+            p.innerHTML = '';
+            
+            p.innerHTML = event.target.files[0].name + `<i class="fa fa-trash ml-4"  onclick="deleteDocument1(event)" aria-hidden="true"></i>`;
+            event.target.parentElement.appendChild(p);
+
+        } else {
+            if (docExtension !== 'jpg' && docExtension !== 'jpeg' && docExtension !== 'png') {
+                alert('Unsupported file type.');
+            } else {
+                alert('Unsuported file size.');
+            }
+            document.getElementById('image_for_web').value = '';
+            p.innerHTML = 'Please Upload jpg or png file of size less than 25mb!';
+            event.target.parentElement.appendChild(p);
+
+        }
     }
 
     function deleteDocument1(event) {
@@ -169,13 +183,28 @@
     }
 
     function renderDocumentName2(event) {
-        console.log(event.target.parentElement);
-        console.log(event.target.files[0].name);
+        let doc = event.target.files[0];
+        let docExtension = doc.name.split('.').pop();
+        let docSize = doc.size;
+
         let p = document.getElementById('docNameDiv2');
-        p.innerHTML = '';
-        
-        p.innerHTML = event.target.files[0].name + `<i class="fa fa-trash ml-4"  onclick="deleteDocument2(event)" aria-hidden="true"></i>`;
-        event.target.parentElement.appendChild(p);
+        if ((docExtension === 'jpg' || docExtension === 'jpeg' || docExtension === 'png') && docSize <= 2000000) {
+            p.innerHTML = '';
+            
+            p.innerHTML = event.target.files[0].name + `<i class="fa fa-trash ml-4"  onclick="deleteDocument2(event)" aria-hidden="true"></i>`;
+            event.target.parentElement.appendChild(p);
+
+        } else {
+            if (docExtension !== 'jpg' && docExtension !== 'jpeg' && docExtension !== 'png') {
+                alert('Unsupported file type.');
+            } else {
+                alert('Unsuported file size.');
+            }
+            document.getElementById('image_for_app').value = '';
+            p.innerHTML = 'Please Upload jpg or png file of size less than 25mb!';
+            event.target.parentElement.appendChild(p);
+
+        }
     }
 
     function deleteDocument2(event) {

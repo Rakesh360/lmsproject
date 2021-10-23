@@ -26,7 +26,7 @@
                         <div class="form-group">
             
                         <label for="slider_image">Select Slider Image</label>
-                        <input required type="file" name="image" class="form-control" id="slider_image">
+                        <input required type="file" onchange="validateFileUpload(event)" name="image" class="form-control" id="slider_image">
                         </div>
                         
                         <button id="submitAddTopic" class="btn btn-primary">Add Slider</button>
@@ -94,6 +94,23 @@
                 }
             });
       };
+
+      function validateFileUpload(e) {
+        let doc = event.target.files[0];
+        let docExtension = doc.name.split('.').pop();
+        let docSize = doc.size;
+
+        if ((docExtension === 'jpg' || docExtension === 'jpeg' || docExtension === 'png') && docSize <= 2000000) {
+            console.log('file type good');
+        } else {
+            if (docExtension !== 'jpg' && docExtension !== 'jpeg' && docExtension !== 'png') {
+                alert('Unsupported file type. Please Upload jpg or png.');
+            } else {
+                alert('Unsuported file size. PLease upload image less than 2mb.');
+            };
+            event.target.value = '';
+        }
+      }
 </script>
 
 {%endblock %}

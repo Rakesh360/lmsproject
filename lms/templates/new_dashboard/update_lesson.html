@@ -402,15 +402,40 @@
 
     let docReUploaded = false;
 
-    function renderDocumentName(event) {
-        console.log(event.target.parentElement);
-        console.log(event.target.files[0].name);
-        let p = document.getElementById('docNameDiv');
-        p.innerHTML = '';
+    // function renderDocumentName(event) {
+    //     console.log(event.target.parentElement);
+    //     console.log(event.target.files[0].name);
+    //     let p = document.getElementById('docNameDiv');
+    //     p.innerHTML = '';
         
-        p.innerHTML = event.target.files[0].name + `<i class="fa fa-trash ml-4"  onclick="deleteDocument(event)" aria-hidden="true"></i>`;
-        event.target.parentElement.appendChild(p);
-        docReUploaded = true;
+    //     p.innerHTML = event.target.files[0].name + `<i class="fa fa-trash ml-4"  onclick="deleteDocument(event)" aria-hidden="true"></i>`;
+    //     event.target.parentElement.appendChild(p);
+    //     docReUploaded = true;
+    // }
+    function renderDocumentName(event) {
+        let p = document.getElementById('docNameDiv');
+        let doc = event.target.files[0];
+        let docExtension = doc.name.split('.').pop();
+        let docSize = doc.size;
+        console.log(doc);
+        console.log(docExtension, docSize);
+        if ((docExtension === 'pdf' || docExtension === 'doc' || docExtension === 'docx') && docSize <= 25000000) {
+            p.innerHTML = '';
+            
+            p.innerHTML = event.target.files[0].name + `<i class="fa fa-trash ml-4"  onclick="deleteDocument(event)" aria-hidden="true"></i>`;
+            event.target.parentElement.appendChild(p);
+            // document.getElementById('docDiv').appendChild(p);
+        } else {
+            if (docExtension !== 'pdf' && docExtension !== 'doc' && docExtension !== 'docx') {
+                alert('Unsupported file type.');
+            } else {
+                alert('Unsuported file size.');
+            }
+            document.getElementById('document_link').value = '';
+            p.innerHTML = 'Please Upload pdf or doc file of size less than 25mb!';
+            document.getElementById('docDiv').appendChild(p);
+        }
+            
     }
 
     function deleteDocument(event) {

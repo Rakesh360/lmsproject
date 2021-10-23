@@ -37,7 +37,7 @@
 
                 <div class="form-group col-md-12">
                     <label for="image">Image </label>
-                    <input type="file" id="image" name="image" class="form-control">
+                    <input type="file" onchange="validateFileUpload(event)" id="image" name="image" class="form-control">
                 </div>
         
 
@@ -288,6 +288,23 @@
 
         return flag;
     }
+
+    function validateFileUpload(e) {
+        let doc = event.target.files[0];
+        let docExtension = doc.name.split('.').pop();
+        let docSize = doc.size;
+
+        if ((docExtension === 'jpg' || docExtension === 'jpeg' || docExtension === 'png') && docSize <= 2000000) {
+            console.log('file type good');
+        } else {
+            if (docExtension !== 'jpg' && docExtension !== 'jpeg' && docExtension !== 'png') {
+                alert('Unsupported file type. Please Upload jpg or png.');
+            } else {
+                alert('Unsuported file size. PLease upload image less than 2mb.');
+            };
+            event.target.value = '';
+        }
+      }
 </script>
 
 {%endblock %}
