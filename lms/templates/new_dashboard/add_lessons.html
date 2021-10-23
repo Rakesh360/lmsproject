@@ -13,6 +13,17 @@
     .deleteBtn{
         cursor: pointer;
     }
+
+    #spinner {       
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        width: 100%;
+        background: rgba(0,0,0,0.75) url(/media/app-assets/images/1487.gif) no-repeat center center;
+        z-index: 10000;
+    }
 </style>
 <div class="section-header" style="margin-top: 6%;">
     <div style="margin: 0 auto; font-size: xxx-large; text-align: center;">
@@ -20,6 +31,9 @@
     </div>
 </div>
 
+<div id="loader">
+    
+</div>
 
 <div class="card" id="contentDiv">
     <!-- <div class="card-header">
@@ -140,11 +154,12 @@
             <!-- <button id="testBtn" class="btn btn-primary mt-3">Test Code</button> -->
         </form>
 
+
     </div>
 </div>
 
-
 <script>
+    var loader = document.getElementById("loader");
     const form = document.getElementById('addLessonForm');
     const tagSection = document.getElementById('tagSection');
     const tagsDropdown = document.getElementById('tagsDropdown');
@@ -313,7 +328,7 @@
 
     async function uploadoc() {
         console.log('Uploading file...');
-        // document.getElementById('loader').style.display = 'block';
+        // document.getElementById('spinner').style.display = 'block';
         const formData = new FormData();
         formData.append('document_file', document.getElementById('document_link').files[0]);
         let response = await fetch('/api/courses/document/', {
@@ -428,7 +443,6 @@
 
                 console.log(liveData);
                 
-                submitFormBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i>';
                 fetch('/api/courses/go-live/', {
                     method: 'POST', // or 'PUT'
                     headers: {
@@ -445,7 +459,6 @@
                             alert('Lesson added successfully');
                             window.location.href = '/courses/lessons/';
                         }
-                        submitFormBtn.innerHTML = 'Add Chapter';
                     })
                     .catch((error) => {
                         alert('Error:', error);
@@ -458,6 +471,8 @@
             if (allTags.length <= 0) {
                 alert('Please select only one package for live lessons');
             } else {
+                loader.innerHTML = '<div id="spinner"></div>';
+                console.log('spinner');
                 submitFormBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i>';
                 fetch('/api/courses/lessons/', {
                     method: 'POST', // or 'PUT'
@@ -477,6 +492,7 @@
                             window.location.href = '/courses/lessons/';
                         }
                         submitFormBtn.innerHTML = 'Add Chapter';
+                        loader.innerHTML = '';
                     })
                     .catch((error) => {
                         alert('Error:', error);

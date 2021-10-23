@@ -183,7 +183,7 @@
                                 <label for="is_active"> Enable Purchase </label>
                                 <select required name="is_active" id="is_active" class="form-control">
                                     <option {% if course_package_obj.is_active == False %} selected {% endif %} value=false>No</option>
-                                    <option {% if course_package_obj.is_active == True %} selected {% endif %} value=true selected>Yes</option>
+                                    <option {% if course_package_obj.is_active == True %} selected {% endif %} value=true>Yes</option>
                                 </select>
                             </div>
         
@@ -398,6 +398,7 @@
         formData.append('selling_price', document.getElementById('selling_price').value);
         formData.append('package_type', document.getElementById('subjects').value);
         formData.append('subscription_type', document.getElementById('expiryType').value);
+        formData.append('is_active', document.getElementById('is_active').value);
 
         
         

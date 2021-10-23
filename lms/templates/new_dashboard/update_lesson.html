@@ -35,7 +35,7 @@
                     </div>
                     <div class="form-group col-md-6">
                         <label for="inputPassword4">Subject Chapters</label>
-                        <select disabled required id="chooseChapters" name="chapters" class="form-control basic tagging ">
+                        <select required id="chooseChapters" name="chapters" class="form-control basic tagging ">
                             {% for subject_chapter in  subject_chapters %}
                             <option {% if lesson.subject_chapters ==  subject_chapter %} selected {% endif %}
                                 value="{{subject_chapter.uid}}">{{subject_chapter.chapter_title}}</option>
@@ -46,7 +46,7 @@
                     <div class="form-group col-md-6">
 
                         <label for="is_free">Is free</label>
-                        <select class="form-control" name="is_free">
+                        <select id="isFree" class="form-control" name="is_free">
                             <option {% if lesson.is_free ==  False %} selected {% endif %} value=true>No</option>
                             <option {% if lesson.is_free ==  True %} selected {% endif %} value=false>Yes</option>
 
@@ -183,7 +183,8 @@
                                      {{course_package.course_package_chapter.course_package_subject.course_package.package_title}}
                                     </td>
                                     <td>
-                                        {{course_package.course_package_chapter.course_package_subject.course_package.created_at}}
+                                        
+                                        <input type="datetime-local" class="packageDate" onchange="handleChangePackageDateTime(event)" value="{{course_package.course_package_chapter.course_package_subject.course_package.created_at}}" name="{{course_package.lesson.uid}}">
                                     </td>
                                     <td>
                                     <a class="btn btn-danger" href="{% url 'delete_package_lesson' %}?lesson_uid={{course_package.lesson.uid}}&course_package_uid={{course_package.course_package_chapter.course_package_subject.course_package.uid}}" onclick="deleteTag2('{{course_package.lesson.uid}}')">❌</a>
@@ -660,12 +661,15 @@
                 'lesson_title': document.getElementById('lesson_title').value,
                 'packages': packages,
                 'lesson_type' : document.getElementById('lesson_type').value,
+                'chapter': document.getElementById('chooseChapters').value,
+                'is_free': document.getElementById('isFree').value,
             };
             if (document.getElementById('lesson_type').value == 'Video') {
                 data['video_platform'] = document.getElementById('lesson_type').value;
                 data['video'] = {
                     'video_link': document.getElementById('lesson_link').value
                 };
+                isProceed = true;
                 
             } else if (document.getElementById('lesson_type').value == 'Video + Document') {
                 if ('{{lesson.document.uid}}' !== '' || docReUploaded === true) {
