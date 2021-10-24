@@ -2,6 +2,23 @@
 
 {%block start%}
 
+<style>
+    #spinner {       
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        width: 100%;
+        background: rgba(0,0,0,0.75) url(/media/app-assets/images/1487.gif) no-repeat center center;
+        z-index: 10000;
+    }
+</style>
+
+<div id="loader">
+    
+</div>
+
 <div style="margin-top: 6%; ">
     <div style="margin-top: 6%; display: flex;">
     <div style="margin: 0 auto; font-size: xxx-large;">
@@ -118,6 +135,7 @@
 
 
 <script>
+    var loader = document.getElementById("loader");
     const tags = document.getElementById('tags');
     const packageDiv = document.getElementById('packageDiv');
     const discount_type = document.getElementById('discount_type');
@@ -400,6 +418,7 @@
                 alert('Please select atleast one package');
             } else {
                 submitFormBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i>';
+                loader.innerHTML = '<div id="spinner"></div>';
                 let res = await fetch('/api/courses/coupon/', {
                     method: 'POST',
                     headers: {
@@ -422,6 +441,7 @@
                     alert('Something went wrong');
                 };
                 submitFormBtn.innerHTML = 'Create Coupon';
+                loader.innerHTML = '';
             }
         }
 

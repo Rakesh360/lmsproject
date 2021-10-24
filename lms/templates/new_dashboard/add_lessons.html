@@ -37,8 +37,8 @@
 
 <div class="card" id="contentDiv">
     <!-- <div class="card-header">
-    <h4>Horizontal Form</h4>    
-  </div> -->
+        <h4>Horizontal Form</h4>    
+    </div> -->
     <div class="card-body">
         {% include "utils/alert.html" %}
         <form id="addLessonForm">
@@ -527,6 +527,7 @@
     // update options of chooseChapters
     function updateChapters() {
         let selectedSubject = chooseSubject.value;
+        loader.innerHTML = '<div id="spinner"></div>';
         fetch('/api/courses/get-chapters/?uid=' + selectedSubject, {
             method: 'GET',
         })
@@ -539,6 +540,7 @@
                 option.value = e.uid;
                 chooseChapters.appendChild(option);
             });
+            loader.innerHTML = '';
         })
     }
 

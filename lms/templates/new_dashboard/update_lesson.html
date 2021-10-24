@@ -9,7 +9,22 @@
     .deleteBtn{
         cursor: pointer;
     }
+
+    #spinner {       
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        width: 100%;
+        background: rgba(0,0,0,0.75) url(/media/app-assets/images/1487.gif) no-repeat center center;
+        z-index: 10000;
+    }
 </style>
+
+<div id="loader">
+    
+</div>
 
 <div class="section-header" style="margin-top: 6%; text-align: center;">
     <div style="margin: 0 auto; font-size: xxx-large;">
@@ -44,7 +59,6 @@
                     </div>
 
                     <div class="form-group col-md-6">
-
                         <label for="is_free">Is free</label>
                         <select id="isFree" class="form-control" name="is_free">
                             <option {% if lesson.is_free ==  False %} selected {% endif %} value=true>No</option>
@@ -207,6 +221,7 @@
     
 
 <script>
+    var loader = document.getElementById("loader");
     console.log('is_free', '{{lesson.is_free}}');
     console.log('vidplatform', '{{lesson.video_platform}}');
     const submitFormBtn = document.getElementById('submitFormBtn');
@@ -712,6 +727,7 @@
 
             if (isProceed === true && allTags.length > 0) {
                 submitFormBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i>';
+                loader.innerHTML = '<div id="spinner"></div>';
                 let res = await axios.patch('/api/courses/lessons/', data, {
                     headers: {
                         'Content-Type': 'application/json',
@@ -724,9 +740,10 @@
                     window.location.href = '/courses/lessons/';
 
                 } else {
-                    alert('Something went wrong');
+                    alert(res.data);
                 }
                 submitFormBtn.innerHTML = 'Update Chapter';
+                loader.innerHTML = '';
                 
             } else {
                 console.log(allTags.length, isProceed);

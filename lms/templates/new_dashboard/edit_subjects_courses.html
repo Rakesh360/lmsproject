@@ -98,6 +98,17 @@
     .check-btn:focus {
     outline: none;
     }
+
+    #spinner {       
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        width: 100%;
+        background: rgba(0,0,0,0.75) url(/media/app-assets/images/1487.gif) no-repeat center center;
+        z-index: 10000;
+    }
 </style>
 
 <script
@@ -112,6 +123,10 @@
 
 <script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
 
+<div id="loader">
+    
+</div>
+
 <ul class="nav nav-pills nav-fill" style="margin-top: 8%;">
     <li class="nav-item">
         <a class="nav-link active" aria-current="page" id="contentBtn" href="#">Package Details</a>
@@ -122,6 +137,7 @@
     </ul>
 
     <hr>
+
 
 <div class="collapse show" style="margin: 2%;" id="contentDiv">
     <div class="card">
@@ -281,6 +297,7 @@
 
 
 <script>  
+    var loader = document.getElementById("loader");
     let editor = CKEDITOR.replace( 'description' );
     const handleSubmit = document.getElementById('handleSubmit');
     
@@ -425,6 +442,7 @@
 
         if (document.getElementById('subjects').value === 'video') {
             handleSubmit.innerHTML = '<i class="fa fa-spinner fa-spin"></i>';
+            loader.innerHTML = '<div id="spinner"></div>';
             let res = await axios.patch('/api/courses/course-packages/', formData, {
                 headers: {
                     'X-CSRFToken' : csrfToken,
@@ -439,6 +457,7 @@
                 alert('Something went wrong');
             };
             handleSubmit.innerHTML = 'Update Package';
+            loader.innerHTML = '';
             
             
         } else {
