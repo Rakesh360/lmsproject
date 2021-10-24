@@ -413,11 +413,11 @@ class LessonsView(APIView):
                         )
                         created_at = package['created_at']
 
-                        CoursePackageLessons.objects.get_or_create(
+                        le_obj , _ = CoursePackageLessons.objects.get_or_create(
                             course_package_chapter = course_package_chapter_obj,
                             lesson = lesson_obj,
-                            added_at = created_at
                         )
+                        le_obj.added_at = created_at
                         objs = Order.objects.filter(course__uid = package['uid'] ,   is_paid = True)
                         print(objs)
                         registration_ids = set()
