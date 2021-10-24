@@ -59,7 +59,7 @@ class OrderCourse(APIView):
             buyer_name=student.student_name,
             send_email=True,
             email=student.email,
-            redirect_url="http://127.0.0.1:8000/api/order/success/",
+            redirect_url="http://13.232.227.45/api/order/success/",
             )
             order_obj ,_ = Order.objects.get_or_create(
                 student= student,
@@ -250,7 +250,7 @@ class ApplyCoupon(APIView):
                 })
 
             print(coupon_obj)
-            if order_obj.coupon and  order_obj.coupon.uid == coupon_obj.uid:
+            if order_obj.coupon:
                 serializer = OrderSerializer(order_obj)
                 data = serializer.data
                 # data.pop('response')
@@ -302,6 +302,7 @@ class ApplyCoupon(APIView):
             if coupon_obj.discount_type == 'Fixed Discount':
                 order_obj.amount =  order_obj.amount - coupon_obj.discount
                 order_obj.save()
+                print('Fixed Discount APPLIED')
             else:
                 amount_to_be_less = 100 #(order_obj.amount / coupon_obj.discount) * 100
                 print(amount_to_be_less)
@@ -312,15 +313,19 @@ class ApplyCoupon(APIView):
                 pay_amount = order_obj.amount  - discount_amount
                 order_obj.amount =  pay_amount
                 order_obj.save()
+                print('Percentage APPLIED')
+                print(order_obj.amount)
+                print('Percentage APPLIED')
 
             course = order_obj.course
             student = order_obj.student
             
-            order_obj  = Order.objects.filter(
-                student= student,
-                course = course,
-                is_paid = False,
-                ).first()
+            order_obj  = Order.objects.get(uid = data.get('order_id'))
+
+            print('***************')
+            print(order_obj.amount)
+            print('***************')
+
             response = api.payment_request_create(
             amount= order_obj.amount,
             purpose=f'{course.package_title}',

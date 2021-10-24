@@ -5,6 +5,7 @@ from django.db.models import Q
 from datetime import datetime
 
 def course_to_json(course_objs):
+    print('QQQQQQQQQQQQQQ')
     try:
         payload = []
         print('AAAAAAAAAAA')
@@ -32,7 +33,8 @@ def course_to_json(course_objs):
                     chapter_dict = {}
                     chapter_dict['chapter_title'] = chapter.subject_chapter.chapter_title
                     lessons = []
-                    for lesson in chapter.pacakge_subject_chapters_lessons.all():
+                    for lesson in chapter.pacakge_subject_chapters_lessons.filter(added_at__lte = datetime.now()):
+                        print('APPLIED ATTED AT FILTER')
                         lesson_dict = {}
                         lesson_dict['sequence'] = lesson.s_no
                         lesson_dict['lesson_title'] = lesson.lesson.lesson_title
@@ -40,11 +42,11 @@ def course_to_json(course_objs):
                         lesson_dict['is_free'] = lesson.lesson.is_free
                         lesson_dict['created_at'] = lesson.created_at
                         lesson_dict['video_link'] = ''
-                        lesson_dict['video_uploaded_on'] = ''
+                        lesson_dict['video_uploaded_on'] = lesson.added_at
                         lesson_dict['document_file'] = ''
                         try:
                             if lesson.lesson.lesson_type == 'Video':
-                                lesson_dict['video_link'] = lesson.lesson.video.video_link
+                                lesson_dict['video_link'] = 'https://www.youtube.com/embed/' + lesson.lesson.video.video_link
                                 lesson_dict['video_uploaded_on'] = lesson.lesson.video.video_uploaded_on
                             elif lesson.lesson.lesson_type == 'Document':
                                 lesson_dict['document_file'] = '/media/' +str(lesson.lesson.document.document_file)
@@ -89,8 +91,6 @@ def course_to_json(course_objs):
 
             payload.append(course_package_dict)
 
-
-        print(payload)
         return payload
     except Exception as e:
         print(e)
