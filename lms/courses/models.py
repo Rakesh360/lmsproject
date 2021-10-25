@@ -36,6 +36,9 @@ class SubjectChapters(BaseModel):
     def __str__(self) -> str:
         return self.chapter_title
 
+    def is_added(self):
+        return CoursePackageChapters.objects.filter(subject_chapter = self).exists()
+
     class Meta:
         db_table = "course_chapters"
         verbose_name_plural =  "Subject chapters"
@@ -139,7 +142,7 @@ class GoLive(BaseModel):
     image = models.ImageField(upload_to = 'live' , null=True , blank = True)
     live_date_time = models.DateTimeField(default=datetime.now)
     live_date = models.CharField(max_length=100 , null = True , blank=True)
-    courses = models.ManyToManyField(CoursePackage )
+    courses = models.ManyToManyField(CoursePackage , null=True , blank=True)
 
 
 
