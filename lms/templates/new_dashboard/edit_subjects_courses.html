@@ -563,23 +563,10 @@
     };
     changeExpiryType();
 
-    // code for parsing date from Sept. 9, 2021 to 09-09-2021
-    function parseDate(date) {
-        let dt = new Date(date);
-        let month = dt.getMonth() + 1;
-        if (month < 10) {
-            month = '0' + String(month);
-        } 
-        let day = dt.getDate();
-
-        if (day < 10) {
-            day = '0' + String(day);
-        }
-        let year = dt.getFullYear();
-        return `${year}-${month}-${day}`;
-    };
-    document.getElementById('expiryDate').value = parseDate('{{course_package_obj.sell_till_date}}');
-
+    let one = document.querySelector('#container1')
+    let two = document.querySelector('#container2')
+    var course_package_uid = '{{course_package_uid}}'
+    var CSRF_TOKEN = '{{csrf_token}}'
     async function updateOrder(editingMode) {
         if (editingMode === 'subject') {
             let allData = document.getElementsByClassName('p_tags');
@@ -598,6 +585,7 @@
                 'subjects': subjects
             }
 
+            console.log('payloadData',payloadData);
             let response = await fetch('/api/courses/package-sequence/', {
                 method: 'POST',
                 headers: {
@@ -871,11 +859,23 @@
     }
     // scripts for draggable tree ends
 
+    // code for parsing date from Sept. 9, 2021 to 09-09-2021
+    function parseDate(date) {
+        let dt = new Date(date);
+        let month = dt.getMonth() + 1;
+        if (month < 10) {
+            month = '0' + String(month);
+        } 
+        let day = dt.getDate();
 
-let one = document.querySelector('#container1')
-let two = document.querySelector('#container2')
-var course_package_uid = '{{course_package_uid}}'
-var CSRF_TOKEN = '{{csrf_token}}'
+        if (day < 10) {
+            day = '0' + String(day);
+        }
+        let year = dt.getFullYear();
+        return `${year}-${month}-${day}`;
+    };
+    document.getElementById('expiryDate').value = parseDate('{{course_package_obj.sell_till_date}}');
+
 
 </script>
 
