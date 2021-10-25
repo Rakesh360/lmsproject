@@ -36,6 +36,9 @@ class SubjectChapters(BaseModel):
     def __str__(self) -> str:
         return self.chapter_title
 
+    def is_added(self):
+        return CoursePackageChapters.objects.filter(subject_chapter = self).exists()
+
     class Meta:
         db_table = "course_chapters"
         verbose_name_plural =  "Subject chapters"
