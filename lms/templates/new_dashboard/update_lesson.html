@@ -10,16 +10,7 @@
         cursor: pointer;
     }
 
-    #spinner {       
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        width: 100%;
-        background: rgba(0,0,0,0.75) url(/media/app-assets/images/1487.gif) no-repeat center center;
-        z-index: 10000;
-    }
+   
 </style>
 
 <div id="loader">
@@ -727,7 +718,7 @@
 
             if (isProceed === true && allTags.length > 0) {
                 submitFormBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i>';
-                loader.innerHTML = '<div id="spinner"></div>';
+                loader.innerHTML = '<div id="spinner" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; width: 100%; background: rgba(0,0,0,0.75) url(/media/app-assets/images/1487.gif) no-repeat center center; z-index: 100000;"></div>';
                 let res = await axios.patch('/api/courses/lessons/', data, {
                     headers: {
                         'Content-Type': 'application/json',
