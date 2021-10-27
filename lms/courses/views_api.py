@@ -545,11 +545,11 @@ class LessonsView(APIView):
                             )
                             created_at = package['created_at']
 
-                            CoursePackageLessons.objects.get_or_create(
+                            obj , _ = CoursePackageLessons.objects.get_or_create(
                                 course_package_chapter = course_package_chapter_obj,
-                                lesson = lesson_obj,
-                                added_at = created_at
+                                lesson = lesson_obj
                             )
+                            obj.added_at = created_at
                         except Exception as e:
                             print(e)
                         return Response({

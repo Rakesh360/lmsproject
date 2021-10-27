@@ -1,11 +1,10 @@
 from django.urls import path , include
 from . import views_api as views
 from rest_framework.routers import DefaultRouter
-
 router = DefaultRouter()
 
 router.register('document', views.DocumentUpload, )
-#router.register('coupon', views.CouponView, )
+#router.register('coupon', views./tm, )
 router.register('slider', views.SliderView, )
 router.register('notification', views.NotificationViewSet, )
 
