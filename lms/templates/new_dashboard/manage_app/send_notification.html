@@ -41,46 +41,18 @@
                 </div>
         
 
-         
-
-            
-                <div id="packageDiv" class="form-group col-md-12">
-                    <div>
-                        <div>                    
-                            <div class="select-box">
-                                <div class="options-container">
-                                    {% for course_package in  course_packages %}
-                                        <div class="option" onclick="includeTag(event)">
-                                            <input class="tagId" style="pointer-events: none;" type="checkbox" name="category" id="{{course_package.uid}}">
-                                            <label for="{{course_package.uid}}">{{course_package.package_title}}</label>
-                                        </div>
-                                    {% endfor  %}
-                        
-                                  
-                                </div>
- 
-                                
-
-
-                                <div class="selected">
-                                  Choose Packages to include
-                                </div>
-                        
-                                <div class="search-box">
-                                    <input type="text" placeholder="Start Typing..." />
-                                </div>
-                            </div>
-                        </div> 
-                    </div> 
-    
-                    <div class="table table-striped" style="margin: 1%;">
-                        <table class="display">
-                            <tbody id="tags">
-                            
-                            </tbody>
-                        </table>  
-                    </div> 
-                </div>
+                <div class="form-group col-md-12">
+                                   
+                    
+                 
+               
+                <label>Ctrl + Click to Select Package</label>
+                <select class="form-control" multiple name="packages">
+                    {% for course_package in  course_packages %}
+                    <option value="{{course_package.uid}}">{{course_package.package_title}}</option>
+                    {% endfor  %}
+                </select> </div>
+               
 
 
 

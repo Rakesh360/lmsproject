@@ -188,8 +188,9 @@
                                      {{course_package.course_package_chapter.course_package_subject.course_package.package_title}}
                                     </td>
                                     <td>
-                                        
-                                        <input type="datetime-local" class="packageDate" onchange="handleChangePackageDateTime(event)" value="{{course_package.course_package_chapter.course_package_subject.course_package.created_at}}" name="{{course_package.lesson.uid}}">
+                                       
+                                    
+                                        <input type="datetime-local" class="packageDate" onchange="handleChangePackageDateTime(event)" value="{{course_package.added_at|date:'Y-m-d H:i'}}:00" name="{{course_package.lesson.uid}}">
                                     </td>
                                     <td>
                                     <a class="btn btn-danger" href="{% url 'delete_package_lesson' %}?lesson_uid={{course_package.lesson.uid}}&course_package_uid={{course_package.course_package_chapter.course_package_subject.course_package.uid}}" onclick="deleteTag2('{{course_package.lesson.uid}}')">❌</a>
