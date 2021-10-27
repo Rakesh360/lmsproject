@@ -202,6 +202,10 @@
                                     <option {% if course_package_obj.is_active == True %} selected {% endif %} value=true>Yes</option>
                                 </select>
                             </div>
+
+                            {% if course_package_obj.is_active %} 
+                                <a href="{% url 'package_end_purchase' course_package_obj.uid%}"  class="btn mt-1 btn-sm btn-primary ">End Purchase</a>
+                            {% endif %}
         
                         </div>
                 </div>

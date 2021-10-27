@@ -53,9 +53,7 @@
                                 <a href="#" onclick="deletePackage('{{course_package.uid}}')"
                                 
                                 class="btn btn-sm btn-danger"><i class="la la-trash-o"></i></a>
-                                {% if not course_package.end_purchase  %}
-                                <a href="{% url 'package_end_purchase' course_package.uid%}"  class="btn btn-sm btn-primary ">End Purchase</a>
-                                {% endif %}
+                                
                                 
                             </td>
                         </tr>
