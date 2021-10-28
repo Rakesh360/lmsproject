@@ -81,6 +81,11 @@ class AccountViewSet(BaseAPIViewSet , AccountMixin):
                     courses.append(course_to_json([order.course]))
                 data['courses'] = courses
 
+                expired_course = []
+                for order in queryset.orders.filter(is_paid = True, order_expiry__lte = datetime.date.today()):
+                    expired_course.append(order.course.package_title)
+                data['expired_course'] = expired_course
+
                 return Response({'status' : 200 , 'data' : data})
             except Exception as e:
                 print(e)
