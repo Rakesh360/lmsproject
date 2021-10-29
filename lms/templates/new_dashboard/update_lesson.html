@@ -19,7 +19,7 @@
 
 <div class="section-header" style="margin-top: 6%; text-align: center;">
     <div style="margin: 0 auto; font-size: xxx-large;">
-       Edit Lesson
+       Edit Lessond.lkufh
     </div>
 
 </div>
@@ -36,14 +36,17 @@
                 <div class="form-row mb-4">
                     <div class="form-group col-md-6">
                         <label for="lesson_title">Lesson title (max 100)</label>
+                        {{lesson}}
                         <input type="text" minlength="4" maxlength="100" class="form-control" required name="lesson_title" value="{{lesson.lesson_title}}"
                             id="lesson_title" placeholder="Enter lesson title">
                     </div>
                     <div class="form-group col-md-6">
                         <label for="inputPassword4">Subject Chapters</label>
+                    
                         <select required id="chooseChapters" name="chapters" class="form-control basic tagging ">
+                           
                             {% for subject_chapter in  subject_chapters %}
-                            <option {% if lesson.subject_chapters ==  subject_chapter %} selected {% endif %}
+                            <option {% if lesson.chapter ==  subject_chapter %} selected {% endif %}
                                 value="{{subject_chapter.uid}}">{{subject_chapter.chapter_title}}</option>
                             {% endfor  %}
                         </select>
@@ -188,8 +191,9 @@
                                      {{course_package.course_package_chapter.course_package_subject.course_package.package_title}}
                                     </td>
                                     <td>
-                                        
-                                        <input type="datetime-local" class="packageDate" onchange="handleChangePackageDateTime(event)" value="{{course_package.course_package_chapter.course_package_subject.course_package.created_at}}" name="{{course_package.lesson.uid}}">
+                                       
+                                    
+                                        <input type="datetime" class="packageDate" onchange="handleChangePackageDateTime(event)" disabled value="{{course_package.added_at|date:'Y-m-d h:i a'}}" name="{{course_package.lesson.uid}}">
                                     </td>
                                     <td>
                                     <a class="btn btn-danger" href="{% url 'delete_package_lesson' %}?lesson_uid={{course_package.lesson.uid}}&course_package_uid={{course_package.course_package_chapter.course_package_subject.course_package.uid}}" onclick="deleteTag2('{{course_package.lesson.uid}}')">❌</a>
@@ -729,7 +733,7 @@
                 console.log(res.data);
                 if (res.data.status === true) {
                     alert('Lesson updated successfully');
-                    window.location.href = '/courses/lessons/';
+                    window.location.reload()
 
                 } else {
                     alert(res.data);

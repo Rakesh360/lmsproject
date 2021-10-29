@@ -223,7 +223,7 @@ class ApplyCoupon(APIView):
     def post(self , request):
         try:
             data = request.data
-
+            print(data)
             if data.get('order_id') is None or data.get('coupon_code') is None:
                 return Response({
                     'status' : 400,
@@ -268,12 +268,25 @@ class ApplyCoupon(APIView):
                     'status':400,
                     'message' : 'invalid coupon code'
                 })
+            import datetime
             
-            # if coupon_obj.coupon_validity is not None and  str(date.today()) > coupon_obj.coupon_validity:
-            #     return Response({
-            #         'status':400,
-            #         'message' : ' coupon code expired'
-            #     })
+            try:
+                if coupon_obj.coupon_validity:
+                    current_date = datetime.date.today()
+                    coupon_date =  coupon_obj.coupon_validity.split('T')
+                    coupon_date = coupon_date[0]
+                    print(coupon_date)
+                    print(current_date)
+                    d1 = datetime.datetime.strptime(coupon_date, "%Y-%m-%d").date()
+                    print(d1)
+                    if current_date > d1:
+                        return Response({
+                            'status':400,
+                            'message' : ' coupon code expired'
+                        })
+
+            except Exception as e:
+                print(e)
                 
             if CouponUsedBy.objects.filter(student = order_obj.student,coupon = coupon_obj).count() > coupon_obj.per_user_limit:
                 return Response({
@@ -323,25 +336,34 @@ class ApplyCoupon(APIView):
             order_obj  = Order.objects.get(uid = data.get('order_id'))
 
             print('***************')
-            print(order_obj.amount)
+            print(type(order_obj.amount))
             print('***************')
+            if order_obj.amount > 0:
+                response = api.payment_request_create(
+                amount= order_obj.amount,
+                purpose=f'{course.package_title}',
+                buyer_name=student.student_name,
+                send_email=True,
+                email=student.email,
+                redirect_url="http://13.232.227.45/api/order/success/",
+                )
+                order_obj.response = json.dumps(response)
+                order_obj.order_id = response['payment_request']['id']
+                order_obj.save()
+                serializer = OrderSerializer(order_obj)
+                data = serializer.data
+                data.pop('response')
+                payload = response
+                payload['order'] = data
+            else:
+                order_obj.is_paid = True
+                order_obj.save()
+                return Response({
+                'status' : 200,
+                'message' : 'coure purchased',
+                'data' : {}
+                 })
 
-            response = api.payment_request_create(
-            amount= order_obj.amount,
-            purpose=f'{course.package_title}',
-            buyer_name=student.student_name,
-            send_email=True,
-            email=student.email,
-            redirect_url="http://13.232.227.45/api/order/success/",
-            )
-            order_obj.response = json.dumps(response)
-            order_obj.order_id = response['payment_request']['id']
-            order_obj.save()
-            serializer = OrderSerializer(order_obj)
-            data = serializer.data
-            data.pop('response')
-            payload = response
-            payload['order'] = data
     
 
 

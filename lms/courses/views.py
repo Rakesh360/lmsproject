@@ -610,9 +610,34 @@ def send_notification(request):
         notification_content = notification_content,
         notification_image = notification_image,
         )
+        registration_ids = set()
+        print('(((((((((((((((((')
+        print(courses_items)
+        print('(((((((((((((((((')
+
         for c in courses_items:
+            print(c)
             c_obj = CoursePackage.objects.get(uid = c)
             obj.courses.add(c_obj)
+            order_objs = Order.objects.filter(course = c_obj , is_paid = True)
+            for order_obj in order_objs:
+                registration_ids.add(order_obj.student.fcm_token)
+
+        registration_ids = list(registration_ids)
+        if notification_image:
+            send_notification_packages(
+                registration_ids,
+                notfication_title,
+                notification_content,
+                'http://13.232.227.45/'+str(obj.notification_image))
+        else:
+             send_notification_packages(
+                registration_ids,
+                notfication_title,
+                notification_content)
+
+        
+        
         messages.success(request, 'Notification created')
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
  

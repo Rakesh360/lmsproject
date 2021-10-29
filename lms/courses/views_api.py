@@ -460,11 +460,13 @@ class LessonsView(APIView):
                         )
                         created_at = package['created_at']
 
-                        CoursePackageLessons.objects.get_or_create(
+                        obj , _ = CoursePackageLessons.objects.get_or_create(
                             course_package_chapter = course_package_chapter_obj,
                             lesson = lesson_obj,
-                            added_at = created_at
+                            
                         )
+                        obj.added_at = created_at
+                        obj.save()
                         objs = Order.objects.filter(course__uid = package['uid'] , is_paid = True)
                         print(objs)
                         registration_ids = set()
@@ -514,6 +516,9 @@ class LessonsView(APIView):
                 })
             obj = Lessons.objects.get(uid = data.get('uid'))
             serializer = LessonSerializer( obj,data = request.data , partial=True)
+            print('*****')
+            print(data)
+            print('*****')
 
             if serializer.is_valid():
                 serializer.save()
@@ -529,6 +534,7 @@ class LessonsView(APIView):
                         try:
                             course_package_obj = CoursePackage.objects.get(uid = package['uid'])
                         except Exception as e:
+                            print(e)
                             return Response({
                                 'status' : False,
                                 'message' : f'lesson created but not added to packages invalid uid at index {i}'
@@ -545,18 +551,19 @@ class LessonsView(APIView):
                             )
                             created_at = package['created_at']
 
-                            CoursePackageLessons.objects.get_or_create(
+                            obj , _ = CoursePackageLessons.objects.get_or_create(
                                 course_package_chapter = course_package_chapter_obj,
-                                lesson = lesson_obj,
-                                added_at = created_at
+                                lesson = lesson_obj
                             )
+                            obj.added_at = created_at
+                            obj.save()
                         except Exception as e:
                             print(e)
-                        return Response({
-                            'status' : True,
-                            'data' : serializer.data,
-                            'message' : 'lesson updated'
-                        })
+                    return Response({
+                        'status' : True,
+                        'data' : serializer.data,
+                        'message' : 'lesson updated'
+                    })
                 return Response({
                         'status' : True,
                         'data' : serializer.data,
