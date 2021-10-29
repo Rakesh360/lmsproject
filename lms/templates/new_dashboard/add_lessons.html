@@ -174,10 +174,11 @@
         var year = date.getFullYear();
         var month = date.getMonth() + 1;
         var day = date.getDate();
-        var hour = date.getHours();
-        var min = date.getMinutes();
-        var sec = date.getSeconds();
-        var dateString = year + "-" + month + "-" + day + "T" + hour + ":" + min + ":" + sec + "Z";
+        // hours in two character format
+        var hour = date.getHours() <= 9 ? "0" + date.getHours() : date.getHours();
+        var min = date.getMinutes() <= 9 ? "0" + date.getMinutes() : date.getMinutes();
+        // var sec = date.getSeconds();
+        var dateString = year + "-" + month + "-" + day + "T" + hour + ":" + min;
         return dateString;
         
     }
@@ -271,7 +272,9 @@
             td1.innerHTML = packageName;
             td1.id = packageUid;
             let td2 = document.createElement('td');
-            td2.innerHTML = '<input type="datetime-local" class="packageDate" onchange="handleChangePackageDateTime(event)" name='+packageUid+'>';
+            let timeStr = parseDate(new Date());
+            console.log(timeStr);
+            td2.innerHTML = `<input type="datetime-local" class="packageDate" value=${timeStr} onchange="handleChangePackageDateTime(event)" name='+packageUid+'>`;
             tagElement.appendChild(td1);
             tagElement.appendChild(td2);
             tags.appendChild(tagElement);
@@ -353,7 +356,7 @@
             if (allPackageDates[i].value === '') {
                 packages.push({
                     "uid" : allTags[i].id,
-                    "created_at" : parseDate(Date.now()),
+                    "created_at" : parseDate(new Date()),
                 });
             } else {
                 packages.push({
