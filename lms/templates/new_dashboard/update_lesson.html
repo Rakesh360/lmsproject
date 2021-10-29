@@ -19,7 +19,7 @@
 
 <div class="section-header" style="margin-top: 6%; text-align: center;">
     <div style="margin: 0 auto; font-size: xxx-large;">
-       Edit Lessond.lkufh
+       Edit Lessons
     </div>
 
 </div>
@@ -735,7 +735,7 @@
                 console.log(res.data);
                 if (res.data.status === true) {
                     alert('Lesson updated successfully');
-                    window.location.reload()
+                    window.location.href = '/courses/lessons/';
 
                 } else {
                     alert(res.data);
