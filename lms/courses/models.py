@@ -58,7 +58,7 @@ class Document(BaseModel):
 
 
 
-def update_url():
+def update_url(request):
     from pytube import YouTube
     for v in Video.objects.all():
         try:

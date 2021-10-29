@@ -44,7 +44,11 @@ admin.site.register(CoursePackage)
 #admin.site.register(CoursePackageLessons)
 admin.site.register(CoursePackageChapters)
 admin.site.register(CoursePackageSubjects)
-admin.site.register(Video)
+
+@admin.register(Video)
+class VideoAdmin(admin.ModelAdmin):
+    list_display = ['uid' ,'video_link', 'download_link']
+#admin.site.register(Video)
 admin.site.register(Document)
 admin.site.register(GoLive)
 admin.site.register(Coupoun)

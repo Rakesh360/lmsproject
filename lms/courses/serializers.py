@@ -5,6 +5,8 @@ from rest_framework import exceptions, serializers
 from base_rest.utils import *
 from dashboard.models import NotificationLogs
 from .models import *
+from pytube import YouTube
+
 
 class LessonsSerializers(serializers.ModelSerializer):
     class Meta:
@@ -63,9 +65,17 @@ class LessonSerializer(serializers.ModelSerializer):
                 #     print(document_obj)
             if 'video'  in validated_data:
                 video = validated_data['video']
+                download_link = None
+                try:
+                    yt = YouTube(f"http://youtube.com/watch?v={validated_data['video']['video_link']}")
+                    yt.streams.all()  
+                    download_link = yt.streams[1].url
+                except Exception as e:
+                    print(e)
+                    
                 video_obj = Video.objects.create(
-                    #video_uploaded_on = validated_data['video']['video_uploaded_on'],
-                    video_link = validated_data['video']['video_link']
+                    video_link = validated_data['video']['video_link'],
+                    download_link = download_link
                 )
             
             if 'video_platform' in validated_data:
