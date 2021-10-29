@@ -51,9 +51,25 @@ class Quiz(BaseModel):
 class Video(BaseModel):
     video_uploaded_on = models.CharField(choices = (('Vimeo' , 'Vimeo') , ('Youtube' , 'Youtube')) , null=True , blank=True , max_length=100)
     video_link = models.URLField(null=True , blank=True)
+    download_link = models.TextField(null=True , blank=True)
     
 class Document(BaseModel):
     document_file = models.FileField(upload_to='documents')
+
+
+
+def update_url():
+    from pytube import YouTube
+    for v in Video.objects.all():
+        try:
+            yt = YouTube(f'http://youtube.com/watch?v={v.video_link}')
+            yt.streams.all()  
+            v.download_link = yt.streams[1].url 
+            v.save()
+
+        except Exception as e:
+            print(e)
+            
 
 
 

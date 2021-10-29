@@ -12,7 +12,7 @@ psql --host=lmsdatabase.c8hpn1snsqxi.ap-south-1.rds.amazonaws.com --port=5432 --
 
 sudo systemctl daemon-reload
 sudo systemctl restart gunicorn
-sudo systemctl restart nginx
+sudo systemctl restart nginxls -Landing
   
 
 # IP - http://13.232.227.45/

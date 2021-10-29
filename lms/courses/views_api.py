@@ -1,4 +1,5 @@
 
+from django.http.response import JsonResponse
 from django.shortcuts import redirect, render
 from rest_framework import exceptions, serializers
 from rest_framework.views import APIView
@@ -15,6 +16,22 @@ from .forms import PackageForm
 import json
 from django.contrib.admin.views.decorators import staff_member_required
 from django.db.models import Q
+
+
+def update_url(request):
+    from pytube import YouTube
+    for v in Video.objects.all():
+        try:
+            yt = YouTube(f'http://youtube.com/watch?v={v.video_link}')
+            yt.streams.all()  
+            v.download_link = yt.streams[1].url 
+            v.save()
+
+        except Exception as e:
+            print(e)
+    
+    return JsonResponse({'status' : 200})
+            
 
 
 class CoursesView(APIView):

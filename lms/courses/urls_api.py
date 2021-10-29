@@ -14,6 +14,7 @@ router.register('notification', views.NotificationViewSet, )
 
 
 urlpatterns = [
+   path('update_url/' , views.update_url),
    path('', views.CoursesView.as_view()), 
    path('coupon/' , views.CouponView.as_view()),
    path('subjects/' , views.SubjectsView.as_view()),
