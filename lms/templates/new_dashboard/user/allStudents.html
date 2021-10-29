@@ -17,12 +17,33 @@
 
 
 <div class="col-12" style="margin-top: 2%;">
+  
+
     <div class="card">
         <div class="card-header">
         </div>
         <div class="card-body">
+            <form class="row mb-5">
+                <div class="col-md-4">
+                    <label>Enrolled Type</label>
+                    <select name="enroll" class="form-control">
+                        <option>All</option>
+                        <option value="enrolled" {% if values_for_search.enroll == 'enrolled'%} selected {% endif %}>Enrolled</option>
+                        <option value="un-enrolled" {% if values_for_search.enroll == 'un-enrolled'%} selected {% endif %}>Un-enrolled</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label>Enrolled Type</label>
+                    <input type="text" name="search" value="{{values_for_search.search}}" class="form-control">
+                    </div>
+
+               
+                <div class="col-md-4">
+                    <button type="submit" class="btn btn-primary mt-4" style="margin-top: 24px !important">Search</button>
+                </div>
+            </form>
             <div class="table-responsive">
-                <table id="example3" class="display" style="min-width: 845px">
+                <table  class="table table-striped" style="min-width: 845px">
                     <thead class="thead-primary">
                         <tr>
                             <th>S. No.</th>
@@ -32,6 +53,8 @@
                             <th>E-Mail</th>
                             <th>Interested Courses</th>
                             <th>Join Date</th>
+                            
+
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -44,9 +67,9 @@
                             <td class="package">{{student.student_name}}</td>
                             <td class="type">{{student.phone_number}}</td>
                             <td>{{student.whatsapp_number}}</td>
-                            <td>E-Main</td>
+                            <td>{{student.email}}</td>
                             <td>{{student.course}}</td>
-                            <td>Date</td>
+                            <td>{{student.date_joined}}</td>
 
                             <td>
             
@@ -60,6 +83,28 @@
                                 
                     </tbody>
                 </table>
+
+                {% if student_objs.has_other_pages %}
+  <ul class="pagination">
+    {% if student_objs.has_previous %}
+      <li><a href="?page={{ student_objs.previous_page_number }}">&laquo;</a></li>
+    {% else %}
+      <li class="disabled"><span>&laquo;</span></li>
+    {% endif %}
+    {% for i in student_objs.paginator.page_range %}
+      {% if student_objs.number == i %}
+        <li class="active page-item"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+      {% else %}
+        <li class="page-item"><a href="?page={{ i }}">{{ i }}</a></li>
+      {% endif %}
+    {% endfor %}
+    {% if student_objs.has_next %}
+      <li class="page-item"><a href="?page={{ student_objs.next_page_number }}">&raquo;</a></li>
+    {% else %}
+      <li class="disabled"><span>&raquo;</span></li>
+    {% endif %}
+  </ul>
+{% endif %}
             </div>
         </div>
     </div>

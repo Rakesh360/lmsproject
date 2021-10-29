@@ -1,3 +1,4 @@
+import re
 from django.http.response import JsonResponse
 from orders.models import Order
 from django.shortcuts import redirect, render
@@ -8,7 +9,7 @@ from django.contrib import messages
 from django.http import HttpResponseRedirect
 from .helpers import *
 from django.contrib.admin.views.decorators import staff_member_required
-
+from django.db.models import Q
 
 @staff_member_required(login_url='/accounts/login/')
 def dashboard(request):
@@ -20,8 +21,32 @@ def send_noti(request):
 
 def students(request):
     student_objs = Student.objects.all()
-    subjects = Subject.objects.all()
+    student_uids = []
+    values_for_search = {'search' : '' , 'enroll' : 'all'}
+    if request.GET.get('search'):
+        search = request.GET.get('search')
+        student_objs = Student.objects.filter(
+                Q(student_name__icontains = search) | 
+                Q(phone_number__icontains = search) |
+                Q(course__icontains = search)
+            )
+        values_for_search['search'] = request.GET.get('search')
+
     
+    if request.GET.get('enroll'):
+        if request.GET.get('enroll') == 'enrolled':
+            student_objs = student_objs.filter(orders__is_paid = True)
+        elif request.GET.get('enroll') == 'un-enrolled':
+            student_objs = student_objs.filter(orders__is_paid = False)
+        values_for_search['enroll'] = request.GET.get('enroll')
+
+
+
+    
+
+
+
+
     if request.GET.get('subject'):
         selected_subjects = request.GET.getlist('subject')
         print(selected_subjects)
@@ -33,15 +58,17 @@ def students(request):
 
 
     page = request.GET.get('page', 1)
-    paginator = Paginator(student_objs, 50)
+    paginator = Paginator(student_objs, 5)
     try:
         student_objs = paginator.page(page)
     except PageNotAnInteger:
         student_objs = paginator.page(1)
     except EmptyPage:
         student_objs = paginator.page(paginator.num_pages)
+    
+    print(student_objs)
 
-    return render(request , 'new_dashboard/user/allStudents.html', {'subjects' : subjects, 'student_objs': student_objs })
+    return render(request , 'new_dashboard/user/allStudents.html', {'values_for_search' : values_for_search, 'student_objs': student_objs })
 
 
 def send_notification(request):
