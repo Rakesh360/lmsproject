@@ -56,7 +56,7 @@ class OrderCourse(APIView):
             try:
                 course = CoursePackage.objects.get(uid = data.get('course_uid'))
                 if not course.is_active:
-                    return Response({'status' : 400 , 'message' : 'course expired cannot purchase' })
+                    return Response({'status' : 400 , 'message' : 'course purchase is ended' })
 
 
             except Exception as e:
@@ -64,8 +64,8 @@ class OrderCourse(APIView):
                 return Response({'status' : 400 , 'message' : 'course_uid is invalid' })
 
             
-            if Order.objects.filter(student = student , course = course , is_paid = True).exists():
-                return Response({'status' : 400 , 'message' : 'you have already purchased this course' })
+            # if Order.objects.filter(student = student , course = course , is_paid = True).exists():
+            #     return Response({'status' : 400 , 'message' : 'you have already purchased this course' })
 
 
             # response = api.payment_request_create(

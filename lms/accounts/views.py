@@ -60,7 +60,7 @@ class AccountViewSet(BaseAPIViewSet , AccountMixin):
                 courses = []
               
 
-                for order in queryset.orders.filter(is_paid = True , order_expiry__gte = datetime.date.today() ):
+                for order in queryset.orders.filter(is_paid = True , course__sell_till_date__gte = datetime.date.today() ):
                     courses.append(course_to_json([order.course]))
                 data['courses'] = courses
 
@@ -77,12 +77,12 @@ class AccountViewSet(BaseAPIViewSet , AccountMixin):
                 serializer = RegisterStudentSerializer(queryset)
                 data['student_info'] = serializer.data
                 courses = []
-                for order in queryset.orders.filter(is_paid = True, order_expiry__gte = datetime.date.today()):
+                for order in queryset.orders.filter(is_paid = True, course__sell_till_date__gte = datetime.date.today()):
                     courses.append(course_to_json([order.course]))
                 data['courses'] = courses
 
                 expired_course = []
-                for order in queryset.orders.filter(is_paid = True, order_expiry__lte = datetime.date.today()):
+                for order in queryset.orders.filter(is_paid = True, course__sell_till_date__lte = datetime.date.today()):
                     expired_course.append(order.course.package_title)
                 data['expired_course'] = expired_course
 
