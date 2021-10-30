@@ -10,7 +10,7 @@ class OrderSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Order
-        exclude = [ 'updated_at',]
+        exclude = [ 'updated_at', 'created_at' , 'order_expiry' , 'order_updation_date_time' , 'order_creation_date_time' , 'razorpay_payment_signature' , 'order_id' , 'payement_id' , 'response']
     
     def get_coupon(self , obj):
         try:

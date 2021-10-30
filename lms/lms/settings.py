@@ -188,3 +188,7 @@ CHANNEL_LAYERS = {
         },
     },
 }
+
+
+KEY_ID = 'rzp_test_U8kwhxFBa7D35a'
+KEY_SECRET = 'JvlioWLJPypZWMZF0yo019ud'

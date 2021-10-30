@@ -13,6 +13,9 @@ from base_rest.viewsets import BaseAPIViewSet
 from instamojo_wrapper import Instamojo
 from courses.models import *
 import json
+from django.conf import settings
+import razorpay
+import sys, os
 
 API_KEY = "test_9f0cd6e73f16fc3b984db1a8d42"
 AUTH_TOKEN = "test_77cb05510a342e7be711119f40a"
@@ -20,6 +23,18 @@ salt = "2f59120f9f554bb4a9ac68fcab7ae0a9"
 api = Instamojo(api_key=API_KEY,auth_token=AUTH_TOKEN,endpoint='https://test.instamojo.com/api/1.1/')
 
 
+def generate_razorpay_token(amount):
+    try:
+        KEY_ID = settings.KEY_ID
+        KEY_SECRET = settings.KEY_SECRET
+        client = razorpay.Client(auth =(KEY_ID , KEY_SECRET))
+        payment = client.order.create({'amount':amount * 100, 'currency':'INR',
+                              'payment_capture':'1' })
+        return payment
+    except Exception as e:
+        print(e)
+    
+    return {}
 
 class OrderCourse(APIView):
     def post(self , request):
@@ -53,32 +68,46 @@ class OrderCourse(APIView):
                 return Response({'status' : 400 , 'message' : 'you have already purchased this course' })
 
 
-            response = api.payment_request_create(
-            amount=course.selling_price,
-            purpose=f'{course.package_title}',
-            buyer_name=student.student_name,
-            send_email=True,
-            email=student.email,
-            redirect_url="http://13.232.227.45/api/order/success/",
-            )
+            # response = api.payment_request_create(
+            # amount=course.selling_price,
+            # purpose=f'{course.package_title}',
+            # buyer_name=student.student_name,
+            # send_email=True,
+            # email=student.email,
+            # redirect_url="http://13.232.227.45/api/order/success/",
+            # )
+            razorpay_dict = generate_razorpay_token(course.selling_price)
+            print('******')
+            print(razorpay_dict)
+            print('******')
+
             order_obj ,_ = Order.objects.get_or_create(
                 student= student,
                 course = course,
                 is_paid = False,
-                order_id = response['payment_request']['id'],
-                amount = course.selling_price,
-                response = json.dumps(response)
                 )
+            order_obj.order_id = razorpay_dict['id']
+            order_obj.amount = course.selling_price
+            order_obj.response = json.dumps(razorpay_dict)
+            order_obj.save()
             serializer = OrderSerializer(order_obj)
             data = serializer.data
-            data.pop('response')
-            payload = response
-            payload['order'] = data
-            print(response)
-            return Response(payload)
+            #data.pop('response')
+            payload_dict = {
+                'status' : 200,
+                'message' : 'order created',
+                'order' : razorpay_dict,
+                'data' : serializer.data
+                }
+            # payload = response
+            # payload['order'] = razorpay_dict
+            #print(response)
+            return Response( payload_dict)
         except Exception as e:
             print(e)
-        
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
         return Response({'status': 400 , 'message' : 'something went wrong'})
 
 
@@ -123,30 +152,30 @@ class OrderCourse(APIView):
                 is_paid = False,
                 ).first()
 
-            response = api.payment_request_create(
-            amount=order_obj.amount,
-            purpose=f'{course.package_title}',
-            buyer_name=student.student_name,
-            send_email=True,
-            email=student.email,
-            redirect_url="http://13.232.227.45/api/order/success/",
-            )
-            order_obj.response = json.dumps(response)
-            order_obj.order_id = response['payment_request']['id']
+            # response = api.payment_request_create(
+            # amount=order_obj.amount,
+            # purpose=f'{course.package_title}',
+            # buyer_name=student.student_name,
+            # send_email=True,
+            # email=student.email,
+            # redirect_url="http://13.232.227.45/api/order/success/",
+            # )
+            razorpay_dict = generate_razorpay_token(order_obj.amount)
+
+            order_obj.response = json.dumps(razorpay_dict)
+            order_obj.order_id = razorpay_dict['id']
             order_obj.save()
             serializer = OrderSerializer(order_obj)
-            data = serializer.data
-            data.pop('response')
-            payload = response
-            payload['order'] = data
-    
-
-            serializer = OrderSerializer(order_obj)
-            return Response({
+          
+            payload_dict = {
                 'status' : 200,
                 'message' : 'coupon removed',
+                'order' : razorpay_dict,
                 'data' : serializer.data
-            })
+                }
+    
+
+            return Response(payload_dict)
         except Exception as e:
             print(e)
         return Response({
@@ -339,22 +368,31 @@ class ApplyCoupon(APIView):
             print(type(order_obj.amount))
             print('***************')
             if order_obj.amount > 0:
-                response = api.payment_request_create(
-                amount= order_obj.amount,
-                purpose=f'{course.package_title}',
-                buyer_name=student.student_name,
-                send_email=True,
-                email=student.email,
-                redirect_url="http://13.232.227.45/api/order/success/",
-                )
-                order_obj.response = json.dumps(response)
-                order_obj.order_id = response['payment_request']['id']
+                razorpay_dict = generate_razorpay_token(order_obj.amount)
+
+                # response = api.payment_request_create(
+                # amount= order_obj.amount,
+                # purpose=f'{course.package_title}',
+                # buyer_name=student.student_name,
+                # send_email=True,
+                # email=student.email,
+                # redirect_url="http://13.232.227.45/api/order/success/",
+                # )
+                order_obj.response = json.dumps(razorpay_dict)
+                order_obj.order_id = razorpay_dict['id']
                 order_obj.save()
                 serializer = OrderSerializer(order_obj)
                 data = serializer.data
-                data.pop('response')
-                payload = response
-                payload['order'] = data
+                payload_dict = {
+                    'status' : 200,
+                    'message' : 'coupon applied',
+                    'order' : razorpay_dict,
+                    'data' : serializer.data
+                }
+
+                # payload = razorpay_dict
+
+                # payload['order'] = data
             else:
                 order_obj.is_paid = True
                 order_obj.save()
@@ -367,11 +405,7 @@ class ApplyCoupon(APIView):
     
 
 
-            return Response({
-                'status' : 200,
-                'message' : 'coupon applied successfully',
-                'data' : response
-            })
+            return Response(payload_dict)
         except Exception as e:
             import sys, os
             print(e)
