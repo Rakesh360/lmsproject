@@ -86,6 +86,7 @@ class OrderCourse(APIView):
                 course = course,
                 is_paid = False,
                 )
+                
             order_obj.order_id = razorpay_dict['id']
             order_obj.amount = course.selling_price
             order_obj.response = json.dumps(razorpay_dict)
@@ -97,8 +98,9 @@ class OrderCourse(APIView):
                 'status' : 200,
                 'message' : 'order created',
                 'order' : razorpay_dict,
-                'data' : serializer.data
-                }
+                'data' : serializer.data,
+                'razorpay_key' : settings.KEY_ID 
+                           }
             # payload = response
             # payload['order'] = razorpay_dict
             #print(response)
@@ -171,7 +173,8 @@ class OrderCourse(APIView):
                 'status' : 200,
                 'message' : 'coupon removed',
                 'order' : razorpay_dict,
-                'data' : serializer.data
+                'data' : serializer.data,
+                'razorpay_key' : settings.KEY_ID 
                 }
     
 
@@ -387,7 +390,8 @@ class ApplyCoupon(APIView):
                     'status' : 200,
                     'message' : 'coupon applied',
                     'order' : razorpay_dict,
-                    'data' : serializer.data
+                    'data' : serializer.data,
+                    'razorpay_key' : settings.KEY_ID 
                 }
 
                 # payload = razorpay_dict

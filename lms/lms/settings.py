@@ -190,5 +190,8 @@ CHANNEL_LAYERS = {
 }
 
 
-KEY_ID = 'rzp_test_U8kwhxFBa7D35a'
-KEY_SECRET = 'JvlioWLJPypZWMZF0yo019ud'
+# KEY_ID = 'rzp_test_U8kwhxFBa7D35a'
+# KEY_SECRET = 'JvlioWLJPypZWMZF0yo019ud'
+
+KEY_ID = 'rzp_test_h1YvLi0DbYvSdF'
+KEY_SECRET = 'FxMBn2M74LWHzyS83X4eH0x4'

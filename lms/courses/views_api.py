@@ -766,7 +766,7 @@ class DocumentUpload(viewsets.ModelViewSet):
     serializer_class = DocumentSerializer
 
 class NotificationViewSet(viewsets.ModelViewSet):
-    queryset = NotificationLogs.objects.all()
+    queryset = NotificationLogs.objects.all().order_by('-created_at')
     serializer_class = NotificationLogsSerializer
 
 class CouponView(APIView):

@@ -211,7 +211,7 @@ class NotificationLogsSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = NotificationLogs
-        exclude = ['created_at' , 'updated_at']    
+        exclude = [ 'updated_at']    
 
 class CoursePackageUid(serializers.ModelSerializer):
     class Meta:

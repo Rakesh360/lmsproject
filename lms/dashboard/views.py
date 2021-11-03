@@ -38,7 +38,7 @@ def students(request):
             student_objs = student_objs.filter(orders__is_paid = True)
         elif request.GET.get('enroll') == 'un-enrolled':
             student_objs = student_objs.filter(orders__is_paid = False)
-        values_for_search['enroll'] = request.GET.get('enroll')
+        values_for_search['p'] = request.GET.get('enroll')
 
 
 

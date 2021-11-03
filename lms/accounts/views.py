@@ -155,3 +155,4 @@ class AccountViewSet(BaseAPIViewSet , AccountMixin):
                 'message' : 'invalid uid',
                 'data' : {}
             }) 
+
