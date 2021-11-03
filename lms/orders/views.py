@@ -189,10 +189,14 @@ class OrderSuccess(APIView):
         import datetime
         try:
             payment_id = request.GET.get('payment_id')
+            order_id = request.GET.get('order_id')
             payment_request_id = request.GET.get('payment_request_id')
+
             order_obj = Order.objects.get( 
-                order_id = payment_request_id
+                order_id = order_id
             )
+        
+
             order_obj.is_paid = True
             order_obj.payement_id = payment_id
             count_days = None
