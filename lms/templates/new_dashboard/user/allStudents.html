@@ -24,7 +24,7 @@
         </div>
         <div class="card-body">
             <form class="row mb-5">
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <label>Enrolled Type</label>
                     <select name="enroll" class="form-control">
                         <option>All</option>
@@ -32,18 +32,34 @@
                         <option value="un-enrolled" {% if values_for_search.enroll == 'un-enrolled'%} selected {% endif %}>Un-enrolled</option>
                     </select>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <label>Enrolled Type</label>
                     <input type="text" name="search" value="{{values_for_search.search}}" class="form-control">
                     </div>
 
                
-                <div class="col-md-4">
-                    <button type="submit" class="btn btn-primary mt-4" style="margin-top: 24px !important">Search</button>
-                </div>
+             
+
+
+              <div class="col-md-3 ">
+                <label>Start Date</label>
+                <input class="form-control" value="{{values_for_search.start_date}}" name="start_date" type="date">
+              </div>
+              <div class="col-md-3 ">
+                <label>End Date</label>
+                <input class="form-control" value="{{values_for_search.end_date}}" name="end_date" type="date">
+              </div>
+              <div class="col-md-3">
+                <button type="submit" class="btn btn-primary mt-4" style="margin-top: 24px !important">Search</button>
+            </div>
+            <div class="col-md-3">
+              <a  href="?type=export" class="btn btn-success mt-4 text-white" style="margin-top: 24px !important">Export </a>
+          </div>
+
+
             </form>
             <div class="table-responsive">
-                <table  class="table table-striped" style="min-width: 845px">
+                <table  class="table table-striped">
                     <thead class="thead-primary">
                         <tr>
                             <th>S. No.</th>
@@ -73,7 +89,77 @@
 
                             <td>
             
-                                <a href="#" id="{{course_package.uid}}" class="btn btn-sm btn-primary editSubject"><i class="la la-pencil"></i></a>
+                                <a href="{% url 'enroll_student' student.uid %}"  class="btn btn-sm btn-primary editSubject">
+                                    <i class="la la-pencil"></i></a>
+                               
+                                <button data-toggle="modal" data-target="#exampleModal-{{student.uid}}"
+                                id="{{student.uid}}"
+                                class="btn btn-sm btn-primary ">
+                                View
+                            </button>
+                             
+                                  <div class="modal fade" id="exampleModal-{{student.uid}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-xl">
+                                      <div class="modal-content">
+                                        <div class="modal-header">
+                                          <h5 class="modal-title" id="exampleModalLabel">Courses Enrolled</h5>
+                                        </div>
+                                        <div class="modal-body">
+                                        
+                                            <table class="table">
+                                                <thead>
+                                                  <tr>
+                                                    <th scope="col">#</th>
+                                                    <th scope="col">Course</th>
+                                                    <th scope="col">Payment Status</th>
+                                                    <th scope="col">Order Id</th>
+                                                    <th scope="col">Date</th>
+                                                    <th scope="col">Amount</th>
+                                                    <th scope="col">Coupon</th>
+                                                    <th scope="col">Remove Access</th>
+
+                                                  </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for order in student.orders.all %}
+                                                  <tr>
+                                                    <th scope="row">{{forloop.counter}}</th>
+                                                    <td>{{order.course.package_title}}</td>
+                                                    <td>{{order.is_paid}}</td>
+                                                    <td>{{order.order_id}}</td>
+                                                    <td>{{order.order_creation_date_time}}</td>
+                                                    <td>{{order.amount}}</td>
+                                                    <td>{{order.coupon}}</td>
+                                                    <td>
+                                                        {% if order.block_access  %}
+                                                        <a href="{% url 'block_access'%}?uid={{order.uid}}" class="btn btn-success text-white btn-sm">Grant Access</a>
+                                                        {% else %}
+                                                        <a href="{% url 'block_access'%}?uid={{order.uid}}" class="btn btn-danger btn-sm">Remove Access</a>
+                                                        {% endif %}
+                                                    </td>
+
+
+                                                    
+
+
+
+                                                  </tr>
+                                                  {% endfor %}
+                                                 
+                                                </tbody>
+                                              </table>
+
+
+                                        </div>
+                                        <div class="modal-footer">
+                                          <button type="button" class="btn btn-secondary" onclick="window.location.reload()" data-bs-dismiss="modal">Close</button>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  
+
+                               
                                 <button data-toggle="tooltip" data-placement="top" title="Block User" class="btn btn-sm btn-danger"><i class="la la-ban"></i></button>
                             </td>
                         </tr>

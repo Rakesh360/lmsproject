@@ -73,19 +73,31 @@ def course_to_json(course_objs):
                 
             live_class = []
             now = datetime.now()
+            print('********')
+            print(now)
+            print(course_obj.uid)
+            print('********')
 
-            go_live_objs = GoLive.objects.filter(courses__in = [course_obj.uid] , live_date_time__gte = datetime.now())
+            go_live_objs = GoLive.objects.filter(courses__in = [course_obj.uid] , live_date_time__gte = now)
 
 
             if len(go_live_objs):
                 for live in go_live_objs:
+                    d = live.live_date_time.strftime("%d %b, %Y %H:%M")
+                    print('########')
+                    print(d)
+                    print('########')
+
+                    print(live.live_date_time)
                     live_class.append({
                         'live_name' : live.live_name,
                         'live_url' : live.live_url,
                         'image' : '/media/' +  str(live.image),
-                        'live_date' : str(live.live_date_time),
-                        'live_time' : str(live.live_date_time),
-                        'live_uid' : live.uid
+                        'live_date' : str(d),
+                        'live_time' : str(d),
+                        'live_uid' : live.uid,
+                        'is_live_started' : live.is_live_started,
+                        'is_live_ended' : live.is_live_ended
                         
                     })
             course_package_dict['live'] = live_class

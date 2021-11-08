@@ -1,21 +1,17 @@
-from django.db.models import manager
 from django.shortcuts import render
-from rest_framework import serializers
-from rest_framework import authentication
 from rest_framework.views import APIView
 from .models import *
 from .serializers import *
 from rest_framework.response import Response
-from rest_framework import viewsets
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.authentication import TokenAuthentication
-from base_rest.viewsets import BaseAPIViewSet
+
 from instamojo_wrapper import Instamojo
 from courses.models import *
 import json
 from django.conf import settings
 import razorpay
 import sys, os
+from django.contrib import messages
+from django.http import HttpResponseRedirect, HttpResponse
 
 API_KEY = "test_9f0cd6e73f16fc3b984db1a8d42"
 AUTH_TOKEN = "test_77cb05510a342e7be711119f40a"
@@ -427,3 +423,44 @@ class ApplyCoupon(APIView):
 
 
 
+
+
+def block_access(request):
+    try:
+        uid = request.GET.get('uid')
+        print(uid)
+        obj = Order.objects.get(uid = uid)
+        obj.block_access = not obj.block_access
+        obj.save()
+    
+    except Exception as e:
+        print(e)
+
+    messages.success(request, 'Student updated')
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+
+def enroll_student(request  , uid):
+    try:
+        student = Student.objects.get(uid = uid)
+        context = {'student' : student , 'courses' : CoursePackage.objects.all()}
+
+        if request.method == 'POST':
+            course = request.POST.get('course')
+            course_pbj = CoursePackage.objects.get(uid = course)
+            obj , _ = Order.objects.get_or_create(
+                student = student,
+                course = course_pbj
+            )
+            obj.is_paid= True
+            obj.save()
+            
+            messages.success(request, 'Student updated')
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+
+        return render(request , 'new_dashboard/user/create_order.html', context)
+
+
+    except Exception as e:
+        print(e) 

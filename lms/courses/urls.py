@@ -55,7 +55,8 @@ urlpatterns = [
    path('chat-live/<room_id>/' , views.chat_live, name="chat_live"),
 
    path('delete_package_lesson/' , views.delete_package_lesson , name="delete_package_lesson"),
-   path('remove_coupon/'  , views.remove_coupon, name="remove_coupon")
+   path('remove_coupon/'  , views.remove_coupon, name="remove_coupon"),
+   path('toggle_coupon/<uid>/' , views.toggle_coupon , name="toggle_coupon" )
 
    
 ]

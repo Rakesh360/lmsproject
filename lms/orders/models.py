@@ -5,6 +5,13 @@ from accounts.models import Student
 from courses.models import *
 from base_rest.models import BaseModel
 
+
+class OrderModelManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(block_access=False)
+    
+
+
 class Order(BaseModel):
     student = models.ForeignKey(Student , related_name='orders' , on_delete=models.CASCADE)
     course = models.ForeignKey(CoursePackage , on_delete=models.CASCADE)
@@ -18,6 +25,12 @@ class Order(BaseModel):
     order_creation_date_time = models.DateTimeField(auto_now_add=True)
     order_updation_date_time = models.DateTimeField(auto_now = True)
     order_expiry = models.DateField(null=True , blank=True)
+    block_access = models.BooleanField(default= False)
+
+        
+    objects = models.Manager()
+    admin_objects = OrderModelManager()
+
     # class Meta:
     #     unique_together = ('student', 'course',)
 

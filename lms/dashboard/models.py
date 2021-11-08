@@ -23,7 +23,7 @@ def send_no(sender, instance, **kwargs):
     try:
         registration_ids = set()
         for course in instance.courses.all():
-            order_obj = Order.objects.filter(course = course , is_paid = True).first()
+            order_obj = Order.admin_objects.filter(course = course , is_paid = True).first()
             if order_obj:
                 registration_ids.add(order_obj.student.fcm_token)
 

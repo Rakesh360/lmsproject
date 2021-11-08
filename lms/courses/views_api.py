@@ -435,7 +435,7 @@ class LessonsView(APIView):
                             lesson = lesson_obj,
                         )
                         le_obj.added_at = created_at
-                        objs = Order.objects.filter(course__uid = package['uid'] ,   is_paid = True)
+                        objs = Order.admin_objects.filter(course__uid = package['uid'] ,   is_paid = True)
                         print(objs)
                         registration_ids = set()
                         for o in objs:
@@ -484,7 +484,7 @@ class LessonsView(APIView):
                         )
                         obj.added_at = created_at
                         obj.save()
-                        objs = Order.objects.filter(course__uid = package['uid'] , is_paid = True)
+                        objs = Order.admin_objects.filter(course__uid = package['uid'] , is_paid = True)
                         print(objs)
                         registration_ids = set()
                         for o in objs:
@@ -574,6 +574,21 @@ class LessonsView(APIView):
                             )
                             obj.added_at = created_at
                             obj.save()
+                            objs = []
+                            if  _:
+                                objs = Order.admin_objects.filter(course__uid = package['uid'] ,   is_paid = True)
+                            registration_ids = set()
+                            for o in objs:
+                                try:
+                                    registration_ids.add(
+                                        o.student.fcm_token
+                                    )
+                                except Exception as e:
+                                    print(e)
+                            print(registration_ids)
+                            registration_ids = list(registration_ids)
+                            send_notification_packages(registration_ids , f'{lesson_obj.lesson_title} has been added.'  , f'New Lesson has been added to {course_package_obj.package_title}')
+                            
                         except Exception as e:
                             print(e)
                     return Response({
@@ -693,7 +708,7 @@ class GoLiveView(APIView):
                     except Exception as e:
                         print(e)
                 
-                objs = Order.objects.filter(course__in = live_obj.courses.all())
+                objs = Order.admin_objects.filter(course__in = live_obj.courses.all())
                 registration_ids = set()
                 for o in objs:
                     try:
@@ -703,6 +718,7 @@ class GoLiveView(APIView):
                     except Exception as e:
                         print(e)
                 registration_ids = list(registration_ids)
+                #date_time_for_live = live_obj.live_date_time.strftime('%Y-%m-%d %h:%M')
                 send_notification_packages(registration_ids , f'{live_obj.live_name} has been created.'  , f'Live has been schedule on {live_obj.live_date_time}')
            
 

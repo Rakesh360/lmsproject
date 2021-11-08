@@ -10,7 +10,9 @@ from django.http import HttpResponseRedirect
 from .helpers import *
 from django.contrib.admin.views.decorators import staff_member_required
 from django.db.models import Q
-
+import uuid
+import pandas as pd
+from django.conf import settings
 @staff_member_required(login_url='/accounts/login/')
 def dashboard(request):
     return render(request , 'dashboard/dashboard.html')
@@ -28,7 +30,8 @@ def students(request):
         student_objs = Student.objects.filter(
                 Q(student_name__icontains = search) | 
                 Q(phone_number__icontains = search) |
-                Q(course__icontains = search)
+                Q(course__icontains = search) |
+                Q(orders__course__package_title__icontains = search)
             )
         values_for_search['search'] = request.GET.get('search')
 
@@ -40,6 +43,23 @@ def students(request):
             student_objs = student_objs.filter(orders__is_paid = False)
         values_for_search['p'] = request.GET.get('enroll')
 
+
+    if request.GET.get('start_date') or  request.GET.get('end_date'):
+        values_for_search['start_date'] = request.GET.get('start_date')
+        values_for_search['end_date'] = request.GET.get('end_date')
+
+        if request.GET.get('start_date') and  request.GET.get('end_date'):
+            start_date = datetime.datetime.strptime(request.GET.get('start_date'), "%Y-%m-%d").date()
+            end_date = datetime.datetime.strptime(request.GET.get('end_date'), "%Y-%m-%d").date()
+
+            student_objs = student_objs.filter(orders__order_creation_date_time__gte =start_date ,
+            orders__order_creation_date_time__lte =end_date , 
+            )
+        else:
+            messages.error(request, 'Both Start and end date are required')
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+        values_for_search['start_date'] = request.GET.get('start_date')
+        values_for_search['end_date'] = request.GET.get('end_date')
 
 
     
@@ -66,7 +86,37 @@ def students(request):
     except EmptyPage:
         student_objs = paginator.page(paginator.num_pages)
     
-    print(student_objs)
+    
+    if request.GET.get('type') == 'export':
+        student_list = []
+        for student_obj in student_objs:
+            order_str = ''
+            for order in student_obj.orders.all():
+                order_str += f'{order.course.package_title} => {order.is_paid} => | '
+
+            if not len(order_str):
+                order_str = None
+
+            student_list.append({
+                'name' : student_obj.student_name,
+                'phone_number' : student_obj.phone_number,
+                'whatsapp_number' : student_obj.whatsapp_number,
+                'gender' : student_obj.gender,
+                'state' : student_obj.state,
+                'pincode' : student_obj.pincode,
+                'courses_intrested' : student_obj.course,
+                'orders' : order_str
+            })
+        df = pd.DataFrame(student_list)
+        file_name = uuid.uuid4()
+        df.to_csv(f'public/static/excel/{file_name}.csv' , encoding='UTF-8')
+        return redirect(f'/media/excel/{file_name}.csv')
+
+
+    student_objs = set(student_objs)
+    student_objs = list(student_objs)
+
+
 
     return render(request , 'new_dashboard/user/allStudents.html', {'values_for_search' : values_for_search, 'student_objs': student_objs })
 

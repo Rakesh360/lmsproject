@@ -315,7 +315,7 @@ def change_live_status(request , uid):
             obj.save()
             
            
-            objs = Order.objects.filter(course__in = obj.courses.all())
+            objs = Order.admin_objects.filter(course__in = obj.courses.all())
             registration_ids = set()
             for o in objs:
                 try:
@@ -355,7 +355,7 @@ def change_live_status(request , uid):
                     lesson = lesson_obj,
                 )
 
-            objs = Order.objects.filter(course__in = obj.courses.all())
+            objs = Order.admin_objects.filter(course__in = obj.courses.all())
             registration_ids = set()
             for o in objs:
                 try:
@@ -371,7 +371,7 @@ def change_live_status(request , uid):
 
         elif request.GET.get('status') == 'cancel':
             print('cancel')
-            objs = Order.objects.filter(course__in = obj.courses.all())
+            objs = Order.admin_objects.filter(course__in = obj.courses.all())
             registration_ids = set()
             for o in objs:
                 try:
@@ -561,6 +561,19 @@ def remove_coupon(request):
     
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
+def toggle_coupon(request , uid):
+    try:
+        coupon = Coupoun.objects.get(uid = uid)
+        coupon.is_active = not coupon.is_active
+        coupon.save()
+        messages.success(request, 'Toggled Coupon')
+
+
+    except Exception as e:
+        print(e)
+    
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
 
 def delete_coupon(request):
     context = {
@@ -619,8 +632,9 @@ def send_notification(request):
             print(c)
             c_obj = CoursePackage.objects.get(uid = c)
             obj.courses.add(c_obj)
-            order_objs = Order.objects.filter(course = c_obj , is_paid = True)
+            order_objs = Order.admin_objects.filter(course = c_obj , is_paid = True)
             for order_obj in order_objs:
+                print(order_obj.is_paid)
                 registration_ids.add(order_obj.student.fcm_token)
 
         registration_ids = list(registration_ids)

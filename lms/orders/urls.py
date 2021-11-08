@@ -13,6 +13,8 @@ urlpatterns = [
    path('get-active-order/' , OrderAPI.as_view()),
    path('success/' , OrderSuccess.as_view()),
    path('apply-coupon/' , ApplyCoupon.as_view()),
+   path('block_access/' , block_access , name="block_access"),
+   path('enroll_student/<uid>/' , enroll_student , name="enroll_student")
    #path('', include(router.urls)), 
 ]
 
