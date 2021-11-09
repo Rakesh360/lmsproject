@@ -661,7 +661,8 @@ def send_notification(request):
 
 def all_slider(request):
     if request.method=="POST":
-        image = request.POST.get('image')
+        image = request.FILES['image']
+        print(image)
         Slider.objects.create(
             slider_image =image,
             
