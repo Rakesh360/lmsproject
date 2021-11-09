@@ -175,9 +175,9 @@
                                   
 
                                   {% if student.block_account %}
-                                <a href="{% url 'block_account' student.uid}" data-toggle="tooltip" data-placement="top" title="UnBlock User" class="btn btn-sm btn-success text-white"><i class="la la-ban"></i></a>
+                                <a href="{% url 'block_account' student.uid %}" data-toggle="tooltip" data-placement="top" title="UnBlock User" class="btn btn-sm btn-success text-white"><i class="la la-ban"></i></a>
                                   {% else %}
-                                  <a href="{% url 'block_account' student.uid}" data-toggle="tooltip" data-placement="top" title="Block User" class="btn btn-sm btn-danger"><i class="la la-ban"></i></a>
+                                  <a href="{% url 'block_account' student.uid %}" data-toggle="tooltip" data-placement="top" title="Block User" class="btn btn-sm btn-danger"><i class="la la-ban"></i></a>
 
                                     {% endif %}
                               </td>
