@@ -27,16 +27,27 @@
                 <div class="col-md-3">
                     <label>Enrolled Type</label>
                     <select name="enroll" class="form-control">
-                        <option>All</option>
+                        <option value="all" {% if values_for_search.enroll == 'all'%} selected {% endif %}>All</option>
                         <option value="enrolled" {% if values_for_search.enroll == 'enrolled'%} selected {% endif %}>Enrolled</option>
                         <option value="un-enrolled" {% if values_for_search.enroll == 'un-enrolled'%} selected {% endif %}>Un-enrolled</option>
                     </select>
                 </div>
                 <div class="col-md-3">
-                    <label>Enrolled Type</label>
+                    <label>Name/Phone/Course Interested</label>
                     <input type="text" name="search" value="{{values_for_search.search}}" class="form-control">
-                    </div>
+                  </div>
 
+                  <div class="col-md-3">
+                    <label>Select Package</label>
+                    <select name="course" class="form-control">
+                      <option >All</option>
+                      {% for course in courses %}
+                      <option value="{{course.package_title}}" {% if course == course.package_title %} selected {% endif %}>{{course.package_title}}</option>
+                      {% endfor %}
+                    </select>
+                  </div>
+
+               
                
              
 
@@ -45,14 +56,14 @@
                 <label>Start Date</label>
                 <input class="form-control" value="{{values_for_search.start_date}}" name="start_date" type="date">
               </div>
-              <div class="col-md-3 ">
+              <div class="col-md-3 mt-2">
                 <label>End Date</label>
                 <input class="form-control" value="{{values_for_search.end_date}}" name="end_date" type="date">
               </div>
-              <div class="col-md-3">
+              <div class="col-md-3 mt-2">
                 <button type="submit" class="btn btn-primary mt-4" style="margin-top: 24px !important">Search</button>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-3 mt-2">
               <a  href="?type=export" class="btn btn-success mt-4 text-white" style="margin-top: 24px !important">Export </a>
           </div>
 
@@ -68,6 +79,8 @@
                             <th>WhatsApp No.</th>
                             <th>E-Mail</th>
                             <th>Interested Courses</th>
+                            <th>Total Course Enrolled</th>
+
                             <th>Join Date</th>
                             
 
@@ -85,6 +98,8 @@
                             <td>{{student.whatsapp_number}}</td>
                             <td>{{student.email}}</td>
                             <td>{{student.course}}</td>
+                            <td>{{student.course_enrolled}}</td>
+
                             <td>{{student.date_joined}}</td>
 
                             <td>
@@ -159,9 +174,13 @@
                                   </div>
                                   
 
-                               
-                                <button data-toggle="tooltip" data-placement="top" title="Block User" class="btn btn-sm btn-danger"><i class="la la-ban"></i></button>
-                            </td>
+                                  {% if student.block_account %}
+                                <a href="{% url 'block_account' student.uid}" data-toggle="tooltip" data-placement="top" title="UnBlock User" class="btn btn-sm btn-success text-white"><i class="la la-ban"></i></a>
+                                  {% else %}
+                                  <a href="{% url 'block_account' student.uid}" data-toggle="tooltip" data-placement="top" title="Block User" class="btn btn-sm btn-danger"><i class="la la-ban"></i></a>
+
+                                    {% endif %}
+                              </td>
                         </tr>
 
                         {% endfor %}

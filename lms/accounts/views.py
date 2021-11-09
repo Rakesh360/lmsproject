@@ -77,13 +77,17 @@ class AccountViewSet(BaseAPIViewSet , AccountMixin):
                 serializer = RegisterStudentSerializer(queryset)
                 data['student_info'] = serializer.data
                 courses = []
-                for order in queryset.orders.filter(is_paid = True, course__sell_till_date__gte = datetime.date.today()):
+                for order in queryset.orders.filter(is_paid = True , block_access = False, course__sell_till_date__gte = datetime.date.today()):
                     courses.append(course_to_json([order.course]))
                 data['courses'] = courses
 
                 expired_course = []
-                for order in queryset.orders.filter(is_paid = True, course__sell_till_date__lte = datetime.date.today()):
+                for order in queryset.orders.filter(is_paid = True , course__sell_till_date__lte = datetime.date.today()):
                     expired_course.append(order.course.package_title)
+                for order in queryset.orders.filter( block_access = True):
+                    expired_course.append(order.course.package_title)
+
+
                 data['expired_course'] = expired_course
 
                 return Response({'status' : 200 , 'data' : data})
@@ -155,4 +159,36 @@ class AccountViewSet(BaseAPIViewSet , AccountMixin):
                 'message' : 'invalid uid',
                 'data' : {}
             }) 
+
+
+from dashboard.helpers import *
+
+def block_account(request , uid):
+    try:
+        student = Student.objects.get(uid = uid)
+        student.is_blocked = not student.is_blocked
+
+        if student.is_blocked:
+            send_notification_packages(
+                [student.fcm_token],
+                f'Your account has been blocked contact admin',
+                'Please contact admin for this..'
+            )
+        else:
+            send_notification_packages(
+                [student.fcm_token],
+                f'Your account has been un-blocked.',
+                'You can now acces the courses'
+            )
+
+
+        student.save()
+
+        messages.success(request, 'Account status changed')
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+    except Exception as e:
+        messages.error(request, 'Something went wron')
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
 

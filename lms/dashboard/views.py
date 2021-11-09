@@ -30,8 +30,7 @@ def students(request):
         student_objs = Student.objects.filter(
                 Q(student_name__icontains = search) | 
                 Q(phone_number__icontains = search) |
-                Q(course__icontains = search) |
-                Q(orders__course__package_title__icontains = search)
+                Q(course__icontains = search) 
             )
         values_for_search['search'] = request.GET.get('search')
 
@@ -41,7 +40,11 @@ def students(request):
             student_objs = student_objs.filter(orders__is_paid = True)
         elif request.GET.get('enroll') == 'un-enrolled':
             student_objs = student_objs.filter(orders__is_paid = False)
-        values_for_search['p'] = request.GET.get('enroll')
+        values_for_search['enroll'] = request.GET.get('enroll')
+
+
+    if request.GET.get('course'):
+        student_objs = student_objs.filter(orders__course__package_title__icontains = request.GET.get('course'))
 
 
     if request.GET.get('start_date') or  request.GET.get('end_date'):
@@ -118,7 +121,7 @@ def students(request):
 
 
 
-    return render(request , 'new_dashboard/user/allStudents.html', {'values_for_search' : values_for_search, 'student_objs': student_objs })
+    return render(request , 'new_dashboard/user/allStudents.html', {'values_for_search' : values_for_search, 'student_objs': student_objs , 'courses' : CoursePackage.objects.all() })
 
 
 def send_notification(request):

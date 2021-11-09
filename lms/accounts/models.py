@@ -30,10 +30,14 @@ class Student(User):
     forget_password_token = models.CharField(max_length=200 ,null=True, blank=True)
     last_login_time = models.DateTimeField(null=True, blank=True)
     last_logout_time = models.DateTimeField(null=True, blank=True)
+    is_blocked = models.BooleanField(default=False)
     
 
     def __str__(self) -> str:
         return f'{self.student_name} | {self.email} | {self.phone_number}' 
+
+    def course_enrolled(self):
+        return self.orders.filter(is_paid = True).count()
 
     class Meta:
         db_table = "students"

@@ -12,6 +12,7 @@ import razorpay
 import sys, os
 from django.contrib import messages
 from django.http import HttpResponseRedirect, HttpResponse
+from dashboard.helpers import *
 
 API_KEY = "test_9f0cd6e73f16fc3b984db1a8d42"
 AUTH_TOKEN = "test_77cb05510a342e7be711119f40a"
@@ -432,6 +433,13 @@ def block_access(request):
         obj = Order.objects.get(uid = uid)
         obj.block_access = not obj.block_access
         obj.save()
+        send_notification_packages(
+                [obj.student.fcm_token],
+                f'{obj.course.package_title} course has been blocked for you. ',
+                'Please contact admin for this..'
+
+            )
+            
     
     except Exception as e:
         print(e)
@@ -452,8 +460,17 @@ def enroll_student(request  , uid):
                 student = student,
                 course = course_pbj
             )
+
+            obj.order_id = 'ADMIN100'
             obj.is_paid= True
             obj.save()
+
+            send_notification_packages(
+                [student.fcm_token],
+                f'{course_pbj.package_title} course has been assgined to you ',
+                'Please view the course assigned to you.'
+
+            )
             
             messages.success(request, 'Student updated')
             return HttpResponseRedirect(request.META.get('HTTP_REFERER'))

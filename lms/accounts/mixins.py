@@ -29,8 +29,8 @@ class AccountMixin:
             if not student.exists():
                 return Response( {'staus' :400 , 'message' : 'account not found' , 'errors' : []})
             
-            # if not student[0].is_phone_verified:
-            #     return Response( {'staus' :400 , 'message' : 'your phone is not verified' , 'errors' : []})
+            if not student[0].is_blocked:
+                return Response( {'staus' :400 , 'message' : 'Your account is blocked contact admin' , 'errors' : []})
 
 
 
