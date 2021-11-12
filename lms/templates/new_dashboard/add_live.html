@@ -176,6 +176,8 @@
 
 
 <script>
+    document.getElementById("startTime").setAttribute("min", new Date().toISOString().slice(0, 16));
+
     var loader = document.getElementById("loader");
     const form = document.getElementById('addLessonForm');
     const tagSection = document.getElementById('tagSection');
@@ -417,6 +419,7 @@
             liveData.append('live_name', document.getElementById('lesson_title').value);
             liveData.append('live_url', document.getElementById('video_link').value);
             liveData.append('subject', document.getElementById('chooseSubject').value);
+            liveData.append('live_date', document.getElementById('startTime').value);
 
 
             if (document.getElementById('live_image').files.length > 0) {
