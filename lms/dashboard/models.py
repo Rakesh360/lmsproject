@@ -19,7 +19,6 @@ class NotificationLogs(BaseModel):
 
 @receiver(post_save, sender=NotificationLogs)
 def send_no(sender, instance, **kwargs):
-    print('HELLLLLLLL')
     try:
         registration_ids = set()
         for course in instance.courses.all():
