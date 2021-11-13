@@ -111,3 +111,16 @@ def course_to_json(course_objs):
         exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
+
+import random
+import requests
+
+
+API_KEY = 'd959e6f9-32ea-11eb-83d4-0200cd936042'
+
+def send_otp(mobile ):
+    otp = random.randint(1000 , 9999)
+    url = f'https://2factor.in/API/V1/{API_KEY}/SMS/{mobile}/{otp}'
+    response = requests.get(url)
+    print(response)
+    return otp

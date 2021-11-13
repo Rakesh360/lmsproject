@@ -13,8 +13,11 @@ from django.db.models import Q
 import uuid
 import pandas as pd
 from django.conf import settings
+from courses.helpers import *
+
 @staff_member_required(login_url='/accounts/login/')
 def dashboard(request):
+    send_otp('7985242482')
     return render(request , 'dashboard/dashboard.html')
 
 def send_noti(request):

@@ -7,6 +7,8 @@ from django.contrib.auth import authenticate
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth.models import User
 import uuid
+
+from courses.helpers import send_otp
 from .models import *
 from rest_framework.authtoken.models import Token
 
@@ -18,6 +20,39 @@ from base_rest.utils import *
 
 class AccountMixin:
     
+    
+    @action(detail=False, methods=['post']   )
+    def resend_otp(self , request):
+        try:
+            data = request.data
+
+            if data.get('phone_number') is None:
+                return Response( {'staus' : 400 , 'message' : 'phone_number is required' , 'errors' : []})
+            
+            student_obj = Student.objects.get(phone_number = data.get('phone_number'))
+            otp = send_otp(data.get('phone_number'))
+            student_obj.otp = otp
+            student_obj.save()
+
+            return Response({
+                'status' : 200,
+                'message' : 'new otp sent',
+                'data' : {}
+            })
+
+
+        
+        except Exception as e:
+            print(e)
+        
+        return Response({
+                'status' : 400,
+                'message' : 'invalid phone number user not found',
+                'data' : {}
+            })
+
+
+
     @action(detail=False, methods=['post'] ,url_path="login" ,url_name="login"  )
     def login(self , request):
        try:
@@ -29,10 +64,14 @@ class AccountMixin:
             if not student.exists():
                 return Response( {'staus' :400 , 'message' : 'account not found' , 'errors' : []})
             
-            if not student[0].is_blocked:
+            if student[0].is_blocked:
                 return Response( {'staus' :400 , 'message' : 'Your account is blocked contact admin' , 'errors' : []})
 
+            if not student[0].is_phone_verified:
+                return Response( {'staus' :400 , 'message' : 'Please verify your phone number' , 'errors' : []})
 
+
+            #send_otp
 
             student_obj = authenticate(username =student[0].email , password = data.get('password'))
 
@@ -131,7 +170,7 @@ class AccountMixin:
 
         try:
             student_obj = Student.objects.get(phone_number = phone_number)
-            student_obj.otp = get_random_otp()
+            student_obj.otp = send_otp(student_obj.phone_number)
             student_obj.save()
             response = {'staus' : 200 , 'message' : 'otp sent'}
             return Response(response , status.HTTP_200_OK)
