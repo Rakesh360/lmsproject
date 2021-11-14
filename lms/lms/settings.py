@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/2.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.2/ref/settings/
 """
-
+from .local_settings import *
 import os
 import mimetypes
 
@@ -23,7 +23,7 @@ TEMPLATE_DIR = os.path.join(BASE_DIR,"templates")
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'xd%k47=htv-smn*(+p2^o2qcpl8ml^!6be#bv8mkur9rolufh%'
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -103,16 +103,7 @@ ASGI_APPLICATION = 'lms.asgi.application'
 #      }
 #  }
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
-        'USER': 'lmsproject',
-        'PASSWORD': 'LmsBhu0987',
-        'HOST': 'lmsdatabase.c8hpn1snsqxi.ap-south-1.rds.amazonaws.com',
-        'PORT': '5432',
-    }
-}
+
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
