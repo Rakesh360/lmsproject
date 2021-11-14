@@ -1,8 +1,5 @@
 {%extends 'base.html'%}
-
 {%block start%}
-
-
 <div style="margin-top: 6%; display: flex;">
     <div style="margin: 0 auto; font-size: xxx-large;">
         All Students
@@ -12,39 +9,26 @@
         <a href="#" class="btn btn-primary">Add New User</a>
     </div>
 </div>
-
 <hr>
-
-
 <div class="col-12" style="margin-top: 2%;">
   
-
     <div class="card">
         <div class="card-header">
         </div>
         <div class="card-body">
-            <form class="row mb-5" >
-                <div class="container">
-                  <div class="row">
-                  <div class="col-md-3">
-                      <label>Enrolled Type</label>
-                      <select name="enroll" id="enroll" class="form-control" onchange="changeEnrollmentStatus(event)">
-                          <option value="all" {% if values_for_search.enroll == 'all'%} selected {% endif %}>All</option>
-                          <option value="enrolled" {% if values_for_search.enroll == 'enrolled'%} selected {% endif %}>Enrolled</option>
-                          <option value="un-enrolled" {% if values_for_search.enroll == 'un-enrolled'%} selected {% endif %}>Un-enrolled</option>
-                      </select>
-                  </div>
-
-                  
-                  <div class="col-md-9" id="formAttributes">
-
-
-                  </div>
+            <form class="row mb-5">
+                <div class="col-md-3">
+                    <label>Enrolled Type</label>
+                    <select name="enroll" class="form-control">
+                        <option value="all" {% if values_for_search.enroll == 'all'%} selected {% endif %}>All</option>
+                        <option value="enrolled" {% if values_for_search.enroll == 'enrolled'%} selected {% endif %}>Enrolled</option>
+                        <option value="un-enrolled" {% if values_for_search.enroll == 'un-enrolled'%} selected {% endif %}>Un-enrolled</option>
+                    </select>
                 </div>
                 <div class="col-md-3">
                     <label>Name/Phone/Course Interested</label>
                     <input type="text" name="search" value="{{values_for_search.search}}" class="form-control">
-                  </div>
+</div>
 
                   <div class="col-md-3">
                     <label>Select Package</label>
@@ -54,20 +38,17 @@
                       <option value="{{course.package_title}}" {% if course == course.package_title %} selected {% endif %}>{{course.package_title}}</option>
                       {% endfor %}
                     </select>
-                  </div>
-
-               
-               
-             
 
 
-              <div class="col-md-3 ">
-                <label>Start Date</label>
+
+
+
+<label>Start Date</label>
                 <input class="form-control" value="{{values_for_search.start_date}}" name="start_date" type="date">
               </div>
               <div class="col-md-3 mt-2">
                 <label>End Date</label>
-                <input class="form-control" value="{{values_for_search.end_date}}" name="end_date" type="date">
+                <input class="form-control" value="{{values_for_search.end_date}}" name="end_date" type="date">                
               </div>
               <div class="col-md-3 mt-2">
                 <button type="submit" class="btn btn-primary mt-4" style="margin-top: 24px !important">Search</button>
@@ -78,7 +59,8 @@
 
 
             </form>
-            <div class="table-responsive">
+
+<div class="table-responsive">
                 <table  class="table table-striped">
                     <thead class="thead-primary">
                         <tr>
@@ -89,17 +71,14 @@
                             <th>E-Mail</th>
                             <th>Interested Courses</th>
                             <th>Total Course Enrolled</th>
-
                             <th>Join Date</th>
                             
-
                             <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         
                         {% for student in student_objs %}
-
                         <tr>
                             <td>{{forloop.counter}}</td>
                             <td class="package">{{student.student_name}}</td>
@@ -108,9 +87,7 @@
                             <td>{{student.email}}</td>
                             <td>{{student.course}}</td>
                             <td>{{student.course_enrolled}}</td>
-
                             <td>{{student.date_joined}}</td>
-
                             <td>
             
                                 <a href="{% url 'enroll_student' student.uid %}"  class="btn btn-sm btn-primary editSubject">
@@ -141,7 +118,6 @@
                                                     <th scope="col">Amount</th>
                                                     <th scope="col">Coupon</th>
                                                     <th scope="col">Remove Access</th>
-
                                                   </tr>
                                                 </thead>
                                                 <tbody>
@@ -161,19 +137,12 @@
                                                         <a href="{% url 'block_access'%}?uid={{order.uid}}" class="btn btn-danger btn-sm">Remove Access</a>
                                                         {% endif %}
                                                     </td>
-
-
                                                     
-
-
-
                                                   </tr>
                                                   {% endfor %}
                                                  
                                                 </tbody>
                                               </table>
-
-
                                         </div>
                                         <div class="modal-footer">
                                           <button type="button" class="btn btn-secondary" onclick="window.location.reload()" data-bs-dismiss="modal">Close</button>
@@ -182,22 +151,17 @@
                                     </div>
                                   </div>
                                   
-
                                   {% if student.block_account %}
                                 <a href="{% url 'block_account' student.uid %}" data-toggle="tooltip" data-placement="top" title="UnBlock User" class="btn btn-sm btn-success text-white"><i class="la la-ban"></i></a>
                                   {% else %}
                                   <a href="{% url 'block_account' student.uid %}" data-toggle="tooltip" data-placement="top" title="Block User" class="btn btn-sm btn-danger"><i class="la la-ban"></i></a>
-
                                     {% endif %}
                               </td>
                         </tr>
-
                         {% endfor %}
-
                                 
                     </tbody>
                 </table>
-
                 {% if student_objs.has_other_pages %}
   <ul class="pagination">
     {% if student_objs.has_previous %}
@@ -227,6 +191,11 @@
     $(function () {
         $('[data-toggle="tooltip"]').tooltip()
     })
-</script>
 
-{%endblock%}
+    </script>
+
+{%endblock%} 
+
+
+
+
