@@ -87,7 +87,7 @@
 
                 <div class="form-group col-md-6">
                     <label for="startTime" class="mt-4"> Enter Start Time Of Live </label>
-                    <input class="form-control" required type="time" value="22:00" name="startTime" id="startTime">
+                    <input class="form-control" required type="datetime-local"  name="startTime" id="startTime">
 
                 </div>
 
@@ -205,7 +205,9 @@
         var hour = date.getHours();
         var min = date.getMinutes();
         var sec = date.getSeconds();
-        var dateString = year + "-" + month + "-" + day + "T" + hour + ":" + min + ":" + sec + "Z";
+        var dateString = year + "-" + month + "-" + day + "T" + hour + ":" + min  + ":00+05:30";
+        //:00+05:30
+        //2021-11-17T07:00:00+05:30
         return dateString;
         
     }
@@ -411,6 +413,7 @@
         };
 
         let liveData = new FormData();
+        var live_date_time = document.getElementById('startTime').value  + ":00+05:30"
         if (allTags.length === 0) {
             alert('Please select at least one package for live class');
         } else {
@@ -419,7 +422,10 @@
             liveData.append('live_name', document.getElementById('lesson_title').value);
             liveData.append('live_url', document.getElementById('video_link').value);
             liveData.append('subject', document.getElementById('chooseSubject').value);
-            liveData.append('live_date', document.getElementById('startTime').value);
+            liveData.append('live_date', live_date_time);
+            liveData.append('live_date_time', live_date_time);
+
+            
 
 
             if (document.getElementById('live_image').files.length > 0) {

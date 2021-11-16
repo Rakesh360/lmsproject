@@ -1,6 +1,7 @@
 
 from django.shortcuts import redirect, render
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from .serializers import (  LoginSerializer,
                             RegisterStudentSerializer,StudentSerializer , ForgetPasswordSerializer)
 
@@ -31,12 +32,63 @@ def login_view(request):
         messages.success(request, 'Invalid credentials')
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
-
-
-
-
     return render(request , 'accounts/login.html')
 
+
+class PhoneNumbersView(APIView):
+    # def get(self , request):
+    #     phone_number = request.GET.get('phone_number')
+    #     if phone_number:
+    #         obj , _ = PhoneNumbers.objects.get_or_create(phone_number = phone_number)
+    #         obj.otp = send_otp(phone_number)
+    #         obj.save()
+    #         return Response({
+    #                 'status' : 200 , 'message' : 'Otp sent'
+    #         })
+        
+    #     return Response({'status' : 400 , 'message' : 'phone number is required'})
+        
+    
+
+    def post(self , request):
+        try:
+            data = request.data
+            phone_number =  data.get('phone_number')
+            if phone_number is None:
+                return Response({'status' : 400 , 'message' : 'phone number is required'})
+            
+            obj , _ = PhoneNumbers.objects.get_or_create(phone_number = phone_number)
+            obj.otp = send_otp(phone_number)
+            obj.save()
+            return Response({
+                'status' : 200 , 'message' : 'Otp sent'
+            })
+        except Exception as e:
+            return Response({
+                'status' : 300,
+                'message' : str(e)
+            })
+
+
+class VerifyPhone(APIView):
+    def post(self , request):
+        try:
+            data = request.data
+            if data.get('phone_number') is None or data.get('otp') is None:
+                return Response( {'staus' :400 , 'message' : 'phone_number and otp both are requied' , 'errors' : []})
+
+            obj = PhoneNumbers.objects.get(phone_number = data.get('phone_number'))
+            if obj.otp == data.get('otp'):
+                return Response( {'staus' :200 , 'message' : 'verified' , 'errors' : []})
+
+            return Response( {'staus' :400 , 'message' : 'invalid otp' , 'errors' : []})
+
+
+        except Exception as e:
+            return Response({
+                'status' : 300,
+                'message' : str(e)
+            })
 
 
 class AccountViewSet(BaseAPIViewSet , AccountMixin):

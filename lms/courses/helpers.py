@@ -18,7 +18,11 @@ def course_to_json(course_objs):
             course_package_dict['actual_price'] = course_obj.actual_price
             course_package_dict['selling_price'] = course_obj.selling_price
             course_package_dict['sell_from'] = course_obj.created_at
-            course_package_dict['sell_till'] = course_obj.sell_till_date
+            try:
+                course_package_dict['sell_till'] =   course_obj.sell_till_date.strftime("%d/%m/%Y") 
+            except Exception as e:
+                course_package_dict['sell_till'] =   course_obj.sell_till_date 
+                print(e)
             course_package_dict['days'] = course_obj.days
             course_package_dict['package_type'] = course_obj.package_type
             course_package_dict['web_image'] = '/media/' + str(course_obj.web_image)

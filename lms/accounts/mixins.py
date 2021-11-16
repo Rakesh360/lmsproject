@@ -37,7 +37,7 @@ class AccountMixin:
             return Response({
                 'status' : 200,
                 'message' : 'new otp sent',
-                'data' : {}
+                'data' : student_obj.uid
             })
 
 
@@ -67,8 +67,8 @@ class AccountMixin:
             if student[0].is_blocked:
                 return Response( {'staus' :400 , 'message' : 'Your account is blocked contact admin' , 'errors' : []})
 
-            if not student[0].is_phone_verified:
-                return Response( {'staus' :400 , 'message' : 'Please verify your phone number' , 'errors' : []})
+            # if not student[0].is_phone_verified:
+            #     return Response( {'staus' :400 , 'message' : 'Please verify your phone number' , 'errors' : []})
 
 
             #send_otp
@@ -112,7 +112,7 @@ class AccountMixin:
                 if student_obj.otp == data.get('otp'):
                     student_obj.is_phone_verified = True
                     student_obj.save()
-                    return Response( {'staus' :200 , 'message' : 'OTP matched account activated' , 'errors' : []} )
+                    return Response( {'staus' :200 , 'message' : 'OTP matched ' , 'errors' : []} )
                 else:
                     return Response( {'staus' :400 , 'message' : 'you have entered a wrong OTP' , 'errors' : []} )
 

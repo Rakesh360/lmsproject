@@ -15,7 +15,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from .forms import PackageForm
 import json
 from django.contrib.admin.views.decorators import staff_member_required
-from django.db.models import Q
+from django.db.models import Q, manager
 
 
 def update_url(request):
@@ -495,7 +495,7 @@ class LessonsView(APIView):
                             except Exception as e:
                                 print(e)
                         registration_ids = list(registration_ids)
-                        send_notification_packages(registration_ids , f'{lesson_obj.lesson_title} has been ended.'  , f'New Lesson has been added to {course_package_obj.package_title}')
+                        send_notification_packages(registration_ids , f'{lesson_obj.lesson_title} has been added.'  , f'New Lesson has been added to {course_package_obj.package_title}')
                         
 
                 return Response({
@@ -684,8 +684,16 @@ class SaveCoursePackage(APIView):
 
         return Response(response)
 
-
+#2021-11-17T07:00
+# 2021-11-17T07:00:00+05:30
+# 2021-11-17T07:00:00+05:30
 class GoLiveView(APIView):
+    def get(self , request):
+        objs = GoLive.objects.all()
+        serializer = GoLiveSerializer(objs , many = True)
+        return Response({
+            'data' : serializer.data
+        })
     def post(self , request):
         try:
             data = request.data
@@ -695,6 +703,10 @@ class GoLiveView(APIView):
                 courses = json.loads(courses)
             
             payload.pop('courses')
+            
+            print('*****************')
+            print(payload)
+            print('*****************')
 
             serializer = GoLiveSerializer(data=payload)
             if serializer.is_valid():

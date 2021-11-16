@@ -17,7 +17,7 @@ from courses.helpers import *
 
 @staff_member_required(login_url='/accounts/login/')
 def dashboard(request):
-    send_otp('7985242482')
+    # send_otp('7985242482')
     return render(request , 'dashboard/dashboard.html')
 
 def send_noti(request):
@@ -46,7 +46,7 @@ def students(request):
         values_for_search['enroll'] = request.GET.get('enroll')
 
 
-    if request.GET.get('course'):
+    if request.GET.get('course') and request.GET.get('course') != 'All':
         student_objs = student_objs.filter(orders__course__package_title__icontains = request.GET.get('course'))
 
 
@@ -118,6 +118,10 @@ def students(request):
         df.to_csv(f'public/static/excel/{file_name}.csv' , encoding='UTF-8')
         return redirect(f'/media/excel/{file_name}.csv')
 
+
+    print('******')
+    print(vars(student_objs))
+    print('******')
 
     student_objs = set(student_objs)
     student_objs = list(student_objs)

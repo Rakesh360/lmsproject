@@ -151,7 +151,7 @@
                                     </div>
                                   </div>
                                   
-                                  {% if student.block_account %}
+                                  {% if student.is_blocked %}
                                 <a href="{% url 'block_account' student.uid %}" data-toggle="tooltip" data-placement="top" title="UnBlock User" class="btn btn-sm btn-success text-white"><i class="la la-ban"></i></a>
                                   {% else %}
                                   <a href="{% url 'block_account' student.uid %}" data-toggle="tooltip" data-placement="top" title="Block User" class="btn btn-sm btn-danger"><i class="la la-ban"></i></a>

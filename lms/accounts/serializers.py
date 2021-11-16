@@ -71,7 +71,7 @@ class RegisterStudentSerializer(serializers.Serializer):
             date_of_birth= validated_data['date_of_birth'],
             gender =validated_data['gender'],
             state = validated_data['state'],
-            otp = send_otp(validated_data['phone_number']),
+            otp = '000000000',
             district = validated_data['district'],
           
             pincode = validated_data['pincode'])
