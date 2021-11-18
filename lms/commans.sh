@@ -13,6 +13,7 @@ http://13.232.112.104/
 
 ssh -i "abhijeet.pem" ubuntu@13.232.94.2
 
+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
 
 # FOR IMPORTING DATA 
 ./manage.py loaddata FILE_NAME

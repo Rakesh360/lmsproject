@@ -163,6 +163,9 @@ class AccountViewSet(BaseAPIViewSet , AccountMixin):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid(raise_exception=True):
             data = request.data
+            print("((((((((((((")
+            print(data)
+            print("((((((((((((")
             student_obj = Student.objects.filter(email = data.get('email'))
 
             if student_obj.exists():
