@@ -1,0 +1,105 @@
+{%extends 'base.html'%}
+
+{%block start%}
+
+<div class="col s12">
+    <div class="container">
+        <div class="users-list-filter">
+            <div class="card-panel">
+                <div class="row">
+                    <form>
+                        <div class="col s12 m6 l3">
+                            <div class="input-field col s12">
+                                <select multiple name="subject">
+                                  <option value="" disabled selected>Select Course</option>
+                                  {% for subject in subjects  %}
+                                  <option value="{{subject.subject_title}}">{{subject.subject_title}}</option>
+                                {% endfor %}
+                                </select>
+                                <label>Materialize Select</label>
+                              </div>
+                        </div>
+                       
+                        <div class="col s12 m6 l3">
+                            <div class="input-field col s6">
+                                <input placeholder="By Name" id="first_name" name="name" type="text" class="validate">
+                                <label for="first_name">By Name</label>
+                              </div>
+                        </div>
+                        <div class="col s12 m6 l3 display-flex align-items-center show-btn">
+                            <button type="submit" class="btn btn-block indigo waves-effect waves-light">Show</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="section">
+
+            <div class="card">
+                <div class="card-content">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>S.no</th>
+                                <th>Name</th>
+                                <th>Phone number</th>
+                                <th>Whatsapp number</th>
+                                <th>Gender</th>
+                                <th>Course</th>
+
+
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for student_obj in student_objs %}
+                            <tr>
+                                <td>
+                                    {{forloop.counter}}
+                                </td>
+                                <td>{{student_obj.student_name}}</td>
+                                <td>{{student_obj.phone_number}}</td>
+                                <td>{{student_obj.whatsapp_number}}</td>
+                                <td>{{student_obj.gender}}</td>
+                                <td>{{student_obj.course}}</td>
+
+                            </tr>
+                            {% endfor %}
+
+                        </tbody>
+                    </table>
+                    {% if student_objs.has_other_pages %}
+                    <ul class="pagination">
+                        {% if student_objs.has_previous %}
+                        <li>
+                            <a href="?page={{ student_objs.previous_page_number }}"><i
+                                    class="material-icons">chevron_left</i></a>
+                        </li>
+                        {% else %}
+                        <li class="disabled">
+                            <a href="#"><i class="material-icons">chevron_left</i></a>
+                        </li>
+                        {% endif %}
+                        {% for i in users.paginator.page_range %}
+                        {% if users.number == i %}
+                        <li class="active"><a href="#!">1</a></li>
+                        {% else %}
+                        <li><a href="?page={{ i }}">{{ i }}</a></li>
+                        {% endif %}
+                        {% endfor %}
+                        <li class="waves-effect"><a href="#!"><i class="material-icons">chevron_right</i></a></li>
+                    </ul>
+                    {% endif %}
+
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+
+
+{%endblock%}

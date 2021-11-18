@@ -1,0 +1,201 @@
+{%extends 'base.html'%}
+{%block start%}
+<div style="margin-top: 6%; display: flex;">
+    <div style="margin: 0 auto; font-size: xxx-large;">
+        All Students
+    </div>
+    
+    <div style="margin-right: 5px; margin-top: 2px;">
+        <a href="#" class="btn btn-primary">Add New User</a>
+    </div>
+</div>
+<hr>
+<div class="col-12" style="margin-top: 2%;">
+  
+    <div class="card">
+        <div class="card-header">
+        </div>
+        <div class="card-body">
+            <form class="row mb-5">
+                <div class="col-md-3">
+                    <label>Enrolled Type</label>
+                    <select name="enroll" class="form-control">
+                        <option value="all" {% if values_for_search.enroll == 'all'%} selected {% endif %}>All</option>
+                        <option value="enrolled" {% if values_for_search.enroll == 'enrolled'%} selected {% endif %}>Enrolled</option>
+                        <option value="un-enrolled" {% if values_for_search.enroll == 'un-enrolled'%} selected {% endif %}>Un-enrolled</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label>Name/Phone/Course Interested</label>
+                    <input type="text" name="search" value="{{values_for_search.search}}" class="form-control">
+</div>
+
+                  <div class="col-md-3">
+                    <label>Select Package</label>
+                    <select name="course" class="form-control">
+                      <option >All</option>
+                      {% for course in courses %}
+                      <option value="{{course.package_title}}" {% if course == course.package_title %} selected {% endif %}>{{course.package_title}}</option>
+                      {% endfor %}
+                    </select>
+
+
+
+
+
+<label>Start Date</label>
+                <input class="form-control" value="{{values_for_search.start_date}}" name="start_date" type="date">
+              </div>
+              <div class="col-md-3 mt-2">
+                <label>End Date</label>
+                <input class="form-control" value="{{values_for_search.end_date}}" name="end_date" type="date">                
+              </div>
+              <div class="col-md-3 mt-2">
+                <button type="submit" class="btn btn-primary mt-4" style="margin-top: 24px !important">Search</button>
+            </div>
+            <div class="col-md-3 mt-2">
+              <a  href="?type=export" class="btn btn-success mt-4 text-white" style="margin-top: 24px !important">Export </a>
+          </div>
+
+
+            </form>
+
+<div class="table-responsive">
+                <table  class="table table-striped">
+                    <thead class="thead-primary">
+                        <tr>
+                            <th>S. No.</th>
+                            <th>Name</th>                            
+                            <th>Phone No.</th>
+                            <th>WhatsApp No.</th>
+                            <th>E-Mail</th>
+                            <th>Interested Courses</th>
+                            <th>Total Course Enrolled</th>
+                            <th>Join Date</th>
+                            
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                        {% for student in student_objs %}
+                        <tr>
+                            <td>{{forloop.counter}}</td>
+                            <td class="package">{{student.student_name}}</td>
+                            <td class="type">{{student.phone_number}}</td>
+                            <td>{{student.whatsapp_number}}</td>
+                            <td>{{student.email}}</td>
+                            <td>{{student.course}}</td>
+                            <td>{{student.course_enrolled}}</td>
+                            <td>{{student.date_joined}}</td>
+                            <td>
+            
+                                <a href="{% url 'enroll_student' student.uid %}"  class="btn btn-sm btn-primary editSubject">
+                                    <i class="la la-pencil"></i></a>
+                               
+                                <button data-toggle="modal" data-target="#exampleModal-{{student.uid}}"
+                                id="{{student.uid}}"
+                                class="btn btn-sm btn-primary ">
+                                View
+                            </button>
+                             
+                                  <div class="modal fade" id="exampleModal-{{student.uid}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-xl">
+                                      <div class="modal-content">
+                                        <div class="modal-header">
+                                          <h5 class="modal-title" id="exampleModalLabel">Courses Enrolled</h5>
+                                        </div>
+                                        <div class="modal-body">
+                                        
+                                            <table class="table">
+                                                <thead>
+                                                  <tr>
+                                                    <th scope="col">#</th>
+                                                    <th scope="col">Course</th>
+                                                    <th scope="col">Payment Status</th>
+                                                    <th scope="col">Order Id</th>
+                                                    <th scope="col">Date</th>
+                                                    <th scope="col">Amount</th>
+                                                    <th scope="col">Coupon</th>
+                                                    <th scope="col">Remove Access</th>
+                                                  </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for order in student.orders.all %}
+                                                  <tr>
+                                                    <th scope="row">{{forloop.counter}}</th>
+                                                    <td>{{order.course.package_title}}</td>
+                                                    <td>{{order.is_paid}}</td>
+                                                    <td>{{order.order_id}}</td>
+                                                    <td>{{order.order_creation_date_time}}</td>
+                                                    <td>{{order.amount}}</td>
+                                                    <td>{{order.coupon}}</td>
+                                                    <td>
+                                                        {% if order.block_access  %}
+                                                        <a href="{% url 'block_access'%}?uid={{order.uid}}" class="btn btn-success text-white btn-sm">Grant Access</a>
+                                                        {% else %}
+                                                        <a href="{% url 'block_access'%}?uid={{order.uid}}" class="btn btn-danger btn-sm">Remove Access</a>
+                                                        {% endif %}
+                                                    </td>
+                                                    
+                                                  </tr>
+                                                  {% endfor %}
+                                                 
+                                                </tbody>
+                                              </table>
+                                        </div>
+                                        <div class="modal-footer">
+                                          <button type="button" class="btn btn-secondary" onclick="window.location.reload()" data-bs-dismiss="modal">Close</button>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  
+                                  {% if student.is_blocked %}
+                                <a href="{% url 'block_account' student.uid %}" data-toggle="tooltip" data-placement="top" title="UnBlock User" class="btn btn-sm btn-success text-white"><i class="la la-ban"></i></a>
+                                  {% else %}
+                                  <a href="{% url 'block_account' student.uid %}" data-toggle="tooltip" data-placement="top" title="Block User" class="btn btn-sm btn-danger"><i class="la la-ban"></i></a>
+                                    {% endif %}
+                              </td>
+                        </tr>
+                        {% endfor %}
+                                
+                    </tbody>
+                </table>
+                {% if student_objs.has_other_pages %}
+  <ul class="pagination">
+    {% if student_objs.has_previous %}
+      <li><a href="?page={{ student_objs.previous_page_number }}">&laquo;</a></li>
+    {% else %}
+      <li class="disabled"><span>&laquo;</span></li>
+    {% endif %}
+    {% for i in student_objs.paginator.page_range %}
+      {% if student_objs.number == i %}
+        <li class="active page-item"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+      {% else %}
+        <li class="page-item"><a href="?page={{ i }}">{{ i }}</a></li>
+      {% endif %}
+    {% endfor %}
+    {% if student_objs.has_next %}
+      <li class="page-item"><a href="?page={{ student_objs.next_page_number }}">&raquo;</a></li>
+    {% else %}
+      <li class="disabled"><span>&raquo;</span></li>
+    {% endif %}
+  </ul>
+{% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    })
+
+    </script>
+
+{%endblock%} 
+
+
+
+

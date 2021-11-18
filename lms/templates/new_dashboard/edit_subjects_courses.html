@@ -1,0 +1,889 @@
+{%extends 'base.html'%}
+{% block start %}
+
+<style>
+    @import url('https://fonts.googleapis.com/css?family=Lato&display=swap');
+
+    :root {
+    --border-color: #e3e5e4;
+    --background-color: #c3c7ca;
+    --text-color: #34444f;
+    }
+
+    .draggable-list {
+        border: 1px solid var(--border-color);
+        color: var(--text-color);
+        padding: 0;
+        list-style-type: none;
+        margin: 1%;
+    }
+
+    .draggable-list li {
+    background-color: #fff;
+    display: flex;
+    flex: 1;
+    }
+
+    .draggable-list li:not(:last-of-type) {
+    border-bottom: 1px solid var(--border-color);
+    }
+
+    .draggable-list .number {
+    background-color: var(--background-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    height: 60px;
+    width: 60px;
+    }
+
+    .draggable-list li.over .draggable {
+    background-color: #eaeaea;
+    }
+
+    .draggable-list .p_tags {
+    margin: 0 20px 0 0;
+    }
+
+    .draggable-list li.right .p_tags {
+    color: #3ae374;
+    }
+
+    .draggable-list li.wrong .p_tags {
+    color: #ff3838;
+    }
+
+    .draggable {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px;
+    flex: 1;
+    }
+
+    .draggable2 {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px;
+    flex: 1;
+    }
+
+    .draggable3 {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px;
+    flex: 1;
+    }
+
+    .check-btn {
+    background-color: var(--background-color);
+    border: none;
+    color: var(--text-color);
+    font-size: 16px;
+    padding: 10px 20px;
+    cursor: pointer;
+    margin: 1%;
+    }
+
+    .check-btn:active {
+    transform: scale(0.98);
+    }
+
+    .check-btn:focus {
+    outline: none;
+    }
+
+    #spinner {       
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        width: 100%;
+        background: rgba(0,0,0,0.75) url(/media/app-assets/images/1487.gif) no-repeat center center;
+        z-index: 10000;
+    }
+</style>
+
+<script
+    src="https://kit.fontawesome.com/3da1a747b2.js"
+    crossorigin="anonymous"
+></script>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/js/materialize.min.js"></script>
+
+{% include "utils/alert.html" %}
+
+<script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
+
+<div id="loader">
+    
+</div>
+
+<ul class="nav nav-pills nav-fill" style="margin-top: 8%;">
+    <li class="nav-item">
+        <a class="nav-link active" aria-current="page" id="contentBtn" href="#">Package Details</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" id="treeBtn" href="#">View Tree</a>
+    </li>
+    </ul>
+
+    <hr>
+
+
+<div class="collapse show" style="margin: 2%;" id="contentDiv">
+    <div class="card">
+        <div class="card-body">
+            {% include "utils/alert.html" %}
+            <form id="addPackageForm">
+                {% csrf_token %}
+                <div class="form-row mb-4">
+                    <div class="form-group col-md-6">
+                        <label for="lesson_title">Package Name (max 100)</label>
+                        <input type="text" class="form-control" required name="lesson_title" id="lesson_title"
+                            value="{{ course_package_obj.package_title }}" min="4" max="100" placeholder="Enter lesson title">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="package_type"> Package Type</label>
+                        <select required id="subjects" name="package_type" class="form-control basic tagging ">
+                            <option value="video">Video</option>
+                            <option disabled value="test">Test</option>
+                        </select>
+                    </div>
+    
+                    <div class="form-group col-md-6">
+    
+                        <label for="actual_price">Actual Price</label>
+                        <input value="{{course_package_obj.actual_price}}" max="10000" type="number" id="actual_price" name="actual_price" class="form-control" placeholder="Enter Actual Price in Rupees"> 
+                        
+                    </div>
+    
+                    <div class="form-group col-md-6">
+                        <label for="selling_price">Selling Price</label>
+                        <input value="{{course_package_obj.selling_price}}" max="10000" id="selling_price" type="number" name="selling_price" class="form-control" placeholder="Enter Selling Price in Rupees"> 
+                    </div>
+    
+    
+                </div>
+                <div class="form-row mb-4" id="video_upload">
+    
+                    <div class="form-group col-md-6">
+                        <div id="expiryTypePicker">
+                            <label for="expiryType"> Expiry Type </label>
+                            <select required name="expiryType" id="expiryType" class="form-control" onchange="changeExpiryType()">
+                                <option {% if course_package_obj.subscription_type == 'Subscription' %} selected {% endif %} value="Subscription">Subscription</option>
+                                <option {% if course_package_obj.subscription_type == 'Fixed Date' %} selected {% endif %} value="Fixed Date">Fixed Date</option>
+                            </select>
+                        </div>
+                    </div>
+    
+                    
+                    <div class="form-group col-md-6"  id="belowTypePicker">
+                        
+                        
+                    </div>
+                </div>
+
+
+                <div class="form-row mb-4">
+                        <div class="form-group col-md-6">
+                            <div id="expiryTypePicker">
+                                <label for="is_active"> Enable Purchase </label>
+                                <select required name="is_active" id="is_active" class="form-control">
+                                    <option {% if course_package_obj.is_active == False %} selected {% endif %} value=false>No</option>
+                                    <option {% if course_package_obj.is_active == True %} selected {% endif %} value=true>Yes</option>
+                                </select>
+                            </div>
+
+                            {% if course_package_obj.is_active %} 
+                                <a href="{% url 'package_end_purchase' course_package_obj.uid%}"  class="btn mt-1 btn-sm btn-primary ">End Purchase</a>
+                            {% endif %}
+        
+                        </div>
+                </div>
+
+
+    
+                
+    
+                <div class="form-row mb-4">
+                    <div class="form-group col-md-12">
+                        <label for="description">Description </label>
+                        <textarea id="summernote" name="description" class="form-control" cols="30" rows="5">{{course_package_obj.package_description}}</textarea>
+                    </div>
+                </div>
+    
+                <div class="form-row mb-4" id="document_upload">
+    
+                    <div class="form-group mb-6">
+                        <div class="custom-file">
+                            <label for="image_for_web">Choose file For Web</label>
+                            <input type="file" class="form-control" onchange="renderDocumentName1(event)" onchange="webImgReUpload()" name="image_for_web" id="image_for_web">
+                            <div id="docNameDiv1"> <a class="ml-2 mt-4" target="_blank" href="/media/{{course_package_obj.web_image}}" href="/{{lesson.document.uid}}">View Web Image</a> </div>
+    
+                        </div>
+                    </div>
+                    <br>
+                    
+                    <div class="form-group mb-6 ml-4">
+                        <div class="custom-file">
+                            <label for="image_for_app">Choose file For App</label>
+                            <input type="file" class="form-control" onchange="renderDocumentName2(event)" onchange="appImgReUpload()" name="image_for_app" id="image_for_app">
+                            <div id="docNameDiv2"> <a class="ml-2 mt-4" target="_blank"  href="/media/{{course_package_obj.mobile_image}}" href="/{{lesson.document.uid}}">View App Image</a> </div>
+                        </div>
+                    </div>
+                    
+                </div>
+    
+                <button type="submit" id="handleSubmit" class="btn btn-primary mt-3">Update Package</button>
+            </form>
+    
+        </div>
+    </div>
+
+</div>
+
+<div class="collapse show" id="treeDiv" style="display: none;">
+    <div class="container-fluid">
+        <div class="row">
+
+            <div class="col-md-6">
+                <h3>You Are Re-odering All Subjects </h3>
+    
+
+                <div class="collapse show m-2" id="reorderChapterDiv">
+                    <label for="selectedSubject">Select Subject whose chapters you want to reorder </label>
+                    <select name="selectedSubject" id="selectedSubject" class="form-control">
+                        <option value="0" selected disabled>Choose Subject</option>
+                        
+                    </select>
+
+                    <div id="selectChapterDiv" style="display: none;">
+                        <label for="selectedChapter">Select chapter whose lessons you want to reorder </label>
+                        <select name="selectedChapter" id="selectedChapter" class="form-control">
+                            <option value="0" selected disabled>Choose Chapter</option>
+                            
+                        </select>
+                    </div>
+
+                    <button class="check-btn" id="chooseChapterBtn">
+                            Choose Chapter 
+                    </button>
+
+                </div>
+                
+
+            </div>
+
+            
+            <div class="col-md-6">
+                <h3 id="titleData">Reorder Subjects</h3>
+                <ul class="draggable-list" id="draggable-list" style="height: 610px; overflow-y: scroll;"></ul>
+                <button class="check-btn" id="saveBtn" onclick="updateOrder(editingMode)">
+                    Save 
+                    <i class="fas fa-save"></i>
+                </button>
+            </div>
+            
+        </div>
+        
+    </div>
+</div>
+
+
+
+<script>  
+    var loader = document.getElementById("loader");
+    let editor = CKEDITOR.replace( 'description' );
+    const handleSubmit = document.getElementById('handleSubmit');
+    
+    var description;
+    editor.on( 'instanceReady', function( evt ) {
+    // getData() returns CKEditor's HTML content.
+    description =  evt.editor.getData();            
+});
+
+    function getCookie(name) {
+        if (!document.cookie) {
+            return null;
+        }
+        const xsrfCookies = document.cookie.split(';')
+        .map(c => c.trim())
+        .filter(c => c.startsWith(name + '='));
+        if (xsrfCookies.length === 0) {
+            return null;
+        }
+            return decodeURIComponent(xsrfCookies[0].split('=')[1]);
+    }
+    
+    const csrfToken = getCookie('csrftoken');
+
+    let webImgReUploaded = false;
+    let appImgReUploaded = false;
+
+    function webImgReUpload() {
+        webImgReUploaded = true;
+    }
+
+    function appImgReUpload() {
+        appImgReUploaded = true;
+    }
+
+    function renderDocumentName1(event) {
+        let doc = event.target.files[0];
+        let docExtension = doc.name.split('.').pop();
+        let docSize = doc.size;
+
+        let p = document.getElementById('docNameDiv1');
+        if ((docExtension === 'jpg' || docExtension === 'jpeg' || docExtension === 'png') && docSize <= 2000000) {
+            p.innerHTML = '';
+            
+            p.innerHTML = event.target.files[0].name + `<i class="fa fa-trash ml-4"  onclick="deleteDocument1(event)" aria-hidden="true"></i>`;
+            event.target.parentElement.appendChild(p);
+            webImgReUploaded = true;
+
+        } else {
+            if (docExtension !== 'jpg' && docExtension !== 'jpeg' && docExtension !== 'png') {
+                alert('Unsupported file type.');
+            } else {
+                alert('Unsuported file size.');
+            }
+            document.getElementById('image_for_web').value = '';
+            p.innerHTML = 'Please Upload jpg or png file of size less than 25mb!';
+            event.target.parentElement.appendChild(p);
+
+        }
+    }
+
+    function deleteDocument1(event) {
+        console.log('clicked');
+        event.target.parentElement.innerHTML = '';
+        document.getElementById('image_for_web').value = '';
+        webImgReUploaded = false;
+
+    }
+
+    function renderDocumentName2(event) {
+        let doc = event.target.files[0];
+        let docExtension = doc.name.split('.').pop();
+        let docSize = doc.size;
+
+        let p = document.getElementById('docNameDiv2');
+        if ((docExtension === 'jpg' || docExtension === 'jpeg' || docExtension === 'png') && docSize <= 2000000) {
+            p.innerHTML = '';
+            
+            p.innerHTML = event.target.files[0].name + `<i class="fa fa-trash ml-4"  onclick="deleteDocument2(event)" aria-hidden="true"></i>`;
+            event.target.parentElement.appendChild(p);
+            appImgReUploaded = true;
+
+        } else {
+            if (docExtension !== 'jpg' && docExtension !== 'jpeg' && docExtension !== 'png') {
+                alert('Unsupported file type.');
+            } else {
+                alert('Unsuported file size.');
+            }
+            document.getElementById('image_for_app').value = '';
+            p.innerHTML = 'Please Upload jpg or png file of size less than 25mb!';
+            event.target.parentElement.appendChild(p);
+
+        }
+        
+    }
+
+    function deleteDocument2(event) {
+        console.log('clicked');
+        event.target.parentElement.innerHTML = '';
+        document.getElementById('image_for_app').value = '';
+        appImgReUploaded = false;
+
+    }
+
+    
+    const addPackageForm = document.getElementById('addPackageForm');
+    addPackageForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        let formData = new FormData();
+        formData.append('course_package_uid', '{{course_package_obj.uid}}');
+        formData.append('package_title', document.getElementById('lesson_title').value);
+        formData.append('package_description', description);
+        formData.append('actual_price', document.getElementById('actual_price').value);
+        formData.append('selling_price', document.getElementById('selling_price').value);
+        formData.append('package_type', document.getElementById('subjects').value);
+        formData.append('subscription_type', document.getElementById('expiryType').value);
+        formData.append('is_active', document.getElementById('is_active').value);
+
+        
+        
+        if (document.getElementById('expiryType').value === 'Fixed Date') {
+            formData.append('sell_till_date', document.getElementById('expiryDate').value);
+            
+        } else if (document.getElementById('expiryType').value === 'Subscription') {
+            formData.append('days', document.getElementById('subscriptionDays').value);
+            
+        }
+        
+        if (webImgReUploaded === true) {
+            formData.append('web_image', document.getElementById('image_for_web').files[0]);
+        };
+        
+        if (appImgReUploaded === true) {
+            formData.append('mobile_image', document.getElementById('image_for_app').files[0]);
+        };
+        
+        
+        formData.forEach((value, key) => {
+            console.log(key, value);
+        });
+
+        if (document.getElementById('subjects').value === 'video') {
+            handleSubmit.innerHTML = '<i class="fa fa-spinner fa-spin"></i>';
+            loader.innerHTML = '<div id="spinner"></div>';
+            let res = await axios.patch('/api/courses/course-packages/', formData, {
+                headers: {
+                    'X-CSRFToken' : csrfToken,
+                }
+            }); 
+            console.log(res.data);
+            if (res.data.status === true) {
+                alert('Lesson updated successfully');
+                window.location.href = '/courses/packages/';
+
+            } else {    
+                alert('Something went wrong');
+            };
+            handleSubmit.innerHTML = 'Update Package';
+            loader.innerHTML = '';
+            
+            
+        } else {
+            // fetch for test API
+        }
+        
+        
+        
+    });
+    
+    
+    
+    
+
+
+    // script for nav btn start
+    let flag = true;
+    const contentBtn = document.getElementById('contentBtn');
+    const treeBtn = document.getElementById('treeBtn');
+    const contentDiv = document.getElementById('contentDiv');
+    const treeDiv = document.getElementById('treeDiv');
+    const tagSection = document.getElementById('tagSection');
+    const tagsDropdown = document.getElementById('tagsDropdown');
+    const reorderChapterBtn = document.getElementById('reorderChapterBtn');
+    const reorderLessonsBtn = document.getElementById('reorderLessonsBtn');
+    const reorderChapterDiv = document.getElementById('reorderChapterDiv');
+    const reorderLessonsDiv = document.getElementById('reorderLessonsDiv');
+    const titleData = document.getElementById('titleData');
+    const draggable_list = document.getElementById('draggable-list');
+    let chaptergroupuid;
+    let lessongroupuid;
+
+    const selectedSubject = document.getElementById('selectedSubject');
+    const selectedChapter = document.getElementById('selectedChapter');
+    const selectChapterDiv = document.getElementById('selectChapterDiv');
+    const chooseChapterBtn = document.getElementById('chooseChapterBtn');
+    const reorderBtn = document.getElementById('reorderBtn');
+    var allSubjects; // all subjects array
+    let subjectUid;
+    let chapterUid;
+    let listItems = [];
+    let subjectsArray = [];
+    let chaptersArray = [];
+    // let lessonsArray = [];
+    let editingMode = 'subject';
+
+    contentBtn.addEventListener('click', function () {
+        contentBtn.classList.add('active');
+        treeBtn.classList.remove('active');
+        contentDiv.style.display = 'block';
+        treeDiv.style.display = 'none';
+    });
+
+    treeBtn.addEventListener('click', function () {
+        contentBtn.classList.remove('active');
+        treeBtn.classList.add('active');
+        contentDiv.style.display = 'none';
+        treeDiv.style.display = 'block';
+        if (flag === true) {
+            draggableTree();
+            flag = false;    
+        }
+        
+    });
+
+    const belowTypePicker = document.getElementById('belowTypePicker');
+    
+    let expiryDateDiv = document.createElement('div');
+    expiryDateDiv.innerHTML = `
+    <label for="expiryDate">Choose Expiry Date</label>
+    <input type="date" required name="expiryDate" class="form-control" id="expiryDate">
+    `;
+
+    let subscriptionDiv = document.createElement('div');
+    subscriptionDiv.innerHTML = `
+    <label for="subscriptionDays">Subscription Period</label>
+    <input type="number" value={{course_package_obj.days}} required id="subscriptionDays" class="form-control" placeholder="Enter Subscription Period (in Days)">
+    `;
+
+    function changeExpiryType() {
+        if (document.getElementById('expiryType').value === 'Fixed Date') {
+            belowTypePicker.appendChild(expiryDateDiv);
+            try {
+                subscriptionDiv.remove();
+            } catch (error) {
+                console.log(error);
+            }
+        } else if (document.getElementById('expiryType').value === 'Subscription') {
+            belowTypePicker.appendChild(subscriptionDiv);
+            try {
+                expiryDateDiv.remove();
+            } catch (error) {
+                console.log(error);
+            }
+        } else {
+            try {
+                subscriptionDiv.remove();
+                expiryDateDiv.remove();
+            } catch (error) {
+                console.log(error);
+            }
+        }
+    };
+    changeExpiryType();
+
+    let one = document.querySelector('#container1')
+    let two = document.querySelector('#container2')
+    var course_package_uid = '{{course_package_uid}}'
+    var CSRF_TOKEN = '{{csrf_token}}'
+    async function updateOrder(editingMode) {
+        if (editingMode === 'subject') {
+            let allData = document.getElementsByClassName('p_tags');
+            let subjects=[];
+            for (let i = 0; i < allData.length; i++) {
+                var element = allData[i];
+                subjects.push({
+                    'subject_uid': element.id,
+                    's_no': i+1
+                });
+            };
+            console.log('subjects',subjects);
+            let payloadData = {
+                'coure_package_uid': course_package_uid,
+                'sequence_for': 'subject',
+                'subjects': subjects
+            }
+
+            console.log('payloadData',payloadData);
+            let response = await fetch('/api/courses/package-sequence/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                body: JSON.stringify(payloadData)
+            })
+
+            let json = await response.json();
+            alert(json.message);
+
+
+        } else if (editingMode === 'chapter') {
+            let allData = document.getElementsByClassName('p_tags');
+            let chapters=[];
+            for (let i = 0; i < allData.length; i++) {
+                var element = allData[i];
+                chapters.push({
+                    'uid': chaptergroupuid,
+                    'subject_uid': element.id,
+                    's_no': i+1
+                });
+            };
+            console.log('chapters', chapters);
+            let payloadData = {
+                'coure_package_uid': course_package_uid,
+                'sequence_for': 'chapter',
+                'chapters': chapters
+            }
+
+            let response = await fetch('/api/courses/package-sequence/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                body: JSON.stringify(payloadData)
+            })
+
+            let json = await response.json();
+            alert(json.message);
+
+        } else if (editingMode === 'lesson') {
+            let allData = document.getElementsByClassName('p_tags');
+            let lessons=[];
+            for (let i = 0; i < allData.length; i++) {
+                var element = allData[i];
+                lessons.push({
+                    'uid': lessongroupuid,
+                    'lesson_uid': element.id,
+                    's_no': i+1
+                });
+            };
+            console.log('lessons', lessons);
+            let payloadData = {
+                'coure_package_uid': course_package_uid,
+                'sequence_for': 'lesson',
+                'lessons': lessons
+            }
+
+            let response = await fetch('/api/courses/package-sequence/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                body: JSON.stringify(payloadData)
+            })
+
+            let json = await response.json();
+            alert(json.message);
+        }
+
+        saveBtn.style.backgroundColor = '#c3c7ca';
+
+    }
+
+    function reorderChapters(event) {
+        let selecTedSubjectUid = event.target.value;
+        titleData.innerHTML = '<h3>Reorder Chapters</h3>';
+        let chaptersArray = [];
+    };
+
+
+
+    // script for draggable tree starts
+    function draggableTree() {  
+        let saveBtn = document.getElementById('saveBtn');
+
+        let uid = '{{course_package_obj.uid}}'
+        
+        fetch('/api/courses/course-package-info/?uid='+ uid, {
+        method: 'GET',
+        })
+        .then(response => response.json())
+        .then(data => {
+            
+            allSubjects = data.data;
+            subjectsArray = [];
+            allSubjects.subjects.forEach(e => {
+                console.log(e);
+                subjectsArray.push([e.subject_title, e.subject_uid]);
+                // adding all subjects to options in dropdown
+                let opt = document.createElement('option');
+                opt.innerHTML = e.subject_title;
+                opt.value = e.subject_uid;
+                selectedSubject.appendChild(opt);
+
+            })
+            createList(subjectsArray);
+
+            function reset () {
+                
+                selectChapterDiv.style.display = 'none';
+                chooseChapterBtn.style.display = 'block';
+            };
+
+            selectedSubject.addEventListener('change', function () {
+                reset();
+                subjectUid = selectedSubject.value;
+                let allChapters;
+                chaptersArray=[];
+                titleData.innerHTML = '<h3>Reorder Chapters</h3>';
+                allSubjects.subjects.forEach((e, i) => {
+                    if (e.subject_uid === subjectUid) {
+                        chaptergroupuid = e.uid;
+                        allChapters = e.chapters;
+                        selectedChapter.innerHTML = '<option value="0" selected disabled>Choose Chapter</option>';
+                        allChapters.forEach(e => {
+                            chaptersArray.push([e.chapter_title, e.chapter_uid]);
+                            // adding all chapters to options in dropdown
+                            let opt = document.createElement('option');
+                            opt.innerHTML = e.chapter_title;
+                            opt.value = e.chapter_uid;
+                            selectedChapter.appendChild(opt);
+
+                        });
+                        editingMode = 'chapter';
+                        createList(chaptersArray);
+                    }
+                })
+
+           
+            }) ///
+            let lessonsArray = [];
+            let temp;
+
+            selectedChapter.addEventListener('change', function () {
+                titleData.innerHTML = '<h3>Reorder Lessons</h3>';
+                chapterUid = selectedChapter.value;
+                // updating lessons array
+                allSubjects.subjects.forEach(e => {
+                    lessonsArray = [];
+                    if (e.subject_uid === subjectUid) {
+                        e.chapters.forEach(e => {
+                            if (e.chapter_uid === chapterUid) {
+                                lessongroupuid = e.uid;
+                                e.lessons.forEach(e => {
+                                    lessonsArray.push([e.lesson_title, e.lesson_uid]);
+                                });
+                                console.log('p', lessonsArray);
+                                temp = lessonsArray;
+                            }
+                        });
+                        editingMode = 'lesson';
+                        createList(lessonsArray);
+                    }
+                })
+            });
+
+            chooseChapterBtn.addEventListener('click', function () {
+                selectChapterDiv.style.display = 'block';
+                chooseChapterBtn.style.display = 'none';
+            });
+
+        });      
+
+
+        let dragStartIndex;       
+
+        // Insert list items into DOM
+
+        function createList(array) {
+            draggable_list.innerHTML = '';
+            listItems = [];
+            array.forEach((person, index) => {
+                const listItem = document.createElement('li');
+                listItem.className = 'subject-li';
+
+                listItem.onclick = (event) => {
+                    console.log('wwooeee');
+                    
+                }
+
+                listItem.setAttribute('data-index', index);
+
+                listItem.innerHTML = `
+                    <span class="number">${index + 1}</span>
+                    <div class="draggable" draggable="true">
+                    <p id="${person[1]}" class="p_tags">${person[0]}</p>
+                    <i class="fas fa-arrow-right"></i>
+                    </div>
+                `;
+
+                listItems.push(listItem);
+
+                draggable_list.appendChild(listItem);
+                });
+
+            addEventListeners();
+        }
+
+
+        function dragStart() {
+            // console.log('Event: ', 'dragstart', );
+            dragStartIndex = +this.closest('li').getAttribute('data-index');
+        }
+
+        function dragEnter() {
+            // console.log('Event: ', 'dragenter', this.closest('li'));
+            this.classList.add('over');
+        }
+
+        function dragLeave() {
+            // console.log('Event: ', 'dragleave');
+            this.classList.remove('over');
+        }
+
+        function dragOver(e) {
+            // console.log('Event: ', 'dragover');
+            e.preventDefault();
+        }
+
+        function dragDrop() {
+            const dragEndIndex = +this.getAttribute('data-index');
+            swapItems(dragStartIndex, dragEndIndex);
+            // console.log('dragDrop', dragStartIndex, dragEndIndex);
+            saveBtn.style.backgroundColor = '#9fff83';
+            subjectsChanged = true;
+
+            this.classList.remove('over');
+        }
+
+        // Swap list items that are drag and drop
+        function swapItems(fromIndex, toIndex) {
+            console.log(listItems);
+            const itemOne = listItems[fromIndex].querySelector('.draggable');
+            const itemTwo = listItems[toIndex].querySelector('.draggable');
+            // console.log(itemOne, itemTwo);
+            listItems[fromIndex].appendChild(itemTwo);
+            listItems[toIndex].appendChild(itemOne);
+        }
+
+        function addEventListeners() {
+            const draggables = document.querySelectorAll('.draggable');
+            const dragListItems = document.querySelectorAll('#draggable-list li');
+
+            draggables.forEach(draggable => {
+                draggable.addEventListener('dragstart', dragStart);
+            });
+
+            dragListItems.forEach(item => {
+                item.addEventListener('dragover', dragOver);
+                item.addEventListener('drop', dragDrop);
+                item.addEventListener('dragenter', dragEnter);
+                item.addEventListener('dragleave', dragLeave);
+            });
+        }
+
+    }
+    // scripts for draggable tree ends
+
+    // code for parsing date from Sept. 9, 2021 to 09-09-2021
+    function parseDate(date) {
+        let dt = new Date(date);
+        let month = dt.getMonth() + 1;
+        if (month < 10) {
+            month = '0' + String(month);
+        } 
+        let day = dt.getDate();
+
+        if (day < 10) {
+            day = '0' + String(day);
+        }
+        let year = dt.getFullYear();
+        return `${year}-${month}-${day}`;
+    };
+    document.getElementById('expiryDate').value = parseDate('{{course_package_obj.sell_till_date}}');
+
+
+</script>
+
+
+
+
+{% endblock %}

@@ -11,7 +11,9 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
+import mimetypes
 
+mimetypes.add_type("text/javascript", ".js", True)
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TEMPLATE_DIR = os.path.join(BASE_DIR,"templates")
@@ -32,6 +34,7 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
+    'channels',
     'jet',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -46,9 +49,13 @@ INSTALLED_APPS = [
     'froala_editor',
     'orders',
     'base_rest',
-    'dashboard'
+    'dashboard',
+    'corsheaders',
     
 ]
+
+CORS_ALLOW_ALL_ORIGINS = True # If this is used then `CORS_ALLOWED_ORIGINS` will not have any effect
+CORS_ALLOW_CREDENTIALS = True
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -58,6 +65,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    #'django.middleware.common.CommonMiddleware',
 ]
 
 ROOT_URLCONF = 'lms.urls'
@@ -80,16 +89,19 @@ TEMPLATES = [
 
 #WSGI_APPLICATION = 'lms.wsgi.application'
 
+WSGI_APPLICATION = 'lms.wsgi.application'
+ASGI_APPLICATION = 'lms.asgi.application'
+
 
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
 # DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#     }
-# }
+#      'default': {
+#          'ENGINE': 'django.db.backends.sqlite3',
+#          'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#      }
+#  }
 
 DATABASES = {
     'default': {
@@ -101,8 +113,6 @@ DATABASES = {
         'PORT': '5432',
     }
 }
-
-
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
@@ -127,13 +137,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
-
-TIME_ZONE = 'UTC'
-
+TIME_ZONE =  'Asia/Kolkata'
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
 
 
@@ -144,8 +150,13 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
-    ]
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+   'rest_framework.permissions.AllowAny',
+]
 }
+
+
 
 STATIC_URL = '/static/'
 
@@ -161,3 +172,22 @@ STATICFILES_DIR = {
 
 MEDIA_ROOT =  os.path.join(BASE_DIR, 'public/static') 
 MEDIA_URL = '/media/'
+
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("127.0.0.1", 6379)],
+        },
+    },
+}
+
+
+# KEY_ID = 'rzp_test_U8kwhxFBa7D35a'
+# KEY_SECRET = 'JvlioWLJPypZWMZF0yo019ud'
+
+KEY_ID = 'rzp_test_h1YvLi0DbYvSdF'
+KEY_SECRET = 'FxMBn2M74LWHzyS83X4eH0x4'

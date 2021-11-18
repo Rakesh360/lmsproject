@@ -1,0 +1,282 @@
+{%extends 'base.html'%}
+
+{%block start%}
+
+<script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
+
+<div style="margin-top: 6%; ">
+    <div style="margin-top: 6%; display: flex;">
+        <div style="margin: 0 auto; font-size: xxx-large;">
+            Send Notification
+        </div>
+    </div>
+
+</div>
+
+<hr>
+
+<div class="card">
+    <div class="card-body">
+        {% include "utils/alert.html" %}
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-row mb-4">
+                <div class="form-group col-md-12">
+                    <label for="title">Title</label>
+                    <input type="text" class="form-control" required name="title" minlength="4" maxlength="50" id="title"
+                        placeholder="Enter Title of Notification">
+                </div>
+
+
+
+                <div class="form-group col-md-12">
+                    <label for="description">Description </label>
+                    <textarea required name="description" minlength="4" maxlength="1000" class="form-control" cols="30" rows="5" placeholder="Enter Description of Notification"></textarea>
+                </div>
+
+
+                <div class="form-group col-md-12">
+                    <label for="image">Image </label>
+                    <input type="file" onchange="validateFileUpload(event)" id="image" name="image" class="form-control">
+                </div>
+        
+
+                <div class="form-group col-md-12">
+                                   
+                    
+                 
+               
+                <label>Ctrl + Click to Select Package</label>
+                <select class="form-control" multiple name="packages">
+                    {% for course_package in  course_packages %}
+                    <option value="{{course_package.uid}}">{{course_package.package_title}}</option>
+                    {% endfor  %}
+                </select> </div>
+               
+
+
+
+            
+
+            <button id="submitFormBtn" type="submit" class="btn btn-primary mt-3">Send Notification</button>
+            <!-- <button id="testBtn" class="btn btn-primary mt-3">Test Code</button> -->
+        </form>
+
+    </div>
+</div>
+
+
+<script>
+
+
+    // script for package include dropdown starts
+
+    var selected = document.querySelector(".selected");
+    var selectBox = document.querySelector(".select-box");
+    const optionsContainer = document.querySelector(".options-container");
+    const searchBox = document.querySelector(".search-box input");
+
+    const optionsList = document.querySelectorAll(".option");
+
+    selected.addEventListener("click", () => {
+    optionsContainer.classList.toggle("active");
+
+    searchBox.value = "";
+    filterList("");
+
+    if (optionsContainer.classList.contains("active")) {
+        searchBox.focus();
+    }
+    });
+    document.addEventListener('click', function(event) {
+        var isClickInsideElement = selectBox.contains(event.target);
+        if (!isClickInsideElement) {
+            //Do something click is outside specified element
+            optionsContainer.classList.remove("active");
+        }
+    });
+
+    optionsList.forEach(o => {
+    o.addEventListener("click", (e) => {
+        // selected.innerHTML = o.querySelector("label").innerHTML;
+        // optionsContainer.classList.remove("active");
+        let checkbox = e.target.firstElementChild;
+        if (checkbox === null) {
+        return;
+        }
+
+        if (checkbox.checked === false) {
+        checkbox.checked = true;
+        } else {
+        checkbox.checked = false;
+        };
+
+        console.log(selectedItems());
+
+    });
+    });
+
+    searchBox.addEventListener("keyup", function(e) {
+    filterList(e.target.value);
+    });
+
+    const filterList = searchTerm => {
+    searchTerm = searchTerm.toLowerCase();
+    optionsList.forEach(option => {
+        let label = option.firstElementChild.nextElementSibling.innerText.toLowerCase();
+        if (label.indexOf(searchTerm) != -1) {
+        option.style.display = "block";
+        } else {
+        option.style.display = "none";
+        }
+    });
+    };
+
+    function selectedItems() {
+    var selectedArray = [];
+    var selectedCheckboxes = document.querySelectorAll(".option input[type='checkbox']"); 
+    var correspondingLabels = document.querySelectorAll(".option label");
+    for (var i = 0; i < selectedCheckboxes.length; i++) {
+        if (selectedCheckboxes[i].checked) {
+        selectedArray.push([selectedCheckboxes[i].id, correspondingLabels[i].innerText]);
+        }
+    };
+    return selectedArray;
+    };
+
+    function includeTag(event) {
+        const packageUid = event.target.firstElementChild.id;
+        const packageName = event.target.querySelector("label").innerText;
+
+        if (checkTag(packageName) === true ) {
+            console.log('Tag already exists...');
+            deleteTag(packageUid);
+        } else {
+            let tagElement = document.createElement('tr');
+            // tagElement.className = "badge badge-dark p-1 m-1 tag";
+            let td1 = document.createElement('td');
+            td1.className = "tag";
+            td1.innerHTML = packageName;
+            td1.id = packageUid;
+            tagElement.appendChild(td1);
+            tags.appendChild(tagElement);
+        }
+    
+
+    };
+
+    function deleteTag(packageUid) {
+        let allSelectedPackages = document.querySelectorAll(".tag");
+        for (var i = 0; i < allSelectedPackages.length; i++) {
+            if (allSelectedPackages[i].id === packageUid) {
+                allSelectedPackages[i].parentElement.remove();
+            }
+        }
+    };
+    
+    function checkTag(tagName) {
+        let allTags = document.getElementsByClassName('tag');
+        let flag = false;
+        for (let i = 0; i < allTags.length; i++) {
+            let singleTag = allTags[i];
+            if (singleTag.innerHTML === tagName) {
+                flag = true;
+                break;
+            }
+            
+        }
+
+        return flag;
+    };
+
+    function clickTag(event) {
+        let tagName = event.target.innerHTML;
+        let tagId = event.target.id;
+        console.log(tagName, tagId);
+    }
+
+    function handleChangePackageDateTime(event) {
+        console.log(event.target.value);
+    }
+
+    // script for package include dropdown ends
+
+
+
+    function changeApplyPackage() {
+        var apply_coupon_type_value = apply_coupon_type.value;
+        if (apply_coupon_type_value == 'selected-packages') {
+            is_all_Package = false;
+            packageDiv.style.display = 'block';
+        } else {
+            packageDiv.style.display = 'none';
+            is_all_Package = true;
+        }
+
+    };
+
+
+    function includeTag(event) {
+        const packageUid = event.target.firstElementChild.id;
+        const packageName = event.target.querySelector("label").innerText;
+
+        if (checkTag(packageName) === true ) {
+            console.log('Tag already exists...');
+            deleteTag(packageUid);
+        } else {
+            let tagElement = document.createElement('tr');
+            // tagElement.className = "badge badge-dark p-1 m-1 tag";
+            let td1 = document.createElement('td');
+            td1.className = "tag";
+            td1.innerHTML = packageName;
+            td1.id = packageUid;
+            tagElement.appendChild(td1);
+            tags.appendChild(tagElement);
+        }
+    
+
+    };
+
+    function deleteTag(packageUid) {
+        let allSelectedPackages = document.querySelectorAll(".tag");
+        for (var i = 0; i < allSelectedPackages.length; i++) {
+            if (allSelectedPackages[i].id === packageUid) {
+                allSelectedPackages[i].parentElement.remove();
+            }
+        }
+    };
+
+    function checkTag(tagName) {
+        let allTags = document.getElementsByClassName('tag');
+        let flag = false;
+        for (let i = 0; i < allTags.length; i++) {
+            let singleTag = allTags[i];
+            if (singleTag.innerHTML === tagName) {
+                flag = true;
+                break;
+            }
+            
+        }
+
+        return flag;
+    }
+
+    function validateFileUpload(e) {
+        let doc = event.target.files[0];
+        let docExtension = doc.name.split('.').pop();
+        let docSize = doc.size;
+
+        if ((docExtension === 'jpg' || docExtension === 'jpeg' || docExtension === 'png') && docSize <= 2000000) {
+            console.log('file type good');
+        } else {
+            if (docExtension !== 'jpg' && docExtension !== 'jpeg' && docExtension !== 'png') {
+                alert('Unsupported file type. Please Upload jpg or png.');
+            } else {
+                alert('Unsuported file size. PLease upload image less than 2mb.');
+            };
+            event.target.value = '';
+        }
+      }
+</script>
+
+{%endblock %}

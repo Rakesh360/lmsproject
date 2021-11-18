@@ -1,0 +1,330 @@
+{%extends 'base.html'%}
+{% block start %}
+
+
+<style type="text/css">
+    .bg-1 {
+        background: #ECECF8;
+    }
+ 
+</style>
+
+<div id="loader">
+    
+</div>
+
+<div style="margin-top: 6%; display: flex;">
+    <div style="margin: 0 auto; font-size: xxx-large;">
+        Create New Package
+    </div>
+</div>
+
+
+
+<div class="card">
+    <div class="card-body">
+        {% include "utils/alert.html" %}
+        <form id="addPackageForm">
+            {% csrf_token %}
+            <div class="form-row mb-4">
+                <div class="form-group col-md-6">
+                    <label for="lesson_title">Package Name (max 100)</label>
+                    <input type="text" class="form-control" min="4" max="100" required name="lesson_title" id="lesson_title" 
+                        placeholder="Enter Package Name">
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="package_type"> Package Type</label>
+                    <select required id="subjects" name="package_type" class="form-control basic tagging ">
+                        <option value="video">Video</option>
+                        <option disabled value="test">Test</option>
+                    </select>
+                </div>
+            </div>
+
+
+            <div class="form-row mb-4">
+
+                <div class="form-group col-md-6">
+
+                    <label for="actual_price">Actual Price</label>
+                    <input required type="number" id="actual_price" max="10000" name="actual_price" class="form-control" placeholder="Enter Actual Price in Rupees"> 
+                    
+                </div>
+
+                <div class="form-group col-md-6">
+                    <label for="selling_price">Selling Price</label>
+                    <input required id="selling_price" type="number" max="10000" name="selling_price" class="form-control" placeholder="Enter Selling Price in Rupees"> 
+                </div>
+
+
+            </div>
+            <div class="form-row mb-4" id="video_upload">
+
+                <div class="form-group col-md-6" id="belowTypePicker">
+                    <div id="expiryTypePicker">
+                        <label for="subscriptionType"> Expiry Type </label>
+                        <select required name="subscriptionType" id="subscriptionType" class="form-control" onchange="changeExpiryType(event)">
+                            <option disabled selected value="">Choose Expiry Type</option>
+                            <option value="Fixed Date">Fixed Date</option>
+                            <option value="Subscription">Subscription</option>
+                        </select>
+                    </div>
+
+
+                  
+                </div>
+
+                <div class="form-group col-md-6">
+                    <div id="expiryTypePicker">
+                        <label for="is_active"> Enable Purchase </label>
+                        <select required name="is_active" id="is_active" class="form-control">
+                            <option value=false>No</option>
+                            <option value=true selected>Yes</option>
+                        </select>
+                    </div>
+
+                </div>
+
+            </div>
+
+           
+
+            <div class="form-row mb-4">
+                <div class="form-group col-md-12">
+                    <label for="description">Description </label>
+                    <textarea id="summernote" required name="description" class="form-control" cols="30" rows="5"></textarea>
+                </div>
+            </div>
+
+            <div class="form-row mb-4" id="document_upload">
+
+                <div class="form-group mb-6">
+                    <div class="custom-file">
+                        <label for="image_for_web">Choose file For Web</label>
+                        <input type="file" required class="form-control" onchange="renderDocumentName1(event)" name="image_for_web" id="image_for_web">
+                        <div id="docNameDiv1"> </div>
+                    </div>
+                </div>
+
+                <div class="form-group mb-6">
+                    <div class="custom-file ml-4">
+                        <label for="image_for_app">Choose file For App</label>
+                        <input type="file" required class="form-control" onchange="renderDocumentName2(event)" name="image_for_app" id="image_for_app">
+                        <div id="docNameDiv2"> </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <button type="submit" id="handleSubmit" class="btn btn-primary mt-3">Create Package</button>
+        </form>
+
+    </div>
+</div>
+
+<script>
+    let editor = CKEDITOR.replace( 'description' );
+    var description;
+    editor.on( 'change', function( evt ) {
+    // getData() returns CKEditor's HTML content.
+    description =  evt.editor.getData();            
+});
+</script>
+
+
+
+
+
+<script>
+    let loader = document.getElementById("loader");
+    let expiryDateContainer = document.getElementById('expiryDateContainer');
+    let subscriptionContainer = document.getElementById('subscriptionContainer');
+    const handleSubmit = document.getElementById('handleSubmit');
+
+    function getCookie(name) {
+        if (!document.cookie) {
+            return null;
+        }
+        const xsrfCookies = document.cookie.split(';')
+        .map(c => c.trim())
+        .filter(c => c.startsWith(name + '='));
+        if (xsrfCookies.length === 0) {
+            return null;
+        }
+            return decodeURIComponent(xsrfCookies[0].split('=')[1]);
+    }
+    
+    const csrfToken = getCookie('csrftoken');
+
+    function renderDocumentName1(event) {
+        let doc = event.target.files[0];
+        let docExtension = doc.name.split('.').pop();
+        let docSize = doc.size;
+
+        let p = document.getElementById('docNameDiv1');
+        if ((docExtension === 'jpg' || docExtension === 'jpeg' || docExtension === 'png') && docSize <= 2000000) {
+            p.innerHTML = '';
+            
+            p.innerHTML = event.target.files[0].name + `<i class="fa fa-trash ml-4"  onclick="deleteDocument1(event)" aria-hidden="true"></i>`;
+            event.target.parentElement.appendChild(p);
+
+        } else {
+            if (docExtension !== 'jpg' && docExtension !== 'jpeg' && docExtension !== 'png') {
+                alert('Unsupported file type.');
+            } else {
+                alert('Unsuported file size.');
+            }
+            document.getElementById('image_for_web').value = '';
+            p.innerHTML = 'Please Upload jpg or png file of size less than 25mb!';
+            event.target.parentElement.appendChild(p);
+
+        }
+    }
+
+    function deleteDocument1(event) {
+        console.log('clicked');
+        event.target.parentElement.innerHTML = '';
+        document.getElementById('image_for_web').value = '';
+
+    }
+
+    function renderDocumentName2(event) {
+        let doc = event.target.files[0];
+        let docExtension = doc.name.split('.').pop();
+        let docSize = doc.size;
+
+        let p = document.getElementById('docNameDiv2');
+        if ((docExtension === 'jpg' || docExtension === 'jpeg' || docExtension === 'png') && docSize <= 2000000) {
+            p.innerHTML = '';
+            
+            p.innerHTML = event.target.files[0].name + `<i class="fa fa-trash ml-4"  onclick="deleteDocument2(event)" aria-hidden="true"></i>`;
+            event.target.parentElement.appendChild(p);
+
+        } else {
+            if (docExtension !== 'jpg' && docExtension !== 'jpeg' && docExtension !== 'png') {
+                alert('Unsupported file type.');
+            } else {
+                alert('Unsuported file size.');
+            }
+            document.getElementById('image_for_app').value = '';
+            p.innerHTML = 'Please Upload jpg or png file of size less than 25mb!';
+            event.target.parentElement.appendChild(p);
+
+        }
+    }
+
+    function deleteDocument2(event) {
+        console.log('clicked');
+        event.target.parentElement.innerHTML = '';
+        document.getElementById('image_for_app').value = '';
+
+    }
+
+    // submitting form
+    const addPackageForm = document.getElementById('addPackageForm');
+    addPackageForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        isFormValid = false;
+
+        let formData = new FormData();
+
+        formData.append('package_title', document.getElementById('lesson_title').value);
+        formData.append('package_description', description);
+        formData.append('actual_price', document.getElementById('actual_price').value);
+        formData.append('selling_price', document.getElementById('selling_price').value);
+        formData.append('package_type', document.getElementById('subjects').value);
+        formData.append('subscription_type', document.getElementById('subscriptionType').value);
+        formData.append('is_active', document.getElementById('is_active').value);
+        formData.append('web_image', document.getElementById('image_for_web').files[0]);
+        formData.append('mobile_image', document.getElementById('image_for_app').files[0]);
+
+        if (document.getElementById('subscriptionType').value === 'Fixed Date') {
+            formData.append('sell_till_date', document.getElementById('expiryDate').value);
+            
+        } else if (document.getElementById('subscriptionType').value === 'Subscription') {
+            formData.append('days', document.getElementById('subscriptionDays').value);
+            
+        }
+
+                
+
+            if (document.getElementById('subjects').value === 'video') {
+                handleSubmit.innerHTML = '<i class="fa fa-spinner fa-spin"></i>';
+                loader.innerHTML = '<div id="spinner" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; width: 100%; background: rgba(0,0,0,0.75) url(/media/app-assets/images/1487.gif) no-repeat center center; z-index: 100000;"></div>';
+                fetch('/api/courses/course-packages/', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRFToken': csrfToken
+                    },
+                })
+                .then(function(response) {
+                    return response.json();
+                })
+                .then(function(response) {
+                    console.log(response);
+                    if (response.status === true) {
+                        alert('Successfully created package');
+                        window.location.href = '/courses/packages/';
+                    } else {
+                        alert('Error while creating package');
+                    };
+                    handleSubmit.innerHTML = 'Create Package';
+                    loader.innerHTML = '';
+                });
+                    
+
+            } else {
+                // fetch for test API
+            }
+        });
+
+
+    const belowTypePicker = document.getElementById('belowTypePicker');
+    
+    let expiryDateDiv = document.createElement('div');
+    expiryDateDiv.classList.add('form-group');
+    expiryDateDiv.classList.add('mt-4');
+    expiryDateDiv.innerHTML = `
+    <label for="expiryDate">Choose Expiry Date</label>
+    <input type="date" required name="expiryDate" class="form-control" id="expiryDate">
+    `;
+
+    let subscriptionDiv = document.createElement('div');
+    subscriptionDiv.classList.add('form-group');
+    subscriptionDiv.classList.add('mt-4');
+    subscriptionDiv.innerHTML = `
+    <label for="subscriptionDays">Subscription Period</label>
+    <input type="number" required id="subscriptionDays" class="form-control" placeholder="Enter Subscription Period (in Days)">
+    `;
+
+    function changeExpiryType() {
+        if (event.currentTarget.value === 'Fixed Date') {
+            belowTypePicker.appendChild(expiryDateDiv);
+            try {
+                subscriptionDiv.remove();
+            } catch (error) {
+                console.log(error);
+            }
+        } else if (event.currentTarget.value === 'Subscription') {
+            belowTypePicker.appendChild(subscriptionDiv);
+            try {
+                expiryDateDiv.remove();
+            } catch (error) {
+                console.log(error);
+            }
+        } else {
+            try {
+                subscriptionDiv.remove();
+                expiryDateDiv.remove();
+            } catch (error) {
+                console.log(error);
+            }
+        }
+    }
+</script>
+
+
+
+
+{% endblock %}

@@ -1,0 +1,113 @@
+{%extends 'base.html'%}
+
+{%block start%}
+
+<div style="margin-top: 6%; ">
+    <div style="margin-top: 6%; display: flex;">
+    <div style="margin: 0 auto; font-size: xxx-large;">
+        Add Test
+    </div>
+
+</div>
+
+<hr>
+
+<div class="card">
+    <div class="card-body">
+        {% include "utils/alert.html" %}
+        <form>
+            {% csrf_token %}
+            <div class="form-row mb-4">
+                <div class="form-group col-md-6">
+                    <label for="test_title">Test Title</label>
+                    <input type="text" class="form-control" required name="test_title" id="test_title"
+                        placeholder="Enter Unique Coupon Code">
+                </div>
+
+                <div class="form-group col-md-6">
+
+                    <label for="language">Language</label>
+                    <select name="language" id="language">
+                        <option selected disabled>Choose Test Language</option>
+                        <option value="englist">English</option>
+                        <option value="hindi">Hindi</option>
+                        <option value="bilingual">Bilingual</option>
+                    </select>
+                </div>
+
+                <div class="form-group col-md-6">
+                    <label for="per_user_usase_limit">Per User Limit</label>
+                    <input type="number" name="per_user_usase_limit" class="form-control" id="per_user_usase_limit" placeholder="Usase allowed per user">
+                </div>
+
+
+            </div>
+
+            <div class="form-row mb-4">
+                <div class="form-group col-md-6">
+                    <div class="form-group col-md-6">
+                        <label for="test_instruction">Test Instruction</label>
+                        <textarea class="form-control" name="test_instruction" id="test_instruction">
+                    </div>
+                </div>
+            </div>
+            <div class="form-row mb-4" id="video_upload">
+
+                <div class="form-group col-md-6">
+                    <label for="discount_type">Discount Type</label>
+                    <select required class="form-control" name="discount_type" id="discount_type" onchange="changeDiscountType()">
+                        <option selected disabled>Select Discount Type</option>
+                        <option value="percentage">Percentage Discount</option>
+                        <option value="fixed">Fixed Discount</option>
+                    </select>
+
+                    <div id="discountDiv" style="display: none;">
+                        <label for="discount_amount" class="mt-4"> How Much Discount? </label>
+                        <input type="number" name="discount_amount" id="discount_amount" class="form-control">
+                    </div>
+
+                </div>
+
+
+                <div class="form-group col-md-6">
+                        <label for="apply_coupon_type">Where you want to apply this coupon?</label>
+                        <select required class="form-control" name="apply_coupon_type" id="apply_coupon_type" onchange="changeApplyPackage()">
+                            <option selected disabled>None</option>
+                            <option value="all-packages">All Packages</option>
+                            <option value="selected-packages">Selected Packages</option>
+                        </select>
+    
+                        <div id="packageDiv" class="mt-4" style="display: none;">
+                            <div>
+                                <label for="tags">Select Packages To Include</label>
+                                <select id="tagsDropdown" name="tags" class="fstdropdown-select" onchange="includeTag(event)">
+                                    <option value="" selected disabled>Choose Package</option>
+                                    {% for course_package in  course_packages %}
+                                        <option value="{{course_package.uid}}">{{course_package.package_title}}</option>
+                                    {% endfor  %}
+            
+                                </select>  
+                            </div> 
+            
+                            <div class="table table-striped" style="margin: 1%;">
+                                <table class="display">
+                                    <tbody id="tags">
+                                    
+                                    </tbody>
+                                </table>  
+                            </div> 
+                        </div>
+            </div>
+
+            
+
+            <button id="submitFormBtn" type="submit" class="btn btn-primary mt-3">Create Coupon</button>
+            <!-- <button id="testBtn" class="btn btn-primary mt-3">Test Code</button> -->
+        </form>
+
+    </div>
+</div>
+
+
+
+{%endblock %}

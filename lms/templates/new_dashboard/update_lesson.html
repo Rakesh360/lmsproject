@@ -1,0 +1,769 @@
+{%extends 'base.html'%}
+{% block start %}
+
+<style type="text/css">
+    .bg-1 {
+        background: #ECECF8;
+    }
+
+    .deleteBtn{
+        cursor: pointer;
+    }
+
+   
+</style>
+
+<div id="loader">
+    
+</div>
+
+<div class="section-header" style="margin-top: 6%; text-align: center;">
+    <div style="margin: 0 auto; font-size: xxx-large;">
+       Edit Lessons
+    </div>
+
+</div>
+
+
+    <div class="card" id="contentDiv">  
+        <!-- <div class="card-header">
+        <h4>Horizontal Form</h4>
+    </div> -->
+        <div class="card-body">
+            {% include "utils/alert.html" %}
+            <form id="form" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-row mb-4">
+                    <div class="form-group col-md-6">
+                        <label for="lesson_title">Lesson title (max 100)</label>
+                        {{lesson}}
+                        <input type="text" minlength="4" maxlength="100" class="form-control" required name="lesson_title" value="{{lesson.lesson_title}}"
+                            id="lesson_title" placeholder="Enter lesson title">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="inputPassword4">Subject Chapters</label>
+                    
+                        <select required id="chooseChapters" name="chapters" class="form-control basic tagging ">
+                           
+                            {% for subject_chapter in  subject_chapters %}
+                            <option {% if lesson.chapter ==  subject_chapter %} selected {% endif %}
+                                value="{{subject_chapter.uid}}">{{subject_chapter.chapter_title}}</option>
+                            {% endfor  %}
+                        </select>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label for="is_free">Is free</label>
+                        <select id="isFree" class="form-control" name="is_free">
+                            <option {% if lesson.is_free ==  False %} selected {% endif %} value=true>No</option>
+                            <option {% if lesson.is_free ==  True %} selected {% endif %} value=false>Yes</option>
+
+                        </select>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        
+                        <label for="lesson_type">Lesson Type</label>
+                        <select class="form-control" id="lesson_type" name="lesson_type" onchange="changeLessonType()">
+                            <option  {% if lesson.lesson_type == 'Video' %} selected {% endif %} value="Video">Video</option>
+                            <option  {% if lesson.lesson_type == 'Document' %} selected {% endif %} value="Document">Document</option>
+                            <option  {% if lesson.lesson_type == 'Video + Document' %} selected {% endif %} value="Video + Document">Video + Document</option>
+
+
+                        </select>
+                    </div>
+
+                
+
+    </div>
+
+                    <div class="form-row mb-4" id="videoDiv">
+
+                        <!-- {% if lesson.video_platform == 'Live' %} 
+                        <div class="form-group col-md-6">
+                            <label for="video_platform">Video Platform</label>
+                            <select id="videoType" disabled required class="form-control" name="video_platform">
+                                <option selected value="Live">Youtube Live
+                                </option>        
+                            </select>
+                            <br>
+                            <label for="startTime" class="mt-4"> Enter Start Time Of Live </label>
+                            <input class="form-control" required type="datetime-local" name="startTime" id="startTime">
+                            <br>
+                            <label for="live_image">Upload Live Image Here</label>
+                            <input type="file" name="live_image" class="form-control" id="live_image">
+                        </div>
+                        {% else %}
+                        <div class="form-group col-md-6">
+                            <label for="video_platform">Video Platform</label>
+                            <select id="videoType" required class="form-control" name="video_platform">
+                                <option {% if lesson.video_platform == 'Vimeo' %} selected {% endif %} value="Vimeo">Vimeo
+                                </option>
+                                <option {% if lesson.video_platform == 'Youtube' %} selected {% endif %} value="Youtube">
+                                    Youtube</option>
+        
+                            </select>
+                        </div>
+                        {% endif %}
+
+                        
+                        <div class="form-group col-md-6" id="lessonLinkDiv">
+                            <label for="video_link">Lesson Link</label>
+                            <input value="{{lesson.video.video_link}}" type="text" onchange="loadLesson()" required id="lesson_link" class="form-control"
+                                name="video_link" id="video_link" placeholder="Enter lesson title">
+                            <small>Paste Id only</small>
+                            <br>
+                            <iframe width="550" id="iframe" height="215" src="">
+                            </iframe>
+                        </div> -->
+                    </div>
+
+                    <div class="form-row mb-4" id="documentUploadDiv">
+
+                        <!-- <div class="form-group col-md-6">
+                            <label>Upload New Document</label>
+                            <input class="form-control" id="document_link" type="file" name="document">
+                            <br>
+                            <a href="/{{lesson.document.url}}">View Uploaded Document</a>
+                        </div> -->
+
+                    </div>
+
+                    <div class="form-row mb-4" id="video_upload">
+                        <!-- tags selection part -->
+        
+        
+                        
+                        <div>
+                            <div>                    
+                                <div class="select-box">
+                                    <div class="options-container">
+                                        {% for course_package in  all_course_packages %}
+                                            <div class="option" onclick="includeTag(event)"
+                                            {% for course_package_included in course_package_lessons %}
+                                            {% if course_package_included.course_package_chapter.course_package_subject.course_package.package_title == course_package.package_title %}
+                                                style="pointer-events: none; color: red;"
+                                            {% endif %}
+                                            {% endfor %}
+                                                >
+                                                
+                                                <input type="checkbox" style="pointer-events: none;"
+                                                    {% for course_package_included in course_package_lessons %}
+                                                    {% if course_package_included.course_package_chapter.course_package_subject.course_package.package_title == course_package.package_title %}
+                                                    checked
+                                                    disabled
+                                                    {% endif %}
+                                                    {% endfor %}
+                                                    name="category" id="{{course_package.uid}}">
+                                                <label for="{{course_package.uid}}">{{course_package.package_title}}</label>
+                                            </div>
+                                        {% endfor  %}
+                            
+                                      
+                                    </div>
+                            
+                                    <div class="selected">
+                                      Choose Packages to include
+                                    </div>
+                            
+                                    <div class="search-box">
+                                        <input type="text" placeholder="Start Typing..." />
+                                    </div>
+                                </div>
+                            </div> 
+                        </div> 
+        
+                        <br>
+                        <!-- <p>{{lesson.packages}}</p> -->
+                        <div class="table table-striped" style="margin: 1%;">
+                            <table class="display">
+                                <!-- <thead>
+                                    <tr><td>Package Name</td></tr>
+                                    <tr><td>Published Date</td></tr>
+                                    <tr><td>Action</td></tr>
+                                </thead> -->
+                                <tbody id="tags">
+                                
+                                    {% for course_package in course_package_lessons %}
+                                   
+                                <tr>
+                                    <td class="tag" id="{{course_package.course_package_chapter.course_package_subject.course_package.uid}}">
+                                     {{course_package.course_package_chapter.course_package_subject.course_package.package_title}}
+                                    </td>
+                                    <td>
+                                       
+                                    
+                                        <input type="datetime" class="packageDate" onchange="handleChangePackageDateTime(event)" disabled value="{{course_package.added_at|date:'Y-m-d h:i a'}}" name="{{course_package.lesson.uid}}">
+                                    </td>
+                                    <td>
+                                    <a class="btn btn-danger" href="{% url 'delete_package_lesson' %}?lesson_uid={{course_package.lesson.uid}}&course_package_uid={{course_package.course_package_chapter.course_package_subject.course_package.uid}}" onclick="deleteTag2('{{course_package.lesson.uid}}')">❌</a>
+                                    </td>
+                                </tr>
+                                    {% endfor  %}
+                                </tbody>
+                            </table>  
+                        </div>               
+                    </div>
+
+
+
+                </div>
+                <button type="submit" id="submitFormBtn" class="btn btn-primary mt-3">Update Chapter</button>
+            </form>
+
+    </div>
+
+    
+
+<script>
+    var loader = document.getElementById("loader");
+    console.log('is_free', '{{lesson.is_free}}');
+    console.log('vidplatform', '{{lesson.video_platform}}');
+    const submitFormBtn = document.getElementById('submitFormBtn');
+    // function to parse date from 1632058848038 to 2018-12-31T00:00:00.000Z
+    function parseDate(date) {
+        var date = new Date(date);
+        var year = date.getFullYear();
+        var month = date.getMonth() + 1;
+        var day = date.getDate();
+        // hours in two character format
+        var hour = date.getHours() <= 9 ? "0" + date.getHours() : date.getHours();
+        var min = date.getMinutes() <= 9 ? "0" + date.getMinutes() : date.getMinutes();
+        // var sec = date.getSeconds();
+        var dateString = year + "-" + month + "-" + day + "T" + hour + ":" + min;
+        return dateString;
+        
+    }
+
+
+    const tagSection = document.getElementById('tagSection');
+    const tagsDropdown = document.getElementById('tagsDropdown');
+    const form = document.getElementById('form');
+
+    // script for package include dropdown starts
+
+    var selected = document.querySelector(".selected");
+    var selectBox = document.querySelector(".select-box");
+    const optionsContainer = document.querySelector(".options-container");
+    const searchBox = document.querySelector(".search-box input");
+
+    const optionsList = document.querySelectorAll(".option");
+
+    selected.addEventListener("click", () => {
+    optionsContainer.classList.toggle("active");
+
+    searchBox.value = "";
+    filterList("");
+
+    if (optionsContainer.classList.contains("active")) {
+        searchBox.focus();
+    }
+    });
+    document.addEventListener('click', function(event) {
+        var isClickInsideElement = selectBox.contains(event.target);
+        if (!isClickInsideElement) {
+            //Do something click is outside specified element
+            optionsContainer.classList.remove("active");
+        }
+    });
+
+    optionsList.forEach(o => {
+    o.addEventListener("click", (e) => {
+        // selected.innerHTML = o.querySelector("label").innerHTML;
+        // optionsContainer.classList.remove("active");
+        let checkbox = e.target.firstElementChild;
+        if (checkbox === null) {
+        return;
+        }
+
+        if (checkbox.checked === false) {
+        checkbox.checked = true;
+        } else {
+        checkbox.checked = false;
+        };
+
+        console.log(selectedItems());
+
+    });
+    });
+
+    searchBox.addEventListener("keyup", function(e) {
+    filterList(e.target.value);
+    });
+
+    const filterList = searchTerm => {
+    searchTerm = searchTerm.toLowerCase();
+    optionsList.forEach(option => {
+        let label = option.firstElementChild.nextElementSibling.innerText.toLowerCase();
+        if (label.indexOf(searchTerm) != -1) {
+        option.style.display = "block";
+        } else {
+        option.style.display = "none";
+        }
+    });
+    };
+
+    function selectedItems() {
+    var selectedArray = [];
+    var selectedCheckboxes = document.querySelectorAll(".option input[type='checkbox']"); 
+    var correspondingLabels = document.querySelectorAll(".option label");
+    for (var i = 0; i < selectedCheckboxes.length; i++) {
+        if (selectedCheckboxes[i].checked) {
+        selectedArray.push([selectedCheckboxes[i].id, correspondingLabels[i].innerText]);
+        }
+    };
+    return selectedArray;
+    };
+
+    function includeTag(event) {
+        const packageUid = event.target.firstElementChild.id;
+        const packageName = event.target.querySelector("label").innerText;
+
+        if (checkTag(packageName) === true ) {
+            console.log('Tag already exists...');
+            deleteTag(packageUid);
+        } else {
+            let tagElement = document.createElement('tr');
+            // tagElement.className = "badge badge-dark p-1 m-1 tag";
+            let td1 = document.createElement('td');
+            td1.className = "tag";
+            td1.innerHTML = packageName;
+            td1.id = packageUid;
+            let td2 = document.createElement('td');
+            let timeStr = parseDate(new Date());
+            td2.innerHTML = `<input type="datetime-local" class="packageDate" value=${timeStr} onchange="handleChangePackageDateTime(event)" name='+packageUid+'>`;
+            let td3 = document.createElement('td');
+            td3.innerHTML = '<button class="btn btn-danger" onclick="deleteTag2(event)">❌</button>';
+            tagElement.appendChild(td1);
+            tagElement.appendChild(td2);
+            tagElement.appendChild(td3);
+            tags.appendChild(tagElement);
+        }
+    
+
+    };
+
+    async function deleteTag2(event){
+        event.target.parentElement.parentElement.remove();
+
+        // delete request on /api/courses/remove-lessons/
+        // const url = '/api/courses/remove-lessons/';
+        // const data = {
+        //     course_package_uid: event.target.parentElement.parentElement.firstElementChild.id,
+        //     lesson_uid: '{{lesson.uid}}',
+        // };
+        // const response = await axios.post(url, data);
+        // console.log(response);
+    };
+
+    function deleteTag(packageUid) {
+        let allSelectedPackages = document.querySelectorAll(".tag");
+        for (var i = 0; i < allSelectedPackages.length; i++) {
+            if (allSelectedPackages[i].id === packageUid) {
+                allSelectedPackages[i].parentElement.remove();
+            }
+        }
+    };
+
+    function deleteTag2(packageUid) {
+        let allSelectedPackages = document.querySelectorAll(".tag");
+        for (var i = 0; i < allSelectedPackages.length; i++) {
+            console.log(allSelectedPackages[i].id);
+            console.log(packageUid);
+            if (allSelectedPackages[i].id === packageUid) {
+                allSelectedPackages[i].parentElement.remove();
+            }
+        };
+
+        let allOptions = document.querySelectorAll('.option');
+        for (let j = 0; j < allOptions.length; j++) {
+            let option = allOptions[j].children[0];
+            if (option.id === packageUid) {
+                option.checked = false;
+                option.disabled = false;
+                console.log(option.parentElement);
+                option.parentElement.style.pointerEvents = 'auto';
+                option.parentElement.style.color = 'black';
+            }           
+        }
+    };
+    
+    function checkTag(tagName) {
+        let allTags = document.getElementsByClassName('tag');
+        let flag = false;
+        for (let i = 0; i < allTags.length; i++) {
+            let singleTag = allTags[i];
+            if (singleTag.innerHTML === tagName) {
+                flag = true;
+                break;
+            }
+            
+        }
+
+        return flag;
+    }
+
+    function clickTag(event) {
+        let tagName = event.target.innerHTML;
+        let tagId = event.target.id;
+        console.log(tagName, tagId);
+    }
+
+    function handleChangePackageDateTime(event) {
+        console.log(event.target.value);
+    }
+
+    let docReUploaded = false;
+
+    // function renderDocumentName(event) {
+    //     console.log(event.target.parentElement);
+    //     console.log(event.target.files[0].name);
+    //     let p = document.getElementById('docNameDiv');
+    //     p.innerHTML = '';
+        
+    //     p.innerHTML = event.target.files[0].name + `<i class="fa fa-trash ml-4"  onclick="deleteDocument(event)" aria-hidden="true"></i>`;
+    //     event.target.parentElement.appendChild(p);
+    //     docReUploaded = true;
+    // }
+    function renderDocumentName(event) {
+        let p = document.getElementById('docNameDiv');
+        let doc = event.target.files[0];
+        let docExtension = doc.name.split('.').pop();
+        let docSize = doc.size;
+        console.log(doc);
+        console.log(docExtension, docSize);
+        if ((docExtension === 'pdf' || docExtension === 'doc' || docExtension === 'docx') && docSize <= 25000000) {
+            p.innerHTML = '';
+            
+            p.innerHTML = event.target.files[0].name + `<i class="fa fa-trash ml-4"  onclick="deleteDocument(event)" aria-hidden="true"></i>`;
+            event.target.parentElement.appendChild(p);
+            // document.getElementById('docDiv').appendChild(p);
+        } else {
+            if (docExtension !== 'pdf' && docExtension !== 'doc' && docExtension !== 'docx') {
+                alert('Unsupported file type.');
+            } else {
+                alert('Unsuported file size.');
+            }
+            document.getElementById('document_link').value = '';
+            p.innerHTML = 'Please Upload pdf or doc file of size less than 25mb!';
+            document.getElementById('docDiv').appendChild(p);
+        }
+            
+    }
+
+    function deleteDocument(event) {
+        console.log('clicked');
+        event.target.parentElement.innerHTML = '';
+        document.getElementById('document_link').value = '';
+        docReUploaded = false;
+
+    }
+
+// script for package include dropdown ends
+    console.log("{{lesson.video_platform}}");
+    const videoDiv = document.getElementById('videoDiv');
+    const documentUploadDiv = document.getElementById('documentUploadDiv');
+    let lessonInnerHTML = `
+        {% if lesson.video_platform == 'Live' %} 
+        <div class="form-group col-md-6">
+            <label for="video_platform">Video Platform</label>
+            <select id="videoType" disabled required class="form-control" name="video_platform">
+                <option selected value="Live">Youtube Live
+                </option>        
+            </select>
+            <br>
+            <label for="startTime" class="mt-4"> Enter Start Time Of Live </label>
+            <input class="form-control" required type="datetime-local" name="startTime" id="startTime">
+            <br>
+            <label for="live_image">Upload Live Image Here</label>
+            <input type="file" name="live_image" class="form-control" id="live_image">
+        </div>
+        {% else %}
+        <div class="form-group col-md-6">
+            <label for="video_platform">Video Platform</label>
+            <select id="videoType" required class="form-control" name="video_platform">
+                <option {% if lesson.video_platform == 'Vimeo' %} selected {% endif %} value="Vimeo">Vimeo
+                </option>
+                <option {% if lesson.video_platform == 'Youtube' %} selected {% endif %} value="Youtube">
+                    Youtube</option>
+
+            </select>
+        </div>
+        {% endif %}
+
+        
+        <div class="form-group col-md-6" id="lessonLinkDiv">
+            <label for="video_link">Lesson Link</label>
+            <input value="{{lesson.video.video_link}}" type="text" onchange="loadLesson()" minlength="4" maxlength="100" required id="lesson_link" class="form-control"
+                name="video_link" id="video_link" placeholder="Enter lesson title">
+            <small>Paste Id only</small>
+            <br>
+            <iframe width="550" id="iframe" height="215" src="">
+            </iframe>
+        </div>
+    `;
+
+    let documentInnerHtml = `
+        <div class="form-group col-md-6">
+            <label>Upload New Document</label>
+            <input class="form-control" id="document_link" onchange="renderDocumentName(event)"  type="file" onchange="docReUpload()" name="document">
+            <br>
+            
+            <div id="docNameDiv"> <a href="/{{lesson.document.uid}}">View Uploaded Document</a> </div>
+        </div>
+    `;
+
+    
+    function docReUpload() {
+        docReUploaded = true;
+        console.log('doc uploaded changed');
+    }
+    function changeLessonType() {
+        let hasDoc = "{{lesson.document}}";
+        var element = document.getElementById('lesson_type')
+        if (element.value == 'Video') {
+            videoDiv.innerHTML = '';
+            documentUploadDiv.innerHTML = '';
+            videoDiv.innerHTML = lessonInnerHTML;
+            loadLesson();
+            document.getElementById('lesson_type').children[1].disabled = true;
+            document.getElementById('lesson_type').children[2].disabled = false;
+
+        } else if(element.value == 'Document') {
+            videoDiv.innerHTML = '';
+            documentUploadDiv.innerHTML = '';
+            documentUploadDiv.innerHTML = documentInnerHtml;
+            document.getElementById('lesson_type').children[0].disabled = true;
+            document.getElementById('lesson_type').children[2].disabled = false;
+        }else if(element.value == 'Video + Document'){
+            videoDiv.innerHTML = '';
+            documentUploadDiv.innerHTML = '';
+            videoDiv.innerHTML = lessonInnerHTML;
+            documentUploadDiv.innerHTML = documentInnerHtml;
+            loadLesson();
+            if (hasDoc === "None") {
+                document.getElementById("docNameDiv").remove();
+            }
+            document.getElementById('lesson_type').children[0].disabled = true;
+            document.getElementById('lesson_type').children[1].disabled = true;
+        }
+    }
+
+    changeLessonType();
+
+    function loadLesson() {
+        var element = document.getElementById('lesson_link').value
+
+        if (element) {
+            var url = `https://www.youtube.com/embed/${element}`
+            document.getElementById('iframe').style.display = ''
+            document.getElementById('iframe').src = url
+        }else{
+            document.getElementById('iframe').style.display = 'none'
+            document.getElementById('iframe').src = ''
+        }
+
+
+    }
+    
+
+    function getCookie(name) {
+        if (!document.cookie) {
+            return null;
+        }
+        const xsrfCookies = document.cookie.split(';')
+        .map(c => c.trim())
+        .filter(c => c.startsWith(name + '='));
+        if (xsrfCookies.length === 0) {
+            return null;
+        }
+            return decodeURIComponent(xsrfCookies[0].split('=')[1]);
+    }
+    
+    const csrfToken = getCookie('csrftoken');
+
+    async function uploadoc() {
+        console.log('Uploading file...');
+        // document.getElementById('loader').style.display = 'block';
+        const formData = new FormData();
+        formData.append('document_file', document.getElementById('document_link').files[0]);
+        let response = await fetch('/api/courses/document/', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': csrfToken
+            }
+        });
+        const json = await response.json();
+        console.log(json);
+        return json.uid;
+
+        
+
+    }
+
+    
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        console.log('submitting form');
+        // getting data of all packages...
+        let allTags = document.getElementsByClassName('tag');
+        let allPackageDates = document.getElementsByClassName('packageDate');
+        let packages = [];
+        let packagesUid = [];
+        for (let i = 0; i < allTags.length; i++) {
+            if (allPackageDates[i].disabled === false) {
+                packagesUid.push(allTags[i].id);
+                if (allPackageDates[i].value === '') {
+                    packages.push({
+                        "uid" : allTags[i].id,
+                        "created_at" : parseDate(Date.now()),
+                    });
+                } else {
+                    packages.push({
+                        "uid" : allTags[i].id,
+                        "created_at" : allPackageDates[i].value
+                    });
+                }
+            }
+            
+            
+        };
+        console.log('🔴🔴🔴🔴', packages);
+
+        let isProceed = false;
+        if ('{{lesson.video_platform}}' == 'Live') {
+            // patch for live
+            
+
+        } else {
+            // patch for video
+            let data = {
+                'uid' : '{{lesson.uid}}',
+                'lesson_title': document.getElementById('lesson_title').value,
+                'packages': packages,
+                'lesson_type' : document.getElementById('lesson_type').value,
+                'chapter': document.getElementById('chooseChapters').value,
+                'is_free': document.getElementById('isFree').value,
+            };
+            if (document.getElementById('lesson_type').value == 'Video') {
+                data['video_platform'] = document.getElementById('videoType').value;
+                data['video'] = {
+                    'video_link': document.getElementById('lesson_link').value
+                };
+                isProceed = true;
+                
+            } else if (document.getElementById('lesson_type').value == 'Video + Document') {
+                if ('{{lesson.document.uid}}' !== '' || docReUploaded === true) {
+                    isProceed = true;
+                    data['video_platform'] = document.getElementById('videoType').value;
+                    data['video'] = {
+                        'video_link': document.getElementById('lesson_link').value
+                    };
+                    if (docReUploaded === true) {
+                        let docLink = await uploadoc();
+                        console.log('The doc link is: ', docLink);
+                        data['document'] = docLink;
+                    } else {
+                        data['document'] = '{{lesson.document.uid}}';
+                    }
+                } else {
+                    alert('Please upload document first');
+
+                }
+                
+            } else if (document.getElementById('lesson_type').value == 'Document') {
+                if ('{{lesson.document.uid}}' !== '' || docReUploaded === true) {
+                    isProceed = true;
+                    data['video_platform'] = 'none';
+                    if (docReUploaded === true) {
+                        let docLink = await uploadoc();
+                        console.log('The doc link is: ', docLink);
+                        data['document'] = docLink;
+                    } else {
+                        data['document'] = '{{lesson.document.uid}}';
+                    }
+                } else {
+                    alert('Please upload document first');
+
+                }
+
+            };
+
+            console.log(data);
+
+            if (isProceed === true && allTags.length > 0) {
+                submitFormBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i>';
+                loader.innerHTML = '<div id="spinner" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; width: 100%; background: rgba(0,0,0,0.75) url(/media/app-assets/images/1487.gif) no-repeat center center; z-index: 100000;"></div>';
+                let res = await axios.patch('/api/courses/lessons/', data, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrfToken
+                    }
+                });
+                console.log(res.data);
+                if (res.data.status === true) {
+                    alert('Lesson updated successfully');
+                    window.location.href = '/courses/lessons/';
+
+                } else {
+                    alert(res.data);
+                }
+                submitFormBtn.innerHTML = 'Update Chapter';
+                loader.innerHTML = '';
+                
+            } else {
+                console.log(allTags.length, isProceed);
+                alert("Packages Can't Be empty! Please select at least one package.");
+            }
+
+
+        };
+        
+
+        // if (formValidation() === true) {
+        //     let video_platform = document.getElementById('videoType').value;
+        //     let data = {
+        //         'uid': '{{lesson.uid}}',
+        //         'lesson_title' : document.getElementById('lesson_title').value,
+        //         // 'chapter' : document.getElementById('chooseChapters').value,
+        //         // 'video_platform' : video_platform,
+        //         // 'lesson_type' : document.getElementById('lesson_type').value,
+        //         // 'is_free' : document.getElementById('is_free').value,
+        //         'video': {
+        //             'video_link': document.getElementById('lesson_link').value,
+        //         }
+        //     };
+
+        
+
+            // console.log(data);
+
+            // if (video_platform === 'Live') {
+
+            //     let res = await axios.patch('/api/courses/go-live/', data, {
+            //         headers: {
+            //             'Content-Type': 'application/json',
+            //             'X-CSRFToken': csrfToken
+            //         }
+            //     });
+            //     console.log(res);            
+
+            // } else {
+            //     let res = await axios.patch('/api/courses/lessons/', data, {
+            //         headers: {
+            //             'Content-Type': 'application/json',
+            //             'X-CSRFToken': csrfToken
+            //         }
+            //     });
+            //     console.log(res);
+            // }
+
+    });
+
+
+</script>
+
+
+
+{% endblock %}

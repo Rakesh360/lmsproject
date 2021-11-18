@@ -1,0 +1,84 @@
+{%extends 'base.html'%}
+{% block start %}
+
+<link rel="stylesheet" href="https://unpkg.com/treeflex/dist/css/treeflex.css">
+
+<style type="text/css">
+    .bg-1 {
+        background: #ECECF8;
+    }
+</style>
+<div class="section-header">
+    <h1>
+       <b> {{course_package.package_title}} </b> - Tree View
+
+    </h1>
+ 
+</div>
+<div id="main_id">
+    <div class="card mt-5">
+        {% include "utils/alert.html" %}
+
+        <div class="tf-tree tf-gap-lg p-4">
+            <ul>
+                <li>
+                    <span class="tf-nc">{{course_package.package_title}}</span>
+                    <ul>
+                        {% for subject in course_package.pacakge_subjects.all %}
+                        <li>
+                            <span class="tf-nc">{{subject.subject}}</span>
+                            <ul>
+                                {% for chapter in subject.pacakge_subject_chapters.all %}
+                                <li>
+                                    <span class="tf-nc">{{chapter.subject_chapter}}</span>
+                                    <ul>
+                                        {% for lesson in chapter.pacakge_subject_chapters_lessons.all%}
+                                        <li><span class="tf-nc">{{lesson.lesson.lesson_title}}</span></li>
+                                        {% endfor %}
+                                    </ul>
+                                </li>
+                                
+                                {% endfor %}
+                            </ul>
+                        </li>
+                        {% endfor %}
+
+                      
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+
+
+
+    </div>
+</div>
+
+{%  endblock %}
+
+
+
+lucknow chicken kari
+lucknow chikankari
+lucknow chikankari kurti
+lucknow chikankari saree
+lucknow chikankari suit
+lucknow chikankari lehenga
+lucknow chikankari wholesale market
+chikankari shop in lucknow
+lucknow chikankari kurta online
+lucknow chikankari tops
+lucknow chikankari kurti online
+lucknow chicken curry recipe
+lucknow chikankari kurta
+lucknow chikankari online shopping
+lucknow chikankari kurta pajama
+lucknow chikankari kurti buy online
+lucknow chikankari history
+lucknow chikankari kurti manufacturers
+lucknow chikankari lehenga online
+lucknow chikankari kurti and dress material
+lucknow chikankari kurti set
+lucknow chicken curry dress
+lucknow chikankari kurta set

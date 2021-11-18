@@ -74,4 +74,4 @@ def stringify_error_message(message: Dict) -> str:
 
 
 def get_random_otp():
-    return "1111"
+    return "111111"

@@ -3,13 +3,11 @@ from django.urls import path , include
 from . import views 
 
 urlpatterns = [
-   path('' , views.dashboard , name="dashabord"),
+   path('', views.dashboard , name="dashboard"),
+   path('notify/' , views.send_noti , name="send_noti"),
    path('students/' , views.students , name="students"),
-   path('addpackages/' , views.addpackages , name="addpackages"),
-   path('allpackages/' , views.allpackages , name="allpackages"),
-   path('addvideos/' , views.addvideos , name="addvideos"),
-   path('allvideos/' , views.allvideos , name="allvideos"),
-   path('allsubjects/' , views.allsubjects , name="allsubjects"),
-   path('addsubjects/' , views.addsubjects , name="addsubjects"),
-   path('login/', views.login , name="login")
+   path('send-notification/' , views.send_notification , name="send_notification"),
+   
+  
+   #path('login/', views.login , name="login")
 ]

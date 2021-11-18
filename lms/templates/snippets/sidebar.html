@@ -1,0 +1,124 @@
+{% load static %}
+<ul class="sidenav sidenav-collapsible leftside-navigation collapsible sidenav-fixed menu-shadow" id="slide-out"
+  data-menu="menu-navigation" data-collapsible="menu-accordion">
+  <li class="bold">
+    <a class="collapsible-header waves-effect waves-cyan " href="JavaScript:void(0)"><i
+        class="material-icons">settings_input_svideo</i><span class="menu-title"
+        data-i18n="Dashboard">Dashboard</span><span class="badge badge pill orange float-right mr-10">3</span></a>
+    <div class="collapsible-body">
+      <ul class="collapsible collapsible-sub" data-collapsible="accordion">
+        <li><a href="dashboard-modern.html"><i class="material-icons">radio_button_unchecked</i><span
+              data-i18n="Modern">Modern</span></a>
+        </li>
+
+      </ul>
+    </div>
+  </li>
+
+  <li class="bold">
+    <a class="waves-effect waves-cyan " href="{% url 'subjects' %}"><i class="material-icons">import_contacts</i><span
+        class="menu-title" data-i18n="Documentation">Subjects</span></a>
+  </li>
+
+
+
+
+  <li class="bold">
+    <a class="waves-effect waves-cyan " href="{% url 'lessons' %}"><i class="material-icons">import_contacts</i><span
+        class="menu-title" data-i18n="Documentation">Lessons</span></a>
+  </li>
+
+
+
+  <li class="bold">
+    <a class="waves-effect waves-cyan " href="{% url 'course_packages' %}"><i
+        class="material-icons">import_contacts</i><span class="menu-title" data-i18n="Documentation">Course
+        Package</span></a>
+  </li>
+
+  <li class="bold">
+    <a class="collapsible-header waves-effect waves-cyan " href="JavaScript:void(0)"><i
+        class="material-icons">settings_input_svideo</i><span class="menu-title" data-i18n="Dashboard">Students</a>
+    <div class="collapsible-body">
+      <ul class="collapsible collapsible-sub" data-collapsible="accordion">
+        <li><a href="{% url 'students' %}"><i class="material-icons">radio_button_unchecked</i><span
+              data-i18n="Modern">Student List</span></a>
+        </li>
+
+        <li><a href="{% url 'send_notification' %}"><i class="material-icons">radio_button_unchecked</i><span
+              data-i18n="Modern">Send notification</span></a>
+        </li>
+
+
+      </ul>
+    </div>
+  </li>
+
+  <li>
+    <a href="javascript:void(0)" class="collapsible-header"><i
+        class="material-icons red-text text-darken-4">assignment</i> Quiz</a>
+    <div class="collapsible-body">
+      <ul>
+        <li>
+          <a href="/manage-quiz/">
+            <i class="material-icons red-text text-darken-4">assignment_ind</i> Quiz Configuration
+          </a>
+        </li>
+        <li>
+          <a href="/manage-quiz/topics/">
+            <i class="material-icons red-text text-darken-4">description</i> Topic
+          </a>
+        </li>
+      </ul>
+    </div>
+  </li>
+
+
+  <li class="bold">
+    <a class="collapsible-header waves-effect waves-cyan " href="JavaScript:void(0)"><i
+        class="material-icons">settings_input_svideo</i><span class="menu-title" data-i18n="Dashboard">Live</a>
+    <div class="collapsible-body">
+      <ul class="collapsible collapsible-sub" data-collapsible="accordion">
+        <li><a href="{% url 'create_live' %}"><i class="material-icons">radio_button_unchecked</i><span
+              data-i18n="Modern">Create Live</span></a>
+        </li>
+
+
+  </li>
+
+
+</ul>
+</div>
+</li>
+
+
+
+<li class="bold">
+  <a class="collapsible-header waves-effect waves-cyan " href="JavaScript:void(0)"><i
+      class="material-icons">settings_input_svideo</i><span class="menu-title" data-i18n="Dashboard">Test</a>
+  <div class="collapsible-body">
+    <ul class="collapsible collapsible-sub" data-collapsible="accordion">
+      <li><a href="{% url 'test' %}"><i class="material-icons">radio_button_unchecked</i><span data-i18n="Modern">Test
+            Series</span></a>
+      </li>
+
+      <li><a href="{% url 'create_test' %}"><i class="material-icons">radio_button_unchecked</i><span
+            data-i18n="Modern">Create Series</span></a>
+      </li>
+
+
+</li>
+
+
+</ul>
+</div>
+</li>
+
+<li class="bold">
+  <a class="waves-effect waves-cyan "
+    href="https://pixinvent.com/materialize-material-design-admin-template/documentation/index.html"><i
+      class="material-icons">import_contacts</i><span class="menu-title"
+      data-i18n="Documentation">Documentation</span></a>
+</li>
+
+</ul>

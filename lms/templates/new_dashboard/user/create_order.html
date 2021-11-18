@@ -1,0 +1,71 @@
+{%extends 'base.html'%}
+{% block start %}
+
+<style type="text/css">
+    .bg-1 {
+        background: #ECECF8;
+    }
+
+    a.active {
+        background-color: #FF8F16;
+    }
+
+    .deleteBtn {
+        cursor: pointer;
+    }
+</style>
+
+<div id="loader">
+
+</div>
+
+<div class="section-header" style="margin-top: 6%;">
+    
+</div>
+
+
+<div class="card" id="contentDiv">
+    <!-- <div class="card-header">
+    <h4>Horizontal Form</h4>    
+  </div> -->
+    <div class="card-body">
+        <p>Add Package to Student</p>
+        {% include "utils/alert.html" %}
+        <form id="addLessonForm" method="POST">
+            {% csrf_token %}
+            <div class="form-row mb-4">
+                <div class="form-group col-md-6">
+                    <label for="lesson_title">Student Name</label>
+                    <input type="text" class="form-control" value="{{student.student_name}}" disabled placeholder="Enter lesson title">
+                </div>
+
+                <div class="form-group col-md-6">
+                    <label for="lesson_title">Student Phone</label>
+                    <input type="text" class="form-control" value="{{student.phone_number}}" disabled placeholder="Enter lesson title">
+                </div>
+
+
+
+                <div class="form-group col-md-6">
+                    <label for="subject">Choose Package</label>
+                    <select required id="chooseSubject" name="course" class="form-control basic">
+                        <option value="" selected>Choose Subject</option>
+                        {% for course in courses %}
+                        <option value="{{course.uid}}">{{course.package_title}}</option>
+                        {% endfor %}
+                    </select>
+
+
+                </div>
+
+            </div>
+            <button type="submit" class="btn btn-success text-white">Submit</button>
+        </form>
+    </div>
+</div>
+
+
+
+
+
+{% endblock %}

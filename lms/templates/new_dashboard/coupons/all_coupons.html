@@ -1,0 +1,97 @@
+{%extends 'base.html'%}
+
+{%block start%}
+
+<!-- <div style="margin-top: 6%; display: flex;">
+    <div style="margin: 0 auto;">
+        <button class="btn btn-primary" style="font-size: xx-large;">Content</button>
+    </div>
+    
+    <div style="margin: 0 auto;">
+        <button class="btn btn-primary" style="font-size: xx-large;">Publish</button>
+    </div>
+</div> -->
+
+
+<div style="margin-top: 6%; ">
+  <div style="margin-top: 6%; ">
+    <div style="margin-top: 6%; display: flex;">
+    <div style="margin: 0 auto; font-size: xxx-large;">
+        All coupons
+    </div>
+    
+    <div style="margin-right: 5px; margin-top: 2px;">
+        <a href="{% url 'addcoupons' %}" class="btn btn-primary">Add New</a href="">
+    </div>
+</div>
+
+<hr>
+
+<div class="col-12" style="margin-top: 2%;">
+    <div class="card">
+        <div class="card-header">
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table id="example3" class="display" style="min-width: 845px" >
+                    <thead >
+                        <tr>
+                            <th>S. No.</th>
+                            <th>Code</th>
+                            <th>Coupon Type</th>
+                            <th>Total No. Usase</th>
+                            <th>Validity</th>
+                            <th>Is Active</th>
+
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                        {% for coupon in allcoupons %}
+
+                        <tr>
+                            <td>{{forloop.counter}}</td>
+                            <td>{{coupon.coupon_code}}</td>
+                            <td>{{coupon.discount_type}}</td>
+                            <td>{{coupon.total_usage_limit}}</td>
+                            <td>{{coupon.coupon_validity}}</td>
+                            <td>{{coupon.is_active}}</td>
+
+                            <td>
+                                <div class="dropdown show">
+                                    <a class="btn btn-primary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="la la-pencil"></i>
+                                    </a>
+                                  
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                      <a class="dropdown-item" href="{% url 'editcoupon' coupon.uid %}">Edit</a>
+                                      {% if coupon.is_active == True %}
+                                        <a class="dropdown-item" href="{% url 'toggle_coupon' coupon.uid %}">De-activate</a>
+                                        {% else %}
+                                        <I>Deactivated</I>
+                                        {% endif %}
+                                    </div>
+                                  </div>
+                            </td>
+                        </tr>
+
+                        {% endfor %}
+
+                                
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+  
+
+<script>
+
+</script>
+
+
+
+{%endblock%}

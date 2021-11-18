@@ -1,0 +1,178 @@
+{% extends "base.html" %}
+{% block start %}
+<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-database.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-firestore.js"></script>
+
+
+<div style="margin-top: 5%; display: flex;">
+    <div style="margin: 0 auto; font-size: xxx-large;">
+        Live Class
+    </div>
+ 
+</div>
+
+<div class="row mt-2">
+    <div class="col-md-7">
+        <div class="card">
+            <!-- <div class="card-header">
+                <h4>{{lesson.lesson_title}}</h4>
+            </div> -->
+            <div class="card-body">
+                <iframe  height=500 width="100%" src="https://www.youtube.com/embed/{{room_id}}" style="border: 1px solid black;"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-5">       
+    
+        <div class="row overflow-hidden" id="people_online">
+    
+        </div>
+    
+        <div class="row rounded-lg overflow-hidden shadow">
+            <!-- Users box-->
+    
+            <!-- Chat Box-->
+            <div class="col-12 px-0">
+                <div class="px-4 py-5 chat-box bg-white" id="chat_ui">
+    
+    
+                </div>
+    
+                <!-- Typing area -->
+                <form action="#" id="messageForm" class="bg-light">
+                    <div class="input-group">
+                        <input type="text" id="message" placeholder="Type a message" aria-describedby="button-addon2"
+                            class="form-control rounded-0 border-0 py-4 bg-light">
+                        <div class="input-group-append" >
+                            <button id="send-btn" type="submit" class="btn btn-link">
+                                <img style="height:30px" src="https://img.icons8.com/ios/452/sent.png"></button>
+                        </div>
+                    </div>
+    
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    const msgForm = document.getElementById('messageForm');
+    const firebaseConfig = {
+        apiKey: "AIzaSyBU9QQ8-tfQjWBewvOIIw9ruP-01NXaj2g",
+        authDomain: "malaviya-acedemy.firebaseapp.com",
+        projectId: "malaviya-acedemy",
+        databaseURL : "malaviya-acedemy.firebaseio.com",
+        storageBucket: "malaviya-acedemy.appspot.com",
+        messagingSenderId: "176187494863",
+        appId: "1:176187494863:web:eba4d28c0683c7e96882ba"
+    };
+    // Initialize Firebase
+
+    console.log('Logged')
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    const room_id = "{{room_id}}"
+   
+
+    function writeUserData( message) {
+        const db = getDatabase();
+        set(ref(db, '{{room_id}}/' + userId), {
+        username: 'teacher',
+        message: message,
+    });
+    }
+
+    // db.collection("chatRoom").doc(room_id).collection("chats").on("child_added", snap => {
+    //    console.log("ee")
+    // });
+    db.collection("chatRoom").doc(room_id).collection("chats")
+    .onSnapshot((snapshot) => {
+        console.log(snapshot)
+        snapshot.docChanges().forEach((change) => {
+            var data =change.doc.data();
+             console.log( change.doc.data());
+            const msg = `<li ><span class = "msg-span">
+            <i class = "name">${data.sendBy}: </i>${data.message}
+            </span>
+            </li>`
+            document.getElementById('chat_ui').innerHTML += msg;
+
+            document.getElementById('message').value = ''
+        });
+        
+    });
+
+    //document.addEventListener('DOMContentLoaded', init);
+
+
+    msgForm.addEventListener('submit', function sendMessage(e){
+        console.log('ck')
+        e.preventDefault();
+        const text = document.getElementById('message').value;
+
+        if(!text.trim()) return alert('Please type a message'); //no msg submitted
+        const msg = {
+            sendBy: 'Teacher',
+            message: text,
+            isMale : false,
+            sendByPhone : ''
+
+        };
+        db.collection("chatRoom").doc(room_id).collection("chats").add({
+            sendBy: 'Teacher',
+            message: text,
+            isMale : false,
+            sendByPhone : '',
+            time : Date.now()
+     })
+    //     db.collection("chatRoom").doc(room_id).set({
+    //         name: 'Teacher',
+    //         text: "Hello"
+    //  })
+     .then(function() {
+         console.log("Doc successful");
+     })
+     .catch(function(error) {
+        console.error("Error writing doc", error);
+     });
+
+
+        return
+        const usersRef = dbRef.child(`chatRoom/${room_id}`);
+        msgRef.push(msg);
+        msgInput.value = "";
+    });
+
+   
+
+    
+    const updateMsgs = data =>{
+        const {dataName, text} = data.val(); //get name and text
+        
+        //load messages, display on left if not the user's name. Display on right if it is the user.
+        const msg = `<li class="${dataName == name ? "msg my": "msg"}"><span class = "msg-span">
+            <i class = "name">${name}: </i>${text}
+            </span>
+            </li>`
+            
+        msgScreen.innerHTML += msg; //add the <li> message to the chat window
+            
+            //auto scroll to bottom
+            //document.getElementById("chat-window").scrollTop = document.getElementById("chat-window").scrollHeight;
+    }
+    //usersRef.on('child_added', updateMsgs);
+    // const app = initializeApp(firebaseConfig);
+    // console.log(app)
+
+    // const db = getDatabase(app);
+
+    console.log(db);
+
+ </script>
+
+{% endblock %}

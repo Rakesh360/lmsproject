@@ -1,0 +1,686 @@
+{%extends 'base.html'%}
+{% block start %}
+
+<style type="text/css">
+    .bg-1 {
+        background: #ECECF8;
+    }
+
+    a.active{
+        background-color: #FF8F16;
+    }
+
+    .deleteBtn{
+        cursor: pointer;
+}
+</style>
+<div class="section-header" style="margin-top: 6%;">
+    <div style="margin: 0 auto; font-size: xxx-large; text-align: center;">
+        Add Lessons
+    </div>
+</div>
+
+<div id="loader">
+    
+</div>
+
+<div class="card" id="contentDiv">
+    <!-- <div class="card-header">
+        <h4>Horizontal Form</h4>    
+    </div> -->
+    <div class="card-body">
+        {% include "utils/alert.html" %}
+        <form id="addLessonForm">
+            <!-- {% csrf_token %} -->
+            <div class="form-row mb-4">
+                <div class="form-group col-md-6">
+                    <label for="lesson_title">Lesson title(max 100)</label>
+                    <input type="text" class="form-control" required minlength="4" maxlength="100" name="lesson_title" id="lesson_title"
+                        placeholder="Enter lesson title">
+                </div>
+
+
+
+                <div class="form-group col-md-6">
+                    <label for="subject">Choose Subject</label>
+                    <select required id="chooseSubject" name="subject" class="form-control basic tagging " onchange="updateChapters()">
+                        <option value="" selected disabled>Choose Subject</option>
+                    </select>
+
+
+
+                </div>
+                <div class="form-group col-md-6">
+
+                    <label for="chapter">Choose Chapter</label>
+                    <select required id="chooseChapters" name="chapter" class="form-control basic tagging ">
+                        <option value="" selected disabled>Choose Chapter</option>
+                    </select>
+                </div>
+
+                <div class="form-group col-md-6">
+                    <label for="lesson_type">Lesson Type</label>
+                    <select required class="form-control" id="lesson_type" name="lesson_type" id="lesson_type" onchange="changeLessonType()">
+                        <option selected value="Video">Video</option>
+                        <option value="Document">Document</option>
+                        <option value="Video + Document">Video + Document</option>
+
+
+                    </select>
+                </div>
+
+
+            </div>
+            <div class="form-row mb-4" id="video_upload">
+
+                <div class="form-group col-md-6" id="videoContainer">
+                    <label for="video_platform">Video Platform</label>
+                    <select required class="form-control" name="video_platform" id="videoType" onchange="changeVideoType()">
+                        <option disabled value="Live">YouTube Live</option>
+                        <option value="Vimeo">Vimeo</option>
+                        <option selected value="Youtube">YouTube</option>
+                    </select>
+                </div>
+
+
+            </div>
+
+            <div class="form-row mb-4" id="document_upload">
+
+              
+
+            </div>
+
+            <div class="form-group col-md-6">
+
+                <label for="inputEmail4">Is free</label>
+                <select class="form-control" name="is_free" id="is_free">
+                    <option selected value=false>No</option>
+                    <option value=true>Yes</option>
+
+                </select>
+            </div>
+            
+
+            <br><hr><br>
+
+
+            <div class="form-row mb-4" id="video_upload">
+                <!-- tags selection part -->
+                 <div>                    
+                    <div class="select-box">
+                        <div class="options-container">
+                            {% for course_package in  course_packages %}
+                                <div class="option" onclick="includeTag(event)">
+                                    <input style="pointer-events: none;" type="checkbox" name="category" id="{{course_package.uid}}">
+                                    <label for="{{course_package.uid}}">{{course_package.package_title}}</label>
+                                </div>
+                            {% endfor  %}
+                
+                          
+                        </div>
+                
+                        <div class="selected">
+                          Choose Packages to include
+                        </div>
+                
+                        <div class="search-box">
+                            <input type="text" placeholder="Start Typing..." />
+                        </div>
+                    </div>
+                </div> 
+
+                <div class="table table-striped" style="margin: 1%;">
+                    <table class="display">
+                        <tbody id="tags">
+                        
+                        </tbody>
+                    </table>  
+                </div>               
+            </div>
+
+            <button id="submitFormBtn" type="submit" class="btn btn-primary mt-3">Add Chapter</button>
+            <!-- <button id="testBtn" class="btn btn-primary mt-3">Test Code</button> -->
+        </form>
+
+
+    </div>
+</div>
+
+<script>
+    var loader = document.getElementById("loader");
+    const form = document.getElementById('addLessonForm');
+    const tagSection = document.getElementById('tagSection');
+    const tagsDropdown = document.getElementById('tagsDropdown');
+    const chooseSubject = document.getElementById('chooseSubject');
+    const chooseChapters = document.getElementById('chooseChapters');
+    const submitFormBtn = document.getElementById('submitFormBtn');
+
+    function getCookie(name) {
+        if (!document.cookie) {
+            return null;
+        }
+        const xsrfCookies = document.cookie.split(';')
+        .map(c => c.trim())
+        .filter(c => c.startsWith(name + '='));
+        if (xsrfCookies.length === 0) {
+            return null;
+        }
+            return decodeURIComponent(xsrfCookies[0].split('=')[1]);
+    }
+
+    function parseDate(date) {
+        var date = new Date(date);
+        var year = date.getFullYear();
+        var month = date.getMonth() + 1;
+        var day = date.getDate();
+        // hours in two character format
+        var hour = date.getHours() <= 9 ? "0" + date.getHours() : date.getHours();
+        var min = date.getMinutes() <= 9 ? "0" + date.getMinutes() : date.getMinutes();
+        // var sec = date.getSeconds();
+        var dateString = year + "-" + month + "-" + day + "T" + hour + ":" + min;
+        return dateString;
+        
+    }
+    
+    // script for package include dropdown starts
+
+    var selected = document.querySelector(".selected");
+    var selectBox = document.querySelector(".select-box");
+    const optionsContainer = document.querySelector(".options-container");
+    const searchBox = document.querySelector(".search-box input");
+    const optionsList = document.querySelectorAll(".option");
+
+    selected.addEventListener("click", () => {
+    optionsContainer.classList.toggle("active");
+
+    searchBox.value = "";
+    filterList("");
+
+    if (optionsContainer.classList.contains("active")) {
+        searchBox.focus();
+    }
+    });
+    document.addEventListener('click', function(event) {
+        var isClickInsideElement = selectBox.contains(event.target);
+        if (!isClickInsideElement) {
+            //Do something click is outside specified element
+            optionsContainer.classList.remove("active");
+        }
+    });
+
+    optionsList.forEach(o => {
+    o.addEventListener("click", (e) => {
+        // selected.innerHTML = o.querySelector("label").innerHTML;
+        // optionsContainer.classList.remove("active");
+        let checkbox = e.target.firstElementChild;
+        if (checkbox === null) {
+        return;
+        }
+
+        if (checkbox.checked === false) {
+        checkbox.checked = true;
+        } else {
+        checkbox.checked = false;
+        };
+
+        console.log(selectedItems());
+
+    });
+    });
+
+    searchBox.addEventListener("keyup", function(e) {
+    filterList(e.target.value);
+    });
+
+    const filterList = searchTerm => {
+    searchTerm = searchTerm.toLowerCase();
+    optionsList.forEach(option => {
+        let label = option.firstElementChild.nextElementSibling.innerText.toLowerCase();
+        if (label.indexOf(searchTerm) != -1) {
+        option.style.display = "block";
+        } else {
+        option.style.display = "none";
+        }
+    });
+    };
+
+    function selectedItems() {
+    var selectedArray = [];
+    var selectedCheckboxes = document.querySelectorAll(".option input[type='checkbox']"); 
+    var correspondingLabels = document.querySelectorAll(".option label");
+    for (var i = 0; i < selectedCheckboxes.length; i++) {
+        if (selectedCheckboxes[i].checked) {
+        selectedArray.push([selectedCheckboxes[i].id, correspondingLabels[i].innerText]);
+        }
+    };
+    return selectedArray;
+    };
+
+    function includeTag(event) {
+        const packageUid = event.target.firstElementChild.id;
+        const packageName = event.target.querySelector("label").innerText;
+
+        if (checkTag(packageName) === true ) {
+            console.log('Tag already exists...');
+            deleteTag(packageUid);
+        } else {
+            let tagElement = document.createElement('tr');
+            // tagElement.className = "badge badge-dark p-1 m-1 tag";
+            let td1 = document.createElement('td');
+            td1.className = "tag";
+            td1.innerHTML = packageName;
+            td1.id = packageUid;
+            let td2 = document.createElement('td');
+            let timeStr = parseDate(new Date());
+            console.log(timeStr);
+            td2.innerHTML = `<input type="datetime-local" class="packageDate" value=${timeStr} onchange="handleChangePackageDateTime(event)" name='+packageUid+'>`;
+            tagElement.appendChild(td1);
+            tagElement.appendChild(td2);
+            tags.appendChild(tagElement);
+        }
+    
+
+    };
+
+    function deleteTag(packageUid) {
+        let allSelectedPackages = document.querySelectorAll(".tag");
+        for (var i = 0; i < allSelectedPackages.length; i++) {
+            if (allSelectedPackages[i].id === packageUid) {
+                allSelectedPackages[i].parentElement.remove();
+            }
+        }
+    };
+
+    
+    function checkTag(tagName) {
+        let allTags = document.getElementsByClassName('tag');
+        let flag = false;
+        for (let i = 0; i < allTags.length; i++) {
+            let singleTag = allTags[i];
+            if (singleTag.innerHTML === tagName) {
+                flag = true;
+                break;
+            }
+            
+        }
+
+        return flag;
+    }
+
+    function clickTag(event) {
+        let tagName = event.target.innerHTML;
+        let tagId = event.target.id;
+        console.log(tagName, tagId);
+    }
+    // script for package include dropdown ends
+
+
+    const csrfToken = getCookie('csrftoken');
+
+    async function uploadoc() {
+        console.log('Uploading file...');
+        // document.getElementById('spinner').style.display = 'block';
+        const formData = new FormData();
+        formData.append('document_file', document.getElementById('document_link').files[0]);
+        let response = await fetch('/api/courses/document/', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': csrfToken
+            }
+        });
+        const json = await response.json();
+        console.log('doc',json.uid);
+        return json.uid;
+    }   
+    
+    form.addEventListener('submit', async function(e) {   
+        e.preventDefault();
+        let isLive = false;
+
+        let data = {
+            'lesson_title' : document.getElementById('lesson_title').value,
+            'chapter' : document.getElementById('chooseChapters').value,
+            'lesson_type' : document.getElementById('lesson_type').value,
+            'is_free' : document.getElementById('is_free').value
+        };
+
+        // getting data of all packages...
+        let allTags = document.getElementsByClassName('tag');
+        let allPackageDates = document.getElementsByClassName('packageDate');
+        let packages = [];
+        let packagesUid = [];
+        for (let i = 0; i < allTags.length; i++) {
+            packagesUid.push(allTags[i].id);
+            if (allPackageDates[i].value === '') {
+                packages.push({
+                    "uid" : allTags[i].id,
+                    "created_at" : parseDate(new Date()),
+                });
+            } else {
+                packages.push({
+                    "uid" : allTags[i].id,
+                    "created_at" : allPackageDates[i].value
+                });
+            }
+        };
+
+        let liveData = new FormData();
+        // resolving video type
+        if (document.getElementById('lesson_type').value === 'Document') {
+            let docLink = await uploadoc();
+            console.log('The doc link is: ', docLink);
+            data['document'] = docLink;
+        } else if (document.getElementById('lesson_type').value === 'Video + Document') {
+            data['video_platform'] = document.getElementById('videoType').value;
+            data['video'] = {
+                'video_link': document.getElementById('video_link').value,
+            };
+            let docLink = await uploadoc();
+            console.log('The doc link is: ', docLink);
+            data['document'] = docLink;
+            // resolving platform
+            if (document.getElementById('videoType').value === 'Live') {
+                isLive = true;
+                
+            } else {
+                isLive = false;
+            }
+
+        } else {
+            data['video_platform'] = document.getElementById('videoType').value;
+            data['video'] = {
+                'video_link': document.getElementById('video_link').value,
+            };
+            // resolving platform
+            if (document.getElementById('videoType').value === 'Live') {
+                isLive = true;
+                data['video'] = {
+                    'video_link': document.getElementById('video_link').value,
+                    'video_uploaded_on': document.getElementById('startTime').value  + ":00+05:30",
+                };
+            } else {
+                isLive = false;
+            }
+        };
+
+        data['packages'] = packages;
+
+        if (isLive === true) {
+            if (allTags.length !== 1) {
+                alert('Please select only one package for live lessons');
+            } else {
+
+                // liveData = {
+                //     'chapter': document.getElementById('chooseChapters').value,
+                //     'live_name': document.getElementById('live_name').value,
+                //     'live_url': document.getElementById('video_link').value,
+                //     'subject': document.getElementById('chooseSubject').value,
+                // };
+                liveData.append('chapter', document.getElementById('chooseChapters').value);
+                liveData.append('live_name', document.getElementById('lesson_title').value);
+                liveData.append('live_url', document.getElementById('video_link').value);
+                liveData.append('subject', document.getElementById('chooseSubject').value);
+
+
+                if (document.getElementById('live_image').files.length > 0) {
+                    liveData.append('image', document.getElementById('live_image').files[0])
+                     
+                } else {
+                    console.log('no image');
+                };
+
+                liveData.append('course_package', packagesUid[0]);
+
+                console.log(liveData);
+                
+                fetch('/api/courses/go-live/', {
+                    method: 'POST', // or 'PUT'
+                    headers: {
+                        'X-CSRFToken': csrfToken
+                    },
+                    body: liveData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data);
+                        if (data.status === false) {
+                            alert(data.message);
+                        } else {
+                            alert('Lesson added successfully');
+                            window.location.href = '/courses/lessons/';
+                        }
+                    })
+                    .catch((error) => {
+                        alert('Error:', error);
+                        console.error('Error:', error);
+                });
+            }
+
+            
+        } else {
+            if (allTags.length <= 0) {
+                alert('Please select only one package for live lessons');
+            } else {
+                loader.innerHTML = '<div id="spinner" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; width: 100%; background: rgba(0,0,0,0.75) url(/media/app-assets/images/1487.gif) no-repeat center center; z-index: 100000;"></div>';
+                console.log('spinner');
+                submitFormBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i>';
+                fetch('/api/courses/lessons/', {
+                    method: 'POST', // or 'PUT'
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrfToken
+                    },
+                        body: JSON.stringify(data)
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('Success:', data);
+                        if (data.status === false) {
+                            alert(data.message);
+                        } else {
+                            alert('Lesson added successfully');
+                            window.location.href = '/courses/lessons/';
+                        }
+                        submitFormBtn.innerHTML = 'Add Chapter';
+                        loader.innerHTML = '';
+                    })
+                    .catch((error) => {
+                        alert('Error:', error);
+                        console.error('Error:', error);
+                });
+            }
+        }      
+
+
+    });
+
+
+    // handling form submission using fetch POST method starts here
+    
+    // handling form submissions ends here
+
+    // make a fetch call on 'http://13.232.227.45/api/courses/course-packages/' to get all packages using no-cors
+    fetch('/api/courses/subjects/', {
+        method: 'GET',
+        })
+        .then(response => response.json())
+        .then(data => {
+            data.data.forEach((e, i) => {
+                let option = document.createElement('option');
+                option.text = e.subject_title;
+                option.value = e.uid;
+                chooseSubject.appendChild(option);
+                
+            });
+    });
+
+    // update options of chooseChapters
+    function updateChapters() {
+        let selectedSubject = chooseSubject.value;
+        loader.innerHTML = '<div id="spinner" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; width: 100%; background: rgba(0,0,0,0.75) url(/media/app-assets/images/1487.gif) no-repeat center center; z-index: 100000;"></div>';
+        fetch('/api/courses/get-chapters/?uid=' + selectedSubject, {
+            method: 'GET',
+        })
+        .then(response => response.json())
+        .then(data => {
+            chooseChapters.innerHTML = '<option value="" selected disabled>Choose Chapter</option>';
+            data.data.forEach((e, i) => {
+                let option = document.createElement('option');
+                option.text = e.chapter_title;
+                option.value = e.uid;
+                chooseChapters.appendChild(option);
+            });
+            loader.innerHTML = '';
+        })
+    }
+
+    function renderDocumentName(event) {
+        let p = document.getElementById('docNameDiv');
+        let doc = event.target.files[0];
+        let docExtension = doc.name.split('.').pop();
+        let docSize = doc.size;
+        console.log(doc);
+        console.log(docExtension, docSize);
+        if ((docExtension === 'pdf' || docExtension === 'doc' || docExtension === 'docx') && docSize <= 25000000) {
+            p.innerHTML = '';
+            
+            p.innerHTML = event.target.files[0].name + `<i class="fa fa-trash ml-4"  onclick="deleteDocument(event)" aria-hidden="true"></i>`;
+            event.target.parentElement.appendChild(p);
+            document.getElementById('docDiv').appendChild(p);
+        } else {
+            if (docExtension !== 'pdf' && docExtension !== 'doc' && docExtension !== 'docx') {
+                alert('Unsupported file type.');
+            } else {
+                alert('Unsuported file size.');
+            }
+            document.getElementById('document_link').value = '';
+            p.innerHTML = 'Please Upload pdf or doc file of size less than 25mb!';
+            document.getElementById('docDiv').appendChild(p);
+        }
+            
+    }
+
+    function deleteDocument(event) {
+        console.log('clicked');
+        event.target.parentElement.innerHTML = '';
+        document.getElementById('document_link').value = '';
+
+    }
+
+    
+    // handleChangePackageDateTime 
+    function handleChangePackageDateTime(event) {
+        console.log(event.target.value);
+    }
+
+    
+    let timePicker = document.createElement('div');
+    timePicker.innerHTML = `
+        <label for="startTime" class="mt-4"> Enter Start Time Of Live </label>
+        <input class="form-control" required type="datetime-local" name="startTime" id="startTime">
+        <br>
+        <label for="live_image">Upload Live Image Here</label>
+        <input type="file" name="live_image" class="form-control" id="live_image">
+    `;
+    const videoContainer = document.getElementById('videoContainer');
+    function changeVideoType() {
+        let videoType = document.getElementById('videoType');
+        if (videoType.value == 'Live') {
+            videoContainer.appendChild(timePicker);
+        } else {
+            try {
+                timePicker.remove();
+            } catch (error) {
+                console.log(error);
+            }
+        }
+    };
+
+
+    let videoLinkDiv = document.createElement('div');
+    videoLinkDiv.classList.add('form-group');
+    videoLinkDiv.classList.add('col-md-6');
+    videoLinkDiv.innerHTML = `
+        <label for="video_link" id="videoLink">Link</label>
+        <input type="text" onchange="loadLesson()" required id="video_link" class="form-control"
+            name="video_link" minlength="4" maxlength="100" id="inputEmail4" placeholder="Enter lesson link">
+        <small>Paste Id only | preview appears here</small> 
+        <br>
+        <iframe width="560" id="iframe" height="315" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="display: none;">
+        </iframe>
+    `;
+
+    const document_upload = document.getElementById('document_upload');
+    let document_upload_HTML = `
+        <div class="form-group col-md-6">
+            <label for="document_link">Upload Document</label>
+            <div id="docDiv">
+                <input class="form-control" required onchange="renderDocumentName(event)" id="document_link" type="file" name="document_link">
+                <br>
+                <div id="docNameDiv"> </div>
+                
+            </div>
+        </div>
+    `;
+
+    let video_container_innerHtml = `
+        <label for="video_platform">Video Platform</label>
+        <select required class="form-control" name="video_platform" id="videoType" onchange="changeVideoType()">
+            <option selected value="Youtube">YouTube</option>
+            <option value="Vimeo">Vimeo</option>
+            <option value="Live" disabled>YouTube Live</option>
+        </select>
+    `;
+
+    const video_upload = document.getElementById('video_upload');
+    function changeLessonType() {
+        var lesson_type = document.getElementById('lesson_type')
+        console.log(lesson_type.value)
+        if (lesson_type.value == 'Video') {
+            videoContainer.innerHTML = '';
+            videoContainer.innerHTML = video_container_innerHtml;
+            video_upload.appendChild(videoLinkDiv);
+            document_upload.innerHTML = '';
+            document.getElementById('videoType').children[0].disabled = false;
+
+        } else if(lesson_type.value == 'Document') {
+            try {
+                videoContainer.innerHTML = '';
+                videoLinkDiv.remove();
+                document_upload.innerHTML = document_upload_HTML;
+            } catch (error) {
+                console.log(error);
+            }
+        }else if(lesson_type.value == 'Video + Document'){
+            videoContainer.innerHTML = '';
+            videoContainer.innerHTML = video_container_innerHtml;
+            video_upload.appendChild(videoLinkDiv);
+            document_upload.innerHTML = '';
+            document_upload.innerHTML = document_upload_HTML;
+
+            //disabling youtube live from video_platform
+            document.getElementById('videoType').children[0].disabled = true;
+        }
+    };
+    changeLessonType();
+
+    function loadLesson() {
+        var element = document.getElementById('video_link').value
+
+        if (element) {
+            var url = `https://www.youtube.com/embed/${element}`
+            document.getElementById('iframe').style.display = ''
+            document.getElementById('iframe').src = url
+        }else{
+            document.getElementById('iframe').style.display = 'none'
+            document.getElementById('iframe').src = ''
+        }
+
+
+    }
+</script>
+
+
+{% endblock %}

@@ -1,64 +1,142 @@
 {%extends 'base.html'%}
+{% block start %}
 
-{%block start%}
+<style type="text/css">
+    .bg-1 {
+        background: #ECECF8;
+    }
+</style>
+<div class="section-header">
+    <h1>Add Lesson</h1>
 
-<div id="content" class="main-content">
-    <div class="layout-px-spacing">
-        <div class="row layout-top-spacing" id="cancel-row">
-            <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
-                <div class="widget-content widget-content-area br-6">
-                    <div id="zero-config_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4">
-                        <div style="margin-left:-50px !important">
-                            {% include "utils/alert.html" %}
-                        </div>
- <form method="POST">
-     {% csrf_token %}
-                            <div class="form-row mb-4">
-                                <div class="form-group col-md-6">
-                                    <label for="inputEmail4">Lesson title</label>
-                                    <input type="text" class="form-control" required name="lesson_title" id="inputEmail4" placeholder="Enter lesson title">
-                                </div>
-                                <div class="form-group col-md-6">
-                                    <label for="inputPassword4">Subject Chapters</label>
-                                    <select required name="chapters" class="form-control basic tagging " multiple="multiple">
-                                        {% for subject_chapter in  subject_chapters %}
-                                        <option value="{{subject_chapter.uid}}">{{subject_chapter.chapter_title}}</option>
-                                     
-                                        {% endfor  %}
-                                    </select>
-                                </div>
-                                <div class="form-group col-md-6">
-                                    <label for="inputAddress">Video Platform</label>
-                                    <select required class="form-control" name="video_uploaded_on">
-                                        <option value="Vimeo">Vimeo</option>
-                                        <option value="Youtube">Youtube</option>
-    
-                                    </select>
-                                    </div>
+</div>
 
-                                    <div class="form-group col-md-6">
-                             
-                                        <label for="inputEmail4">Lesson Link</label>
-                                        <input required type="text" class="form-control" name="video_link" id="inputEmail4" placeholder="Enter lesson title">
-                                    </div>
-                                    
-                            </div>
-                          
-                            
 
-                          <button type="submit" class="btn btn-primary mt-3">Add Chapters</button>
-                        </form>
+<div class="card">
+    <!-- <div class="card-header">
+    <h4>Horizontal Form</h4>
+  </div> -->
+    <div class="card-body">
+        {% include "utils/alert.html" %}
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-row mb-4">
+                <div class="form-group col-md-6">
+                    <label for="inputEmail4">Lesson title</label>
+                    <input type="text" class="form-control" required name="lesson_title" id="inputEmail4"
+                        placeholder="Enter lesson title">
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="inputPassword4">Subject Chapters</label>
+                    <select required id="chapters" name="chapters" class="form-control basic tagging ">
+                        {% for subject_chapter in  subject_chapters %}
+                        <option value="{{subject_chapter.uid}}">{{subject_chapter.chapter_title}}</option>
+                        {% endfor  %}
+                    </select>
+                </div>
+                <div class="form-group col-md-6">
 
-                    </div>
+                    <label for="inputEmail4">Is free</label>
+                    <select class="form-control" name="is_free">
+                        <option value="0">No</option>
+                        <option value="1">Yes</option>
+
+                    </select>
+                </div>
+
+                <div class="form-group col-md-6">
+
+                    <label for="inputEmail4">Lesson Type</label>
+                    <select class="form-control" id="element" name="lesson_type" onchange="changeLessonType()">
+                        <option value="Video">Video</option>
+                        <option value="Document">Document</option>
+                        <option value="Video + Document">Video + Document</option>
+
+
+                    </select>
+                </div>
+
+
+            </div>
+            <div class="form-row mb-4" id="video_upload">
+
+                <div class="form-group col-md-6">
+                    <label for="inputAddress">Video Platform</label>
+                    <select required class="form-control" name="video_uploaded_on">
+                        <option value="Vimeo">Vimeo</option>
+                        <option value="Youtube">Youtube</option>
+
+                    </select>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="inputEmail4">Lesson Link</label>
+                    <input type="text" onchange="loadLesson()" required id="lesson_link" class="form-control"
+                        name="video_link" id="inputEmail4" placeholder="Enter lesson title">
+                    <small>Paste Id only</small>
+                    <iframe width="550" id="iframe" height="215" src="" style="display: none;">
+                    </iframe>
                 </div>
             </div>
-        </div>
+
+            <div class="form-row mb-4" id="document_upload" style="display: none;">
+
+                <div class="form-group col-md-6">
+                <label>Upload Document</label>
+                    <input class="form-control" id="document" type="file" name="document">
+                </div>
+
+            </div>
+
+
+
+            <button type="submit" class="btn btn-primary mt-3">Add Chapters</button>
+        </form>
+
     </div>
+</div>
+</div>
+</div>
+</div>
 </div>
 
 <script>
-    $(".tagging").select2({
-    tags: true
-});
+    function changeLessonType() {
+        var element = document.getElementById('element')
+        console.log(element.value)
+        if (element.value == 'Video') {
+            document.getElementById('video_upload').style.display = ''
+            document.getElementById('document_upload').style.display = 'none'
+            document.getElementById('document').required = false
+            document.getElementById('lesson_link').required = true
+
+        } else if(element.value == 'Document') {
+            document.getElementById('document_upload').style.display = ''
+            document.getElementById('video_upload').style.display = 'none'
+            document.getElementById('document').required = true
+            document.getElementById('lesson_link').required = false
+        }else if(element.value == 'Video + Document'){
+            document.getElementById('document_upload').style.display = ''
+            document.getElementById('video_upload').style.display = ''
+            document.getElementById('document').required = true
+            document.getElementById('lesson_link').required = true
+        }
+    }
+
+    function loadLesson() {
+        var element = document.getElementById('lesson_link').value
+
+        if (element) {
+            var url = `https://www.youtube.com/embed/${element}`
+            document.getElementById('iframe').style.display = ''
+            document.getElementById('iframe').src = url
+        }else{
+            document.getElementById('iframe').style.display = 'none'
+            document.getElementById('iframe').src = ''
+        }
+
+
+    }
 </script>
+
+
 {% endblock %}

@@ -1,0 +1,148 @@
+{%extends 'base.html'%}
+
+{%block start%}
+
+
+<div style="margin-top: 6%; display: flex;">
+    <div style="margin: 0 auto; font-size: xxx-large;">
+        All Subjects
+    </div>
+
+    <div style="margin-right: 5px;">
+        <button data-toggle="modal" class="btn btn-primary" data-target="#addSubject">Add New</button>
+
+        <div class="modal fade" id="addSubject" tabindex="-1" role="dialog"
+            aria-labelledby="addSubjectLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addSubjectLabel">Add Subject</h5>
+                        <button type="button" class="close" data-dismiss="modal"
+                            aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="editSubjectForm" method="post"
+                            action="{% url 'subjects' %}">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label for="exampleFormControlInput1">New Subject Name (max 50)</label>
+                                <input type="text" required name="subject" minlength="3" maxlength="50" class="form-control"
+                                    id="subjectName" placeholder="">
+                            </div>
+
+                            <button id="submit" class="btn btn-primary">Submit</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+    </div>
+</div>
+
+<hr>
+
+<div class="col-12" style="margin-top: 2%;">
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table id="example3" class="display" style="min-width: 845px">
+                    <thead>
+                        <tr>
+                            <th>S. No.</th>
+                            <th>Subject</th>
+                            <th>Created At</th>
+                            <th>Updated At</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        {% for subject in subjects %}
+
+                        <tr>
+                            <td>{{forloop.counter}}</td>
+                            <td>{{subject.subject_title}}</td>
+                            <td>{{subject.created_at}}</td>
+                            <td>{{subject.updated_at}}</td>
+                            <td>
+                                <button data-toggle="modal" data-target="#exampleModal-{{subject.uid}}"
+                                    id="{{subject.uid}}"
+                                    class="btn btn-sm btn-primary editSubject {{subject.subject_title}}"><i
+                                        class="la la-pencil"></i>
+                                </button>
+
+                                <div class="modal fade" id="exampleModal-{{subject.uid}}" tabindex="-1" role="dialog"
+                                    aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel">Update Subject</h5>
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                    aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form id="editSubjectForm" method="post"
+                                                    action="{% url 'edit_subject' subject.uid %}">
+                                                    {% csrf_token %}
+                                                    <div class="form-group">
+                                                        <label for="exampleFormControlInput1">Edit Subject Name (max 50)</label>
+                                                        <input type="text" name="subject"
+                                                            value="{{subject.subject_title}}" class="form-control" minlength="3" maxlength="50"
+                                                            id="subjectName" placeholder="">
+                                                    </div>
+
+                                                    <button id="submit" class="btn btn-primary">Submit</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+                                <button {% if subject.check_in_package %} disabled {% else %}
+                                    onclick="deleteSubject('{{subject.uid}}')" {% endif %}
+                                    class="btn btn-sm btn-danger"><i class="la la-trash-o"></i></button>
+                            </td>
+                        </tr>
+
+                        {% endfor %}
+
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function deleteSubject(uid){
+        swal({
+                title: "Are you sure?",
+                text: "You want to delete?",
+                icon: "success",
+                buttons: true,
+                dangerMode: true,
+            })
+            .then((willDelete) => {
+                if (willDelete) {
+            window.location.href = `{% url 'delete_subject' %}?uid=${uid}`
+
+                } else {
+                    swal("No deleted");
+                }
+            });
+      }
+</script>
+
+
+
+{%endblock%}

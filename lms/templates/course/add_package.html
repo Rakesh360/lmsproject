@@ -1,41 +1,143 @@
 {%extends 'base.html'%}
+{% block start %}
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
 
-{%block start%}
 
-<div id="content" class="main-content">
-    <div class="layout-px-spacing">
-        <div class="row layout-top-spacing" id="cancel-row">
-            <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
-                <div class="widget-content widget-content-area br-6">
-                    <div id="zero-config_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4">
-                        <div style="margin-left:-50px !important">
-                            {% include "utils/alert.html" %}
-                        </div>
- <form method="POST">
-     {% csrf_token %}
-                            <div class="form-row mb-4">
-                                <div class="form-group col-md-6">
-                                    <label for="inputEmail4">Package title</label>
-                                    <input type="text" name="package_title" class="form-control" required name="lesson_title" id="inputEmail4" placeholder="Enter lesson title">
-                                </div>
-            
-                                </div>
-                              
+<style type="text/css">
+    .bg-1 {
+        background: #ECECF8;
+    }
+</style>
+
+<div class="col s12">
+    <div class="container">
+        <div class="section">
+            <div class="card">
+                <h3>Add Pakage</h3>
+                <div class="card-content">
+                    {% include "utils/alert.html" %}
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+
+                        <div class="row">
+                            <div class="input-field col m6 s12">
+                                <input type="text"  name="package_title" class="form-control" required
+                                id="package_title" placeholder="Enter Package title">
+                                <label for="package_title">Package title</label>
+
+                            </div>
+                            <div class="input-field col m6 s12">
+                                <input type="number" required name="actual_price" class="form-control mb-4"
+                                id="degree3" placeholder="Actual Price" value="">
+                                <label>Actual Price</label>
+
+                            </div>
+                          </div>
+
+
+                          <div class="row">
+                            <div class="input-field col m6 s12">
+                                <input type="number" required name="selling_price" class="form-control mb-4"
+                                id="degree4" placeholder="Selling Price" value="">
+                                
+                                <label for="degree4">Selling Price</label>
+                            </div>
+                            <div class="input-field col m6 s12">
+                                <input type="date" required name="sell_from" class="form-control mb-4"
+                                id="degree3" placeholder="Add your subjects" value="">
+                                <label>Sell From</label>
                             
+                            </div>
+                          </div>
 
-                          <button type="submit" class="btn btn-primary mt-3">Add Package</button>
-                        </form>
+                          
+                          <div class="row">
+                            <div class="input-field col m6 s12">
+                                <input type="number" required name="selling_price" class="form-control mb-4"
+                                id="degree4" placeholder="Selling Price" value="">
+                                
+                                <label for="degree4">Selling Price</label>
+                            </div>
+                            <div class="input-field col m6 s12">
+                                <input type="date" required name="sell_till" class="form-control mb-4"
+                                id="degree4" placeholder="Add your work here" value="">
+                                <label for="degree4">Sell Till</label>
+                           
+                            
+                            </div>
+                          </div>
 
-                    </div>
+                    
+                          
+                            <div class="col-md-12">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Web image</label>
+                                            <input type="file" name="web_image" required class="form-control mb-4"
+                                                id="degree3" placeholder="Add your subjects" value="">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="degree4">Mobile image</label>
+                                            <input type="file" name="mobile_image" required class="form-control mb-4"
+                                                id="degree4" placeholder="Add your work here" value="">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+
+                            <div class="col-md-12">
+                                <lable>Add description</lable>
+                                <textarea required class="form-control" name="package_description"
+                                    placeholder="Package description" id="summernote" cols="100" rows="50"></textarea>
+                            </div>
+
+
+                        </div>
+
+
+
+
+
+
+                        <button type="submit" class="btn btn-primary mt-3">Add Package</button>
+                    </form>
                 </div>
             </div>
-        </div>
+        </div><!-- START RIGHT SIDEBAR NAV -->
+
     </div>
 </div>
 
+
+
+
+
+<div class="card">
+    <!-- <div class="card-header">
+    <h4>Horizontal Form</h4>
+  </div> -->
+    <div class="card-body">
+
+
+
+    </div>
+
+</div>
+
+
 <script>
-    $(".tagging").select2({
-    tags: true
-});
+    $(document).ready(function () {
+        $('#summernote').summernote();
+    });
 </script>
+
+
+
 {% endblock %}

@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from rest_framework.validators import UniqueValidator
 import uuid
 from base_rest.utils import *
-
+from courses.helpers import send_otp
 
 
 class EmailSerializer(serializers.Serializer):
@@ -18,6 +18,12 @@ class LoginSerializer(serializers.Serializer):
     
     
 
+class ChangePasswordSerializer(serializers.Serializer):
+    student_uid = serializers.CharField()
+    new_password =  serializers.CharField()
+    old_password =  serializers.CharField()
+
+
 
 class PasswordSerializer(serializers.Serializer):
     password = serializers.CharField()
@@ -29,7 +35,8 @@ class ResetPasswordSerializer(serializers.Serializer):
     class Meta:
         model = User
         fields = '__all__'
-        
+
+
 
 
 class RegisterStudentSerializer(serializers.Serializer):
@@ -64,7 +71,7 @@ class RegisterStudentSerializer(serializers.Serializer):
             date_of_birth= validated_data['date_of_birth'],
             gender =validated_data['gender'],
             state = validated_data['state'],
-            otp = get_random_otp(),
+            otp = '000000000',
             district = validated_data['district'],
           
             pincode = validated_data['pincode'])
@@ -73,6 +80,8 @@ class RegisterStudentSerializer(serializers.Serializer):
         student_obj.save()
         
         return student_obj
+    
+
     
     
     def forget_password(self , instance , validated_data):
@@ -83,17 +92,13 @@ class RegisterStudentSerializer(serializers.Serializer):
     
     
 class StudentSerializer(serializers.ModelSerializer):
-    country = serializers.SerializerMethodField()
+    #country = serializers.SerializerMethodField()
 
     class Meta:
-        model = User
-        fields = ['email', 'country']
+        model = Student
+        exclude =['last_login','password','is_staff','is_active','groups','user_permissions' , 'forget_password_token','phone_number','is_superuser','user_ptr']
 
-    
-    def get_country(self, obj):
-        print(obj)
-        return "Nigeria"
-
+   
 
         
     

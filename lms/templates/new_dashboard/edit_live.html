@@ -1,0 +1,401 @@
+{%extends 'base.html'%}
+{% block start %}
+
+<style type="text/css">
+    .bg-1 {
+        background: #ECECF8;
+    }
+
+    .deleteBtn{
+        cursor: pointer;
+    }
+</style>
+
+<div id="loader">
+
+</div>
+
+<div class="section-header" style="margin-top: 6%;">
+    <div style="margin: 0 auto; font-size: xxx-large; text-align: center;">
+        Edit Live Class
+    </div>
+
+</div>
+
+
+    <div class="card" id="contentDiv">  
+        <!-- <div class="card-header">
+        <h4>Horizontal Form</h4>
+    </div> -->
+        <div class="card-body">
+            {% include "utils/alert.html" %}
+            <form id="form" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-row mb-4">
+                    <div class="form-group col-md-6">
+                        <label for="lesson_title">Lesson title (max 100)</label>
+                        <input type="text" class="form-control" minlength="4" maxlength="100" required name="lesson_title" value="{{live.live_name}}"
+                            id="lesson_title" placeholder="Enter lesson title">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="inputPassword4">Subject Chapters</label>
+                        <select disabled required id="chooseChapters" name="chapters" class="form-control basic tagging ">
+                            {% for subject_chapter in  subject_chapters %}
+                            <option {% if live.chapter ==  subject_chapter %} selected {% endif %}
+                                value="{{subject_chapter.uid}}">{{subject_chapter.chapter_title}}</option>
+                            {% endfor  %}
+                        </select>
+                    </div>              
+
+    </div>
+
+                    <div class="form-row mb-4" id="videoDiv">
+                                   
+                        <div class="form-group col-md-6" id="lessonLinkDiv">
+                            <label for="image">Image</label>
+                            <input type="file" class="form-control" name="image" id="image" onchange="renderDocumentName(event)" placeholder="Choose image to upload">
+                            <br>
+                            <div id="docNameDiv"> <a href="/{{live.image.uid}}">View Uploaded Image</a> </div>
+                        </div>
+
+                        <div class="form-group col-md-6" id="lessonLinkDiv">
+                            <label for="video_link">Lesson Link</label>
+                            <input value="{{live.live_url}}" minlength="4" maxlength="100" type="text" onchange="loadLesson()" required id="lesson_link" class="form-control"
+                                name="video_link" id="video_link" placeholder="Enter lesson title">
+                            <small>Paste Id only</small>
+                            <br>
+                            <iframe width="550" id="iframe" height="215" src="">
+                            </iframe>
+                        </div>
+
+
+                        
+                    </div>
+
+                
+
+                    <div class="form-row mb-4" id="video_upload">
+                        <!-- tags selection part -->
+                        <div>
+                            <div>                    
+                                <div class="select-box">
+                                    <div class="options-container">
+                                        {% for course_package in  all_course_packages %}
+                                            <div class="option" onclick="includeTag(event)">
+                                                <input type="checkbox" name="category" id="{{course_package.uid}}">
+                                                <label for="{{course_package.uid}}">{{course_package.package_title}}</label>
+                                            </div>
+                                        {% endfor  %}
+                            
+                                      
+                                    </div>
+                            
+                                    <div class="selected">
+                                      Choose Packages to include
+                                    </div>
+                            
+                                    <div class="search-box">
+                                        <input type="text" placeholder="Start Typing..." />
+                                    </div>
+                                </div>
+                            </div> 
+                        </div> 
+        
+                        <br>
+                        <!-- <p>{{lesson.packages}}</p> -->
+                        <div class="table table-striped" style="margin: 1%;">
+                            <table class="display">
+                                <!-- <thead>
+                                    <tr><td>Package Name</td></tr>
+                                    <tr><td>Published Date</td></tr>
+                                    <tr><td>Action</td></tr>
+                                </thead> -->
+                                <tbody id="tags">
+                                
+                                    
+                                </tbody>
+                            </table>  
+                        </div>               
+                    </div>
+
+
+
+                </div>
+                <button id="submitFormBtn" type="submit" class="btn btn-primary mt-3">Update Live Lesson</button>
+            </form>
+
+    </div>
+
+    
+
+<script>
+    const loader = document.getElementById('loader');
+    console.log('is_free', '{{lesson.is_free}}');
+    console.log('vidplatform', '{{lesson.video_platform}}');
+    const submitFormBtn = document.getElementById('submitFormBtn');
+    // function to parse date from 1632058848038 to 2018-12-31T00:00:00.000Z
+    function parseDate(date) {
+        var date = new Date(date);
+        var year = date.getFullYear();
+        var month = date.getMonth() + 1;
+        var day = date.getDate();
+        var hour = date.getHours();
+        var min = date.getMinutes();
+        var sec = date.getSeconds();
+        var dateString = year + "-" + month + "-" + day + "T" + hour + ":" + min + ":" + sec + "Z";
+        return dateString;
+    }
+
+
+    const tagSection = document.getElementById('tagSection');
+    const tagsDropdown = document.getElementById('tagsDropdown');
+    const form = document.getElementById('form');
+
+    // script for package include dropdown starts here
+    var selected = document.querySelector(".selected");
+    const optionsContainer = document.querySelector(".options-container");
+    const searchBox = document.querySelector(".search-box input");
+
+    const optionsList = document.querySelectorAll(".option");
+
+    selected.addEventListener("click", () => {
+    optionsContainer.classList.toggle("active");
+
+    searchBox.value = "";
+    filterList("");
+
+    if (optionsContainer.classList.contains("active")) {
+        searchBox.focus();
+    }
+    });
+
+    optionsList.forEach(o => {
+    o.addEventListener("click", (e) => {
+        // selected.innerHTML = o.querySelector("label").innerHTML;
+        // optionsContainer.classList.remove("active");
+        let checkbox = e.target.firstElementChild;
+        if (checkbox === null) {
+        return;
+        }
+
+        if (checkbox.checked === false) {
+        checkbox.checked = true;
+        } else {
+        checkbox.checked = false;
+        };
+
+        console.log(selectedItems());
+
+    });
+    });
+
+    searchBox.addEventListener("keyup", function(e) {
+    filterList(e.target.value);
+    });
+
+    const filterList = searchTerm => {
+    searchTerm = searchTerm.toLowerCase();
+    optionsList.forEach(option => {
+        let label = option.firstElementChild.nextElementSibling.innerText.toLowerCase();
+        if (label.indexOf(searchTerm) != -1) {
+        option.style.display = "block";
+        } else {
+        option.style.display = "none";
+        }
+    });
+    };
+
+    function selectedItems() {
+    var selectedArray = [];
+    var selectedCheckboxes = document.querySelectorAll(".option input[type='checkbox']"); 
+    var correspondingLabels = document.querySelectorAll(".option label");
+    for (var i = 0; i < selectedCheckboxes.length; i++) {
+        if (selectedCheckboxes[i].checked) {
+        selectedArray.push([selectedCheckboxes[i].id, correspondingLabels[i].innerText]);
+        }
+    };
+    return selectedArray;
+    };
+
+    function includeTag(event) {
+        const packageUid = event.target.firstElementChild.id;
+        const packageName = event.target.querySelector("label").innerText;
+
+        if (checkTag(packageName) === true ) {
+            console.log('Tag already exists...');
+            deleteTag(packageUid);
+        } else {
+            let tagElement = document.createElement('tr');
+            // tagElement.className = "badge badge-dark p-1 m-1 tag";
+            let td1 = document.createElement('td');
+            td1.className = "tag";
+            td1.innerHTML = packageName;
+            td1.id = packageUid;
+            tagElement.appendChild(td1);
+            tags.appendChild(tagElement);
+        }
+    
+
+    };
+
+    function deleteTag2(event){
+        console.log(event.target.parentElement);
+    }
+
+
+    function deleteTag(packageUid) {
+        let allSelectedPackages = document.querySelectorAll(".tag");
+        for (var i = 0; i < allSelectedPackages.length; i++) {
+            if (allSelectedPackages[i].id === packageUid) {
+                allSelectedPackages[i].parentElement.remove();
+            }
+        }
+    };
+    
+    function checkTag(tagName) {
+        let allTags = document.getElementsByClassName('tag');
+        let flag = false;
+        for (let i = 0; i < allTags.length; i++) {
+            let singleTag = allTags[i];
+            if (singleTag.innerHTML === tagName) {
+                flag = true;
+                break;
+            }
+            
+        }
+
+        return flag;
+    }
+
+    function clickTag(event) {
+        let tagName = event.target.innerHTML;
+        let tagId = event.target.id;
+        console.log(tagName, tagId);
+    }
+
+    function handleChangePackageDateTime(event) {
+        console.log(event.target.value);
+    }
+
+    let imgReUpload = false;
+    function renderDocumentName(event) {
+        console.log(event.target.parentElement);
+        console.log(event.target.files[0].name);
+        let p = document.getElementById('docNameDiv');
+        p.innerHTML = '';
+        
+        p.innerHTML = event.target.files[0].name + `<i class="fa fa-trash ml-4"  onclick="deleteDocument(event)" aria-hidden="true"></i>`;
+        event.target.parentElement.appendChild(p);
+        imgReUpload = true;
+    }
+
+    function deleteDocument(event) {
+        console.log('clicked');
+        event.target.parentElement.innerHTML = '';
+        document.getElementById('image').value = '';
+        imgReUpload = false;
+
+    }
+
+    // script for package include dropdown ends
+    
+
+    function loadLesson() {
+        var element = document.getElementById('lesson_link').value
+
+        if (element) {
+            var url = `https://www.youtube.com/embed/${element}`
+            document.getElementById('iframe').style.display = ''
+            document.getElementById('iframe').src = url
+        }else{
+            document.getElementById('iframe').style.display = 'none'
+            document.getElementById('iframe').src = ''
+        }
+
+
+    };
+    loadLesson();
+    
+
+    function getCookie(name) {
+        if (!document.cookie) {
+            return null;
+        }
+        const xsrfCookies = document.cookie.split(';')
+        .map(c => c.trim())
+        .filter(c => c.startsWith(name + '='));
+        if (xsrfCookies.length === 0) {
+            return null;
+        }
+            return decodeURIComponent(xsrfCookies[0].split('=')[1]);
+    }
+    
+    const csrfToken = getCookie('csrftoken');
+
+
+    
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        console.log('submitting form');
+        // getting data of all packages...
+        let allTags = document.getElementsByClassName('tag');
+        let allPackageDates = document.getElementsByClassName('packageDate');
+        let packages = [];
+        let packagesUid = [];
+        for (let i = 0; i < allTags.length; i++) {
+            packagesUid.push(allTags[i].id);
+            
+            
+            
+        };
+
+        // patch for live
+        let liveData = new FormData();
+        liveData.append('uid', "{{live.uid}}");
+        liveData.append('live_name', document.getElementById('lesson_title').value);
+        liveData.append('live_url', document.getElementById('lesson_link').value);
+        if (document.getElementById('image').files.length > 0) {
+            liveData.append('image', document.getElementById('image').files[0])
+                
+        } else {
+            console.log('no image');
+        };
+
+        liveData.append('course_package', packagesUid[0]);
+
+        liveData.forEach((value, key) => {
+            console.log(key, value);
+        });
+
+        if (allTags.length > 0) {
+            submitFormBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i>';
+            loader.innerHTML = '<div id="spinner" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; width: 100%; background: rgba(0,0,0,0.75) url(/media/app-assets/images/1487.gif) no-repeat center center; z-index: 100000;"></div>';
+            let res = await axios.patch('/api/courses/go-live/', liveData, {
+                headers: {
+                    'X-CSRFToken': csrfToken
+                }
+            });
+            console.log(res.data);
+            if (res.data.status === true) {
+                alert('Lesson updated successfully');
+
+            } else {
+                alert('Something went wrong');
+            };
+            submitFormBtn.innerHTML = 'Update Live Lesson';
+            loader.innerHTML = '';
+            
+        } else {
+            alert("Packages Can't Be empty! Please select at least one package.");
+        }
+
+
+
+    });
+
+
+</script>
+
+
+
+{% endblock %}

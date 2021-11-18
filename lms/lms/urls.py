@@ -23,11 +23,15 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 urlpatterns = [
     path('' , include('dashboard.urls')),
-    path('api/accounts/' , include('accounts.urls')),
-    path('api/courses/' , include('courses.urls')),
+
+    path('accounts/' , include('accounts.urls')),
+    path('courses/' , include('courses.urls')),
+    path('api/accounts/' , include('accounts.urls_api')),
+    path('api/courses/' , include('courses.urls_api')),
     path('api/order/' , include('orders.urls')),
     path('jet/', include('jet.urls', 'jet')),  # Django JET URLS
     path('admin/', admin.site.urls),
+
 ]
 if settings.DEBUG:
         urlpatterns += static(settings.MEDIA_URL,

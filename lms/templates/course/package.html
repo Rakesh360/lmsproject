@@ -1,0 +1,142 @@
+{%extends 'base.html'%}
+{% block start %}
+
+
+
+<div class="container">
+    <div class="row">
+        
+        <div class="col s12">
+            <div class="container">
+                <div class="section">
+<div class="section-header">
+    <h4>Add Pakage</h4>
+    <div class="section-header-breadcrumb">
+       <a href="{% url 'add_package' %}" class="btn btn-success">
+        Add Package
+       </a>
+    </div>
+</div>
+
+
+<div class="card">
+ 
+    <div class="card-body">
+        {% include "utils/alert.html" %}
+        <div class="table-responsive">
+            <table style="padding: 10px !important;" id="zero-config" class="table table-striped dataTable" style="width: 100%;" role="grid"
+                aria-describedby="zero-config_info">
+                <thead>
+                    <tr role="row">
+                        <th class="sorting_asc" tabindex="0" aria-controls="zero-config" rowspan="1" colspan="1"
+                            aria-label="Name: activate to sort column descending" aria-sort="ascending"
+                            >S.no</th>
+                        <th class="sorting" tabindex="0" aria-controls="zero-config" rowspan="1" colspan="1"
+                            aria-label="Position: activate to sort column ascending" >Course
+                            Package Name</th>
+                        <th class="sorting" tabindex="0" aria-controls="zero-config" rowspan="1" colspan="1"
+                            aria-label="Office: activate to sort column ascending" >Selling price
+                        </th>
+
+                        <th class="sorting" tabindex="0" aria-controls="zero-config" rowspan="1" colspan="1"
+                            aria-label="Office: activate to sort column ascending" >Actual price
+                        </th>
+                        <th class="sorting" tabindex="0" aria-controls="zero-config" rowspan="1" colspan="1"
+                            aria-label="Office: activate to sort column ascending" > Start
+                            date</th>
+                        <th class="sorting" tabindex="0" aria-controls="zero-config" rowspan="1" colspan="1"
+                            aria-label="Office: activate to sort column ascending" > End date
+                        </th>
+                        <th class="sorting" tabindex="0" aria-controls="zero-config" rowspan="1" colspan="1"
+                            aria-label="Age: activate to sort column ascending" >Created At</th>
+                        <th class="sorting" tabindex="0" aria-controls="zero-config" rowspan="1" colspan="1"
+                            aria-label="Age: activate to sort column ascending" >Action </th>
+                            <th class="sorting" tabindex="0" aria-controls="zero-config" rowspan="1" colspan="1"
+                            aria-label="Age: activate to sort column ascending" >View </th>
+                   
+                        </tr>
+                </thead>
+                <tbody>
+
+                    {% for course_package in course_packages %}
+                    <tr role="row">
+                        <td class="sorting_1">{{forloop.counter}}</td>
+                        <td>{{course_package.package_title}}</td>
+                        <td>{{course_package.selling_price}}</td>
+                        <td>{{course_package.actual_price}}</td>
+                        <td>{{course_package.sell_from}}</td>
+                        <td>{{course_package.sell_till}}</td>
+                        <td>{{course_package.created_at}}</td>
+
+                        <td>
+                             <a href="{% url 'course_package_edit' course_package.uid %}" class="btn btn-success btn-sm" >
+                                                <i class="fas fa-pencil-alt"></i>
+                             </a>
+                                            <button class="btn btn-danger btn-sm">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>  
+                        </td>
+                        <td>
+                            <a href="{% url 'add_subjects_courses' course_package.uid %}" class="btn btn-danger">View</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+        </div>
+        <div class="dt--bottom-section d-sm-flex justify-content-sm-between text-center">
+            <div class="dt--pages-count  mb-sm-0 mb-3">
+                <div class="dataTables_info" id="zero-config_info" role="status" aria-live="polite">
+                    Showing page 1 of 4</div>
+            </div>
+
+        </div>
+    </div>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Add Subject</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="exampleFormControlInput1">Subject </label>
+                        <input type="text" name="subject" class="form-control" id="exampleFormControlInput1">
+                    </div>
+
+
+
+                    <button class="btn btn-success">Add Subject</button>
+                </form>
+
+
+
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>
+<
+
+
+{%endblock%}
